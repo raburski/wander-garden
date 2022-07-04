@@ -1,0 +1,1863 @@
+[
+    {
+        "id": "4bf58dd8d48988d1e0931735",
+        "name": "Coffee Shop",
+        "shortName": "Coffee Shop",
+        "pluralName": "Coffee Shops",
+        "emoji": "☕️"
+    },
+    {
+        "id": "4bf58dd8d48988d1c4941735",
+        "name": "Restaurant",
+        "shortName": "Restaurant",
+        "pluralName": "Restaurants",
+        "emoji": "🍽"
+    },
+    {
+        "id": "56aa371ce4b08b9a8d57356c",
+        "name": "Beer Bar",
+        "shortName": "Beer Bar",
+        "pluralName": "Beer Bars",
+        "emoji": "🍺"
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a32",
+        "name": "Cultural Center",
+        "shortName": "Cultural Center",
+        "pluralName": "Cultural Centers",
+        "emoji": "🎭"
+    },
+    {
+        "id": "52e81612bcbc57f1066b79f1",
+        "name": "Bistro",
+        "shortName": "Bistro",
+        "pluralName": "Bistros",
+        "emoji": "🍽"
+    },
+    {
+        "id": "4bf58dd8d48988d142941735",
+        "name": "Asian Restaurant",
+        "shortName": "Asian",
+        "pluralName": "Asian Restaurants",
+        "emoji": "🍲"
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a22",
+        "name": "Botanical Garden",
+        "shortName": "Botanical Garden",
+        "pluralName": "Botanical Gardens",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d16d941735",
+        "name": "Café",
+        "shortName": "Café",
+        "pluralName": "Cafés",
+        "emoji": "☕️"
+    },
+    {
+        "id": "4bf58dd8d48988d129951735",
+        "name": "Train Station",
+        "shortName": "Train Station",
+        "pluralName": "Train Stations",
+        "emoji": "🚉"
+    },
+    {
+        "id": "4eb1bc533b7b2c5b1d4306cb",
+        "name": "Airport Lounge",
+        "shortName": "Lounge",
+        "pluralName": "Airport Lounges",
+        "emoji": "💺"
+    },
+    {
+        "id": "4bf58dd8d48988d1eb931735",
+        "name": "Airport Terminal",
+        "shortName": "Terminal",
+        "pluralName": "Airport Terminals",
+        "emoji": "🛫"
+    },
+    {
+        "id": "4f4531b14b9074f6e4fb0103",
+        "name": "Medical Lab",
+        "shortName": "Medical Lab",
+        "pluralName": "Medical Labs",
+        "emoji": null
+    },
+    {
+        "id": "55a59bace4b013909087cb24",
+        "name": "Ramen Restaurant",
+        "shortName": "Ramen",
+        "pluralName": "Ramen Restaurants",
+        "emoji": "🍜"
+    },
+    {
+        "id": "4bf58dd8d48988d132941735",
+        "name": "Church",
+        "shortName": "Church",
+        "pluralName": "Churches",
+        "emoji": "⛪️"
+    },
+    {
+        "id": "4eb1bd1c3b7b55596b4a748f",
+        "name": "Filipino Restaurant",
+        "shortName": "Filipino",
+        "pluralName": "Filipino Restaurants",
+        "emoji": "🥘"
+    },
+    {
+        "id": "4bf58dd8d48988d14a941735",
+        "name": "Vietnamese Restaurant",
+        "shortName": "Vietnamese",
+        "pluralName": "Vietnamese Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "55a59bace4b013909087cb18",
+        "name": "Okonomiyaki Restaurant",
+        "shortName": "Okonomiyaki",
+        "pluralName": "Okonomiyaki Restaurants"
+    },
+    {
+        "id": "4bf58dd8d48988d163941735",
+        "name": "Park",
+        "shortName": "Park",
+        "pluralName": "Parks",
+        "emoji": "🌳"
+    },
+    {
+        "id": "4bf58dd8d48988d153941735",
+        "name": "Burrito Place",
+        "shortName": "Burritos",
+        "pluralName": "Burrito Places",
+        "emoji": "🌯"
+    },
+    {
+        "id": "4bf58dd8d48988d143941735",
+        "name": "Breakfast Spot",
+        "shortName": "Breakfast",
+        "pluralName": "Breakfast Spots",
+        "emoji": "🍳"
+    },
+    {
+        "id": "4bf58dd8d48988d1fa931735",
+        "name": "Hotel",
+        "shortName": "Hotel",
+        "pluralName": "Hotels",
+        "emoji": "🛌"
+    },
+    {
+        "id": "4bf58dd8d48988d16e941735",
+        "name": "Fast Food Restaurant",
+        "shortName": "Fast Food",
+        "pluralName": "Fast Food Restaurants",
+        "emoji": "🍟"
+    },
+    {
+        "id": "4bf58dd8d48988d1fe931735",
+        "name": "Bus Station",
+        "shortName": "Bus Station",
+        "pluralName": "Bus Stations",
+        "emoji": "🚌"
+    },
+    {
+        "id": "4bf58dd8d48988d15a941735",
+        "name": "Garden",
+        "shortName": "Garden",
+        "pluralName": "Gardens",
+        "emoji": "🌿"
+    },
+    {
+        "id": "52939a8c3cf9994f4e043a35",
+        "name": "Empanada Restaurant",
+        "shortName": "Empanada",
+        "pluralName": "Empanada Restaurants",
+        "emoji": "🌮"
+    },
+    {
+        "id": "4bf58dd8d48988d164941735",
+        "name": "Plaza",
+        "shortName": "Plaza",
+        "pluralName": "Plazas",
+        "emoji": "⛲️"
+    },
+    {
+        "id": "4bf58dd8d48988d147941735",
+        "name": "Diner",
+        "shortName": "Diner",
+        "pluralName": "Diners",
+        "emoji": "🍽"
+    },
+    {
+        "id": "4bf58dd8d48988d12d941735",
+        "name": "Monument / Landmark",
+        "shortName": "Landmark",
+        "pluralName": "Monuments / Landmarks",
+        "emoji": "🗿"
+    },
+    {
+        "id": "4d954b06a243a5684965b473",
+        "name": "Residential Building (Apartment / Condo)",
+        "shortName": "Residential",
+        "pluralName": "Residential Buildings (Apartments / Condos)",
+        "emoji": "🛌"
+    },
+    {
+        "id": "4bf58dd8d48988d113941735",
+        "name": "Korean Restaurant",
+        "shortName": "Korean",
+        "pluralName": "Korean Restaurants",
+        "emoji": "🍛"
+    },
+    {
+        "id": "56aa371be4b08b9a8d573544",
+        "name": "Bay",
+        "shortName": "Bay",
+        "pluralName": "Bays",
+        "emoji": "🌊"
+    },
+    {
+        "id": "4bf58dd8d48988d15c941735",
+        "name": "Cemetery",
+        "shortName": "Cemetery",
+        "pluralName": "Cemeteries",
+        "emoji": "🪦"
+    },
+    {
+        "id": "4bf58dd8d48988d123941735",
+        "name": "Wine Bar",
+        "shortName": "Wine Bar",
+        "pluralName": "Wine Bars",
+        "emoji": "🍷"
+    },
+    {
+        "id": "4bf58dd8d48988d16c941735",
+        "name": "Burger Joint",
+        "shortName": "Burgers",
+        "pluralName": "Burger Joints",
+        "emoji": "🍔"
+    },
+    {
+        "id": "4bf58dd8d48988d1dd931735",
+        "name": "Soup Place",
+        "shortName": "Soup",
+        "pluralName": "Soup Places",
+        "emoji": "🥣"
+    },
+    {
+        "id": "4bf58dd8d48988d1d1941735",
+        "name": "Noodle House",
+        "shortName": "Noodles",
+        "pluralName": "Noodle Houses",
+        "emoji": "🍜"
+    },
+    {
+        "id": "4bf58dd8d48988d190941735",
+        "name": "History Museum",
+        "shortName": "History Museum",
+        "pluralName": "History Museums",
+        "emoji": "🏛"
+    },
+    {
+        "id": "4bf58dd8d48988d1c1941735",
+        "name": "Mexican Restaurant",
+        "shortName": "Mexican",
+        "pluralName": "Mexican Restaurants",
+        "emoji": "🌮"
+    },
+    {
+        "id": "4bf58dd8d48988d1ed931735",
+        "name": "Airport",
+        "shortName": "Airport",
+        "pluralName": "Airports",
+        "emoji": "🛫"
+    },
+    {
+        "id": "4bf58dd8d48988d1d0941735",
+        "name": "Dessert Shop",
+        "shortName": "Desserts",
+        "pluralName": "Dessert Shops",
+        "emoji": "🍰"
+    },
+    {
+        "id": "4bf58dd8d48988d110941735",
+        "name": "Italian Restaurant",
+        "shortName": "Italian",
+        "pluralName": "Italian Restaurants",
+        "emoji": "🍕"
+    },
+    {
+        "id": "4bf58dd8d48988d1d3941735",
+        "name": "Vegetarian / Vegan Restaurant",
+        "shortName": "Vegetarian / Vegan",
+        "pluralName": "Vegetarian / Vegan Restaurants",
+        "emoji": "🥦"
+    },
+    {
+        "id": "4bf58dd8d48988d136941735",
+        "name": "Opera House",
+        "shortName": "Opera House",
+        "pluralName": "Opera Houses",
+        "emoji": "🎤"
+    },
+    {
+        "id": "4bf58dd8d48988d1dc931735",
+        "name": "Tea Room",
+        "shortName": "Tea Room",
+        "pluralName": "Tea Rooms",
+        "emoji": "🫖"
+    },
+    {
+        "id": "4bf58dd8d48988d11b941735",
+        "name": "Pub",
+        "shortName": "Pub",
+        "pluralName": "Pubs",
+        "emoji": "🍺"
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a04",
+        "name": "Polish Restaurant",
+        "shortName": "Polish",
+        "pluralName": "Polish Restaurants",
+        "emoji": "🥟"
+    },
+    {
+        "id": "50aaa49e4b90af0d42d5de11",
+        "name": "Castle",
+        "shortName": "Castle",
+        "pluralName": "Castles",
+        "emoji": "🏰"
+    },
+    {
+        "id": "4deefb944765f83613cdba6e",
+        "name": "Historic Site",
+        "shortName": "Historic Site",
+        "pluralName": "Historic Sites",
+        "emoji": "🗿"
+    },
+    {
+        "id": "4bf58dd8d48988d1f8941735",
+        "name": "Furniture / Home Store",
+        "shortName": "Furniture / Home",
+        "pluralName": "Furniture / Home Stores",
+        "emoji": "🪑"
+    },
+    {
+        "id": "4bf58dd8d48988d1ce941735",
+        "name": "Seafood Restaurant",
+        "shortName": "Seafood",
+        "pluralName": "Seafood Restaurants",
+        "emoji": "🍤"
+    },
+    {
+        "id": "4bf58dd8d48988d16a941735",
+        "name": "Bakery",
+        "shortName": "Bakery",
+        "pluralName": "Bakeries",
+        "emoji": "🥖"
+    },
+    {
+        "id": "4bf58dd8d48988d155941735",
+        "name": "Gastropub",
+        "shortName": "Gastropub",
+        "pluralName": "Gastropubs",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d127951735",
+        "name": "Arts & Crafts Store",
+        "shortName": "Arts & Crafts",
+        "pluralName": "Arts & Crafts Stores",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d149941735",
+        "name": "Thai Restaurant",
+        "shortName": "Thai",
+        "pluralName": "Thai Restaurants",
+        "emoji": "🥗"
+    },
+    {
+        "id": "4bf58dd8d48988d1f5931735",
+        "name": "Dim Sum Restaurant",
+        "shortName": "Dim Sum",
+        "pluralName": "Dim Sum Restaurants",
+        "emoji": "🥟"
+    },
+    {
+        "id": "4bf58dd8d48988d1ed941735",
+        "name": "Spa",
+        "shortName": "Spa",
+        "pluralName": "Spas",
+        "emoji": "🧘‍♀️"
+    },
+    {
+        "id": "4bf58dd8d48988d108941735",
+        "name": "Dumpling Restaurant",
+        "shortName": "Dumplings",
+        "pluralName": "Dumpling Restaurants",
+        "emoji": "🥟"
+    },
+    {
+        "id": "4bf58dd8d48988d111941735",
+        "name": "Japanese Restaurant",
+        "shortName": "Japanese",
+        "pluralName": "Japanese Restaurants",
+        "emoji": "🍱"
+    },
+    {
+        "id": "4bf58dd8d48988d1e7931735",
+        "name": "Jazz Club",
+        "shortName": "Jazz Club",
+        "pluralName": "Jazz Clubs",
+        "emoji": "🎷"
+    },
+    {
+        "id": "5293a7d53cf9994f4e043a45",
+        "name": "Caucasian Restaurant",
+        "shortName": "Caucasian",
+        "pluralName": "Caucasian Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d120951735",
+        "name": "Food Court",
+        "shortName": "Food Court",
+        "pluralName": "Food Courts",
+        "emoji": "🍱"
+    },
+    {
+        "id": "52e81612bcbc57f1066b79f2",
+        "name": "Creperie",
+        "shortName": "Creperie",
+        "pluralName": "Creperies",
+        "emoji": "🥞"
+    },
+    {
+        "id": "4bf58dd8d48988d11e941735",
+        "name": "Cocktail Bar",
+        "shortName": "Cocktail",
+        "pluralName": "Cocktail Bars",
+        "emoji": "🍸"
+    },
+    {
+        "id": "4bf58dd8d48988d128941735",
+        "name": "Cafeteria",
+        "shortName": "Cafeteria",
+        "pluralName": "Cafeterias",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d116941735",
+        "name": "Bar",
+        "shortName": "Bar",
+        "pluralName": "Bars",
+        "emoji": null
+    },
+    {
+        "id": "52f2ae52bcbc57f1066b8b81",
+        "name": "Czech Restaurant",
+        "shortName": "Czech",
+        "pluralName": "Czech Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d165941735",
+        "name": "Scenic Lookout",
+        "shortName": "Scenic Lookout",
+        "pluralName": "Scenic Lookouts",
+        "emoji": "🏞"
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a01",
+        "name": "Austrian Restaurant",
+        "shortName": "Austrian",
+        "pluralName": "Austrian Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a00",
+        "name": "Comfort Food Restaurant",
+        "shortName": "Comfort Food",
+        "pluralName": "Comfort Food Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d109941735",
+        "name": "Eastern European Restaurant",
+        "shortName": "Eastern European",
+        "pluralName": "Eastern European Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d14b941735",
+        "name": "Winery",
+        "shortName": "Winery",
+        "pluralName": "Wineries",
+        "emoji": "🍷"
+    },
+    {
+        "id": "5032792091d4c4b30a586d5c",
+        "name": "Concert Hall",
+        "shortName": "Concert Hall",
+        "pluralName": "Concert Halls",
+        "emoji": "🎶"
+    },
+    {
+        "id": "4bf58dd8d48988d1ca941735",
+        "name": "Pizza Place",
+        "shortName": "Pizza",
+        "pluralName": "Pizza Places",
+        "emoji": "🍕"
+    },
+    {
+        "id": "4bf58dd8d48988d1e2941735",
+        "name": "Beach",
+        "shortName": "Beach",
+        "pluralName": "Beaches",
+        "emoji": "🏖"
+    },
+    {
+        "id": "4bf58dd8d48988d145941735",
+        "name": "Chinese Restaurant",
+        "shortName": "Chinese",
+        "pluralName": "Chinese Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "55a5a1ebe4b013909087cb7f",
+        "name": "Trattoria/Osteria",
+        "shortName": "Trattoria/Osteria",
+        "pluralName": "Trattorias/Osterias",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1bc941735",
+        "name": "Cupcake Shop",
+        "shortName": "Cupcakes",
+        "pluralName": "Cupcake Shops",
+        "emoji": "🧁"
+    },
+    {
+        "id": "4bf58dd8d48988d131941735",
+        "name": "Spiritual Center",
+        "shortName": "Spiritual",
+        "pluralName": "Spiritual Centers",
+        "emoji": "🧘‍♀️"
+    },
+    {
+        "id": "4bf58dd8d48988d1f8931735",
+        "name": "Bed & Breakfast",
+        "shortName": "B & B",
+        "pluralName": "Bed & Breakfasts",
+        "emoji": null
+    },
+    {
+        "id": "56aa371be4b08b9a8d5734db",
+        "name": "Amphitheater",
+        "shortName": "Amphitheater",
+        "pluralName": "Amphitheaters",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1cc941735",
+        "name": "Steakhouse",
+        "shortName": "Steakhouse",
+        "pluralName": "Steakhouses",
+        "emoji": "🥩"
+    },
+    {
+        "id": "4bf58dd8d48988d121941735",
+        "name": "Lounge",
+        "shortName": "Lounge",
+        "pluralName": "Lounges",
+        "emoji": null
+    },
+    {
+        "id": "4f2a210c4b9023bd5841ed28",
+        "name": "Housing Development",
+        "shortName": "Housing Development",
+        "pluralName": "Housing Developments",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a0d",
+        "name": "Beach Bar",
+        "shortName": "Beach Bar",
+        "pluralName": "Beach Bars",
+        "emoji": "🏖"
+    },
+    {
+        "id": "4bf58dd8d48988d12f951735",
+        "name": "Resort",
+        "shortName": "Resort",
+        "pluralName": "Resorts",
+        "emoji": "🏖"
+    },
+    {
+        "id": "4bf58dd8d48988d18f941735",
+        "name": "Art Museum",
+        "shortName": "Art Museum",
+        "pluralName": "Art Museums",
+        "emoji": "🎨"
+    },
+    {
+        "id": "4bf58dd8d48988d1e3941735",
+        "name": "Surf Spot",
+        "shortName": "Surf Spot",
+        "pluralName": "Surf Spots",
+        "emoji": "🏄‍♀️"
+    },
+    {
+        "id": "50be8ee891d4fa8dcc7199a7",
+        "name": "Market",
+        "shortName": "Market",
+        "pluralName": "Markets",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a35",
+        "name": "Club House",
+        "shortName": "Club",
+        "pluralName": "Club Houses",
+        "emoji": "🕺"
+    },
+    {
+        "id": "4bf58dd8d48988d191941735",
+        "name": "Science Museum",
+        "shortName": "Science Museum",
+        "pluralName": "Science Museums",
+        "emoji": "⚛️"
+    },
+    {
+        "id": "4bf58dd8d48988d179941735",
+        "name": "Bagel Shop",
+        "shortName": "Bagels",
+        "pluralName": "Bagel Shops",
+        "emoji": "🥯"
+    },
+    {
+        "id": "4bf58dd8d48988d10c941735",
+        "name": "French Restaurant",
+        "shortName": "French",
+        "pluralName": "French Restaurants",
+        "emoji": "🐸"
+    },
+    {
+        "id": "4bf58dd8d48988d1de941735",
+        "name": "Vineyard",
+        "shortName": "Vineyard",
+        "pluralName": "Vineyards",
+        "emoji": "🍷"
+    },
+    {
+        "id": "4bf58dd8d48988d182941735",
+        "name": "Theme Park",
+        "shortName": "Theme Park",
+        "pluralName": "Theme Parks",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a14",
+        "name": "Palace",
+        "shortName": "Palace",
+        "pluralName": "Palaces",
+        "emoji": "🏯"
+    },
+    {
+        "id": "4bf58dd8d48988d181941735",
+        "name": "Museum",
+        "shortName": "Museum",
+        "pluralName": "Museums",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d10d941735",
+        "name": "German Restaurant",
+        "shortName": "German",
+        "pluralName": "German Restaurants",
+        "emoji": "🌭"
+    },
+    {
+        "id": "4bf58dd8d48988d1c9941735",
+        "name": "Ice Cream Shop",
+        "shortName": "Ice Cream",
+        "pluralName": "Ice Cream Shops",
+        "emoji": "🍦"
+    },
+    {
+        "id": "4bf58dd8d48988d162941735",
+        "name": "Other Great Outdoors",
+        "shortName": "Other Outdoors",
+        "pluralName": "Other Great Outdoors",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d166941735",
+        "name": "Sculpture Garden",
+        "shortName": "Sculpture",
+        "pluralName": "Sculpture Gardens",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d193941735",
+        "name": "Water Park",
+        "shortName": "Water Park",
+        "pluralName": "Water Parks",
+        "emoji": null
+    },
+    {
+        "id": "4eb1d4d54b900d56c88a45fc",
+        "name": "Mountain",
+        "shortName": "Mountain",
+        "pluralName": "Mountains",
+        "emoji": "⛰"
+    },
+    {
+        "id": "4f4530a74b9074f6e4fb0100",
+        "name": "Boarding House",
+        "shortName": "Boarding",
+        "pluralName": "Boarding Houses",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b79f9",
+        "name": "Modern European Restaurant",
+        "shortName": "Modern European",
+        "pluralName": "Modern European Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d11f941735",
+        "name": "Nightclub",
+        "shortName": "Nightclub",
+        "pluralName": "Nightclubs",
+        "emoji": "🕺"
+    },
+    {
+        "id": "4d4b7105d754a06377d81259",
+        "name": "Outdoors & Recreation",
+        "shortName": "Outdoors & Recreation",
+        "pluralName": "Outdoors & Recreation",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d159941735",
+        "name": "Trail",
+        "shortName": "Trail",
+        "pluralName": "Trails",
+        "emoji": "🥾"
+    },
+    {
+        "id": "4bf58dd8d48988d1fd941735",
+        "name": "Shopping Mall",
+        "shortName": "Mall",
+        "pluralName": "Shopping Malls",
+        "emoji": null
+    },
+    {
+        "id": "4eb1bea83b7b6f98df247e06",
+        "name": "Factory",
+        "shortName": "Factory",
+        "pluralName": "Factories",
+        "emoji": "⚙️"
+    },
+    {
+        "id": "4bf58dd8d48988d1c5941735",
+        "name": "Sandwich Place",
+        "shortName": "Sandwiches",
+        "pluralName": "Sandwich Places",
+        "emoji": "🥪"
+    },
+    {
+        "id": "5744ccdfe4b0c0459246b4e2",
+        "name": "Pastry Shop",
+        "shortName": "Pastry",
+        "pluralName": "Pastry Shops",
+        "emoji": "🥐"
+    },
+    {
+        "id": "56aa371be4b08b9a8d573560",
+        "name": "Waterfall",
+        "shortName": "Waterfall",
+        "pluralName": "Waterfalls",
+        "emoji": "🏞"
+    },
+    {
+        "id": "4bf58dd8d48988d1df931735",
+        "name": "BBQ Joint",
+        "shortName": "BBQ",
+        "pluralName": "BBQ Joints",
+        "emoji": "🍖"
+    },
+    {
+        "id": "4bf58dd8d48988d1c0941735",
+        "name": "Mediterranean Restaurant",
+        "shortName": "Mediterranean",
+        "pluralName": "Mediterranean Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1d2941735",
+        "name": "Sushi Restaurant",
+        "shortName": "Sushi",
+        "pluralName": "Sushi Restaurants",
+        "emoji": "🍣"
+    },
+    {
+        "id": "52f2ab2ebcbc57f1066b8b16",
+        "name": "Fishing Store",
+        "shortName": "Fishing Store",
+        "pluralName": "Fishing Stores",
+        "emoji": "🎣"
+    },
+    {
+        "id": "4bf58dd8d48988d1db931735",
+        "name": "Tapas Restaurant",
+        "shortName": "Tapas",
+        "pluralName": "Tapas Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d16f941735",
+        "name": "Hot Dog Joint",
+        "shortName": "Hot Dogs",
+        "pluralName": "Hot Dog Joints",
+        "emoji": "🌭"
+    },
+    {
+        "id": "4bf58dd8d48988d1ee931735",
+        "name": "Hostel",
+        "shortName": "Hostel",
+        "pluralName": "Hostels",
+        "emoji": null
+    },
+    {
+        "id": "4def73e84765ae376e57713a",
+        "name": "Portuguese Restaurant",
+        "shortName": "Portuguese",
+        "pluralName": "Portuguese Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d180941735",
+        "name": "Multiplex",
+        "shortName": "Cineplex",
+        "pluralName": "Multiplexes",
+        "emoji": "🎞"
+    },
+    {
+        "id": "52e928d0bcbc57f1066b7e96",
+        "name": "Ukrainian Restaurant",
+        "shortName": "Ukrainian",
+        "pluralName": "Ukrainian Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4d4b7105d754a06374d81259",
+        "name": "Food",
+        "shortName": "Food",
+        "pluralName": "Food",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d117941735",
+        "name": "Beer Garden",
+        "shortName": "Beer Garden",
+        "pluralName": "Beer Gardens",
+        "emoji": "🍺"
+    },
+    {
+        "id": "4eb1bfa43b7b52c0e1adc2e8",
+        "name": "Peruvian Restaurant",
+        "shortName": "Peruvian",
+        "pluralName": "Peruvian Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d118941735",
+        "name": "Dive Bar",
+        "shortName": "Dive Bar",
+        "pluralName": "Dive Bars",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d17e941735",
+        "name": "Indie Movie Theater",
+        "shortName": "Indie Movies",
+        "pluralName": "Indie Movie Theaters",
+        "emoji": "🎞"
+    },
+    {
+        "id": "4bf58dd8d48988d112951735",
+        "name": "Hardware Store",
+        "shortName": "Hardware",
+        "pluralName": "Hardware Stores",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d168941735",
+        "name": "Skating Rink",
+        "shortName": "Skating Rink",
+        "pluralName": "Skating Rinks",
+        "emoji": "🛹"
+    },
+    {
+        "id": "4bf58dd8d48988d115941735",
+        "name": "Middle Eastern Restaurant",
+        "shortName": "Middle Eastern",
+        "pluralName": "Middle Eastern Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1e3931735",
+        "name": "Pool Hall",
+        "shortName": "Billiards",
+        "pluralName": "Pool Halls",
+        "emoji": "🎱"
+    },
+    {
+        "id": "4bf58dd8d48988d156941735",
+        "name": "Malay Restaurant",
+        "shortName": "Malay",
+        "pluralName": "Malay Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d12f941735",
+        "name": "Library",
+        "shortName": "Library",
+        "pluralName": "Libraries",
+        "emoji": "📚"
+    },
+    {
+        "id": "4f04af1f2fb6e1c99f3db0bb",
+        "name": "Turkish Restaurant",
+        "shortName": "Turkish",
+        "pluralName": "Turkish Restaurants",
+        "emoji": "🥙"
+    },
+    {
+        "id": "4bf58dd8d48988d174941735",
+        "name": "Coworking Space",
+        "shortName": "Coworking Space",
+        "pluralName": "Coworking Spaces",
+        "emoji": "🧑‍💻"
+    },
+    {
+        "id": "4bf58dd8d48988d13a941735",
+        "name": "Temple",
+        "shortName": "Temple",
+        "pluralName": "Temples",
+        "emoji": "🕍"
+    },
+    {
+        "id": "4bf58dd8d48988d10f941735",
+        "name": "Indian Restaurant",
+        "shortName": "Indian",
+        "pluralName": "Indian Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "56aa371be4b08b9a8d573538",
+        "name": "Theme Restaurant",
+        "shortName": "Theme Restaurant",
+        "pluralName": "Theme Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a23",
+        "name": "Forest",
+        "shortName": "Forest",
+        "pluralName": "Forests",
+        "emoji": "🌲"
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a3e",
+        "name": "Buddhist Temple",
+        "shortName": "Buddhist Temple",
+        "pluralName": "Buddhist Temples",
+        "emoji": "🛕"
+    },
+    {
+        "id": "5413605de4b0ae91d18581a9",
+        "name": "Sri Lankan Restaurant",
+        "shortName": "Sri Lankan",
+        "pluralName": "Sri Lankan Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "52f2ab2ebcbc57f1066b8b2c",
+        "name": "Herbs & Spices Store",
+        "shortName": "Herbs & Spices Store",
+        "pluralName": "Herbs & Spices Stores",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a3f",
+        "name": "Hindu Temple",
+        "shortName": "Hindu Temple",
+        "pluralName": "Hindu Temples",
+        "emoji": "🛕"
+    },
+    {
+        "id": "4bf58dd8d48988d120941735",
+        "name": "Karaoke Bar",
+        "shortName": "Karaoke",
+        "pluralName": "Karaoke Bars",
+        "emoji": "🎤"
+    },
+    {
+        "id": "4bf58dd8d48988d135941735",
+        "name": "Indie Theater",
+        "shortName": "Indie",
+        "pluralName": "Indie Theaters",
+        "emoji": "🎞"
+    },
+    {
+        "id": "4bf58dd8d48988d114951735",
+        "name": "Bookstore",
+        "shortName": "Bookstore",
+        "pluralName": "Bookstores",
+        "emoji": "📚"
+    },
+    {
+        "id": "5109983191d435c0d71c2bb1",
+        "name": "Theme Park Ride / Attraction",
+        "shortName": "Theme Park",
+        "pluralName": "Theme Park Rides/Attractions",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1e4931735",
+        "name": "Bowling Alley",
+        "shortName": "Bowling Alley",
+        "pluralName": "Bowling Alleys",
+        "emoji": "🎳"
+    },
+    {
+        "id": "4bf58dd8d48988d17b941735",
+        "name": "Zoo",
+        "shortName": "Zoo",
+        "pluralName": "Zoos",
+        "emoji": "🐒"
+    },
+    {
+        "id": "4bf58dd8d48988d113951735",
+        "name": "Gas Station",
+        "shortName": "Gas Station",
+        "pluralName": "Gas Stations",
+        "emoji": "⛽️"
+    },
+    {
+        "id": "4bf58dd8d48988d1f4931735",
+        "name": "Racetrack",
+        "shortName": "Racetrack",
+        "pluralName": "Racetracks",
+        "emoji": "🏎"
+    },
+    {
+        "id": "50327c8591d4c4b30a586d5d",
+        "name": "Brewery",
+        "shortName": "Brewery",
+        "pluralName": "Breweries",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d110951735",
+        "name": "Salon / Barbershop",
+        "shortName": "Salon / Barbershop",
+        "pluralName": "Salons / Barbershops",
+        "emoji": "💈"
+    },
+    {
+        "id": "56aa371be4b08b9a8d573547",
+        "name": "Fountain",
+        "shortName": "Fountain",
+        "pluralName": "Fountains",
+        "emoji": "⛲️"
+    },
+    {
+        "id": "4bf58dd8d48988d1e5931735",
+        "name": "Music Venue",
+        "shortName": "Music Venue",
+        "pluralName": "Music Venues",
+        "emoji": "🎵"
+    },
+    {
+        "id": "4bf58dd8d48988d1e2931735",
+        "name": "Art Gallery",
+        "shortName": "Art Gallery",
+        "pluralName": "Art Galleries",
+        "emoji": "🎨"
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a40",
+        "name": "Monastery",
+        "shortName": "Monastery",
+        "pluralName": "Monasteries",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d160941735",
+        "name": "Hot Spring",
+        "shortName": "Hot Spring",
+        "pluralName": "Hot Springs",
+        "emoji": null
+    },
+    {
+        "id": "55a5a1ebe4b013909087cb86",
+        "name": "Sicilian Restaurant",
+        "shortName": "Sicilian",
+        "pluralName": "Sicilian Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1f6931735",
+        "name": "General Travel",
+        "shortName": "Travel",
+        "pluralName": "General Travel",
+        "emoji": null
+    },
+    {
+        "id": "4c38df4de52ce0d596b336e1",
+        "name": "Parking",
+        "shortName": "Parking",
+        "pluralName": "Parking",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1fa941735",
+        "name": "Farmers Market",
+        "shortName": "Farmer's Market",
+        "pluralName": "Farmers Markets",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d104941735",
+        "name": "Medical Center",
+        "shortName": "Medical",
+        "pluralName": "Medical Centers",
+        "emoji": null
+    },
+    {
+        "id": "53e510b7498ebcb1801b55d4",
+        "name": "Night Market",
+        "shortName": "Night Market",
+        "pluralName": "Night Markets",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1f1931735",
+        "name": "General Entertainment",
+        "shortName": "Entertainment",
+        "pluralName": "General Entertainment",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d177941735",
+        "name": "Doctor's Office",
+        "shortName": "Doctor's Office",
+        "pluralName": "Doctor's Offices",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d126941735",
+        "name": "Government Building",
+        "shortName": "Government",
+        "pluralName": "Government Buildings",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1df941735",
+        "name": "Bridge",
+        "shortName": "Bridge",
+        "pluralName": "Bridges",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d11d941735",
+        "name": "Sports Bar",
+        "shortName": "Sports Bar",
+        "pluralName": "Sports Bars",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1cb941735",
+        "name": "Food Truck",
+        "shortName": "Food Truck",
+        "pluralName": "Food Trucks",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a28",
+        "name": "Bathing Area",
+        "shortName": "Bathing Area",
+        "pluralName": "Bathing Areas",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d137941735",
+        "name": "Theater",
+        "shortName": "Theater",
+        "pluralName": "Theaters",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b79fa",
+        "name": "Hungarian Restaurant",
+        "shortName": "Hungarian",
+        "pluralName": "Hungarian Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "52f2ab2ebcbc57f1066b8b50",
+        "name": "Cable Car",
+        "shortName": "Cable Car",
+        "pluralName": "Cable Cars",
+        "emoji": null
+    },
+    {
+        "id": "56aa371be4b08b9a8d573529",
+        "name": "Israeli Restaurant",
+        "shortName": "Israeli",
+        "pluralName": "Israeli Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "53e0feef498e5aac066fd8a9",
+        "name": "Street Food Gathering",
+        "shortName": "Street Food Gathering",
+        "pluralName": "Street Food Gatherings",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d130941735",
+        "name": "Building",
+        "shortName": "Building",
+        "pluralName": "Buildings",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1ff931735",
+        "name": "Convention Center",
+        "shortName": "Convention Center",
+        "pluralName": "Convention Centers",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d154941735",
+        "name": "Cuban Restaurant",
+        "shortName": "Cuban",
+        "pluralName": "Cuban Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1a7941735",
+        "name": "College Library",
+        "shortName": "Library",
+        "pluralName": "College Libraries",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d12a941735",
+        "name": "Capitol Building",
+        "shortName": "Capitol Building",
+        "pluralName": "Capitol Buildings",
+        "emoji": null
+    },
+    {
+        "id": "4d4ae6fc7a7b7dea34424761",
+        "name": "Fried Chicken Joint",
+        "shortName": "Fried Chicken",
+        "pluralName": "Fried Chicken Joints",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1e9931735",
+        "name": "Rock Club",
+        "shortName": "Rock Club",
+        "pluralName": "Rock Clubs",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d172941735",
+        "name": "Post Office",
+        "shortName": "Post Office",
+        "pluralName": "Post Offices",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1f6941735",
+        "name": "Department Store",
+        "shortName": "Department Store",
+        "pluralName": "Department Stores",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1f2931735",
+        "name": "Performing Arts Venue",
+        "shortName": "Performing Arts",
+        "pluralName": "Performing Arts Venues",
+        "emoji": null
+    },
+    {
+        "id": "56aa371be4b08b9a8d573564",
+        "name": "Sausage Shop",
+        "shortName": "Sausage Shop",
+        "pluralName": "Sausage Shops",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1e9941735",
+        "name": "Ski Area",
+        "shortName": "Ski Area",
+        "pluralName": "Ski Areas",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d150941735",
+        "name": "Spanish Restaurant",
+        "shortName": "Spanish",
+        "pluralName": "Spanish Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1c7941735",
+        "name": "Snack Place",
+        "shortName": "Snacks",
+        "pluralName": "Snack Places",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d157941735",
+        "name": "New American Restaurant",
+        "shortName": "New American",
+        "pluralName": "New American Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "5293a7563cf9994f4e043a44",
+        "name": "Russian Restaurant",
+        "shortName": "Russian",
+        "pluralName": "Russian Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b79f4",
+        "name": "Buffet",
+        "shortName": "Buffet",
+        "pluralName": "Buffets",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d129941735",
+        "name": "City Hall",
+        "shortName": "City Hall",
+        "pluralName": "City Halls",
+        "emoji": null
+    },
+    {
+        "id": "4edd64a0c7ddd24ca188df1a",
+        "name": "Fish & Chips Shop",
+        "shortName": "Fish & Chips",
+        "pluralName": "Fish & Chips Shops",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d14e941735",
+        "name": "American Restaurant",
+        "shortName": "American",
+        "pluralName": "American Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1d5941735",
+        "name": "Hotel Bar",
+        "shortName": "Hotel Bar",
+        "pluralName": "Hotel Bars",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d171941735",
+        "name": "Event Space",
+        "shortName": "Event Space",
+        "pluralName": "Event Spaces",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a10",
+        "name": "Summer Camp",
+        "shortName": "Summer Camp",
+        "pluralName": "Summer Camps",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1f2941735",
+        "name": "Sporting Goods Shop",
+        "shortName": "Sporting Goods",
+        "pluralName": "Sporting Goods Shops",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d124941735",
+        "name": "Office",
+        "shortName": "Office",
+        "pluralName": "Offices",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a21",
+        "name": "National Park",
+        "shortName": "National Park",
+        "pluralName": "National Parks",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1ae941735",
+        "name": "University",
+        "shortName": "University",
+        "pluralName": "Universities",
+        "emoji": null
+    },
+    {
+        "id": "56aa371be4b08b9a8d5734e1",
+        "name": "Vacation Rental",
+        "shortName": "Vacation Rental",
+        "pluralName": "Vacation Rentals",
+        "emoji": null
+    },
+    {
+        "id": "5267e4d9e4b0ec79466e48d1",
+        "name": "Music Festival",
+        "shortName": "Music Festival",
+        "pluralName": "Music Festivals",
+        "emoji": null
+    },
+    {
+        "id": "4d954b16a243a5684b65b473",
+        "name": "Rest Area",
+        "shortName": "Rest Areas",
+        "pluralName": "Rest Areas",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1ef941735",
+        "name": "Rental Car Location",
+        "shortName": "Rental Car",
+        "pluralName": "Rental Car Locations",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a06",
+        "name": "Irish Pub",
+        "shortName": "Irish",
+        "pluralName": "Irish Pubs",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d122951735",
+        "name": "Electronics Store",
+        "shortName": "Electronics",
+        "pluralName": "Electronics Stores",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d125941735",
+        "name": "Tech Startup",
+        "shortName": "Tech Startup",
+        "pluralName": "Tech Startups",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d196941735",
+        "name": "Hospital",
+        "shortName": "Hospital",
+        "pluralName": "Hospitals",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d15e941735",
+        "name": "Pool",
+        "shortName": "Pool",
+        "pluralName": "Pools",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d161941735",
+        "name": "Lake",
+        "shortName": "Lake",
+        "pluralName": "Lakes",
+        "emoji": null
+    },
+    {
+        "id": "52af0bd33cf9994f4e043bdd",
+        "name": "Hotpot Restaurant",
+        "shortName": "Hotpot",
+        "pluralName": "Hotpot Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d112941735",
+        "name": "Juice Bar",
+        "shortName": "Juice Bar",
+        "pluralName": "Juice Bars",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d184941735",
+        "name": "Stadium",
+        "shortName": "Stadium",
+        "pluralName": "Stadiums",
+        "emoji": null
+    },
+    {
+        "id": "56aa371be4b08b9a8d573502",
+        "name": "Som Tum Restaurant",
+        "shortName": "Som Tum",
+        "pluralName": "Som Tum Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d11a941735",
+        "name": "Other Nightlife",
+        "shortName": "Nightlife",
+        "pluralName": "Other Nightlife",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1af941735",
+        "name": "College Auditorium",
+        "shortName": "Auditorium",
+        "pluralName": "College Auditoriums",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d178941735",
+        "name": "Dentist's Office",
+        "shortName": "Dentist's Office",
+        "pluralName": "Dentist's Offices",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b79eb",
+        "name": "Mini Golf",
+        "shortName": "Mini Golf",
+        "pluralName": "Mini Golf Courses",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d17f941735",
+        "name": "Movie Theater",
+        "shortName": "Movie Theater",
+        "pluralName": "Movie Theaters",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d15b941735",
+        "name": "Farm",
+        "shortName": "Farm",
+        "pluralName": "Farms",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d16b941735",
+        "name": "Brazilian Restaurant",
+        "shortName": "Brazilian",
+        "pluralName": "Brazilian Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d192941735",
+        "name": "Planetarium",
+        "shortName": "Planetarium",
+        "pluralName": "Planetariums",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a0c",
+        "name": "Bubble Tea Shop",
+        "shortName": "Bubble Tea",
+        "pluralName": "Bubble Tea Shops",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d10e941735",
+        "name": "Greek Restaurant",
+        "shortName": "Greek",
+        "pluralName": "Greek Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1e0941735",
+        "name": "Harbor / Marina",
+        "shortName": "Harbor / Marina",
+        "pluralName": "Harbors / Marinas",
+        "emoji": null
+    },
+    {
+        "id": "53d6c1b0e4b02351e88a83d8",
+        "name": "Fish Taverna",
+        "shortName": "Fish Tavernas",
+        "pluralName": "Fish Tavernas",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b79f3",
+        "name": "Souvlaki Shop",
+        "shortName": "Souvlaki",
+        "pluralName": "Souvlaki Shops",
+        "emoji": null
+    },
+    {
+        "id": "50aa9e094b90af0d42d5de0d",
+        "name": "City",
+        "shortName": "City",
+        "pluralName": "Cities",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d173941735",
+        "name": "Auditorium",
+        "shortName": "Auditorium",
+        "pluralName": "Auditoriums",
+        "emoji": null
+    },
+    {
+        "id": "58daa1558bbb0b01f18ec1b0",
+        "name": "Golf Driving Range",
+        "shortName": "Golf Driving Range",
+        "pluralName": "Golf Driving Ranges",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a25",
+        "name": "Pedestrian Plaza",
+        "shortName": "Pedestrian Street/Plaza",
+        "pluralName": "Pedestrian Plazas",
+        "emoji": null
+    },
+    {
+        "id": "4deefc054765f83613cdba6f",
+        "name": "Indonesian Restaurant",
+        "shortName": "Indonesian",
+        "pluralName": "Indonesian Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1ff941735",
+        "name": "Miscellaneous Shop",
+        "shortName": "Shop",
+        "pluralName": "Miscellaneous Shops",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a34",
+        "name": "Community Center",
+        "shortName": "Community Center",
+        "pluralName": "Community Centers",
+        "emoji": null
+    },
+    {
+        "id": "52f2ab2ebcbc57f1066b8b4c",
+        "name": "Intersection",
+        "shortName": "Intersection",
+        "pluralName": "Intersections",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d12c951735",
+        "name": "Embassy / Consulate",
+        "shortName": "Embassy",
+        "pluralName": "Embassies / Consulates",
+        "emoji": null
+    },
+    {
+        "id": "4e74f6cabd41c4836eac4c31",
+        "name": "Pier",
+        "shortName": "Piers",
+        "pluralName": "Piers",
+        "emoji": null
+    },
+    {
+        "id": "52f2ab2ebcbc57f1066b8b18",
+        "name": "Comic Shop",
+        "shortName": "Comic Shop",
+        "pluralName": "Comic Shops",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d198941735",
+        "name": "College Academic Building",
+        "shortName": "Academic Building",
+        "pluralName": "College Academic Buildings",
+        "emoji": null
+    },
+    {
+        "id": "56aa371be4b08b9a8d573556",
+        "name": "Rugby Stadium",
+        "shortName": "Rugby",
+        "pluralName": "Rugby Stadiums",
+        "emoji": null
+    },
+    {
+        "id": "4f2a25ac4b909258e854f55f",
+        "name": "Neighborhood",
+        "shortName": "Neighborhood",
+        "pluralName": "Neighborhoods",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1f7941735",
+        "name": "Flea Market",
+        "shortName": "Flea Market",
+        "pluralName": "Flea Markets",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1d4941735",
+        "name": "Speakeasy",
+        "shortName": "Speakeasy",
+        "pluralName": "Speakeasies",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d14d941735",
+        "name": "Paella Restaurant",
+        "shortName": "Paella",
+        "pluralName": "Paella Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "507c8c4091d498d9fc8c67a9",
+        "name": "Public Art",
+        "shortName": "Public Art",
+        "pluralName": "Public Art",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a26",
+        "name": "Recreation Center",
+        "shortName": "Recreation Center",
+        "pluralName": "Recreation Centers",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1e1931735",
+        "name": "Arcade",
+        "shortName": "Arcade",
+        "pluralName": "Arcades",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d188941735",
+        "name": "Soccer Stadium",
+        "shortName": "Soccer",
+        "pluralName": "Soccer Stadiums",
+        "emoji": null
+    },
+    {
+        "id": "56aa371be4b08b9a8d57353b",
+        "name": "Canal Lock",
+        "shortName": "Canal Lock",
+        "pluralName": "Canal Locks",
+        "emoji": null
+    },
+    {
+        "id": "57558b36e4b065ecebd306b0",
+        "name": "Brasserie",
+        "shortName": "Brasserie",
+        "pluralName": "Brasseries",
+        "emoji": null
+    },
+    {
+        "id": "52e81612bcbc57f1066b7a31",
+        "name": "TV Station",
+        "shortName": "TV Station",
+        "pluralName": "TV Stations",
+        "emoji": null
+    },
+    {
+        "id": "5283c7b4e4b094cb91ec88d8",
+        "name": "Doner Restaurant",
+        "shortName": "Doner",
+        "pluralName": "Doner Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4eb1daf44b900d56c88a4600",
+        "name": "Fair",
+        "shortName": "Fair",
+        "pluralName": "Fairs",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d109951735",
+        "name": "Lingerie Store",
+        "shortName": "Lingerie",
+        "pluralName": "Lingerie Stores",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d10b941735",
+        "name": "Falafel Restaurant",
+        "shortName": "Falafel",
+        "pluralName": "Falafel Restaurants",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d103951735",
+        "name": "Clothing Store",
+        "shortName": "Apparel",
+        "pluralName": "Clothing Stores",
+        "emoji": null
+    },
+    {
+        "id": "5744ccdfe4b0c0459246b4dc",
+        "name": "Shopping Plaza",
+        "shortName": "Shopping Plaza",
+        "pluralName": "Shopping Plazas",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d128951735",
+        "name": "Gift Shop",
+        "shortName": "Gift Shop",
+        "pluralName": "Gift Shops",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1fd931735",
+        "name": "Metro Station",
+        "shortName": "Metro",
+        "pluralName": "Metro Stations",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d10a951735",
+        "name": "Bank",
+        "shortName": "Bank",
+        "pluralName": "Banks",
+        "emoji": null
+    },
+    {
+        "id": "5267e4d9e4b0ec79466e48c7",
+        "name": "Festival",
+        "shortName": "Festival",
+        "pluralName": "Festivals",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d19b941735",
+        "name": "College Science Building",
+        "shortName": "Science",
+        "pluralName": "College Science Buildings",
+        "emoji": null
+    },
+    {
+        "id": "4bf58dd8d48988d1a8941735",
+        "name": "General College & University",
+        "shortName": "Education",
+        "pluralName": "General Colleges & Universities",
+        "emoji": null
+    }
+]
