@@ -37,7 +37,7 @@ const CountryName = styled('div')`
 `
 
 function Country({ country }) {
-    const to = `/timeline?cc=${country.code}`
+    const to = `/timeline?cc=${country.code.toLowerCase()}`
     return <Row to={to}><FlagIcon>{country.emoji}</FlagIcon> <CountryName>{country.name}</CountryName></Row>
 }
 

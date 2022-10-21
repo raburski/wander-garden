@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useSearchParams, Link } from "react-router-dom"
 import countryFlagEmoji from "country-flag-emoji"
 import { styled } from 'goober'
 import { onlyUnique } from "../../array"
@@ -8,6 +9,8 @@ import { hasCity, hasState, isEqualCity, isEqualCountry, isEqualState} from '../
 import { getCategory } from "../../swarm/categories"
 import CountryBar from "./CountryBar"
 import Page from "../../components/Page"
+import Button from "../../components/Button"
+import colors from "../../colors"
 
 const StyledToggleButton = styled('button')`
     background-color: #fafafa;
@@ -194,35 +197,57 @@ function groupedTimeline(timeline) {
     return grouped
 }
 
-
-
 const AllFlagsContainer = styled('div')`
-    margin: 18px;
+    display: flex;
+    flex-direction: row;
+    margin-top: 18px;
     font-size: 28px;
 `
-function AllFlags({ countries = [] }) {
+
+const StyledFlagButton = styled(Link)`
+    display: flex;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    padding-left: 4px;
+    padding-right: 4px;
+    border-radius: 6px;
+
+    &:hover {
+        background-color: ${colors.neutral.highlight};
+    }
+`
+
+function FlagButton({ selected, style, ...props }) {
+    return <StyledFlagButton style={selected ? {backgroundColor: colors.neutral.dark} : {}} {...props}/>
+}
+
+function AllFlags({ countries = [], selectedCountryCode }) {
     const countryCodes = countries.map(country => country.cc).filter(onlyUnique)
-    return <AllFlagsContainer>{countryCodes.map(cc => countryFlagEmoji.get(cc).emoji)}</AllFlagsContainer>
+    return <AllFlagsContainer>{countryCodes.map(cc => <FlagButton to={selectedCountryCode === cc.toLowerCase() ? `?` : `?cc=${cc.toLowerCase()}`} selected={selectedCountryCode == cc.toLowerCase()}>{countryFlagEmoji.get(cc).emoji}</FlagButton>)}</AllFlagsContainer>
 }
 
 export default function Timeline() {
+    const [params] = useSearchParams()
+    const selectedCountryCode = params.get('cc')?.toLowerCase()
     const [filterTransport, setFilterTransport] = useState(false)
     const toggleFilterTransport = () => setFilterTransport(!filterTransport)
 
     const checkins = useCheckIns()
     const timeline = timelineFromCheckins(filterTransport ? checkins.filter(onlyNonTransportation) : checkins)
     const grouped = groupedTimeline(timeline)
+    const filteredGrouped = selectedCountryCode ? grouped.filter(location => location.cc.toLowerCase() === selectedCountryCode.toLowerCase()) : grouped
 
     console.log('grouped', grouped)
 
     return (
         <Page title="Timeline">
-            <AllFlags countries={grouped}/>
+            <AllFlags countries={grouped} selectedCountryCode={selectedCountryCode}/>
             <OptionsGroup>
                 <ToggleButton checked={filterTransport} onClick={toggleFilterTransport}>Filter out transport</ToggleButton>
             </OptionsGroup>
             {/* <CountryBar name="Philippines" code="ph" states={['asd', 'dsadsd', 'fghjoiuhj']}/> */}
-            {grouped.map(location => <Country location={location} />)}
+            {filteredGrouped.map(location => <Country location={location} />)}
             {/* {timeline.length && <CurrentlyInEvent event={timeline[0]}/>} */}
             {/* {timeline.map(event => <TimelineEvent event={event} />)} */}
         </Page>

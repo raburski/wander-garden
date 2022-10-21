@@ -65,7 +65,6 @@ export const LinkRow = styled(Link)`
 
     color: inherit;
     text-decoration: none;
-
     cursor: pointer;
 
     &:hover {
