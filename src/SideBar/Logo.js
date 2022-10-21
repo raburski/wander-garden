@@ -1,25 +1,34 @@
 import { styled } from 'goober'
 
-const Circle = styled('div')`
+const Container = styled('div')`
     display: flex;
-    height: 120px;
-    width: 120px;
-    background-color: black;
-    border-radius: 80px;
-    font-size: 32px;
-    color: white;
-    align-items: center;
-    justify-content: center;
-    font-family: Courier;
-    font-weight: bold;
-    border-style: double;
-    border-width: 20px;
+    flex-direction: row;
+    padding: 14px;
+`
 
-    background: linear-gradient(-45deg, #0d3b17, #0d3b39, #0d183b, #1d0d3b);
-    animation: gradient 6s ease infinite;
-    background-size: 400% 400%;
+const Name = styled('div')`
+    padding-left: 18px;
+    padding-top: 6px;
+    text-align: center;
+
+    font-family: "Courier Prime";
+    font-weight: bolder;
+    font-size: 30px;
+    color: black;
+`
+
+const Icon = styled('div')`
+    height: 44px;
+    width: 44px;
+
+    background-image: url(/bcg2.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    border-radius: 10px;
 `
 
 export default function Logo() {
-    return <Circle>2B</Circle>
+    return <Container><Icon /><Name>Wander</Name></Container>
 }
+

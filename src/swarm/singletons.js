@@ -98,3 +98,7 @@ class NetflixMovies {
 export const _checkins = new SwarmCheckins()
 export const _videos = new YoutubeVideos()
 export const _movies = new NetflixMovies()
+
+export function useCheckIns() {
+    return _checkins.get()
+}

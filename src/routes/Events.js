@@ -1,8 +1,10 @@
+import { useEffect, useState } from "react"
 import { styled } from "goober"
 import { SiSwarm, SiNetflix } from 'react-icons/si'
 import moment from 'moment'
 import eventSource, { TYPE } from '../events'
 import Page from '../components/Page'
+import { formattedLocation } from '../location'
 
 const EventContainer = styled('div')`
     display: flex;
@@ -34,12 +36,6 @@ const Date = styled('div')`
     color: #4f4f4f;
 `
 
-
-function formattedLocation(location) {
-    const parts = [location.city, location.state, location.country].filter(Boolean)
-    return parts.join(', ')
-}
-
 function CheckinEvent({ checkin }) {
     return (
         <EventContainer>
@@ -70,12 +66,21 @@ function EventBar({ event }) {
     }
 }
 
+function useEvents() {
+    const [events, setEvents] = useState(null)
+    useEffect(() => {
+        setTimeout(() => {
+            setEvents(eventSource.get())
+        }, 1)
+    })
+    return events
+}
+
 export default function Event() {
-    const events = eventSource.get()
+    const events = useEvents()
     return (
-        <Page>
-            <h1>Events</h1>
-            {events.map(event => <EventBar event={event} key={events.id}/>)}
+        <Page title="Events">
+            {events === null ? "Loading..." : events.map(event => <EventBar event={event} key={events.id}/>)}
         </Page>
     )
 }

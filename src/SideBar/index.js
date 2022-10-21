@@ -1,9 +1,11 @@
 import { styled } from 'goober'
 import { Link, useResolvedPath, useMatch } from 'react-router-dom'
-import { VscDashboard, VscCloudUpload, VscCloudDownload } from 'react-icons/vsc'
+import { VscDashboard, VscCloudUpload, VscPulse, VscVersions } from 'react-icons/vsc'
 import { SiSwarm, SiNetflix } from 'react-icons/si'
 import Logo from './Logo'
 import colors from '../colors'
+
+
 
 const Container = styled('div')`
     display: flex;
@@ -14,6 +16,7 @@ const Container = styled('div')`
     border-right: 1px solid ${colors.border.light};
     background-color: ${colors.neutral.light};
 `
+
 const Separator = styled('div')`
     height: 32px;
 `
@@ -28,7 +31,7 @@ const TextSeparator = styled('div')`
     margin-top: 18px;
     text-decoration: none;
     color: black;
-    font-family: Courier;
+    font-family: "Courier Prime";
     font-size: 16px;
     font-weight: bold;
 `
@@ -44,8 +47,8 @@ const StyledLink = styled(Link)`
     border-radius: 26px;
     text-decoration: none;
     color: black;
-    font-family: Courier;
-    font-size: 16px;
+    font-family: "Courier Prime";
+    font-size: 15px;
 
     &:hover {
         background-color: ${colors.neutral.normal};
@@ -56,8 +59,8 @@ const StyledLink = styled(Link)`
 `
 
 const LinkIcon = styled('div')`
-    margin-right: 8px;
-    margin-top: 6px;
+    margin-right: 10px;
+    margin-top: 7px;
     font-size: 22px;
 `
 
@@ -78,10 +81,32 @@ function PillLink({ icon, children, to, ...props }) {
 }
 
 const StylelessLink = styled(Link)`
-    align-self: center;
+    align-self: stretch;
     text-decoration: none;
     display: flex;
 `
+
+const MountainImg = styled('img')`
+    width: 42px;
+    height: 42px;
+    margin-left: -8px;
+    margin-bottom: -8px;
+    opacity: 0.8;
+`
+
+function MountainSeparator() {
+    return (
+        <div>
+            <MountainImg src="/mountain/1.svg" />
+            <MountainImg src="/mountain/4.svg" />
+            <MountainImg src="/mountain/3.svg" />
+            <MountainImg src="/mountain/2.svg" />
+            <MountainImg src="/mountain/3.svg" />
+            <MountainImg src="/mountain/1.svg" />
+        </div>
+    )
+}
+
 
 const StyledNotes = styled('div')`
   font-size: 10px;
@@ -94,18 +119,21 @@ const StyledNotes = styled('div')`
 function SubNotes() {
     return (
         <StyledNotes>
-            Stópki
+            <MountainSeparator />
         </StyledNotes>
     )
 }
+
+
 
 export default function SideBar() {
     return (
         <Container>
             <StylelessLink to="dashboard"><Logo /></StylelessLink>
             <Separator />
-            <PillLink to="timeline" icon={VscDashboard}>Timeline</PillLink>
-            <PillLink to="context" icon={VscDashboard}>Context</PillLink>
+            <PillLink to="/" icon={VscDashboard}>Dashboard</PillLink>
+            <PillLink to="timeline" icon={VscVersions}>Timeline</PillLink>
+            <PillLink to="context" icon={VscPulse}>Context</PillLink>
             <PillLink to="events" icon={VscCloudUpload}>Events</PillLink>
             <Separator />
             <TextSeparator>Sources</TextSeparator>

@@ -2,11 +2,12 @@ import { useState } from "react"
 import countryFlagEmoji from "country-flag-emoji"
 import { styled } from 'goober'
 import { onlyUnique } from "../../array"
-import { _checkins, _token } from "../../swarm/singletons"
+import { useCheckIns, _token } from "../../swarm/singletons"
 import { onlyNonTransportation, venueEmoji } from '../../swarm/categories'
 import { hasCity, hasState, isEqualCity, isEqualCountry, isEqualState} from '../../location'
 import { getCategory } from "../../swarm/categories"
 import CountryBar from "./CountryBar"
+import Page from "../../components/Page"
 
 const StyledToggleButton = styled('button')`
     background-color: #fafafa;
@@ -147,10 +148,6 @@ function TimelineEvent({ event }) {
     }
 }
 
-const TimelineContainer = styled('div')`
-    margin: 20px;
-`
-
 function groupedTimeline(timeline) {
     if (!timeline || timeline.length === 0) return []
     const grouped = []
@@ -197,9 +194,7 @@ function groupedTimeline(timeline) {
     return grouped
 }
 
-function useCheckIns() {
-    return _checkins.get()
-}
+
 
 const AllFlagsContainer = styled('div')`
     margin: 18px;
@@ -221,7 +216,7 @@ export default function Timeline() {
     console.log('grouped', grouped)
 
     return (
-        <TimelineContainer>
+        <Page title="Timeline">
             <AllFlags countries={grouped}/>
             <OptionsGroup>
                 <ToggleButton checked={filterTransport} onClick={toggleFilterTransport}>Filter out transport</ToggleButton>
@@ -230,6 +225,6 @@ export default function Timeline() {
             {grouped.map(location => <Country location={location} />)}
             {/* {timeline.length && <CurrentlyInEvent event={timeline[0]}/>} */}
             {/* {timeline.map(event => <TimelineEvent event={event} />)} */}
-        </TimelineContainer>
+        </Page>
     )
 }

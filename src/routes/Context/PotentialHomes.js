@@ -2,18 +2,17 @@ import { _checkins } from "../../swarm/singletons"
 import { styled } from "goober"
 import countryFlagEmoji from "country-flag-emoji"
 import { getPotentialHomes } from '../../swarm/context'
+import Panel from '../../components/Panel'
 import NoneFound from './NoneFound'
 
 const HomeContainer = styled('div')`
     display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: #fafafa;
-    border: 1px solid #ebebeb;
-    border-radius: 12px;
-    padding: 6px;
-    padding-left: 12px;
-    margin: 4px;
+    border-bottom: 1px solid #ebebeb;
+    padding: 10px;
+    padding-left: 14px;
+    margin-bottom: -1px;
 `
 
 const HomeName = styled('div')`
@@ -40,7 +39,7 @@ function Home({ home }) {
     const locationParts = [home.location.state, home.location.country].filter(Boolean)
     return (
         <HomeContainer>
-            <HomeName>{countryFlagEmoji.get(home.location.cc).emoji}&nbsp;&nbsp;{home.location.city}</HomeName>
+            <HomeName>{countryFlagEmoji.get(home.location.cc).emoji}&nbsp;&nbsp;&nbsp;{home.location.city}</HomeName>
             <HomeState>{locationParts.join(', ')}</HomeState>
             <HomeDates>{home.since} {home.since ? '-' : 'until'} {home.until || 'now'}</HomeDates>
         </HomeContainer>
@@ -50,10 +49,10 @@ function Home({ home }) {
 export default function PotentialHomesView() {
     const checkins = _checkins.get()
     const potentialHomes = getPotentialHomes(checkins).reverse()
+    const title = `You have lived in ${potentialHomes.length} places`
     return (
-        <div>
-            <h3>You have lived in {potentialHomes.length} places</h3>
+        <Panel title={title}>
             {potentialHomes.length > 0 ? potentialHomes.map(home => <Home home={home} />) : <NoneFound />}
-        </div>
+        </Panel>
     )
 }

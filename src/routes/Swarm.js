@@ -84,8 +84,7 @@ export default function Swarm() {
     const [isFetching, fetch] = useFetchSwarm()
 
     return (
-        <Page>
-            <h1>Swarm</h1>
+        <Page title="Swarm">
             {!isAuthenticated ? <Auth /> : null}
             {isAuthenticated ? <Button disabled={isFetching} onClick={fetch}>{isFetching ? 'Fetching checkins...' : 'Fetch swarm checkins'}</Button>  : null}
             <br /><br /><br /><h3>JSON</h3>

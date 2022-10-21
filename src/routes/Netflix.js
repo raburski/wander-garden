@@ -23,8 +23,7 @@ function onImportNetflix() {
 
 export default function Netflix() {
     return (
-        <Page>
-            <h1>Netflix</h1>
+        <Page title="Netflix">
             <Button onClick={onImportNetflix}>Import NetflixViewingHistory.csv</Button>
         </Page>
     )

@@ -4,6 +4,7 @@ import Events from './Events'
 import Netflix from './Netflix'
 import Context from "./Context"
 import Timeline from './Timeline'
+import Dashboard from './Dashboard'
 
 export default function AllRoutes() {
     return (
@@ -14,7 +15,7 @@ export default function AllRoutes() {
         <Route path="timeline" element={<Timeline />}/>
         <Route path="events" element={<Events />}/>
         <Route path="context" element={<Context />}/>
-        <Route path="/" element={<Timeline />}/>
+        <Route path="/" element={<Dashboard />}/>
         <Route path="*" element={<Navigate to="/" />}/>
     </Routes>
     )
