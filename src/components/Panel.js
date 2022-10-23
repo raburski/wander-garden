@@ -5,10 +5,10 @@ import colors from '../colors'
 const Container = styled('div')`
     display: flex;
     flex-direction: column;
-    padding: 12px;
+    padding-bottom: 12px;
     padding-left: 0px;
     padding-right: 14px;
-    margin-bottom: 22px;
+    margin-bottom: 12px;
     margin-right: 22px;
     min-width: 400px;
 `
@@ -30,11 +30,12 @@ const Header = styled('div')`
     padding-left: 12px;
 `
 
-export default function Panel({ title, children, spacing }) {
+export default function Panel({ title, children, spacing, contentStyle = {} }) {
+    const _contentStyle = {...contentStyle, ...(spacing ? { padding: 12 } : {}) }
     return (
         <Container>
             <Header>{title}</Header>
-            <Content style={spacing ? { padding: 12 } : {}}>
+            <Content style={_contentStyle}>
                 {children}
             </Content>
         </Container>

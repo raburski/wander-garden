@@ -3,6 +3,7 @@ import { styled } from 'goober'
 import Button from '../../components/Button'
 import Page from '../../components/Page'
 import Panel, { Row } from '../../components/Panel'
+import Badges from './Badges'
 
 import countryFlagEmoji from "country-flag-emoji"
 import { onlyUnique } from "../../array"
@@ -13,6 +14,11 @@ const PanelsContainer = styled('div')`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+`
+
+const PanelColumn = styled('div')`
+    display: flex;
+    flex-direction: column;
 `
 
 const Text = styled('p')`
@@ -94,9 +100,12 @@ export default function Netflix() {
     return (
         <Page title="Dashboard">
             <PanelsContainer>
-                <Current />
+                <PanelColumn>
+                    <Current />
+                    <Badges />
+                    <Swarm />
+                </PanelColumn>
                 <Countries />
-                <Swarm />
             </PanelsContainer>
         </Page>
     )
