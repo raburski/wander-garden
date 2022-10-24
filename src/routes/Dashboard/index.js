@@ -2,6 +2,7 @@ import { useCheckIns, _movies, _videos } from '../../swarm/singletons'
 import { styled } from 'goober'
 import Button from '../../components/Button'
 import Page from '../../components/Page'
+import CountryRow from '../../components/CountryRow'
 import Panel, { Row } from '../../components/Panel'
 import Badges from './Badges'
 
@@ -30,22 +31,7 @@ const Text = styled('p')`
     font-size: 14px;
 `
 
-const FlagIcon = styled('div')`
-    display: flex;
-    flex: 0;
-    align-self: start;
-`
 
-const CountryName = styled('div')`
-    font-size: 14px;
-    margin-left: 8px;
-    margin-top: -1px;
-`
-
-function Country({ country }) {
-    const to = `/timeline?cc=${country.code.toLowerCase()}`
-    return <Row to={to}><FlagIcon>{country.emoji}</FlagIcon> <CountryName>{country.name}</CountryName></Row>
-}
 
 function NoData() {
     return <Text>No data available...</Text>
@@ -57,7 +43,7 @@ function Countries() {
     const title = `You have visited ${countryCodes.length} countries`
     return (
         <Panel title={title}>
-            {countryCodes.length == 0 ? <NoData /> : countryCodes.map(cc => <Country country={countryFlagEmoji.get(cc)}/>)}
+            {countryCodes.length == 0 ? <NoData /> : countryCodes.map(cc => <CountryRow code={cc} to={`/timeline?cc=${cc.toLowerCase()}`}/>)}
         </Panel>
     )
 }

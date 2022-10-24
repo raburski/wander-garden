@@ -1,9 +1,15 @@
 import Panel, { Row } from '../../components/Panel'
+import Modal from '../../components/Modal'
+import CountryRow from '../../components/CountryRow'
 import { styled } from 'goober'
 import { useCheckIns } from '../../swarm/singletons'
 import { onlyUnique } from '../../array'
 import colors from '../../colors'
 import { onlyNonTransportation } from '../../swarm/categories'
+import { useState } from 'react'
+import Page from '../../components/Page'
+
+import { VscCheck } from 'react-icons/vsc'
 
 const badges = [
     {
@@ -39,7 +45,7 @@ const badges = [
     {
         name: 'North America',
         emoji: '⛰️',
-        oneOfCountry: ['ca','pm','us'], 
+        oneOfCountry: ['ca','us'], 
     },
     {
         name: 'Caribbean',
@@ -49,7 +55,7 @@ const badges = [
     {
         name: 'Mesoamerica',
         emoji: '🛕',
-        oneOfCountry: ['bz','cr','sv','gt','ht','mx','ni','pa'], 
+        oneOfCountry: ['bz','cr','sv','gt','hn','mx','ni','pa'], 
     },
     {
         name: 'Latin America',
@@ -59,7 +65,7 @@ const badges = [
     {
         name: 'North Africa',
         emoji: '🐪',
-        oneOfCountry: ['al','eg','ly','ml','mr','ma','ni','sn','sd','tn','eh'], 
+        oneOfCountry: ['dz','eg','ly','ml','mr','ma','ni','sn','sd','tn','eh'], 
     },
     {
         name: 'Sub-Saharan',
@@ -79,7 +85,7 @@ const badges = [
     {
         name: 'Islander',
         emoji: '🗿',
-        oneOfCountry: ['io','cv','cx','cc','km','ck','gu','mv','mh','mu','yt','mp','pn','re','sh','st','sc'], 
+        oneOfCountry: ['io','cv','cx','cc','km','ck','gu','mv','mh','mu','yt','mp','pn','re','sh','st','sc','pm'], 
     },
 ]
 
@@ -91,6 +97,24 @@ const BadgeContainer = styled('div')`
     align-items: center;
     border-radius: 6px;
     min-width: 72px;
+    cursor: pointer;
+`
+
+const BadgeContainerInactive = styled(BadgeContainer)`
+    filter: grayscale(1);
+    opacity: 0.6;
+
+    &:hover {
+        background-color: ${colors.neutral.highlight};
+    }
+`
+
+const BadgeContainerActive = styled(BadgeContainer)`
+    background-color: ${colors.neutral.normal};
+
+    &:hover {
+        background-color: ${colors.neutral.dark};
+    }
 `
 
 const BadgeIcon = styled('div')`
@@ -103,23 +127,22 @@ const BadgeName = styled('div')`
     font-size: 10px;
 `
 
-function Badge({ badge }) {
-    const style = badge.acquired ? { backgroundColor: colors.neutral.normal } : { filter: 'grayscale(1)', opacity: 0.6 }
+function Badge({ badge, onClick }) {
+    const Container = badge.acquired ? BadgeContainerActive : BadgeContainerInactive
     return (
-        <BadgeContainer style={style}>
+        <Container onClick={onClick}>
             <BadgeIcon>{badge.emoji}</BadgeIcon>
             <BadgeName>{badge.name}</BadgeName>
-        </BadgeContainer>
+        </Container>
     )
 }
 
-function createBadgeVerifier(checkins){
-    const uniqueCountries = checkins.map(checkin => checkin.venue.location.cc.toLowerCase()).filter(onlyUnique)
+function createBadgeVerifier(visitedCountryCodes){
     return function verifyBadge(badge) {
         if (badge.oneOfCountry.length === 0) {
             return badge
         }
-        if (uniqueCountries.filter(cc => badge.oneOfCountry.includes(cc)).length === 0) {
+        if (visitedCountryCodes.filter(cc => badge.oneOfCountry.includes(cc)).length === 0) {
             return badge
         }
         return {
@@ -129,9 +152,23 @@ function createBadgeVerifier(checkins){
     }
 }
 
+function BadgeDetailsModal({ selectedBadge, visitedCountryCodes = [], onClickAway}) {
+    return (
+        <Modal isOpen={!!selectedBadge} onClickAway={onClickAway}>
+            <Page title={selectedBadge?.name}>
+            <Panel title="Countries in the region">
+                {selectedBadge?.oneOfCountry?.map(cc => <CountryRow code={cc} right={visitedCountryCodes.includes(cc) ? <VscCheck /> : null}/>)}
+            </Panel>
+            </Page>
+        </Modal>
+    )
+}
+
 export default function Badges() {
+    const [selectedBadge, setSelectedBadge] = useState()
     const checkins = useCheckIns().filter(onlyNonTransportation)
-    const verifiedBadges = badges.map(createBadgeVerifier(checkins))
+    const visitedCountryCodes = checkins.map(checkin => checkin.venue.location.cc.toLowerCase()).filter(onlyUnique)
+    const verifiedBadges = badges.map(createBadgeVerifier(visitedCountryCodes))
     const contentStyle = {
         flexDirection: 'row',
         flexWrap: 'wrap',
@@ -140,7 +177,12 @@ export default function Badges() {
     }
     return (
         <Panel title="Your regional badges" contentStyle={contentStyle}>
-            {verifiedBadges.map(badge => <Badge badge={badge}/>)}
+            {verifiedBadges.map(badge => <Badge badge={badge} onClick={() => setSelectedBadge(badge)}/>)}
+            <BadgeDetailsModal
+                selectedBadge={selectedBadge}
+                visitedCountryCodes={visitedCountryCodes}
+                onClickAway={() => setSelectedBadge(null)}
+            />
         </Panel>
     )
 }
