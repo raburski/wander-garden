@@ -62,8 +62,22 @@ class SwarmCheckins {
         return this.cache
     }
     set(checkins = []) {
-        this.cache = checkins
-        localStorage.setItem(this.storeKey, JSON.stringify(checkins))
+        // persist only required values
+        // in order to safe localStorage space
+        const cleanedCheckins = checkins.map(this.essentialCheckinComponents)
+        this.cache = cleanedCheckins
+        localStorage.setItem(this.storeKey, JSON.stringify(cleanedCheckins))
+    }
+
+    essentialCheckinComponents(checkin) {
+        return {
+            createdAt: checkin.createdAt,
+            createdBy: checkin.createdBy,
+            id: checkin.id,
+            timeZoneOffset: checkin.timeZoneOffset,
+            type: checkin.type,
+            venue: checkin.venue,
+        }
     }
 }
 
