@@ -26,7 +26,6 @@ const Stretch = styled('div')`
 `
 
 export default function Country({ code, to, right }) {
-    if (!code) { return null }
     const country = countryFlagEmoji.get(code)
     return <Row to={to}><FlagIcon>{country.emoji}</FlagIcon> <CountryName>{country.name}</CountryName><Stretch/>{right ? <Right>{right}</Right> : null}</Row>
 }

@@ -24,6 +24,7 @@ const ModalWindow = styled('div')`
     background-color: white;
     border-radius: 6px;
     overflow: scroll;
+    box-shadow: 0px 2px 10px rgb(100,100,100);
 `
 
 function onWindowClick(e) {

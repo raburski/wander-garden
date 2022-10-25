@@ -4,6 +4,7 @@ const Container = styled('div')`
     padding-top: 32px;
     padding-left: 32px;
     padding-right: 32px;
+    padding-bottom: 16px;
     max-width: 1224px;
 `
 

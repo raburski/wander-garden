@@ -35,7 +35,7 @@ const badges = [
     {
         name: 'SEA',
         emoji: '🧘',
-        oneOfCountry: ['th','ph','bn','kh','tl','id','la','my','mm','ph','sg','th','vn'], 
+        oneOfCountry: ['bn','kh','tl','id','la','my','mm','ph','sg','th','vn'], 
     },
     {
         name: 'Hindustan',
@@ -50,7 +50,7 @@ const badges = [
     {
         name: 'Caribbean',
         emoji: '🌴',
-        oneOfCountry: ['ai','ag','aw','bs','bb','bm','vg','ky','cu','cw','dm','do','gd','ht','jm','ms','an','pr','bl','kn','lc','mf','vc','sx','tt','tc','vi','vu'], 
+        oneOfCountry: ['ai','ag','aw','bs','bb','bm','vg','ky','cu','cw','dm','do','gd','ht','jm','ms','pr','bl','kn','lc','mf','vc','sx','tt','tc','vi'], 
     },
     {
         name: 'Mesoamerica',
@@ -75,7 +75,7 @@ const badges = [
     {
         name: 'Oceania',
         emoji: '🌊',
-        oneOfCountry: ['as','au','fj','pf','ki','fm','nr','nc','nz','nu','pw','pg','ws','sb','tk','to','tv','wf'], 
+        oneOfCountry: ['as','au','fj','pf','ki','fm','nr','nc','nz','nu','pw','pg','ws','sb','tk','to','tv','wf','vu'], 
     },
     {
         name: 'Cold North',
