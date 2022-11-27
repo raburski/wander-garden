@@ -1,16 +1,10 @@
-import { useCheckIns, useCheckinsLastUpdated, useIsAuthenticated, _movies, _videos } from '../../swarm/singletons'
+import { useCheckIns, useIsAuthenticated, _movies, _videos } from '../../swarm/singletons'
 import { styled } from 'goober'
-import { VscCheck } from "react-icons/vsc";
-import Button from '../../components/Button'
 import Page from '../../components/Page'
 import CountryRow from '../../components/CountryRow'
-import Panel, { Row } from '../../components/Panel'
-import InfoPanel from '../../components/InfoPanel'
+import Panel from '../../components/Panel'
 import Badges from './Badges'
-import SquareImage from '../../components/SquareImage'
-import AuthenticateButton from '../../bindings/swarm/AuthenticateButton'
-import FetchCheckinsButton from '../../bindings/swarm/FetchCheckinsButton'
-import moment from 'moment'
+import Swarm from './Swarm'
 
 import countryFlagEmoji from "country-flag-emoji"
 import { onlyUnique } from "../../array"
@@ -37,8 +31,6 @@ const Text = styled('p')`
     font-size: 14px;
 `
 
-
-
 function NoData() {
     return <Text>No data available...</Text>
 }
@@ -52,59 +44,6 @@ function Countries() {
             {countryCodes.length == 0 ? <NoData /> : countryCodes.map(cc => <CountryRow code={cc} to={`/timeline?cc=${cc.toLowerCase()}`}/>)}
         </Panel>
     )
-}
-
-function SwarmAuthenticatePanel() {
-    return (
-        <InfoPanel 
-            header="Swarm"
-            spacing
-            title="Connect your account"
-            image={<SquareImage src="/3d/swarmcloud.png"/>}
-        >
-            <AuthenticateButton />
-        </InfoPanel>
-    )
-}
-
-function SwarmUpdateRequiredPanel() {
-    return (
-        <InfoPanel 
-            header="Swarm"
-            spacing
-            title="Checkins list may be outdated..."
-            image={<SquareImage src="/3d/swarmcloud.png"/>}
-        >
-            <FetchCheckinsButton />
-        </InfoPanel>
-    )
-}
-
-function SwarmDefaultPanel({ lastUpdated }) {
-    const daysAgo = lastUpdated.diff(moment(), 'days')
-    const text = daysAgo < 2 ? 'Recently updated...' : `Last updated ${daysAgo} days ago...`
-
-    return <InfoPanel 
-        header="Swarm"
-        spacing
-        text={text}
-        image={<VscCheck size={22}/>}
-    />
-}
-
-function Swarm() {
-    const isAuthenticated = useIsAuthenticated()
-    const lastUpdated = useCheckinsLastUpdated()
-    if (!isAuthenticated) {
-        return <SwarmAuthenticatePanel />
-    }
-
-    const shouldUpdate = !lastUpdated || lastUpdated.diff(moment(), 'days') > 7
-    if (shouldUpdate) {
-        return <SwarmUpdateRequiredPanel />
-    }
-
-    return <SwarmDefaultPanel lastUpdated={lastUpdated}/>
 }
 
 const BigFlag = styled('div')`
@@ -136,17 +75,39 @@ function Current() {
     )
 }
 
-export default function Netflix() {
+function WhatIsWanderGarden() {
+    return null
+}
+
+function AuthenticatedDashboard() {
+    return (
+        <PanelsContainer>
+            <PanelColumn>
+                <Current />
+                <Swarm />
+                <Badges />
+            </PanelColumn>
+            <Countries />
+        </PanelsContainer>
+    )
+}
+
+function DefaultDashboard() {
+    return (
+        <PanelsContainer>
+            <WhatIsWanderGarden />
+            <PanelColumn>
+                <Swarm />
+            </PanelColumn>
+        </PanelsContainer>
+    )
+}
+
+export default function Dashboard() {
+    const isAuthenticated = useIsAuthenticated()
     return (
         <Page header="Dashboard">
-            <PanelsContainer>
-                <PanelColumn>
-                    <Current />
-                    <Swarm />
-                    <Badges />
-                </PanelColumn>
-                <Countries />
-            </PanelsContainer>
+            {isAuthenticated ? <AuthenticatedDashboard /> : <DefaultDashboard />}
         </Page>
     )
 }

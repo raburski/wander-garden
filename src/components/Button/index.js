@@ -1,13 +1,30 @@
 import { styled } from 'goober'
 import colors from '../../colors'
 
-const EnabledButton = styled('button')`
-    padding: 8px;
-    padding-left: 16px;
-    padding-right: 16px;
+const defaultStyle = `
+    display: flex;
+    flex-direction: row;
+    flex-wrap: no-wrap;
+    justify-content: center;
+    align-items: center;
+
     border: 1px solid ${colors.border.normal};
-    border-radius: 4px;
-    background-color: ${colors.neutral.light};
+    border-radius: .5rem;
+    font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: .875rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+    padding: .55rem .8rem;
+    text-align: center;
+    text-decoration: none #D1D5DB solid;
+    text-decoration-thickness: auto;
+`
+
+const EnabledButton = styled('button')`
+    ${defaultStyle}
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    background-color: white;
+    color: black;
     cursor: pointer;
 
     &:hover {
@@ -16,16 +33,28 @@ const EnabledButton = styled('button')`
 `
 
 const DisabledButton = styled('button')`
-    padding: 8px;
-    padding-left: 16px;
-    padding-right: 16px;
+    ${defaultStyle}
     border: 1px solid ${colors.border.normal};
-    border-radius: 12px;
     background-color: ${colors.border.normal};
-    color: white;
+    color: #545454;
     cursor: default;
 `
 
-export default function Button({ disabled, ...props }) {
-    return disabled ? <DisabledButton disabled {...props} /> : <EnabledButton {...props} />
+const IconContainer = styled('div')`
+    display: flex;
+    flex: 0;
+    margin-right: .55rem;
+    align-items: center;
+    justify-content: center;
+`
+
+export default function Button({ disabled, icon, children, ...props }) {
+    const Component = disabled ? DisabledButton : EnabledButton
+    const IconComponent = icon
+    return (
+        <Component disabled={disabled} {...props}>
+            {icon ? <IconContainer><IconComponent size={16} /></IconContainer> : null}
+            {children}
+        </Component>
+    )
 }
