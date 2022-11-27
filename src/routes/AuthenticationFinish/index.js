@@ -14,7 +14,7 @@ const Container = styled('div')`
 `
 
 function SwarmImage() {
-    return <SquareImage src="/3d/swarm.png" />
+    return <SquareImage src="/3d/beegarden1.png" />
 }
 
 const STATUS = {
@@ -42,7 +42,7 @@ function Success() {
             spacing
             image={<SwarmImage />}
             title="Succesfully authenticated!"
-            text="Redirecting you to Swarm section..."
+            text="Redirecting you to dashboard..."
         />
     )
 }
@@ -85,7 +85,7 @@ function StatusPanel({ status }) {
 function useStatusEffect(status) {
     useEffect(() => {
         if (status === STATUS.SUCCESS) {
-            setTimeout(() => window.location = '/swarm', 2500)
+            setTimeout(() => window.location = '/', 2500)
         }
     })
 }

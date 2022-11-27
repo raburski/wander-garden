@@ -38,6 +38,9 @@ function NoData() {
 function Countries() {
     const checkins = useCheckIns()
     const countryCodes = checkins.filter(onlyNonTransportation).map(checkin => checkin.venue.location.cc).filter(onlyUnique)
+    if (countryCodes.length <= 0) {
+        return null
+    }
     const header = `You have visited ${countryCodes.length} countries`
     return (
         <Panel header={header}>

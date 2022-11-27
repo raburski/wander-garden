@@ -25,7 +25,7 @@ function SwarmUpdateRequiredPanel() {
         <InfoPanel 
             header="Swarm"
             spacing
-            title="Checkins list may be outdated..."
+            title="Your data may be outdated..."
             image={<SquareImage src="/3d/beegarden1.png"/>}
         >
             <FetchCheckinsButton />

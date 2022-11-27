@@ -2,6 +2,7 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { _checkins } from '../../swarm/singletons'
 import Button from '../../components/Button'
+import { VscSync } from 'react-icons/vsc'
 
 function onFetchSwarm() {
     const fetchCheckins = _checkins.fetch()
@@ -19,7 +20,12 @@ function useFetchSwarm() {
     const [isFetching, setFetching] = useState(false)
     function fetch() {
         setFetching(true)
-        return onFetchSwarm().then(() => setFetching(false))
+        function onLoaded() {
+            setFetching(false)
+            // TODO: instead of reloading whole page simply update data source
+            window.location.reload()
+        }
+        return onFetchSwarm().then(onLoaded)
     }
 
     return [isFetching, fetch]
@@ -27,5 +33,5 @@ function useFetchSwarm() {
 
 export default function FetchCheckinsButton() {
     const [isFetching, fetch] = useFetchSwarm()
-    return <Button disabled={isFetching} onClick={fetch}>{isFetching ? 'Fetching checkins...' : 'Fetch swarm checkins'}</Button>
+    return <Button icon={VscSync} disabled={isFetching} onClick={fetch}>{isFetching ? 'Fetching checkins...' : 'Update checkins'}</Button>
 }

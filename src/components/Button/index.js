@@ -3,8 +3,9 @@ import colors from '../../colors'
 
 const defaultStyle = `
     display: flex;
+    flex: 0;
     flex-direction: row;
-    flex-wrap: no-wrap;
+    flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
 
