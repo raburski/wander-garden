@@ -5,10 +5,11 @@ import { downloadString, uploadFile } from '../files'
 import Button from '../components/Button'
 import Page from '../components/Page'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 
 
 const CLIENT_ID = 'JRGEIAQP3LTJWSO2C2U25KSOTLAIPOHOCAWXS31MJXVB1OPP'
-const REDIRECT_URL = 'http://raburski.com/begose/auth.php'
+const REDIRECT_URL = 'http://wander.garden/auth.php?type=foursquare'
 
 const AUTH_URL = `https://foursquare.com/oauth2/authenticate?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URL}`
 
@@ -36,7 +37,15 @@ function Auth() {
 }
 
 function onFetchSwarm() {
-    return _checkins.fetch().then(() => alert('Checkin list updated!'))
+    const fetchCheckins = _checkins.fetch()
+    return toast.promise(
+        fetchCheckins,
+        {
+            loading: 'Fetching new checkins...',
+            success: <b>List updated sucessfully!</b>,
+            error: <b>Could not update the list...</b>,
+        }
+    )
 }
 
 function onDownloadCheckins() {

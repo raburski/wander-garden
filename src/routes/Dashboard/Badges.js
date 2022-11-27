@@ -15,7 +15,7 @@ const badges = [
     {
         name: 'Europe',
         emoji: '🏰',
-        oneOfCountry: ['al','ad','at','be','ba','bg','hr','cz','dk','fo','fi','fr','de','gi','gr','hu','ie','im','it','je','xk','li','lu','mk','mt','mc','me','nl','no','pl','pt','ro','sm','rs','sk','si','es','se','ch','gb','va'],
+        oneOfCountry: ['al','ad','at','be','ba','bg','hr','cz','cy','dk','fo','fi','fr','de','gi','gr','hu','ie','im','it','je','xk','li','lu','mk','mt','mc','me','nl','no','pl','pt','ro','sm','rs','sk','si','es','se','ch','gb','va'],
     },
     {
         name: 'Post-Soviet',
@@ -25,7 +25,7 @@ const badges = [
     {
         name: 'Middle East',
         emoji: '🕌',
-        oneOfCountry: ['af','bh','cy','ir','iq','il','jo','kw','lb','om','pk','ps','qa','sa','sy','tr','ae','ye'], 
+        oneOfCountry: ['af','bh','ir','iq','il','jo','kw','lb','om','pk','ps','qa','sa','sy','tr','ae','ye'], 
     },
     {
         name: 'Asia',

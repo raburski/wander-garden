@@ -4,6 +4,7 @@ import './App.css'
 import Routes from './routes'
 import { setup as setupGoober, styled } from 'goober'
 import SideBar from './SideBar'
+import { Toaster } from 'react-hot-toast'
 
 setupGoober(React.createElement)
 
@@ -32,6 +33,7 @@ function App() {
           <Routes />
         </RoutesContainer>
       </Router>
+      <Toaster />
     </AppContainer>
   );
 }

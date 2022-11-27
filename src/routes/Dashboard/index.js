@@ -73,7 +73,9 @@ const CurrentContent = styled('div')`
 function Current() {
     const checkins = useCheckIns()
     const latestCheckin = checkins[0]
-    const currentCountry = countryFlagEmoji.get(latestCheckin.venue.location.cc)
+    const currentCountry = latestCheckin ? countryFlagEmoji.get(latestCheckin.venue.location.cc) : null
+    if (!currentCountry) { return null }
+    
     const title = `Currently staying in ${currentCountry.name}`
     return (
         <Panel title={title}>
