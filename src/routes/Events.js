@@ -79,7 +79,7 @@ function useEvents() {
 export default function Event() {
     const events = useEvents()
     return (
-        <Page title="Events">
+        <Page header="Events">
             {events === null ? "Loading..." : events.map(event => <EventBar event={event} key={events.id}/>)}
         </Page>
     )

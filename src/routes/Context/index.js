@@ -6,7 +6,7 @@ import Page from '../../components/Page'
 
 export default function Context() {
     return (
-        <Page title="Context">
+        <Page header="Context">
             <PotentialHomes />
             {/* <PotentialDowntimes /> */}
             {/* <PotentialTrips /> */}

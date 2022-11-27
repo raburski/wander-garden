@@ -30,11 +30,11 @@ const Header = styled('div')`
     padding-left: 12px;
 `
 
-export default function Panel({ title, children, spacing, contentStyle = {} }) {
+export default function Panel({ header, children, spacing, contentStyle = {} }) {
     const _contentStyle = {...contentStyle, ...(spacing ? { padding: 12 } : {}) }
     return (
         <Container>
-            <Header>{title}</Header>
+            <Header>{header}</Header>
             <Content style={_contentStyle}>
                 {children}
             </Content>

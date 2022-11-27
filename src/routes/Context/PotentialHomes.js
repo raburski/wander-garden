@@ -49,9 +49,9 @@ function Home({ home }) {
 export default function PotentialHomesView() {
     const checkins = _checkins.get()
     const potentialHomes = getPotentialHomes(checkins).reverse()
-    const title = `You have lived in ${potentialHomes.length} places`
+    const header = `You have lived in ${potentialHomes.length} places`
     return (
-        <Panel title={title}>
+        <Panel header={header}>
             {potentialHomes.length > 0 ? potentialHomes.map(home => <Home home={home} />) : <NoneFound />}
         </Panel>
     )

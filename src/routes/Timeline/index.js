@@ -241,7 +241,7 @@ export default function Timeline() {
     console.log('grouped', grouped)
 
     return (
-        <Page title="Timeline">
+        <Page header="Timeline">
             <AllFlags countries={grouped} selectedCountryCode={selectedCountryCode}/>
             <OptionsGroup>
                 <ToggleButton checked={filterTransport} onClick={toggleFilterTransport}>Filter out transport</ToggleButton>

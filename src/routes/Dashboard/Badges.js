@@ -155,8 +155,8 @@ function createBadgeVerifier(visitedCountryCodes){
 function BadgeDetailsModal({ selectedBadge, visitedCountryCodes = [], onClickAway}) {
     return (
         <Modal isOpen={!!selectedBadge} onClickAway={onClickAway}>
-            <Page title={selectedBadge?.name}>
-            <Panel title="Countries in the region">
+            <Page header={selectedBadge?.name}>
+            <Panel header="Countries in the region">
                 {selectedBadge?.oneOfCountry?.map(cc => <CountryRow code={cc} right={visitedCountryCodes.includes(cc) ? <VscCheck /> : null}/>)}
             </Panel>
             </Page>
@@ -176,7 +176,7 @@ export default function Badges() {
         padding: 6,
     }
     return (
-        <Panel title="Your regional badges" contentStyle={contentStyle}>
+        <Panel header="Your regional badges" contentStyle={contentStyle}>
             {verifiedBadges.map(badge => <Badge badge={badge} onClick={() => setSelectedBadge(badge)}/>)}
             <BadgeDetailsModal
                 selectedBadge={selectedBadge}

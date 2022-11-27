@@ -2,12 +2,7 @@ import { useEffect } from 'react'
 import { _token } from '../../swarm/singletons'
 import { styled } from 'goober'
 import InfoPanel from '../../components/InfoPanel'
-
-const SwarmImg = styled('img')`
-    display: flex;
-    width: 140px;
-    height: 140px;
-`
+import SquareImage from '../../components/SquareImage'
 
 const Container = styled('div')`
     display: flex;
@@ -18,9 +13,8 @@ const Container = styled('div')`
     justify-content: center;
 `
 
-
 function SwarmImage() {
-    return <SwarmImg src="/3d/swarm.png" />
+    return <SquareImage src="/3d/swarm.png" />
 }
 
 const STATUS = {

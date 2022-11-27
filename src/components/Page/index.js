@@ -17,6 +17,6 @@ const Header = styled('h1')`
     margin-top: -4px;
 `
 
-export default function Page({ children, title, ...props }) {
-    return <Container {...props}><Header>{title}</Header>{children}</Container>
+export default function Page({ children, header, ...props }) {
+    return <Container {...props}><Header>{header}</Header>{children}</Container>
 }

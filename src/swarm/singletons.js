@@ -1,3 +1,5 @@
+import moment from "moment"
+
 class TokenStorage {
     constructor() {
         this.access_token = null
@@ -45,6 +47,7 @@ function fetchCheckins(untilIDs, offset = 0, limit = 200, accumulatedCheckins = 
 class SwarmCheckins {
     constructor() {
         this.storeKey = 'swarm_checkins'
+        this.lastUpdateStoreKey = 'swarm_checkins_last_update'
         this.cache = JSON.parse(localStorage.getItem(this.storeKey)) || []
     }
     fetch() {
@@ -56,6 +59,7 @@ class SwarmCheckins {
                 ...checkins,
             ]
             this.set(newCheckins)
+            this.setLastUpdated(moment())
         })
     }
     get() {
@@ -67,6 +71,14 @@ class SwarmCheckins {
         const cleanedCheckins = checkins.map(this.essentialCheckinComponents)
         this.cache = cleanedCheckins
         localStorage.setItem(this.storeKey, JSON.stringify(cleanedCheckins))
+    }
+
+    setLastUpdated(datetime) {
+        localStorage.setItem(this.lastUpdateStoreKey, datetime.format())
+    }
+    getLastUpdated() {
+        const formattedTime = localStorage.getItem(this.lastUpdateStoreKey)
+        return formattedTime ? moment(formattedTime) : null
     }
 
     essentialCheckinComponents(checkin) {
@@ -115,4 +127,12 @@ export const _movies = new NetflixMovies()
 
 export function useCheckIns() {
     return _checkins.get()
+}
+
+export function useCheckinsLastUpdated() {
+    return _checkins.getLastUpdated()
+}
+
+export function useIsAuthenticated() {
+    return !!_token.get()
 }
