@@ -1,10 +1,11 @@
 import { useCheckinsLastUpdated, useIsAuthenticated } from '../../swarm/singletons'
-import { VscCheck } from "react-icons/vsc";
+import Panel from '../../components/Panel'
 import InfoPanel from '../../components/InfoPanel'
 import SquareImage from '../../components/SquareImage'
 import AuthenticateButton from '../../bindings/swarm/AuthenticateButton'
 import FetchCheckinsButton from '../../bindings/swarm/FetchCheckinsButton'
 import moment from 'moment'
+import EmojiRow from '../../components/EmojiRow'
 
 function SwarmAuthenticatePanel() {
     return (
@@ -37,12 +38,7 @@ function SwarmDefaultPanel({ lastUpdated }) {
     const daysAgo = lastUpdated.diff(moment(), 'days')
     const text = daysAgo < 2 ? 'Recently updated...' : `Last updated ${daysAgo} days ago...`
 
-    return <InfoPanel 
-        header="Swarm"
-        spacing
-        text={text}
-        image={<VscCheck size={22}/>}
-    />
+    return <Panel header="Swarm"><EmojiRow emoji="✅" value={text} to="swarm"/></Panel>
 }
 
 export default function Swarm() {
