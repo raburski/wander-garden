@@ -1,4 +1,14 @@
 import moment from "moment"
+import { parse, stringify } from 'zipson'
+
+function isJSON(str) {
+    try {
+        JSON.parse(str)
+    } catch (e) {
+        return false
+    }
+    return true
+}
 
 class TokenStorage {
     constructor() {
@@ -25,12 +35,20 @@ class TokenStorage {
 }
 
 export const _token = new TokenStorage()
+export const UnauthorizedError = new Error('Unauthorized')
 
 function fetchCheckins(untilIDs, offset = 0, limit = 200, accumulatedCheckins = []) {
     const options = { method: 'GET' }
     return fetch(`https://api.foursquare.com/v2/users/self/checkins?v=20220415&oauth_token=${_token.get()}&limit=${limit}&offset=${offset}`, options)
         .then(response => {
             return response.json().then(json => {
+                if (json.meta && json.meta.code === 401) {
+                    // Unauthorizzed
+                    _token.clear()
+                    // TODO: use context for token instead of reloading
+                    window.location.reload()
+                    throw UnauthorizedError
+                }
                 const items = [...json.response.checkins.items]
                 const itemWithIDIndex = items.findIndex(checkin => untilIDs.includes(checkin.id))
                 const filteredItems = itemWithIDIndex >= 0 ? items.slice(0, itemWithIDIndex) : items
@@ -41,14 +59,14 @@ function fetchCheckins(untilIDs, offset = 0, limit = 200, accumulatedCheckins = 
                 }
             })
         })
-        .catch(err => console.error(err))
 }
 
 class SwarmCheckins {
     constructor() {
         this.storeKey = 'swarm_checkins'
         this.lastUpdateStoreKey = 'swarm_checkins_last_update'
-        this.cache = JSON.parse(localStorage.getItem(this.storeKey)) || []
+        const storedCheckins = localStorage.getItem(this.storeKey) || '[]'
+        this.cache = isJSON(storedCheckins) ? JSON.parse(storedCheckins) : parse(storedCheckins)
     }
     fetch() {
         const checkins = this.get()
@@ -70,7 +88,7 @@ class SwarmCheckins {
         // in order to safe localStorage space
         const cleanedCheckins = checkins.map(this.essentialCheckinComponents)
         this.cache = cleanedCheckins
-        localStorage.setItem(this.storeKey, JSON.stringify(cleanedCheckins))
+        localStorage.setItem(this.storeKey, stringify(cleanedCheckins))
     }
 
     setLastUpdated(datetime) {
