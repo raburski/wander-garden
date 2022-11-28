@@ -84,6 +84,7 @@ const StylelessLink = styled(Link)`
     align-self: stretch;
     text-decoration: none;
     display: flex;
+    justify-content: center;
 `
 
 const MountainImg = styled('img')`
@@ -119,6 +120,7 @@ const StyledNotes = styled('div')`
 function SubNotes() {
     return (
         <StyledNotes>
+            <StylelessLink to="/info">What is Wander Garden?</StylelessLink>
             <MountainSeparator />
         </StyledNotes>
     )

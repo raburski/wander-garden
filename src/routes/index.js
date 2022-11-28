@@ -6,6 +6,7 @@ import Context from "./Context"
 import Timeline from './Timeline'
 import Dashboard from './Dashboard'
 import AuthenticationFinish from './AuthenticationFinish'
+import WebsiteInfo from "./WebsiteInfo"
 
 export default function AllRoutes() {
     return (
@@ -16,6 +17,7 @@ export default function AllRoutes() {
         <Route path="timeline" element={<Timeline />}/>
         <Route path="events" element={<Events />}/>
         <Route path="context" element={<Context />}/>
+        <Route path="info" element={<WebsiteInfo />}/>
         <Route path="/" element={<Dashboard />}/>
         <Route path="*" element={<Navigate to="/" />}/>
     </Routes>

@@ -3,6 +3,7 @@ import { styled } from 'goober'
 import Page from '../../components/Page'
 import CountryRow from '../../components/CountryRow'
 import Panel from '../../components/Panel'
+import WhatIsWanderGarden from '../../bindings/WhatIsWanderGarden'
 import Badges from './Badges'
 import Swarm from './Swarm'
 
@@ -78,10 +79,6 @@ function Current() {
     )
 }
 
-function WhatIsWanderGarden() {
-    return null
-}
-
 function AuthenticatedDashboard() {
     return (
         <PanelsContainer>
@@ -99,9 +96,7 @@ function DefaultDashboard() {
     return (
         <PanelsContainer>
             <WhatIsWanderGarden />
-            <PanelColumn>
-                <Swarm />
-            </PanelColumn>
+            <Swarm />
         </PanelsContainer>
     )
 }
