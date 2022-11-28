@@ -5,8 +5,14 @@ import Routes from './routes'
 import { setup as setupGoober, styled } from 'goober'
 import SideBar from './SideBar'
 import { Toaster } from 'react-hot-toast'
+import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill"
 
 setupGoober(React.createElement)
+if (/windows/i.test(navigator.userAgent)) {
+  polyfillCountryFlagEmojis()
+  document.body.classList.add('windows-flags')
+}
+
 
 const AppContainer = styled('div')`
   display: flex;
