@@ -47,7 +47,7 @@ const StyledLink = styled(Link)`
     border-radius: 26px;
     text-decoration: none;
     color: black;
-    font-family: "Courier Prime";
+    font-family: Primary;
     font-size: 15px;
 
     &:hover {

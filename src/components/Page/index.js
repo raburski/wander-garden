@@ -13,8 +13,9 @@ const Container = styled('div')`
 
 const Header = styled('h1')`
     border-bottom: 5px solid #85B89Eff;
-    font-size: 26px;
+    font-size: 34px;
     font-weight: 800;
+    font-family: Header;
     padding-bottom: 8px;
     margin-bottom: 32px;
     margin-top: -4px;

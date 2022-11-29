@@ -7,21 +7,23 @@ const Container = styled('div')`
 `
 
 const Name = styled('div')`
-    padding-left: 18px;
-    padding-top: 6px;
+    padding-left: 0px;
+    padding-right: 18px;
+    padding-top: 8px;
     text-align: center;
 
-    font-family: "Courier Prime";
+    font-family: Logo;
     font-weight: bolder;
-    font-size: 30px;
+    font-size: 24px;
+    line-height: 24px;
     color: black;
 `
 
 const Icon = styled('div')`
-    height: 44px;
-    width: 44px;
+    height: 64px;
+    width: 64px;
 
-    background-image: url(/bcg2.png);
+    background-image: url(/logo/backpack.svg);
     background-repeat: no-repeat;
     background-size: cover;
 
@@ -29,6 +31,6 @@ const Icon = styled('div')`
 `
 
 export default function Logo() {
-    return <Container><Icon /><Name>Wander</Name></Container>
+    return <Container><Icon /><Name>Wander<br/>Garden</Name></Container>
 }
 
