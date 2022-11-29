@@ -26,7 +26,7 @@ const AppContainer = styled('div')`
 const RoutesContainer = styled('div')`
   height: 100vh;
   overflow: scroll;
-  display: flexbox;
+  display: flex;
   flex: 1;
 `
 

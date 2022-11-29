@@ -90,6 +90,9 @@ class SwarmCheckins {
         this.cache = cleanedCheckins
         localStorage.setItem(this.storeKey, stringify(cleanedCheckins))
     }
+    clear() {
+        this.set([])
+    }
 
     setLastUpdated(datetime) {
         localStorage.setItem(this.lastUpdateStoreKey, datetime.format())

@@ -1,5 +1,6 @@
 import { styled } from 'goober'
 import Panel from './Panel'
+import Separator from './Separator'
 
 const Container = styled('div')`
     display: flex;
@@ -17,9 +18,6 @@ const Title = styled('div')`
 `
 
 const Text = styled('div')``
-const Separator = styled('div')`
-    height: 16px;
-`
 
 const contentStyle = {flexDirection: 'row'}
 
