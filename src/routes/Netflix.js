@@ -1,5 +1,4 @@
-import { _checkins, _movies, _videos } from '../swarm/singletons'
-import { styled } from 'goober'
+import { _movies } from '../singletons'
 import { uploadFile, parseCSVLine } from '../files'
 import Button from '../components/Button'
 import Page from '../components/Page'

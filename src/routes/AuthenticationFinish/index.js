@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { _token } from '../../swarm/singletons'
+import { useToken } from '../../swarm'
 import { styled } from 'goober'
 import InfoPanel from '../../components/InfoPanel'
 import SquareImage from '../../components/SquareImage'
@@ -23,16 +23,16 @@ const STATUS = {
     ALREADY_AUTHENTICATED: 3,
 }
 
-function checkAuthenticationStatus() {
+function useAuthenticationStatus() {
+    const [token, setToken] = useToken()
     const url_token = new URL(window.location.href).searchParams.get('access_token')
-    const access_token = _token.get()
-    if (access_token) {
+    if (token) {
         return STATUS.ALREADY_AUTHENTICATED
     }
-    if (!access_token && !url_token) {
+    if (!token && !url_token) {
         return STATUS.FAILED
     }
-    _token.set(url_token)
+    setToken(url_token)
     return STATUS.SUCCESS
 }
 
@@ -91,7 +91,7 @@ function useStatusEffect(status) {
 }
 
 export default function AuthenticationFinish() {
-    const status = checkAuthenticationStatus()
+    const status = useAuthenticationStatus()
 
     useStatusEffect(status)
 

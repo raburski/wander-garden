@@ -1,8 +1,8 @@
-import Panel, { Row } from '../../components/Panel'
+import Panel from '../../components/Panel'
 import Modal from '../../components/Modal'
 import CountryRow from '../../components/CountryRow'
 import { styled } from 'goober'
-import { useCheckIns } from '../../swarm/singletons'
+import { useCheckins } from '../../swarm'
 import { onlyUnique } from '../../array'
 import colors from '../../colors'
 import { onlyNonTransportation } from '../../swarm/categories'
@@ -166,7 +166,7 @@ function BadgeDetailsModal({ selectedBadge, visitedCountryCodes = [], onClickAwa
 
 export default function Badges() {
     const [selectedBadge, setSelectedBadge] = useState()
-    const checkins = useCheckIns().filter(onlyNonTransportation)
+    const [checkins] = useCheckins().filter(onlyNonTransportation)
     const visitedCountryCodes = checkins.map(checkin => checkin.venue.location.cc.toLowerCase()).filter(onlyUnique)
     const verifiedBadges = badges.map(createBadgeVerifier(visitedCountryCodes))
     const contentStyle = {

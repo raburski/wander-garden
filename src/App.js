@@ -6,6 +6,7 @@ import { setup as setupGoober, styled } from 'goober'
 import SideBar from './SideBar'
 import { Toaster } from 'react-hot-toast'
 import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill"
+import { SwarmProvider } from './swarm'
 
 setupGoober(React.createElement)
 if (/windows/i.test(navigator.userAgent)) {
@@ -32,15 +33,17 @@ const RoutesContainer = styled('div')`
 
 function App() {
   return (
-    <AppContainer>
-      <Router>
-        <SideBar />
-        <RoutesContainer>
-          <Routes />
-        </RoutesContainer>
-      </Router>
-      <Toaster />
-    </AppContainer>
+    <SwarmProvider>
+      <AppContainer>
+        <Router>
+          <SideBar />
+          <RoutesContainer>
+            <Routes />
+          </RoutesContainer>
+        </Router>
+        <Toaster />
+      </AppContainer>
+    </SwarmProvider>
   );
 }
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { styled } from "goober"
 import { SiSwarm, SiNetflix } from 'react-icons/si'
 import moment from 'moment'
-import eventSource, { TYPE } from '../events'
+import { TYPE, useEvents } from '../events'
 import Page from '../components/Page'
 import { formattedLocation } from '../location'
 
@@ -64,16 +64,6 @@ function EventBar({ event }) {
         case TYPE.WATCH: return <WatchEvent watch={event} />
         default: return null
     }
-}
-
-function useEvents() {
-    const [events, setEvents] = useState(null)
-    useEffect(() => {
-        setTimeout(() => {
-            setEvents(eventSource.get())
-        }, 1)
-    })
-    return events
 }
 
 export default function Event() {

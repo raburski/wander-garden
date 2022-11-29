@@ -1,7 +1,7 @@
-import { _checkins } from "../../swarm/singletons"
+import { useCheckins } from "../../swarm"
 import { styled } from "goober"
 import countryFlagEmoji from "country-flag-emoji"
-import { getPotentialHomes } from '../../swarm/context'
+import { getPotentialHomes } from '../../swarm/functions'
 import Panel from '../../components/Panel'
 import NoneFound from './NoneFound'
 
@@ -47,7 +47,7 @@ function Home({ home }) {
 }
 
 export default function PotentialHomesView() {
-    const checkins = _checkins.get()
+    const [checkins] = useCheckins()
     const potentialHomes = getPotentialHomes(checkins).reverse()
     const header = `You have lived in ${potentialHomes.length} places`
     return (

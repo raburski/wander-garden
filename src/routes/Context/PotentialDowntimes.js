@@ -1,5 +1,5 @@
 import { onlyNonGrocery, onlyNonTransportation } from '../../swarm/categories'
-import eventSource, { TYPE } from '../../events'
+import { TYPE, useEvents } from '../../events'
 import { styled } from "goober"
 import moment from 'moment'
 import countryFlagEmoji from "country-flag-emoji"
@@ -84,7 +84,7 @@ function Downtime({ downtime }) {
 }
 
 export default function PotentialDowntimes() {
-    const events = eventSource.get().filter(onlyNonGrocery).filter(onlyNonTransportation)
+    const events = useEvents().filter(onlyNonGrocery).filter(onlyNonTransportation)
     const potentialDowntimes = getPotentialDowntimes(events)
 
     return (

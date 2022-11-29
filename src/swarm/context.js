@@ -1,87 +1,94 @@
+import { LocalStorageAdapter } from "./adapters"
+import { createContext, useState, useContext, useCallback } from "react"
+import { fetchCheckins, UnauthorizedError } from './API'
+import { dateTransforms, jsonTransforms, stringTransforms } from './transforms'
 import moment from 'moment'
-import { cleanLocation } from '../location'
 
-export function getPotentialHomes(checkins) {
-    let currentHomeCheckin = null
-    let currentHomeCheckinCity = null
+export const SwarmContext = createContext({})
 
-    const potentialHomes = []
-    const cityWeight = {}
-    // make those dynamic depending on user checkin ratios
-    const WEIGHT_THRESHOLD = 30 // ~miesiąc
-    const WEIGHT_DETERIORATE = 0.98 // per day
-    const WEIGHT_INCREASE = 1.6
+const localStorageCheckins = new LocalStorageAdapter('swarm_checkins', '[]', jsonTransforms)
+const localStorageLastUpdated = new LocalStorageAdapter('swarm_checkins_last_update', null, dateTransforms)
+const localStorageToken = new LocalStorageAdapter('access_token', null, stringTransforms)
 
-    function deteriorateCities(numberOfDays) {
-        const weight = Math.pow(WEIGHT_DETERIORATE, numberOfDays)
-        for (let city of Object.keys(cityWeight)) {
-            cityWeight[city] = cityWeight[city] < 0.1 ? 0 : cityWeight[city] * weight
-        }
+const initialLocalStorageCheckinsValue = localStorageCheckins.get()
+const initialLocalStorageLastUpdatedValue = localStorageLastUpdated.get()
+const initialLocalStorageTokenValue = localStorageToken.get()
+
+function useStatePersistedCallback(currentState, setState, persistState) {
+    return useCallback(newState => {
+        setState(newState)
+        persistState(newState)
+    }, [currentState])
+}
+
+export function SwarmProvider(props) {
+    const [checkins, setCheckinsState] = useState(initialLocalStorageCheckinsValue)
+    const [lastUpdated, setLastUpdatedState] = useState(initialLocalStorageLastUpdatedValue)
+    const [token, setTokenState] = useState(initialLocalStorageTokenValue)
+
+    const setCheckins = useStatePersistedCallback(checkins, setCheckinsState, localStorageCheckins.set.bind(localStorageCheckins))
+    const setLastUpdated = useStatePersistedCallback(lastUpdated, setLastUpdatedState, localStorageLastUpdated.set.bind(localStorageLastUpdated))
+    const setToken = useStatePersistedCallback(token, setTokenState, localStorageToken.set.bind(localStorageToken))
+
+    const value = {
+        checkins: [checkins, setCheckins],
+        lastUpdated: [lastUpdated, setLastUpdated],
+        token: [token, setToken],
     }
+    return <SwarmContext.Provider value={value} {...props}/>
+}
 
-    for (let i = checkins.length - 2; i >= 0; i--) {
-        let currentWeight = WEIGHT_INCREASE
+// essentialCheckinComponents(checkin) {
+//     return {
+//         createdAt: checkin.createdAt,
+//         createdBy: checkin.createdBy,
+//         id: checkin.id,
+//         timeZoneOffset: checkin.timeZoneOffset,
+//         type: checkin.type,
+//         venue: checkin.venue,
+//     }
+// }
 
-        const olderCheckin = checkins[i + 1]
-        const checkin = checkins[i]
-        const date = moment.unix(checkin.createdAt)
-        const olderDate = moment.unix(olderCheckin.createdAt)
 
-        const city = cleanLocation(checkin.venue.location.city)
-        const olderCity = cleanLocation(olderCheckin.venue.location.city)
+export function useCheckins() {
+    const context = useContext(SwarmContext)
+    return context.checkins
+}
 
-        const duration = moment.duration(date.diff(olderDate))
-        const daysDuration = duration.asHours() / 24
-        
-        deteriorateCities(daysDuration)
+export function useLastUpdated() {
+    const context = useContext(SwarmContext)
+    return context.lastUpdated
+}
 
-        if (!city) continue;
-        if (city === olderCity) {
-            currentWeight = currentWeight * daysDuration
-        }
-        cityWeight[city] = (cityWeight[city] || 0) + currentWeight
-        
-        if (currentHomeCheckinCity === city) continue
+export function useToken() {
+    const context = useContext(SwarmContext)
+    return context.token
+}
 
-        if (cityWeight[city] > WEIGHT_THRESHOLD && cityWeight[city] > (cityWeight[currentHomeCheckinCity] || 0)) {
-            if (currentHomeCheckin) {
-                let lastCheckInCurrentHome = null
-                const currentHomeCheckinIndex = checkins.indexOf(currentHomeCheckin)
-                // look since now until current home checkin to find last checkin in current location
-                for (let index = i; index < currentHomeCheckinIndex; index++) {
-                    const checkedCheckin = checkins[index]
-                    if (cleanLocation(checkedCheckin.venue.location.city) === currentHomeCheckinCity) {
-                        lastCheckInCurrentHome = checkedCheckin
-                        break
-                    }
-                }
-                let firstCheckInNewHome = null
-                const currentHomeLastCheckinIndex = checkins.indexOf(lastCheckInCurrentHome)
-                // look since last checkin in current location till now  to find first checkin in new location
-                for (let index = currentHomeLastCheckinIndex + 1; index >= i; index--) {
-                    const checkedCheckin = checkins[index]
-                    if (cleanLocation(checkedCheckin.venue.location.city) === city) {
-                        firstCheckInNewHome = checkedCheckin
-                        break
-                    }
-                }
-                // add previous home to the list
-                potentialHomes.push({
-                    location: currentHomeCheckin.venue.location,
-                    since: potentialHomes.length > 0 ? potentialHomes[potentialHomes.length - 1].until : null,
-                    until: firstCheckInNewHome ? moment.unix(firstCheckInNewHome.createdAt).format('DD/MM/YYYY') : null,
-                })
+export function useIsAuthenticated() {
+    const [token] = useToken()
+    return !!token
+}
+
+export function useFetchCheckins() {
+    const [checkins, setCheckins] = useCheckins()
+    const [_, setLastUpdated] = useLastUpdated()
+    const [token, setToken] = useToken()
+    const latestCheckinIDs = [checkins[0], checkins[1], checkins[2]].filter(Boolean).map(c => c.id)
+
+    return function fetchCheckinsHook() {
+        return fetchCheckins(token, latestCheckinIDs).then(fetchedCheckins => {
+            const newCheckins = [
+                ...fetchedCheckins,
+                ...checkins,
+            ]
+            setCheckins(newCheckins)
+            setLastUpdated(moment())
+        }).catch(e => {
+            if (e === UnauthorizedError) {
+                setToken(null)
             }
-            currentHomeCheckin = checkin
-            currentHomeCheckinCity = cleanLocation(currentHomeCheckin.venue.location.city)
-        }
-    }
-    if (currentHomeCheckin) {
-        // add previous home to the list
-        potentialHomes.push({
-            location: currentHomeCheckin.venue.location,
-            since: potentialHomes.length > 0 ? potentialHomes[potentialHomes.length - 1].until : null,
+            throw e
         })
     }
-    return potentialHomes
 }

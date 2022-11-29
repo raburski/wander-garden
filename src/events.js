@@ -1,5 +1,6 @@
 import moment from 'moment'
-import { _checkins, _movies } from './swarm/singletons'
+import { _movies } from './singletons'
+import { useCheckins } from './swarm'
 
 export const TYPE = {
     CHECKIN: 'CHECKIN',
@@ -52,16 +53,11 @@ function watchEventFromNetflixMovie(movie) {
     }
 }
 
-class EventSource {
-    get(types = [TYPE.CHECKIN, TYPE.WATCH, TYPE.PLAY]) {
-        const _types = Array.isArray(types) ? types : [types]
-        return [
-            ...(_types.includes(TYPE.CHECKIN) ? _checkins.get().map(checkinEventFromSwarmCheckin) : []),
-            ...(_types.includes(TYPE.WATCH) ? _movies.get().map(watchEventFromNetflixMovie) : []),
-        ].sort((a, b) => moment(a.date).isBefore(moment(b.date)) ? 1 : -1)
-    }
+export function useEvents(types = [TYPE.CHECKIN, TYPE.WATCH, TYPE.PLAY]) {
+    const [checkins] = useCheckins()
+    const _types = Array.isArray(types) ? types : [types]
+    return [
+        ...(_types.includes(TYPE.CHECKIN) ? checkins.map(checkinEventFromSwarmCheckin) : []),
+        ...(_types.includes(TYPE.WATCH) ? _movies.get().map(watchEventFromNetflixMovie) : []),
+    ].sort((a, b) => moment(a.date).isBefore(moment(b.date)) ? 1 : -1)
 }
-
-const eventSource = new EventSource()
-
-export default eventSource

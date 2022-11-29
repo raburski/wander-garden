@@ -1,4 +1,4 @@
-import { useCheckinsLastUpdated, useIsAuthenticated } from '../../swarm/singletons'
+import { useLastUpdated, useIsAuthenticated } from '../../swarm'
 import Panel from '../../components/Panel'
 import InfoPanel from '../../components/InfoPanel'
 import SquareImage from '../../components/SquareImage'
@@ -43,7 +43,7 @@ function SwarmDefaultPanel({ lastUpdated }) {
 
 export default function Swarm() {
     const isAuthenticated = useIsAuthenticated()
-    const lastUpdated = useCheckinsLastUpdated()
+    const [lastUpdated] = useLastUpdated()
     if (!isAuthenticated) {
         return <SwarmAuthenticatePanel />
     }

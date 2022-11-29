@@ -3,7 +3,7 @@ import { useSearchParams, Link } from "react-router-dom"
 import countryFlagEmoji from "country-flag-emoji"
 import { styled } from 'goober'
 import { onlyUnique } from "../../array"
-import { useCheckIns, _token } from "../../swarm/singletons"
+import { useCheckins } from "../../swarm"
 import { onlyNonTransportation, venueEmoji } from '../../swarm/categories'
 import { hasCity, hasState, isEqualCity, isEqualCountry, isEqualState} from '../../location'
 import { getCategory } from "../../swarm/categories"
@@ -233,7 +233,7 @@ export default function Timeline() {
     const [filterTransport, setFilterTransport] = useState(false)
     const toggleFilterTransport = () => setFilterTransport(!filterTransport)
 
-    const checkins = useCheckIns()
+    const [checkins] = useCheckins()
     const timeline = timelineFromCheckins(filterTransport ? checkins.filter(onlyNonTransportation) : checkins)
     const grouped = groupedTimeline(timeline)
     const filteredGrouped = selectedCountryCode ? grouped.filter(location => location.cc.toLowerCase() === selectedCountryCode.toLowerCase()) : grouped

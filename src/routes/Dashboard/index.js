@@ -1,4 +1,4 @@
-import { useCheckIns, useIsAuthenticated, _movies, _videos } from '../../swarm/singletons'
+import { useCheckins, useIsAuthenticated } from '../../swarm'
 import { styled } from 'goober'
 import Page from '../../components/Page'
 import CountryRow from '../../components/CountryRow'
@@ -37,7 +37,7 @@ function NoData() {
 }
 
 function Countries() {
-    const checkins = useCheckIns()
+    const [checkins] = useCheckins()
     const countryCodes = checkins.filter(onlyNonTransportation).map(checkin => checkin.venue.location.cc).filter(onlyUnique)
     if (countryCodes.length <= 0) {
         return null
@@ -66,7 +66,7 @@ const CurrentContent = styled('div')`
 `
 
 function Current() {
-    const checkins = useCheckIns()
+    const [checkins] = useCheckins()
     const latestCheckin = checkins[0]
     const currentCountry = latestCheckin ? countryFlagEmoji.get(latestCheckin.venue.location.cc) : null
     if (!currentCountry) { return null }

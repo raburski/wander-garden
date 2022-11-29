@@ -1,5 +1,5 @@
 import { onlyNonGrocery, onlyNonTransportation } from '../../swarm/categories'
-import eventSource, { TYPE } from '../../events'
+import { TYPE, useEvents } from '../../events'
 import { styled } from "goober"
 import moment from 'moment'
 import NoneFound from './NoneFound'
@@ -34,7 +34,7 @@ function Trip({ trip }) {
 }
 
 export default function PotentialTrips() {
-    const events = eventSource.get(TYPE.CHECKIN)//.filter(onlyNonGrocery).filter(onlyNonTransportation)
+    const events = useEvents(TYPE.CHECKIN)//.filter(onlyNonGrocery).filter(onlyNonTransportation)
     const potentialTrips = getPotentialTrips(events)
 
     return (

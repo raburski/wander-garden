@@ -1,4 +1,5 @@
-import { useIsAuthenticated, useCheckinsLastUpdated, _checkins, _movies, _videos, _token } from '../swarm/singletons'
+import { useIsAuthenticated, useCheckins, useToken } from '../swarm'
+import { useLastUpdated } from '../swarm'
 import { onlyUnique } from '../array'
 import { getCategory } from '../swarm/categories'
 import { downloadString, uploadFile } from '../files'
@@ -13,42 +14,50 @@ import FetchCheckinsButton from '../bindings/swarm/FetchCheckinsButton'
 import { styled } from 'goober'
 import { IoLogoFoursquare } from 'react-icons/io'
 
-function onLogout() {
-    _token.clear()
-    window.location.reload()
+function useLogout() {
+    const [_, setToken] = useToken()
+    return () => setToken(null)
 }
 
-function onClearData() {
-    if (window.confirm('Are you really sure you want to wipe checkin data from your browsers storage?')) {
-        _checkins.clear()
-        window.location.reload()
+function useClearData() {
+    const [_, setCheckins] = useCheckins()
+    const [__, setLastUpdated] = useLastUpdated()
+    return () => {
+        if (window.confirm('Are you really sure you want to wipe checkin data from your browsers storage?')) {
+            setCheckins([])
+            setLastUpdated(null)
+        }
     }
 }
 
-function onDownloadCheckins() {
-    downloadString(JSON.stringify(_checkins.get()), 'json', 'checkins.json')
+function useDownloadCheckins() {
+    const [checkins] = useCheckins()
+    return () => downloadString(JSON.stringify(checkins), 'json', 'checkins.json')
 }
 
-function onDownloadCategories() {
-    const checkins = _checkins.get()
-    const categories = checkins.flatMap(checkin => checkin.venue.categories)
-    const categoryIDs = categories.map(category => category.id).filter(onlyUnique)
-    const uniqueCategories = categoryIDs.map(id => categories.find(cat => cat.id === id)).map(cat => ({
-        id: cat.id,
-        name: cat.name,
-        shortName: cat.shortName,
-        pluralName: cat.pluralName,
-        emoji: getCategory(cat.id)?.emoji,
-    }))
+function useDownloadCategories() {
+    const [checkins] = useCheckins()
+    return () => {
+        const categories = checkins.flatMap(checkin => checkin.venue.categories)
+        const categoryIDs = categories.map(category => category.id).filter(onlyUnique)
+        const uniqueCategories = categoryIDs.map(id => categories.find(cat => cat.id === id)).map(cat => ({
+            id: cat.id,
+            name: cat.name,
+            shortName: cat.shortName,
+            pluralName: cat.pluralName,
+            emoji: getCategory(cat.id)?.emoji,
+        }))
 
-    downloadString(JSON.stringify(uniqueCategories), 'json', 'categories.json')
+        downloadString(JSON.stringify(uniqueCategories), 'json', 'categories.json')
+    }
 }
 
-function onImportCheckins() {
-    uploadFile().then(files => {
+function useImportCheckins() {
+    const [_, setCheckins] = useCheckins()
+    return () => uploadFile().then(files => {
         const items = JSON.parse(files)
         if (items.length > 0 && window.confirm(`${items.length} checkins found. Are you sure you want to replace currently stored ones?`)) {
-            _checkins.set(items)
+            setCheckins(items)
             alert('Imported!')
         }
     })
@@ -81,12 +90,13 @@ const ACCOUNT_COPY_DEFAULT = "Once account is connected you will be able to fetc
 
 
 function FetchCheckinsPanel() {
-    const lastUpdated = useCheckinsLastUpdated()
+    const [lastUpdated] = useLastUpdated()
+    const title = lastUpdated ? `Checkins last updated on ${lastUpdated.format('DD/MM/YYYY')}` : 'Your data may be outdated...'
     return (
         <InfoPanel 
             style={{alignSelf:'flex-start'}}
             spacing
-            title={`Checkins last updated on ${lastUpdated.format('DD/MM/YYYY')}`}
+            title={title}
             image={<SquareImage src="/3d/beegarden1.png"/>}
         >
             <FetchCheckinsButton />
@@ -96,20 +106,24 @@ function FetchCheckinsPanel() {
 
 export default function Swarm() {
     const isAuthenticated = useIsAuthenticated()
-    
+    const onLogout = useLogout()
+    const onClearData = useClearData()
+    const onDownloadCheckins = useDownloadCheckins()
+    const onDownloadCategories = useDownloadCategories()
+    const onImportCheckins = useImportCheckins()
 
     return (
         <Page header="Swarm">
             {isAuthenticated ? <FetchCheckinsPanel />  : null}
+            <ButtonsPanel header="Connected account" text={isAuthenticated ? ACCOUNT_COPY_AUTHED : ACCOUNT_COPY_DEFAULT}>
+                {isAuthenticated ? <Button onClick={onLogout} icon={IoLogoFoursquare}>Disconnect</Button> : <AuthenticateButton />}
+            </ButtonsPanel>
             <ButtonsPanel header="Your data" text="All your checkins are stored in browsers local storage. You can create a backup or restore them anytime.">
                 <Button onClick={onDownloadCheckins}>Download checkins.json</Button>
                 <Separator />
                 <Button onClick={onImportCheckins}>Import and replace checkins.json</Button>
                 <Separator />
                 <Button onClick={onClearData}>Clear all your foursquare data</Button>
-            </ButtonsPanel>
-            <ButtonsPanel header="Connected account" text={isAuthenticated ? ACCOUNT_COPY_AUTHED : ACCOUNT_COPY_DEFAULT}>
-                {isAuthenticated ? <Button onClick={onLogout} icon={IoLogoFoursquare}>Disconnect</Button> : <AuthenticateButton />}
             </ButtonsPanel>
             <ButtonsPanel header="Developer tools">
                 <Button onClick={onDownloadCategories}>Download categories.json</Button>

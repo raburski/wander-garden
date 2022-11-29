@@ -140,7 +140,7 @@ export default function SideBar() {
             <Separator />
             <TextSeparator>Sources</TextSeparator>
             <PillLink to="swarm" icon={SiSwarm}>Swarm</PillLink>
-            <PillLink to="netflix" icon={SiNetflix}>Netflix</PillLink>
+            {/* <PillLink to="netflix" icon={SiNetflix}>Netflix</PillLink> */}
             <SpreadSeparator />
             <SubNotes />
         </Container>
