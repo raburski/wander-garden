@@ -109,7 +109,7 @@ function timelineFromCheckins(checkins) {
         if (!isEqualCountry(prevCheckin, currentCheckin)) {
             timeline.push(factory.changeCountry(currentCheckin, prevCheckin))
         }
-        if (hasState(currentCheckin) && hasState(prevCheckin) && !isEqualState(prevCheckin, currentCheckin)) {
+        if (hasState(currentCheckin) && hasState(prevCheckin) && !isEqualState(prevCheckin, currentCheckin) && !isEqualCity(prevCheckin, currentCheckin)) {
             timeline.push(factory.changeState(currentCheckin, prevCheckin))
         }
         if (hasCity(currentCheckin) && hasCity(prevCheckin) && !isEqualCity(prevCheckin, currentCheckin)) {
@@ -238,7 +238,7 @@ export default function Timeline() {
     const grouped = groupedTimeline(timeline)
     const filteredGrouped = selectedCountryCode ? grouped.filter(location => location.cc.toLowerCase() === selectedCountryCode.toLowerCase()) : grouped
 
-    console.log('grouped', grouped)
+    console.log('timeline', timeline)
 
     return (
         <Page header="Timeline">

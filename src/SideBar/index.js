@@ -1,6 +1,6 @@
 import { styled } from 'goober'
 import { Link, useResolvedPath, useMatch } from 'react-router-dom'
-import { VscDashboard, VscCloudUpload, VscPulse, VscVersions } from 'react-icons/vsc'
+import { VscDashboard, VscCloudUpload, VscPulse, VscVersions, VscDeviceMobile } from 'react-icons/vsc'
 import { SiSwarm, SiNetflix } from 'react-icons/si'
 import Logo from './Logo'
 import colors from '../colors'
@@ -11,6 +11,10 @@ const Container = styled('div')`
     flex-direction: column;
     padding: 12px;
     flex-basis: 192px;
+
+    @media (pointer:none), (pointer:coarse) {
+        display: none;
+    }
 `
 
 const Separator = styled('div')`
@@ -136,6 +140,7 @@ export default function SideBar() {
             <Separator />
             <TextSeparator>Sources</TextSeparator>
             <PillLink to="swarm" icon={SiSwarm}>Swarm</PillLink>
+            <PillLink to="phone" icon={VscDeviceMobile}>Phone</PillLink>
             {/* <PillLink to="netflix" icon={SiNetflix}>Netflix</PillLink> */}
             <SpreadSeparator />
             <SubNotes />
