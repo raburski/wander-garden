@@ -8,7 +8,7 @@ const Container = styled('div')`
 
 const Name = styled('div')`
     padding-left: 0px;
-    padding-right: 18px;
+
     padding-top: 8px;
     text-align: center;
 

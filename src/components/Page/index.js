@@ -5,19 +5,20 @@ const Container = styled('div')`
     flex: 1;
     flex-direction: column;
     padding-top: 32px;
-    padding-left: 32px;
-    padding-right: 32px;
+    padding-left: 24px;
+    padding-right: 24px;
     padding-bottom: 16px;
-    max-width: 1224px;
+    max-width: 1040px;
 `
 
 const Header = styled('h1')`
-    border-bottom: 5px solid #85B89Eff;
-    font-size: 34px;
+    border-bottom: 3px solid #4fa177;
+    font-size: 38px;
     font-weight: 800;
     font-family: Header;
-    padding-bottom: 8px;
-    margin-bottom: 32px;
+    padding-left: 2px;
+    padding-bottom: 4px;
+    margin-bottom: 18px;
     margin-top: -4px;
 `
 

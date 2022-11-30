@@ -5,7 +5,7 @@ import { onlyUnique } from "../../array"
 const Container = styled('div')`
     display: flex;
     flex-direction: column;
-    background-color: #fafafa;
+    background-color: white;
     border: 1px solid #ebebeb;
     border-radius: 12px;
     padding-left: 12px;

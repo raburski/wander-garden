@@ -15,11 +15,14 @@ const Container = styled('div')`
 const Content = styled('div')`
     display: flex;
     flex-direction: column;
-    background-color: #fafafa;
-    border: 1px solid #ebebeb;
-    border-radius: 12px;
+    background-color: white;
+    
+    border-radius: 8px;
     overflow: hidden;
+    border: 1px solid ${colors.border.normal};
+    box-shadow: 0px 2px 4px rgba(22, 22, 26, 0.05);
 `
+
 
 const Header = styled('div')`
     display: flex;
@@ -31,7 +34,7 @@ const Header = styled('div')`
 `
 
 export default function Panel({ header, children, spacing, contentStyle = {}, ...props }) {
-    const _contentStyle = {...contentStyle, ...(spacing ? { padding: 12 } : {}) }
+    const _contentStyle = {...contentStyle, ...(spacing ? { padding: 14 } : {}) }
     return (
         <Container {...props}>
             <Header>{header}</Header>
@@ -48,7 +51,7 @@ export const StaticRow = styled('div')`
     align-items: center;
 
     border-bottom: 1px solid #ebebeb;
-    padding: 3px;
+    padding: 4px;
     padding-left: 10px;
     margin-bottom: -1px;
 `
@@ -60,7 +63,7 @@ export const LinkRow = styled(Link)`
 
     border-bottom: 1px solid #ebebeb;
     border-top: 1px solid transparent;
-    padding: 3px;
+    padding: 4px;
     padding-left: 10px;
     margin-bottom: -1px;
 

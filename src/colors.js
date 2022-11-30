@@ -6,13 +6,13 @@ export default {
     neutral: {
         light: '#F9F9F9',
         highlight: '#F0F0F0',
-        normal: '#efdcde',
-        dark: '#e7cbcd',
+        normal: '#66ba8f',
+        dark: '#66ba8f',
     },
     primary: {
-        default: '#0d7eff',
-        hover: '#3b96ff',
-        active: '#1376e8',
+        default: '#4fa177',
+        hover: '#4fa177',
+        active: '#4fa177',
     }
 }
 

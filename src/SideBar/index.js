@@ -5,20 +5,16 @@ import { SiSwarm, SiNetflix } from 'react-icons/si'
 import Logo from './Logo'
 import colors from '../colors'
 
-
-
 const Container = styled('div')`
     display: flex;
     flex: 0;
     flex-direction: column;
     padding: 12px;
-    flex-basis: 212px;
-    border-right: 1px solid ${colors.border.light};
-    background-color: ${colors.neutral.light};
+    flex-basis: 192px;
 `
 
 const Separator = styled('div')`
-    height: 32px;
+    height: 24px;
 `
 
 const SpreadSeparator = styled('div')`
@@ -27,7 +23,7 @@ const SpreadSeparator = styled('div')`
 
 const TextSeparator = styled('div')`
     height: 28px;
-    padding-left: 20px;
+    padding-left: 28px;
     margin-top: 18px;
     text-decoration: none;
     color: black;
@@ -41,6 +37,7 @@ const StyledLink = styled(Link)`
     flex-direction: row;
     align-items: center;
     margin: 1px;
+    margin-left: 12px;
     padding: 6px;
     padding-left: 18px;
     padding-right: 22px;
@@ -51,10 +48,10 @@ const StyledLink = styled(Link)`
     font-size: 15px;
 
     &:hover {
-        background-color: ${colors.neutral.normal};
+        background-color: #ebf2ee;
     }
     &:active {
-        background-color: ${colors.neutral.dark};
+        background-color: #d5ebe0;
     }
 `
 
@@ -71,7 +68,7 @@ function PillLink({ icon, children, to, ...props }) {
   
     return (
         <StyledLink
-          style={match ? { backgroundColor: colors.neutral.normal } : {}}
+          style={match ? { backgroundColor: '#4fa177', color: 'white' } : {}}
           to={to}
           {...props}
         >
@@ -103,7 +100,6 @@ function MountainSeparator() {
             <MountainImg src="/mountain/3.svg" />
             <MountainImg src="/mountain/2.svg" />
             <MountainImg src="/mountain/3.svg" />
-            <MountainImg src="/mountain/1.svg" />
         </div>
     )
 }
