@@ -64,10 +64,11 @@ export default function Phone() {
     const qrValue = websiteDomain === LOCALHOST ? `http://${host}:3000/phone-connect?address=${host}` : `${websiteDomain}/phone-connect?address=${host}`
     return (
         <Page header="Phone">
-            <InfoPanel spacing header="Open your garden on mobile" image={<QRCodeSVG value={qrValue} />}>
+            <InfoPanel spacing header="Open your garden on mobile" style={{alignSelf:'flex-start'}} image={<QRCodeSVG value={qrValue} />}>
                 You should be able to use the QR-code link to open this website in mobile mode.
                 <br/>You can then import your photo metadata into your garden!
-                <br/><br/>DOES NOT WORK, STILL WIP!
+                <br/><br/><b>Your laptop and your phone need to be ON THE SAME WIFI NETWORK!</b>
+                <br/>DOES NOT WORK, STILL WIP!
             </InfoPanel>
             
         </Page>

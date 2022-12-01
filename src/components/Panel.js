@@ -20,7 +20,7 @@ const Content = styled('div')`
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid ${colors.border.normal};
-    box-shadow: 0px 2px 4px rgba(22, 22, 26, 0.05);
+    box-shadow: 0px 2px 3px rgba(22, 22, 26, 0.05);
 `
 
 
