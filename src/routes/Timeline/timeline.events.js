@@ -40,8 +40,8 @@ export function createTransportEvent(mode, date, from, to, guess = false) {
     return { type: EVENT_TYPE.TRANSPORT, mode, date: typeof date === "string" ? date : date.format(), from, to, guess }
 }
 
-export function getEventDate() {
-    return moment()
+export function getEventDate(event) {
+    return typeof event?.date === "string" ? moment(event.date) : event.date
 }
 
 const FLIGHT_DISTANCE_GUESS = 800

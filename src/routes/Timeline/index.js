@@ -115,12 +115,23 @@ function TimelineGroupMultihop({ group, i }) {
     )
 }
 
+function TimelineGroupTransport({ group, i }) { 
+    const firstTransport = group.phases[0]
+    return (
+        <CountryBar name={`Transport ${firstTransport.from.cc} to ${firstTransport.to.cc}`} code={firstTransport.from.cc}>
+
+        </CountryBar>
+    )
+}
+
 function TimelineGroup({ group, i }) {
     switch (group.type) {
         case GROUP_TYPE.HOME:
             return <TimelineGroupHome group={group} i={i}/>
         case GROUP_TYPE.MULTIHOP_TRIP:
             return <TimelineGroupMultihop group={group} i={i}/>
+        // case GROUP_TYPE.TRANSPORT:
+        //     return <TimelineGroupTransport group={group} i={i}/>
     }
 }
 

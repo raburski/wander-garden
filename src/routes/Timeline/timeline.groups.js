@@ -8,6 +8,7 @@ import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'
 export const GROUP_TYPE = {
     HOME: 'HOME',
     MULTIHOP_TRIP: 'MULTIHOP_TRIP',
+    TRANSPORT: 'TRANSPORT',
 }
 
 function firstEventsLocation(events) {
@@ -126,6 +127,14 @@ export function createMultihopGroup(events) {
     }
 }
 
+export function createTransportGroup(events) {
+    return {
+        type: GROUP_TYPE.TRANSPORT,
+        phases: createPhasesWithEvents(events),
+        events,
+    }
+}
+
 export function createHomeGroup(events = []) {
     return {
         type: GROUP_TYPE.HOME,
@@ -192,7 +201,14 @@ class TimelineGroupsFactory {
                 events.unshift(this.getCurrentEvent())
                 this.stack.makeStep()
             }
-            this.push(createMultihopGroup(events))
+            if (events.length > 0) {
+                const isTransportOnly = events.reduce((acc, e) => acc && e.type === EVENT_TYPE.TRANSPORT, true)
+                if (isTransportOnly) {
+                    this.push(createTransportGroup(events))
+                } else {
+                    this.push(createMultihopGroup(events))
+                }
+            }
         }
     }
 
