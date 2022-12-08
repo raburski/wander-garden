@@ -37,7 +37,7 @@ export default function Panel({ header, children, spacing, contentStyle = {}, ..
     const _contentStyle = {...contentStyle, ...(spacing ? { padding: 14 } : {}) }
     return (
         <Container {...props}>
-            <Header>{header}</Header>
+            {header ? <Header>{header}</Header> : null}
             <Content style={_contentStyle}>
                 {children}
             </Content>

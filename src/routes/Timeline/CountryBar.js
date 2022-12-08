@@ -1,6 +1,7 @@
 import countryFlagEmoji from "country-flag-emoji"
 import { styled } from 'goober'
 import { onlyUnique } from "../../array"
+import Panel from "../../components/Panel"
 
 const Container = styled('div')`
     display: flex;
@@ -16,6 +17,7 @@ const Header = styled('div')`
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-left: 12px;
 `
 
 const Flag = styled('div')`
@@ -53,12 +55,13 @@ function Icon({ category }) {
     return <StyledIcon title={category.name}>{category.emoji}</StyledIcon>
 }
 
-export default function CountryBar({ name, code, states = [], categories = [] }) {
+export default function CountryBar({ name, code, states = [], children, categories = [] }) {
     const joinedStates = states.filter(Boolean).filter(onlyUnique).join(', ')
     return (
-        <Container>
+        <Panel>
             <Header><Flag>{countryFlagEmoji.get(code).emoji}</Flag> <Name>{name}</Name><States>{joinedStates}</States></Header>
+            {children}
             {categories.length > 0 ? <Icons>{categories.map(c => <Icon category={c} key={c.id}/>)}</Icons> : null}
-        </Container>
+        </Panel>
     )
 }

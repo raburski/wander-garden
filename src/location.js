@@ -13,9 +13,14 @@ export function cleanState(state) {
     return state.replace('Województwo ', '').replace(' Županija', '')
 }
 
+const fixNames = {
+    Vrotslav: 'Wrocław',
+}
+
 export function cleanLocation(location = "") {
     const latinLocation = cyrylicToLatin(location)
-    return cleanState(latinLocation)
+    const fixedNames = fixNames[latinLocation] || latinLocation
+    return cleanState(fixedNames)
         .toLowerCase()
         .replace(' city', '')
         .normalize('NFD')
@@ -24,12 +29,21 @@ export function cleanLocation(location = "") {
         .replace(/(wiu)$/g, 'w')
 }
 
+export function isEqualApproximiteLocation(leftLocation, rightLocation, radius = 5) {
+    const locationDistance = distance(leftLocation.lat, leftLocation.lng, rightLocation.lat, rightLocation.lng)
+    return locationDistance <= radius
+}
+
+export function isEqualLocationCity(leftLocation, rightLocation) {
+    return cleanLocation(leftLocation.city) == cleanLocation(rightLocation.city)
+}
+
 export function isEqualCountry(leftCheckin, rightCheckin) {
     return leftCheckin.venue.location.country == rightCheckin.venue.location.country
 }
 
 export function isEqualCity(leftCheckin, rightCheckin) {
-    return cleanLocation(leftCheckin.venue.location.city) == cleanLocation(rightCheckin.venue.location.city)
+    return isEqualLocationCity(leftCheckin.venue.location, rightCheckin.venue.location)
 }
 
 export function isEqualState(leftCheckin, rightCheckin) {
@@ -71,7 +85,17 @@ export function distance(lat1, lon1, lat2, lon2) {
 }
 
 export function getCheckinLocation(checkin) {
-    return checkin?.venue?.location
+    const location = checkin?.venue?.location
+    return location ? {
+        address: location.address,
+        city: location.city,
+        state: location.state,
+        country: location.country,
+        cc: location.cc,
+        postalCode: location.postalCode,
+        lat: location.lat,
+        lng: location.lng,
+    } : null
 }
 
 export function getDistanceBetweenCheckins(checkin1, checkin2) {

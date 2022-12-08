@@ -13,6 +13,7 @@ const TRANSPORT_CATEGORY_TYPES = {
     '4bf58dd8d48988d113951735': TRANSPORT_TYPE.CAR,
     '4bf58dd8d48988d129951735': TRANSPORT_TYPE.TRAIN,
     '4eb1bc533b7b2c5b1d4306cb': TRANSPORT_TYPE.PLANE,
+    '4d954b16a243a5684b65b473': TRANSPORT_TYPE.CAR, // Rest Stop
 }
 
 const TRANSPORT_CATEGORIES = Object.keys(TRANSPORT_CATEGORY_TYPES)
@@ -41,6 +42,11 @@ export function onlyNonTransportation(checkin) {
 
 export function onlyNonGrocery(checkin) {
     return checkin.venue ? !checkin.venue.categories.some(category => SHOP_CATEGORIES.includes(category.id)) : true
+}
+
+export function checkinHasCategory({ venue }, categories) {
+    const _categories = Array.isArray(categories) ? categories : [categories]
+    return venue?.categories?.some(cat => _categories.some(catID => cat.id === catID))
 }
 
 
