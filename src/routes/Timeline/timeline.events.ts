@@ -1,11 +1,12 @@
 import { getTransportType, TRANSPORT_TYPE } from '../../swarm/categories'
-import { getCheckinDate, getDistanceBetweenCheckins, getCheckinLocation } from '../../swarm/functions'
+import { getCheckinDate, getDistanceBetweenCheckins, getCheckinLocation, ensureDateString } from '../../swarm/functions'
 import { isTheSameArea } from './timeline.groups'
 import Stack from './stack'
 import moment from 'moment'
 
 import { Event, EventType, TransportMode, CheckinEvent, TransportEvent } from './types'
 import type { Checkin, Date, Location } from "../../swarm/functions"
+import type { Moment, MomentInput } from "moment"
 
 export function createCheckinEvent(checkin: Checkin): CheckinEvent  {
     const { type, ...checkinNonType } = checkin
@@ -17,12 +18,12 @@ export function createCheckinEvent(checkin: Checkin): CheckinEvent  {
     }
 }
 
-export function createTransportEvent(mode: TransportMode, date: Date, from: Location, to: Location, guess: boolean = false): TransportEvent {
-    return { type: EventType.Transport, mode, date: typeof date === "string" ? date : date.format(), from, to, guess }
+export function createTransportEvent(mode: TransportMode, date: Date, from: Location, to: Location, guess: Boolean = false): TransportEvent {
+    return { type: EventType.Transport, mode, date: ensureDateString(date), from, to, guess }
 }
 
-export function getEventDate(event: Event): Date {
-    return typeof event.date === "string" ? moment(event.date) : event.date
+export function getEventDate(event: Event): Moment {
+    return moment(event.date as MomentInput)
 }
 
 const FLIGHT_DISTANCE_GUESS = 800
@@ -30,11 +31,14 @@ const NON_FLIGHT_DISTANCE_GUESS = 150
 const BUS_DISTANCE_GUESS = 40
 
 class TimelineEventsFactory {
-    constructor(stack) {
+    stack: Stack
+    events: Event[]
+
+    constructor(stack: Stack) {
         this.stack = stack
         this.events = []
     }
-    push(event) {
+    push(event: Event) {
         this.events.unshift(event)
     }
 
@@ -45,8 +49,8 @@ class TimelineEventsFactory {
     }
 
     processNext() {
-        const previous = this.stack.getPrevious()
-        const current = this.stack.getCurrent()
+        const previous: Checkin = this.stack.getPrevious()
+        const current: Checkin = this.stack.getCurrent()
         
         // First event is always added
         if (!previous) {
@@ -67,16 +71,16 @@ class TimelineEventsFactory {
                 switch (transportType) {
                     case TRANSPORT_TYPE.PLANE:
                         if (distance > NON_FLIGHT_DISTANCE_GUESS) {
-                            this.push(createTransportEvent(TRANSPORT_MODE.PLANE, getCheckinDate(transportCheckin), getCheckinLocation(previous), getCheckinLocation(current)))
+                            this.push(createTransportEvent(TransportMode.Plane, getCheckinDate(transportCheckin), getCheckinLocation(previous), getCheckinLocation(current)))
                         } else if (distance < BUS_DISTANCE_GUESS) {
-                            this.push(createTransportEvent(TRANSPORT_MODE.BUS, getCheckinDate(transportCheckin), getCheckinLocation(previous), getCheckinLocation(current), true))
+                            this.push(createTransportEvent(TransportMode.Bus, getCheckinDate(transportCheckin), getCheckinLocation(previous), getCheckinLocation(current), true))
                         }
                         break
                     case TRANSPORT_TYPE.TRAIN:
-                        this.push(createTransportEvent(TRANSPORT_MODE.TRAIN, getCheckinDate(transportCheckin), getCheckinLocation(previous), getCheckinLocation(current)))
+                        this.push(createTransportEvent(TransportMode.Train, getCheckinDate(transportCheckin), getCheckinLocation(previous), getCheckinLocation(current)))
                         break
                     case TRANSPORT_TYPE.CAR:
-                        this.push(createTransportEvent(TRANSPORT_MODE.CAR, getCheckinDate(transportCheckin), getCheckinLocation(previous), getCheckinLocation(current)))
+                        this.push(createTransportEvent(TransportMode.Car, getCheckinDate(transportCheckin), getCheckinLocation(previous), getCheckinLocation(current)))
                         break
                 }
             } else if (isTransportTypeConflicting) {
@@ -87,9 +91,9 @@ class TimelineEventsFactory {
                 // TODO check wether city has airport nearby
                 if (distance >= FLIGHT_DISTANCE_GUESS) {
                     // TODO: extrapolate date
-                    this.push(createTransportEvent(TRANSPORT_MODE.PLANE, getCheckinDate(current), getCheckinLocation(previous), getCheckinLocation(current), true))
+                    this.push(createTransportEvent(TransportMode.Plane, getCheckinDate(current), getCheckinLocation(previous), getCheckinLocation(current), true))
                 } else {
-                    this.push(createTransportEvent(TRANSPORT_MODE.CAR, getCheckinDate(current), getCheckinLocation(previous), getCheckinLocation(current), true))
+                    this.push(createTransportEvent(TransportMode.Car, getCheckinDate(current), getCheckinLocation(previous), getCheckinLocation(current), true))
                 }
             }
         }
@@ -101,7 +105,7 @@ class TimelineEventsFactory {
     }
 }
 
-export function createTimelineEvents(checkins = []) {
+export function createTimelineEvents(checkins: Checkin[] = []) {
     const checkinsStack = new Stack(checkins)
     const timelineEventsFactory = new TimelineEventsFactory(checkinsStack)
     timelineEventsFactory.process()

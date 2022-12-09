@@ -1,6 +1,9 @@
 
 export default class Stack {
-    constructor(items = []) {
+    readonly items: any[]
+    currentIndex: number
+
+    constructor(items: any[] = []) {
         this.items = items
         this.currentIndex = items.length
     }

@@ -5,13 +5,14 @@ import type { Moment } from "moment"
 
 export type { Location } from '../location'
 
-export type Date = string | Moment
+export type Date = String | Moment
 
 export interface Venue {
     location: Location
 }
 
 export interface Checkin {
+    type?: any
     venue: Venue
     createdAt: number
 }
@@ -20,6 +21,14 @@ export interface Home {
     location: Location
     since?: Date
     until?: Date
+}
+
+export function ensureDateString(date: Date, format?: string): String {
+    if (typeof date === "string") {
+        return date as String
+    } else {
+        return (date as Moment).format(format)
+    }
 }
 
 export function isEqualCountry(leftCheckin: Checkin, rightCheckin: Checkin) {
@@ -43,9 +52,9 @@ export function hasState(checkin: Checkin) {
 }
 
 
-export function getCheckinLocation(checkin: Checkin): Location | undefined {
-    const location = checkin?.venue?.location
-    return location ? {
+export function getCheckinLocation(checkin: Checkin): Location {
+    const location = checkin.venue.location
+    return {
         address: location.address,
         city: location.city,
         state: location.state,
@@ -54,23 +63,20 @@ export function getCheckinLocation(checkin: Checkin): Location | undefined {
         postalCode: location.postalCode,
         lat: location.lat,
         lng: location.lng,
-    } : undefined
+    }
 }
 
 export function getDistanceBetweenCheckins(checkin1: Checkin, checkin2: Checkin) {
     const location1 = getCheckinLocation(checkin1)
     const location2 = getCheckinLocation(checkin2)
-    if (!location1 || !location2) {
-        return undefined
-    }
     return distance(location1.lat, location1.lng, location2.lat, location2.lng)
 }
 
 export function createPotentialHome(location: Location, since?: Date, until?: Date): Home {
     return {
         location,
-        since: typeof since === 'string' ? since : since && since.format('YYYY-MM-DD'),
-        until: typeof until === 'string' ? until : until && until.format('YYYY-MM-DD'),
+        since: since && ensureDateString(since, 'YYYY-MM-DD'),
+        until: until && ensureDateString(until, 'YYYY-MM-DD'),
     }
 }
 
