@@ -12,8 +12,7 @@ import colors from "../../colors"
 import Panel from "../../components/Panel"
 
 import createTimeline from './timeline'
-import { GROUP_TYPE } from './timeline.groups'
-import { EVENT_TYPE, TRANSPORT_MODE } from './timeline.events'
+import { EventType, TransportMode, GroupType } from './types'
 
 const AllFlagsContainer = styled('div')`
     display: flex;
@@ -77,23 +76,23 @@ function TimelineGroupHome({ group }) {
 }
 
 const TRANSPORT_MODE_EMOJI = {
-    [TRANSPORT_MODE.BICYCLE]: '🚲',
-    [TRANSPORT_MODE.BUS]: '🚌',
-    [TRANSPORT_MODE.CAR]: '🚗',
-    [TRANSPORT_MODE.FOOT]: '🚶🏼',
-    [TRANSPORT_MODE.MOTOBIKE]: '🏍',
-    [TRANSPORT_MODE.PLANE]: '✈️',
-    [TRANSPORT_MODE.SHIP]: '🛥',
-    [TRANSPORT_MODE.TRAIN]: '🚅',
-    [TRANSPORT_MODE.CAMPERVAN]: '🚐',
-    [TRANSPORT_MODE.UNKNOWN]: '❔',
+    [TransportMode.Bicycle]: '🚲',
+    [TransportMode.Bus]: '🚌',
+    [TransportMode.Car]: '🚗',
+    [TransportMode.Foot]: '🚶🏼',
+    [TransportMode.Motobike]: '🏍',
+    [TransportMode.Plane]: '✈️',
+    [TransportMode.Ship]: '🛥',
+    [TransportMode.Train]: '🚅',
+    [TransportMode.Campervan]: '🚐',
+    [TransportMode.Unknown]: '❔',
 }
 
 function GroupEvent({ event }) {
     switch (event.type) {
-        case EVENT_TYPE.CHECKIN:
+        case EventType.Checkin:
             return <PhaseLabel>{event.location.city}</PhaseLabel>
-        case EVENT_TYPE.TRANSPORT:
+        case EventType.Transport:
             return <TransportLabel>{TRANSPORT_MODE_EMOJI[event.mode]}</TransportLabel>
     }
 }
@@ -126,11 +125,11 @@ function TimelineGroupTransport({ group, i }) {
 
 function TimelineGroup({ group, i }) {
     switch (group.type) {
-        case GROUP_TYPE.HOME:
+        case GroupType.Home:
             return <TimelineGroupHome group={group} i={i}/>
-        case GROUP_TYPE.MULTIHOP_TRIP:
+        case GroupType.Trip:
             return <TimelineGroupMultihop group={group} i={i}/>
-        // case GROUP_TYPE.TRANSPORT:
+        // case GroupType.Transport:
         //     return <TimelineGroupTransport group={group} i={i}/>
     }
 }

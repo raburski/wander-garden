@@ -1,47 +1,28 @@
 import { getTransportType, TRANSPORT_TYPE } from '../../swarm/categories'
-import { hasCity, isEqualCity, getDistanceBetweenCheckins, getCheckinLocation, is } from '../../location'
-import { getCheckinDate } from '../../swarm/functions'
+import { getCheckinDate, getDistanceBetweenCheckins, getCheckinLocation } from '../../swarm/functions'
 import { isTheSameArea } from './timeline.groups'
 import Stack from './stack'
 import moment from 'moment'
 
-export { getCheckinLocation } from '../../location'
+import { Event, EventType, TransportMode, CheckinEvent, TransportEvent } from './types'
+import type { Checkin, Date, Location } from "../../swarm/functions"
 
-
-export const EVENT_TYPE = {
-    CHECKIN: 'CHECKIN',
-    TRANSPORT: 'TRANSPORT',
-}
-
-export const TRANSPORT_MODE = {
-    UNKNOWN: 'UNKNOWN',
-    PLANE: 'PLANE',
-    CAR: 'CAR',
-    BUS: 'BUS',
-    TRAIN: 'TRAIN',
-    SHIP: 'SHIP',
-    MOTOBIKE: 'MOTOBIKE',
-    BICYCLE: 'BICYCLE',
-    FOOT: 'FOOT',
-    CAMPERVAN: 'CAMPERVAN',
-}
-
-export function createCheckinEvent(checkin) {
+export function createCheckinEvent(checkin: Checkin): CheckinEvent  {
     const { type, ...checkinNonType } = checkin
     return {
-        type: EVENT_TYPE.CHECKIN, 
+        type: EventType.Checkin, 
         location: getCheckinLocation(checkin),
         date: getCheckinDate(checkin).format(),
         checkin: checkinNonType
     }
 }
 
-export function createTransportEvent(mode, date, from, to, guess = false) {
-    return { type: EVENT_TYPE.TRANSPORT, mode, date: typeof date === "string" ? date : date.format(), from, to, guess }
+export function createTransportEvent(mode: TransportMode, date: Date, from: Location, to: Location, guess: boolean = false): TransportEvent {
+    return { type: EventType.Transport, mode, date: typeof date === "string" ? date : date.format(), from, to, guess }
 }
 
-export function getEventDate(event) {
-    return typeof event?.date === "string" ? moment(event.date) : event.date
+export function getEventDate(event: Event): Date {
+    return typeof event.date === "string" ? moment(event.date) : event.date
 }
 
 const FLIGHT_DISTANCE_GUESS = 800
