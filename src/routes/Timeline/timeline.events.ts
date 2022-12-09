@@ -67,7 +67,6 @@ class TimelineEventsFactory {
             const isTransportTypeConflicting = previousTransportType && currentTransportType && previousTransportType !== currentTransportType
 
             if (transportType && !isTransportTypeConflicting) {
-                // console.log('transportType', getCheckinLocation(previous), getCheckinLocation(current), distance)
                 switch (transportType) {
                     case TRANSPORT_TYPE.PLANE:
                         if (distance > NON_FLIGHT_DISTANCE_GUESS) {

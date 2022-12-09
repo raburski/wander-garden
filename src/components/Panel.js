@@ -23,7 +23,6 @@ const Content = styled('div')`
     box-shadow: 0px 2px 3px rgba(22, 22, 26, 0.05);
 `
 
-
 const Header = styled('div')`
     display: flex;
     flex-direction: row;

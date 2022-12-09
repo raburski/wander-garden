@@ -1,17 +1,9 @@
 import countryFlagEmoji from "country-flag-emoji"
+import { Fragment } from 'react'
 import { styled } from 'goober'
 import { onlyUnique } from "../../array"
 import Panel from "../../components/Panel"
-
-const Container = styled('div')`
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border: 1px solid #ebebeb;
-    border-radius: 12px;
-    padding-left: 12px;
-    margin: 4px;
-`
+import GroupBar from "./GroupBar"
 
 const Header = styled('div')`
     display: flex;
@@ -55,13 +47,11 @@ function Icon({ category }) {
     return <StyledIcon title={category.name}>{category.emoji}</StyledIcon>
 }
 
-export default function CountryBar({ name, code, states = [], children, categories = [] }) {
-    const joinedStates = states.filter(Boolean).filter(onlyUnique).join(', ')
+export default function CountryBar({ name, countryCodes, children }) {
     return (
-        <Panel>
-            <Header><Flag>{countryFlagEmoji.get(code).emoji}</Flag> <Name>{name}</Name><States>{joinedStates}</States></Header>
+        <Fragment>
+            <GroupBar title={name} countryCodes={countryCodes}/>
             {children}
-            {categories.length > 0 ? <Icons>{categories.map(c => <Icon category={c} key={c.id}/>)}</Icons> : null}
-        </Panel>
+        </Fragment>
     )
 }

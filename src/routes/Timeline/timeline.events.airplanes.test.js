@@ -1,7 +1,8 @@
 import assert from 'assert'
-import { createTimelineEvents, createCheckinEvent, createTransportEvent, getCheckinLocation, TRANSPORT_MODE } from './timeline.events'
+import { createTimelineEvents, createCheckinEvent, createTransportEvent } from './timeline.events'
 import { airport_cyprus, airport_wroclaw, fitness_wroclaw, restaurant_limassol_cyprus, airport_leszno } from './testData'
-import { getCheckinDate } from '../../swarm/functions'
+import { getCheckinDate, getCheckinLocation } from '../../swarm/functions'
+import { TransportMode } from './types'
 
 describe('timeline @ airplanes', function () {
     it('should create plane transport event with destination airport', function () {
@@ -9,7 +10,7 @@ describe('timeline @ airplanes', function () {
         const events = createTimelineEvents(checkins)
         const expectedEvents = [
             createCheckinEvent(fitness_wroclaw),
-            createTransportEvent(TRANSPORT_MODE.PLANE, getCheckinDate(airport_cyprus), getCheckinLocation(airport_cyprus), getCheckinLocation(fitness_wroclaw)),
+            createTransportEvent(TransportMode.Plane, getCheckinDate(airport_cyprus), getCheckinLocation(airport_cyprus), getCheckinLocation(fitness_wroclaw)),
             createCheckinEvent(airport_cyprus),
         ]
         assert.deepEqual(events, expectedEvents)
@@ -19,7 +20,7 @@ describe('timeline @ airplanes', function () {
         const events = createTimelineEvents(checkins)
         const expectedEvents = [
             createCheckinEvent(airport_cyprus),
-            createTransportEvent(TRANSPORT_MODE.PLANE, getCheckinDate(airport_cyprus), getCheckinLocation(fitness_wroclaw), getCheckinLocation(airport_cyprus)),
+            createTransportEvent(TransportMode.Plane, getCheckinDate(airport_cyprus), getCheckinLocation(fitness_wroclaw), getCheckinLocation(airport_cyprus)),
             createCheckinEvent(fitness_wroclaw),
         ]
         assert.deepEqual(events, expectedEvents)
@@ -30,7 +31,7 @@ describe('timeline @ airplanes', function () {
         const expectedEvents = [
             createCheckinEvent(airport_cyprus),
             // TODO: extrapolate date
-            createTransportEvent(TRANSPORT_MODE.PLANE, getCheckinDate(airport_cyprus), getCheckinLocation(airport_wroclaw), getCheckinLocation(airport_cyprus)),
+            createTransportEvent(TransportMode.Plane, getCheckinDate(airport_cyprus), getCheckinLocation(airport_wroclaw), getCheckinLocation(airport_cyprus)),
             createCheckinEvent(airport_wroclaw),
         ]
         assert.deepEqual(events, expectedEvents)
@@ -41,7 +42,7 @@ describe('timeline @ airplanes', function () {
         const expectedEvents = [
             createCheckinEvent(restaurant_limassol_cyprus),
             // TODO: extrapolate date
-            createTransportEvent(TRANSPORT_MODE.PLANE, getCheckinDate(restaurant_limassol_cyprus), getCheckinLocation(fitness_wroclaw), getCheckinLocation(restaurant_limassol_cyprus), true),
+            createTransportEvent(TransportMode.Plane, getCheckinDate(restaurant_limassol_cyprus), getCheckinLocation(fitness_wroclaw), getCheckinLocation(restaurant_limassol_cyprus), true),
             createCheckinEvent(fitness_wroclaw),
         ]
         assert.deepEqual(events, expectedEvents)

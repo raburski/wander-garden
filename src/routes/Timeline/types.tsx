@@ -43,6 +43,7 @@ export interface TransportEvent extends Event {
 /* GROUPS */
 
 export enum GroupType {
+    Container = 'CONTAINER',
     Home = 'HOME',
     Transport = 'TRANSPORT',
     Trip = 'TRIP',
@@ -50,19 +51,27 @@ export enum GroupType {
 
 export interface Group {
     type: GroupType
+}
+
+export interface ContainerGroup extends Group {
+    locations: Location[]
+    groups: Group[]
+}
+
+export interface HomeGroup extends Group {
     location: Location
     events: Event[]
 }
 
-export interface HomeGroup extends Group {
-
-}
-
 export interface TransportGroup extends Group {
+    location: Location
+    events: Event[]
     phases: Event[]
 }
 
 export interface TripGroup extends Group {
+    locations: Location[]
+    events: Event[]
     phases: Event[]
 }
 

@@ -6,10 +6,11 @@ import { getEventDate, createTransportEvent } from './timeline.events'
 import { EventType, TransportMode, GroupType } from './types'
 import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'
 
-import type { Group, Event, CheckinEvent, TransportEvent, HomeGroup, TransportGroup, TripGroup } from "./types"
+import type { Group, Event, CheckinEvent, TransportEvent, HomeGroup, TransportGroup, TripGroup, ContainerGroup } from "./types"
 import type { Location } from '../../location'
 import type { Moment, MomentInput } from "moment"
 import type { Checkin, Home } from "../../swarm"
+import { onlyUnique } from "../../array"
 
 function firstEventsLocation(events: Event[]): Location | undefined {
     const checkinEvents = events.filter(e => e && e.type === EventType.Checkin) as [CheckinEvent?]
@@ -20,6 +21,18 @@ function firstEventsLocation(events: Event[]): Location | undefined {
     const transportEvents = events.filter(e => e && e.type === EventType.Transport) as [TransportEvent?]
     const transportEventWithCity = transportEvents.find(e => e && e.to.city)
     return transportEventWithCity?.to
+}
+
+function getCheckinEventLocation(event: Event) {
+    const checkinEvent = event as CheckinEvent
+    return checkinEvent.location
+}
+
+function uniqueEventsLocations(events: Event[]): Location[] {
+    const checkinLocations = events.filter(e => e && e.type === EventType.Checkin).map(getCheckinEventLocation) as [Location]
+    const countryCodes = checkinLocations.map(location => location.cc).filter(onlyUnique)
+    const countryLocations = countryCodes.map(cc => checkinLocations.find(l => l.cc === cc)) as [Location]
+    return countryLocations
 }
 
 export function isTheSameArea(leftLocation: Location, rightLocation: Location) {
@@ -121,12 +134,27 @@ export function createPhasesWithEvents(events: Event[]): Event[] {
     return phases
 }
 
-export function createMultihopGroup(events: Event[]): TripGroup | undefined {
+export function getGroupLocations(group: Group) {
+    switch (group.type) {
+        case GroupType.Home:
+            return [(group as HomeGroup).location]
+        case GroupType.Trip:
+            return (group as TripGroup).locations
+        case GroupType.Container:
+            return (group as ContainerGroup).locations
+        // case GroupType.Transport:
+        //     return (group as TransportEvent).
+        default:
+            return []
+    }
+}
+
+export function createTripGroup(events: Event[]): TripGroup | undefined {
     if (events.length === 0) { return undefined }
-    const location = firstEventsLocation(events)
-    return location ? {
+    const locations = uniqueEventsLocations(events)
+    return locations ? {
         type: GroupType.Trip,
-        location,
+        locations,
         phases: createPhasesWithEvents(events),
         events,
     } : undefined
@@ -153,6 +181,15 @@ export function createHomeGroup(events: Event[]): HomeGroup | undefined {
     } : undefined
 }
 
+export function createContainerGroup(groups: Group[]): ContainerGroup | undefined {
+    if (groups.length === 0) { return undefined }
+    return {
+        type: GroupType.Container,
+        locations: groups.flatMap(getGroupLocations),
+        groups,
+    }
+}
+
 const DISTANT_PAST = '1920-01-01'
 const DISTANT_FUTURE = '2055-01-01'
 function getHomeForDate(date: Moment, homes: Home[] = []) {
@@ -164,6 +201,13 @@ function getHomeForDate(date: Moment, homes: Home[] = []) {
     })
 }
 
+function shallowArrayCompare(a1: any[], a2: any[]) {
+    if (a1.length !== a2.length) {
+        return false
+    }
+    return a1.map(i1 => a2.findIndex(i2 => i2 == i1)).reduce((acc, val) => acc && val >= 0, true)
+}
+
 interface Context {
     homes: Home[]
 }
@@ -172,10 +216,13 @@ class TimelineGroupsFactory {
     context: Context
     groups: Group[]
 
+    currentGroups: Group[]
+
     constructor(stack: Stack, context: Context) {
         this.stack = stack
         this.context = context
         this.groups = []
+        this.currentGroups = []
     }
     getCurrentEvent() {
         return this.stack.getCurrent()
@@ -194,9 +241,31 @@ class TimelineGroupsFactory {
         return currentHome ? isTheSameArea(currentHome.location, currentEvent.location) : false
     }
 
+    shouldAddToCurrentGroups(newGroup: Group): boolean {
+        if (this.currentGroups.length === 0) {
+            return true
+        }
+        const currentGroupCountryCodes = getGroupLocations(this.currentGroups[0]).map(l => l.cc).filter(onlyUnique)
+        const newGroupCountryCodes = getGroupLocations(newGroup).map(l => l.cc).filter(onlyUnique)
+        const equalCountryCodes = shallowArrayCompare(currentGroupCountryCodes, newGroupCountryCodes)
+        return equalCountryCodes
+    }
+
     push(group: Group | undefined) {
         if (group) {
-            this.groups.unshift(group)
+            if (this.currentGroups.length === 0) {
+                this.currentGroups.push(group)
+            } else {
+                if (this.shouldAddToCurrentGroups(group)) {
+                    this.currentGroups.push(group)
+                } else {
+                    const containerGroup = createContainerGroup(this.currentGroups)
+                    if (containerGroup) {
+                        this.groups.unshift(containerGroup)
+                    }
+                    this.currentGroups = [group]
+                }
+            }
         }
     }
 
@@ -205,11 +274,16 @@ class TimelineGroupsFactory {
         while(!this.stack.isFinished()) {
             this.processNext()
         }
+        const containerGroup = createContainerGroup(this.currentGroups)
+        if (containerGroup) {
+            this.groups.unshift(containerGroup)
+        }
     }
 
     processNext() {
         const isAtHome = this.isCurrentEventAtHome()
         const events: Event[] = []
+
         if (isAtHome) {
             while(!this.stack.isFinished() && this.isCurrentEventAtHome()) {
                 events.unshift(this.getCurrentEvent())
@@ -226,7 +300,7 @@ class TimelineGroupsFactory {
                 if (isTransportOnly) {
                     this.push(createTransportGroup(events))
                 } else {
-                    this.push(createMultihopGroup(events))
+                    this.push(createTripGroup(events))
                 }
             }
         }
@@ -237,9 +311,20 @@ class TimelineGroupsFactory {
     }
 }
 
+// const GROUP_HOME_AND_LOCAL = {
+//     pattern: [
+//         some((g: Group) => e.type === EventType.Checkin && checkinHasCategory(e.checkin, MOP_CATEGORIES)),
+//     ],
+//     result: (groups: Group[]) => createContainerGroup(groups)
+// }
+
 export function createTimelineGroups(events: Event[] = [], context: Context = {homes: []}): Group[] {
     const eventsStack = new Stack(events)
     const timelineGroupsFactory = new TimelineGroupsFactory(eventsStack, context)
     timelineGroupsFactory.process()
-    return timelineGroupsFactory.get()
+    const groups = timelineGroupsFactory.get()
+    return arrayQueryReplace([
+        // GROUP_HOME_AND_LOCAL,
+    ], groups)
+
 }
