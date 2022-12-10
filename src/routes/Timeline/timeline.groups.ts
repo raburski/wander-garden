@@ -142,8 +142,8 @@ export function getGroupLocations(group: Group) {
             return (group as TripGroup).locations
         case GroupType.Container:
             return (group as ContainerGroup).locations
-        // case GroupType.Transport:
-        //     return (group as TransportEvent).
+        case GroupType.Transport:
+            return [(group as TransportGroup).location]
         default:
             return []
     }
@@ -152,10 +152,14 @@ export function getGroupLocations(group: Group) {
 export function createTripGroup(events: Event[]): TripGroup | undefined {
     if (events.length === 0) { return undefined }
     const locations = uniqueEventsLocations(events)
+    const since = events[events.length - 1].date
+    const until = events[0].date
     return locations ? {
         type: GroupType.Trip,
         locations,
         phases: createPhasesWithEvents(events),
+        since,
+        until,
         events,
     } : undefined
 }
@@ -163,29 +167,41 @@ export function createTripGroup(events: Event[]): TripGroup | undefined {
 export function createTransportGroup(events: Event[]): TransportGroup | undefined {
     if (events.length === 0) { return undefined }
     const location = firstEventsLocation(events)
+    const since = events[events.length - 1].date
+    const until = events[0].date
     return location ? {
         type: GroupType.Transport,
         location,
         phases: createPhasesWithEvents(events),
         events,
+        since,
+        until,
     } : undefined
 }
 
 export function createHomeGroup(events: Event[]): HomeGroup | undefined {
     if (events.length === 0) { return undefined }
     const location = firstEventsLocation(events)
+    const since = events[events.length - 1].date
+    const until = events[0].date
     return location ? {
         type: GroupType.Home,
         location,
+        since,
+        until,
         events,
     } : undefined
 }
 
 export function createContainerGroup(groups: Group[]): ContainerGroup | undefined {
     if (groups.length === 0) { return undefined }
+    const since = groups[groups.length - 1].since
+    const until = groups[0].until
     return {
         type: GroupType.Container,
         locations: groups.flatMap(getGroupLocations),
+        since,
+        until,
         groups,
     }
 }
@@ -254,10 +270,10 @@ class TimelineGroupsFactory {
     push(group: Group | undefined) {
         if (group) {
             if (this.currentGroups.length === 0) {
-                this.currentGroups.push(group)
+                this.currentGroups.unshift(group)
             } else {
                 if (this.shouldAddToCurrentGroups(group)) {
-                    this.currentGroups.push(group)
+                    this.currentGroups.unshift(group)
                 } else {
                     const containerGroup = createContainerGroup(this.currentGroups)
                     if (containerGroup) {

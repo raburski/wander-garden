@@ -76,7 +76,33 @@ export const LinkRow = styled(Link)`
     }
 `
 
-export function Row({ to, ...props }) {
-    const Component = to ? LinkRow : StaticRow
-    return <Component to={to} {...props} />
+export const ClickRow = styled('div')`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    border-bottom: 1px solid #ebebeb;
+    border-top: 1px solid transparent;
+    padding: 4px;
+    padding-left: 10px;
+    margin-bottom: -1px;
+
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+        border-top: 1px solid #ebebeb;
+        background-color: ${colors.neutral.highlight};
+    }
+`
+
+export function Row({ to, onClick, ...props }) {
+    if (to) {
+        return <LinkRow to={to} {...props}/>
+    } else if (onClick) {
+        return <ClickRow onClick={onClick} {...props}/>
+    } else {
+        return <StaticRow {...props}/>
+    }
 }

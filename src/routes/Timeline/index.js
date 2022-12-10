@@ -1,6 +1,7 @@
 import { useState, Fragment } from "react"
 import { useSearchParams, Link } from "react-router-dom"
 import countryFlagEmoji from "country-flag-emoji"
+import moment from "moment"
 import { styled } from 'goober'
 import { onlyUnique } from "../../array"
 import { useCheckins } from "../../swarm"
@@ -104,8 +105,8 @@ const EventsContainer = styled('div')`
 `
 
 function TimelineGroupHome({ group }) {
-    const countryCodes = group.events.map(e => e.location?.cc).filter(Boolean).filter(onlyUnique)
-    return <EventsContainer>🏠</EventsContainer>
+    const location = group.location
+    return <EventsContainer>🏠 {location.city}</EventsContainer>
 }
 
 function TimelineGroupTrip({ group, i }) { 
@@ -118,6 +119,7 @@ function TimelineGroupTrip({ group, i }) {
 
 function TimelineGroupTransport({ group, i }) { 
     const firstTransport = group.phases[0]
+    return null // TODO
     return (
         <CountryBar name={`Transport ${firstTransport.from.cc} to ${firstTransport.to.cc}`} code={firstTransport.from.cc}>
 
@@ -126,11 +128,19 @@ function TimelineGroupTransport({ group, i }) {
 }
 
 function TimelineGroupContainer({ group }) {
+    // TODO: add chevron and animate shit out of this
+    const [expanded, setExpanded] = useState(true)
     const countryCodes = group.locations.map(location => location.cc).filter(onlyUnique)
+    const until = moment(group.until)
+    const since = moment(group.since)
+    const numberOfDays = until.diff(since, 'days')
+    const daysSuffix = numberOfDays === 1 ? 'day' : 'days'
+    const days = `${numberOfDays} ${daysSuffix}`
+    const range = `${since.format('DD.MM')} - ${until.format('DD.MM')}`
     return (
         <Fragment>
-            <CountryBar name={`TRIP`} countryCodes={countryCodes}/>
-            {group.groups.map(g => <TimelineGroup group={g} />)}
+            <CountryBar countryCodes={countryCodes} onClick={() => setExpanded(!expanded)} days={days} range={range}/>
+            {expanded && group.groups.map(g => <TimelineGroup group={g} />)}
         </Fragment>
     )
 }
@@ -144,8 +154,8 @@ function TimelineGroup({ group, topLevel, i }) {
             return <Container><TimelineGroupTrip group={group} i={i}/></Container>
         case GroupType.Container:
             return <Container><TimelineGroupContainer group={group}/></Container>
-        // case GroupType.Transport:
-        //     return <Container><TimelineGroupTransport group={group} i={i}/></Container>
+        case GroupType.Transport:
+            return <Container><TimelineGroupTransport group={group} i={i}/></Container>
     }
 }
 
@@ -160,10 +170,8 @@ export default function TimelinePage() {
     const [checkins] = useCheckins()
     const countryCodes = checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc).filter(onlyUnique)
     const timeline = createTimeline(checkins)
-    console.log('timeline', timeline[30])
     const filteredTimeline = selectedCountryCode ? timeline.filter(group => {
         const locations = getGroupLocations(group).map(l => l.cc)
-        console.log('locations', locations)
         return locations.some(cc => cc.toLowerCase() === selectedCountryCode)
     }) : timeline
 

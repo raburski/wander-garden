@@ -51,6 +51,8 @@ export enum GroupType {
 
 export interface Group {
     type: GroupType
+    since: String
+    until: String
 }
 
 export interface ContainerGroup extends Group {
