@@ -3,7 +3,7 @@ import { styled } from 'goober'
 import Page from '../../components/Page'
 import CountryRow from '../../components/CountryRow'
 import Panel from '../../components/Panel'
-import WhatIsWanderGarden from '../../bindings/WhatIsWanderGarden'
+import WhatIsWanderGarden from '../WebsiteInfo/WhatIsWanderGarden'
 import Badges from './Badges'
 import Swarm from './Swarm'
 
