@@ -1,7 +1,7 @@
 import assert from 'assert'
 import moment from 'moment'
 import { createCheckinEvent, createTransportEvent } from './timeline.events'
-import { createTimelineGroups, createTripGroup, createHomeGroup } from './timeline.groups'
+import { createTimelineGroups, createTripGroup, createContainerGroup } from './timeline.groups'
 import { trainstation_krakow, trainstation_wroclaw, fitness_wroclaw, airport_cyprus, restaurant_limassol_cyprus, kobierzyce_trip_events } from './testData'
 import { createPotentialHomeWithCheckin, getCheckinLocation, getCheckinDate } from '../../swarm/functions'
 import { TransportMode } from './types'
@@ -38,7 +38,9 @@ describe('timeline @ multihop', function () {
         const tripEvents = kobierzyce_trip_events['default'] // othwerise reads it as object instead of array
         const groups = createTimelineGroups(tripEvents, CONTEXT)
         const expectedGroups = [
-            createTripGroup(tripEvents),
+            createContainerGroup([
+                createTripGroup(tripEvents)
+            ]),
         ]
         assert.deepEqual(groups, expectedGroups)
     })

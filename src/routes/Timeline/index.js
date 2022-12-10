@@ -101,12 +101,12 @@ const EventsContainer = styled('div')`
     padding: 12px;
     flex-wrap: wrap;
     align-items: center;
-    border-bottom: 1px solid ${colors.border.normal};
+    border-bottom: 1px solid ${colors.border.light};
 `
 
 function TimelineGroupHome({ group }) {
     const location = group.location
-    return <EventsContainer>🏠 {location.city}</EventsContainer>
+    return <EventsContainer><PhaseLabel>🏠&nbsp;&nbsp;{location.city}</PhaseLabel></EventsContainer>
 }
 
 function TimelineGroupTrip({ group, i }) { 
@@ -129,7 +129,7 @@ function TimelineGroupTransport({ group, i }) {
 
 function TimelineGroupContainer({ group }) {
     // TODO: add chevron and animate shit out of this
-    const [expanded, setExpanded] = useState(true)
+    const [expanded, setExpanded] = useState(false)
     const countryCodes = group.locations.map(location => location.cc).filter(onlyUnique)
     const until = moment(group.until)
     const since = moment(group.since)
