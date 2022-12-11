@@ -3,6 +3,14 @@ import { styled } from 'goober'
 import colors from "../../colors"
 import { Row } from "../../components/Panel"
 
+const TitleContent = styled('div')`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    margin-right: 24px;
+    margin-left: 12px;
+`
+
 const FirstFlag = styled('div')`
     font-size: 32px;
 `
@@ -15,10 +23,16 @@ const NextFlag = styled('div')`
 const Title = styled('div')`
     display: flex;
     flex: 1;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: bold;
-    margin-right: 24px;
-    margin-left: 12px;
+    margin-bottom: 2px;
+`
+
+const Subtitle = styled('div')`
+    display: flex;
+    flex: 1;
+    font-size: 11px;
+    margin-bottom: 2px;
 `
 
 const RightContent = styled('div')`
@@ -38,7 +52,7 @@ const Range = styled('div')`
     margin-bottom: 4px;
 `
 
-export default function GroupBar({ countryCodes = [], title, onClick, days, range }) {
+export default function GroupBar({ countryCodes = [], title, subtitle, onClick, days, range }) {
     const flags = countryCodes.map(code => countryFlagEmoji.get(code)?.emoji).filter(Boolean).map((emoji, index) => {
         if (index == 0) {
             return <FirstFlag>{emoji}</FirstFlag>
@@ -50,7 +64,10 @@ export default function GroupBar({ countryCodes = [], title, onClick, days, rang
     return (
         <Row onClick={onClick}>
             {flags}
-            <Title>{title}</Title>
+            <TitleContent>
+                <Title>{title}</Title>
+                {subtitle ? <Subtitle>{subtitle}</Subtitle> : null}
+            </TitleContent>
             <RightContent>
                 <Days>{days}</Days>
                 <Range>{range}</Range>

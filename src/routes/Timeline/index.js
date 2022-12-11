@@ -11,14 +11,16 @@ import CountryBar from "./CountryBar"
 import Page from "../../components/Page"
 import colors from "../../colors"
 import Panel from "../../components/Panel"
-import { getGroupLocations } from './timeline.groups'
+import { getGroupHighlights } from './timeline.groups'
+import ToggleButton from "../../components/ToggleButton"
 
 import createTimeline from './timeline'
-import { EventType, TransportMode, GroupType } from './types'
+import { EventType, TransportMode, GroupType, LocationHighlightType } from './types'
 
 const AllFlagsContainer = styled('div')`
     display: flex;
     flex-direction: row;
+    margin-bottom: 8px;
 `
 
 const StyledFlagButton = styled(Link)`
@@ -110,7 +112,7 @@ function TimelineGroupHome({ group }) {
 }
 
 function TimelineGroupTrip({ group, i }) { 
-    const countryCodes = group.locations.map(location => location.cc)
+    const countryCodes = group.highlights.map(highlight => highlight.location.cc)
     const leftToRightPhases = [...group.phases].reverse()
     return (
         <EventsContainer>{leftToRightPhases.map(event => <GroupEvent event={event}/>)}</EventsContainer>
@@ -127,19 +129,41 @@ function TimelineGroupTransport({ group, i }) {
     )
 }
 
-function TimelineGroupContainer({ group }) {
+function highlightTitle(highlight) {
+    switch (highlight.type) {
+        case LocationHighlightType.City:
+            return highlight.location.city
+        case LocationHighlightType.State:
+            return highlight.location.state
+        case LocationHighlightType.Country:
+            return highlight.location.country
+    }
+}
+
+function titleFromLocationHighlights(highlights) {
+    return highlights.map(highlightTitle).join(', ')
+}
+
+function TimelineGroupContainer({ group, i }) {
     // TODO: add chevron and animate shit out of this
     const [expanded, setExpanded] = useState(false)
-    const countryCodes = group.locations.map(location => location.cc).filter(onlyUnique)
+    const countryCodes = group.highlights.map(highlight => highlight.location.cc).filter(onlyUnique).reverse()
     const until = moment(group.until)
     const since = moment(group.since)
     const numberOfDays = until.diff(since, 'days')
     const daysSuffix = numberOfDays === 1 ? 'day' : 'days'
     const days = `${numberOfDays} ${daysSuffix}`
     const range = `${since.format('DD.MM')} - ${until.format('DD.MM')}`
+    const title = titleFromLocationHighlights(group.highlights)
     return (
         <Fragment>
-            <CountryBar countryCodes={countryCodes} onClick={() => setExpanded(!expanded)} days={days} range={range}/>
+            <CountryBar
+                title={title}
+                countryCodes={countryCodes}
+                onClick={() => setExpanded(!expanded)}
+                days={days}
+                range={range}
+            />
             {expanded && group.groups.map(g => <TimelineGroup group={g} />)}
         </Fragment>
     )
@@ -153,7 +177,7 @@ function TimelineGroup({ group, topLevel, i }) {
         case GroupType.Trip:
             return <Container><TimelineGroupTrip group={group} i={i}/></Container>
         case GroupType.Container:
-            return <Container><TimelineGroupContainer group={group}/></Container>
+            return <Container><TimelineGroupContainer group={group} i={i}/></Container>
         case GroupType.Transport:
             return <Container><TimelineGroupTransport group={group} i={i}/></Container>
     }
@@ -165,20 +189,24 @@ function Timeline({ timeline }) {
 
 export default function TimelinePage() {
     const [params] = useSearchParams()
+    const [tripsOnly, setTripsOnly] = useState(true)
     const selectedCountryCode = params.get('cc')?.toLowerCase()
 
     const [checkins] = useCheckins()
     const countryCodes = checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc).filter(onlyUnique)
-    const timeline = createTimeline(checkins)
+    const timeline = createTimeline(checkins, { tripsOnly })
     const filteredTimeline = selectedCountryCode ? timeline.filter(group => {
-        const locations = getGroupLocations(group).map(l => l.cc)
+        const locations = getGroupHighlights(group).map(h => h.location.cc)
         return locations.some(cc => cc.toLowerCase() === selectedCountryCode)
     }) : timeline
+
+    console.log('timeline', filteredTimeline[0])
 
     return (
         <Page header="Timeline">
             <Panel spacing>
                 <AllFlags countryCodes={countryCodes} selectedCountryCode={selectedCountryCode}/>
+                <ToggleButton checked={tripsOnly} onClick={() => setTripsOnly(!tripsOnly)}>trips only</ToggleButton>
             </Panel>
             <Timeline timeline={filteredTimeline} />
         </Page>

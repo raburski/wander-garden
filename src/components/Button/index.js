@@ -7,6 +7,7 @@ const defaultStyle = `
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
+    align-self: flex-start;
 
     border: 1px solid ${colors.border.normal};
     border-radius: .5rem;

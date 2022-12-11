@@ -1,4 +1,5 @@
 import { styled } from 'goober'
+import Button from './Button'
 
 const StyledToggleButton = styled('button')`
     background-color: #fafafa;
@@ -12,5 +13,5 @@ const StyledToggleButton = styled('button')`
 
 export default function ToggleButton({ checked, onClick, children }) {
     const icon = checked ? '🔳' : '⬜️'
-    return <StyledToggleButton onClick={onClick}>{icon}&nbsp;&nbsp;{children}</StyledToggleButton>
+    return <Button onClick={onClick}>{icon}&nbsp;&nbsp;&nbsp;{children}</Button>
 }

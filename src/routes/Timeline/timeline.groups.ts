@@ -3,7 +3,7 @@ import Stack from './stack'
 import { isEqualLocationCity, isEqualApproximiteLocation } from '../../location'
 import { checkinHasCategory } from '../../swarm/categories'
 import { getEventDate, createTransportEvent } from './timeline.events'
-import { EventType, TransportMode, GroupType } from './types'
+import { EventType, TransportMode, GroupType, LocationHighlight, LocationHighlightType } from './types'
 import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'
 
 import type { Group, Event, CheckinEvent, TransportEvent, HomeGroup, TransportGroup, TripGroup, ContainerGroup } from "./types"
@@ -11,6 +11,10 @@ import type { Location } from '../../location'
 import type { Moment, MomentInput } from "moment"
 import type { Checkin, Home } from "../../swarm"
 import { onlyUnique } from "../../array"
+
+interface TimelineConfig {
+    tripsOnly?: boolean
+}
 
 function firstEventsLocation(events: Event[]): Location | undefined {
     const checkinEvents = events.filter(e => e && e.type === EventType.Checkin) as [CheckinEvent?]
@@ -28,28 +32,12 @@ function getCheckinEventLocation(event: Event) {
     return checkinEvent.location
 }
 
-function uniqueEventsLocations(events: Event[]): Location[] {
-    const checkinLocations = events.filter(e => e && e.type === EventType.Checkin).map(getCheckinEventLocation) as [Location]
-    const countryCodes = checkinLocations.map(location => location.cc).filter(onlyUnique)
-    const countryLocations = countryCodes.map(cc => checkinLocations.find(l => l.cc === cc)) as [Location]
-    return countryLocations
-}
-
 export function isTheSameArea(leftLocation: Location, rightLocation: Location) {
     if (leftLocation.city && rightLocation.city) {
         return isEqualLocationCity(leftLocation, rightLocation)
     }
     return isEqualApproximiteLocation(leftLocation, rightLocation)
 }
-
-// // Very simple for now!
-// function createPhaseWithEvents(events) { 
-//     const eventWithCity = events.find(e => e?.location?.city)
-//     if (eventWithCity) {
-//         return eventWithCity
-//     }
-//     return events[0]
-// }
 
 const MOP_CATEGORIES = [
     '4d954b16a243a5684b65b473', // rest place
@@ -59,7 +47,7 @@ const MOP_CATEGORIES = [
 const MOP_INCLUDE_IN_TRIP = {
     pattern: [
         (e: TransportEvent) => e.type === EventType.Transport && e.mode === TransportMode.Car,
-        some((e: CheckinEvent) => e.type === EventType.Checkin && checkinHasCategory(e.checkin, MOP_CATEGORIES)),
+        some((e: CheckinEvent) => e.type === EventType.Checkin && e.checkin && checkinHasCategory(e.checkin, MOP_CATEGORIES)),
         (e: TransportEvent) => e.type === EventType.Transport && e.mode === TransportMode.Car,
     ],
     result: ([to, _, from]: [TransportEvent, CheckinEvent, TransportEvent]) =>
@@ -134,16 +122,16 @@ export function createPhasesWithEvents(events: Event[]): Event[] {
     return phases
 }
 
-export function getGroupLocations(group: Group) {
+export function getGroupHighlights(group: Group): LocationHighlight[] {
     switch (group.type) {
         case GroupType.Home:
-            return [(group as HomeGroup).location]
+            return [(group as HomeGroup).highlight]
         case GroupType.Trip:
-            return (group as TripGroup).locations
+            return (group as TripGroup).highlights
         case GroupType.Container:
-            return (group as ContainerGroup).locations
+            return (group as ContainerGroup).highlights
         case GroupType.Transport:
-            return [(group as TransportGroup).location]
+            return [(group as TransportGroup).highlight]
         default:
             return []
     }
@@ -151,12 +139,12 @@ export function getGroupLocations(group: Group) {
 
 export function createTripGroup(events: Event[]): TripGroup | undefined {
     if (events.length === 0) { return undefined }
-    const locations = uniqueEventsLocations(events)
     const since = events[events.length - 1].date
     const until = events[0].date
-    return locations ? {
+    const highlights = getHighlightsFromEvents(events)
+    return highlights ? {
         type: GroupType.Trip,
-        locations,
+        highlights,
         phases: createPhasesWithEvents(events),
         since,
         until,
@@ -171,7 +159,7 @@ export function createTransportGroup(events: Event[]): TransportGroup | undefine
     const until = events[0].date
     return location ? {
         type: GroupType.Transport,
-        location,
+        highlight: { type: LocationHighlightType.Country, location: location }, // TODO: fix hightlight generation here
         phases: createPhasesWithEvents(events),
         events,
         since,
@@ -186,11 +174,86 @@ export function createHomeGroup(events: Event[]): HomeGroup | undefined {
     const until = events[0].date
     return location ? {
         type: GroupType.Home,
-        location,
+        highlight: { type: LocationHighlightType.City, location: location },
         since,
         until,
         events,
     } : undefined
+}
+
+function onlyCheckinEvents(event: Event): boolean {
+    return event.type == EventType.Checkin
+}
+
+function uniqueEventsLocations(events: Event[]): Location[] {
+    const checkinLocations = events.filter(e => e && e.type === EventType.Checkin).map(getCheckinEventLocation) as [Location]
+    const countryCodes = checkinLocations.map(location => location.cc).filter(onlyUnique)
+    const countryLocations = countryCodes.map(cc => checkinLocations.find(l => l.cc === cc)) as [Location]
+    return countryLocations
+}
+
+export function getHighlightsFromEvents(events: Event[]): LocationHighlight[] {
+    const cityCheckins: { [city: string]: number } = {}
+    const stateCheckins: { [state: string]: number } = {}
+    const countryCheckins: { [country: string]: number } = {}
+    const checkinEvents = events.filter(onlyCheckinEvents) as CheckinEvent[]
+    checkinEvents.forEach(e => {
+        // TODO: add weights based on checkin category
+        if (e.location.country) {
+            countryCheckins[e.location.country] = (countryCheckins[e.location.country] || 0) + 1 
+        }
+        if (e.location.state && Object.keys(countryCheckins).indexOf(e.location.state) < 0) {
+            stateCheckins[e.location.state] = (stateCheckins[e.location.state] || 0) + 1 
+        }
+        if (e.location.city) {
+            cityCheckins[e.location.city] = (cityCheckins[e.location.city] || 0) + 1 
+        }
+    })
+    const cities = Object.keys(cityCheckins)
+    const states = Object.keys(stateCheckins)
+    const countries = Object.keys(countryCheckins)
+
+    const COUNTRY_CHECKIN_THRESHOLD = 6 // TODO: perhaps change to number of days?
+    if (cities.length === 1) {
+        const location = checkinEvents.find(e => e.location.city === cities[0])!.location
+        return [{ type: LocationHighlightType.City, location }]
+    }
+    if (states.length === 1) {
+        const location = checkinEvents.find(e => e.location.state === states[0])!.location
+        return [{ type: LocationHighlightType.State, location }]
+    }
+    if (countries.length === 1 && checkinEvents.length > COUNTRY_CHECKIN_THRESHOLD) {
+        const location = checkinEvents.find(e => e.location.country === countries[0])!.location
+        return [{ type: LocationHighlightType.Country, location }]
+    }
+
+    const WEIGHT_THRESHOLD = 0.5
+    const sum = (a: number, v: number) => a + v
+    const citiesWeightSum = Object.values(cityCheckins).reduce(sum, 0)
+    const statesWeightSum = Object.values(stateCheckins).reduce(sum, 0)
+    const countriesWeightSum = Object.values(countryCheckins).reduce(sum, 0)
+
+    cities.forEach(city => cityCheckins[city] = cityCheckins[city] / citiesWeightSum)
+    states.forEach(city => stateCheckins[city] = stateCheckins[city] / statesWeightSum)
+    countries.forEach(city => countryCheckins[city] = countryCheckins[city] / countriesWeightSum)
+
+    const mainCity = cities.find(city => cityCheckins[city] > WEIGHT_THRESHOLD)
+    if (mainCity) {
+        const location = checkinEvents.find(e => e.location.city === mainCity)!.location
+        return [{ type: LocationHighlightType.City, location }]
+    }
+    const mainState = states.find(state => stateCheckins[state] > WEIGHT_THRESHOLD)
+    if (mainState) {
+        const location = checkinEvents.find(e => e.location.state === mainState)!.location
+        return [{ type: LocationHighlightType.State, location }]
+    }
+    const mainCountry = countries.find(country => countryCheckins[country] > WEIGHT_THRESHOLD)
+    if (mainCountry) {
+        const location = checkinEvents.find(e => e.location.country === mainCountry)!.location
+        return [{ type: LocationHighlightType.Country, location }]
+    }
+
+    return []
 }
 
 export function createContainerGroup(groups: Group[]): ContainerGroup | undefined {
@@ -199,7 +262,7 @@ export function createContainerGroup(groups: Group[]): ContainerGroup | undefine
     const until = groups[0].until
     return {
         type: GroupType.Container,
-        locations: groups.flatMap(getGroupLocations),
+        highlights: groups.flatMap(getGroupHighlights),
         since,
         until,
         groups,
@@ -231,12 +294,14 @@ class TimelineGroupsFactory {
     stack: Stack
     context: Context
     groups: Group[]
+    config: TimelineConfig
 
     currentGroups: Group[]
 
-    constructor(stack: Stack, context: Context) {
+    constructor(stack: Stack, context: Context, config: TimelineConfig) {
         this.stack = stack
         this.context = context
+        this.config = config
         this.groups = []
         this.currentGroups = []
     }
@@ -261,8 +326,8 @@ class TimelineGroupsFactory {
         if (this.currentGroups.length === 0) {
             return true
         }
-        const currentGroupCountryCodes = getGroupLocations(this.currentGroups[0]).map(l => l.cc).filter(onlyUnique)
-        const newGroupCountryCodes = getGroupLocations(newGroup).map(l => l.cc).filter(onlyUnique)
+        const currentGroupCountryCodes = getGroupHighlights(this.currentGroups[0]).map(h => h.location.cc).filter(onlyUnique)
+        const newGroupCountryCodes = getGroupHighlights(newGroup).map(h => h.location.cc).filter(onlyUnique)
         const equalCountryCodes = shallowArrayCompare(currentGroupCountryCodes, newGroupCountryCodes)
         return equalCountryCodes
     }
@@ -305,7 +370,9 @@ class TimelineGroupsFactory {
                 events.unshift(this.getCurrentEvent())
                 this.stack.makeStep()
             }
-            this.push(createHomeGroup(events))
+            if (!this.config.tripsOnly) {
+                this.push(createHomeGroup(events))
+            }
         } else {
             while(!this.stack.isFinished() && !this.isCurrentEventAtHome()) {
                 events.unshift(this.getCurrentEvent())
@@ -334,9 +401,9 @@ class TimelineGroupsFactory {
 //     result: (groups: Group[]) => createContainerGroup(groups)
 // }
 
-export function createTimelineGroups(events: Event[] = [], context: Context = {homes: []}): Group[] {
+export function createTimelineGroups(events: Event[] = [], context: Context = {homes: []}, config: TimelineConfig = {}): Group[] {
     const eventsStack = new Stack(events)
-    const timelineGroupsFactory = new TimelineGroupsFactory(eventsStack, context)
+    const timelineGroupsFactory = new TimelineGroupsFactory(eventsStack, context, config)
     timelineGroupsFactory.process()
     const groups = timelineGroupsFactory.get()
     return arrayQueryReplace([

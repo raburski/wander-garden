@@ -29,6 +29,8 @@ const fixNames: {[name: string]: string} = {
     Vratislav: 'Wrocław',
     Wroclawiu: 'Wrocław',
     Wroclaw: 'Wrocław',
+
+    Krakow: 'Kraków',
 }
 
 export function cleanLocation(location: string = "") {

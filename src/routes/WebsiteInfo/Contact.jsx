@@ -15,7 +15,7 @@ export default function Contact() {
             header="Contact information"
         >
             {COPY}
-            <Button style={{alignSelf: 'flex-start'}} icon={FiExternalLink} onClick={() => window.open('http://raburski.com')}>Open raburski.com</Button>
+            <Button icon={FiExternalLink} onClick={() => window.open('http://raburski.com')}>Open raburski.com</Button>
         </Panel>
     )
 }

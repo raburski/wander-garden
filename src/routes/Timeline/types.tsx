@@ -21,6 +21,17 @@ export enum TransportMode {
     Campervan = 'CAMPERVAN',
 }
 
+export enum LocationHighlightType {
+    Country = 'COUNTRY',
+    State = 'STATE',
+    City = 'City',
+}
+
+export interface LocationHighlight {
+    type: LocationHighlightType
+    location: Location
+}
+
 export interface Event {
     type: EventType
     date: String
@@ -56,23 +67,23 @@ export interface Group {
 }
 
 export interface ContainerGroup extends Group {
-    locations: Location[]
+    highlights: LocationHighlight[]
     groups: Group[]
 }
 
 export interface HomeGroup extends Group {
-    location: Location
+    highlight: LocationHighlight
     events: Event[]
 }
 
 export interface TransportGroup extends Group {
-    location: Location
+    highlight: LocationHighlight
     events: Event[]
     phases: Event[]
 }
 
 export interface TripGroup extends Group {
-    locations: Location[]
+    highlights: LocationHighlight[]
     events: Event[]
     phases: Event[]
 }
