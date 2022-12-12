@@ -164,6 +164,13 @@ function titleFromLocationHighlights(highlights) {
     return highlights.map(highlightTitle).reverse().join(', ')
 }
 
+const MONTH_TO_SEASON = ['❄️', '❄️', '🌸', '🌸', '🌸', '☀️', '☀️', '☀️', '🍁', '🍁', '🍁', '❄️']
+function seasonEmojiForDate(date) {
+    const month = date.get('month') // index from 0
+    return MONTH_TO_SEASON[month]
+
+}
+
 function TimelineGroupContainer({ group, i }) {
     // TODO: add chevron and animate shit out of this
     const [expanded, setExpanded] = useState(false)
@@ -173,7 +180,8 @@ function TimelineGroupContainer({ group, i }) {
     const numberOfDays = until.diff(since, 'days')
     const daysSuffix = numberOfDays === 1 ? 'day' : 'days'
     const days = `${numberOfDays} ${daysSuffix}`
-    const range = `${since.format('DD.MM')} - ${until.format('DD.MM')}`
+    const season = seasonEmojiForDate(moment(group.since).add(numberOfDays/2, 'days'))
+    const range = `${since.format('DD.MM')} - ${until.format('DD.MM')} ${season}`
     const title = titleFromLocationHighlights(group.highlights)
     return (
         <Fragment>
