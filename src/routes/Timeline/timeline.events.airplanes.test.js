@@ -26,13 +26,14 @@ describe('timeline @ airplanes', function () {
         assert.deepEqual(events, expectedEvents)
     })
     it('should create plane transport event with both airports', function () {
-        const checkins = [airport_cyprus, airport_wroclaw]
+        const fixedAirportWroclaw = { ...airport_wroclaw, createdAt: airport_cyprus.createdAt - 1 * 24 * 60}
+        const checkins = [airport_cyprus, fixedAirportWroclaw]
         const events = createTimelineEvents(checkins)
         const expectedEvents = [
             createCheckinEvent(airport_cyprus),
             // TODO: extrapolate date
-            createTransportEvent(TransportMode.Plane, getCheckinDate(airport_cyprus), getCheckinLocation(airport_wroclaw), getCheckinLocation(airport_cyprus)),
-            createCheckinEvent(airport_wroclaw),
+            createTransportEvent(TransportMode.Plane, getCheckinDate(airport_cyprus), getCheckinLocation(fixedAirportWroclaw), getCheckinLocation(airport_cyprus)),
+            createCheckinEvent(fixedAirportWroclaw),
         ]
         assert.deepEqual(events, expectedEvents)
     })

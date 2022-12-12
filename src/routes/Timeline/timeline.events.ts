@@ -72,7 +72,6 @@ class TimelineEventsFactory {
 
         // NYE calendar event
         if (previousMoment.get('year') !== currentMoment.get('year')) {
-            console.log(`NEW YEAR FOUND ${previousMoment.get('year')} -> ${currentMoment.get('year')}`)
             const newYearMoment = moment(`${currentMoment.get('year')}-01-01T00:00:00`)
             this.push(createCalendarEvent(newYearMoment, CalendarDayType.NewYear))
         }

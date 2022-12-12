@@ -2,7 +2,7 @@ import assert from 'assert'
 import moment from 'moment'
 import { createCheckinEvent, createTransportEvent } from './timeline.events'
 import { createTimelineGroups, createTripGroup, createContainerGroup, getHighlightsFromEvents } from './timeline.groups'
-import { airport_cyprus, trainstation_wroclaw, fitness_wroclaw, burger_berlin, restaurant_limassol_cyprus, restaurant_pafos_cyprus, karpacz_events, krakow_events, germany_swiss_trip_events, cafe_nicosia_cyprus } from './testData'
+import { airport_cyprus, trainstation_wroclaw, fitness_wroclaw, burger_berlin, restaurant_limassol_cyprus, restaurant_pafos_cyprus, karpacz_events, krakow_events, germany_swiss_trip_events, cafe_nicosia_cyprus, srilanka_trip_events, eurotrip } from './testData'
 import { createPotentialHomeWithCheckin, getCheckinLocation, getCheckinDate } from '../../swarm/functions'
 import { TransportMode, LocationHighlightType } from './types'
 
@@ -43,6 +43,20 @@ describe('timeline group title', function () {
         const events = krakow_events['default']
         const highlights = getHighlightsFromEvents(events)
         const expectedHighlights = [{ type: LocationHighlightType.City, location: krakowCheckinEvent.location }]
+        assert.deepEqual(highlights, expectedHighlights)
+    })
+    it('should recognise most checked in city/region', function () {
+        const krakowCheckinEvent = krakow_events['default'][4]
+        const events = krakow_events['default']
+        const highlights = getHighlightsFromEvents(events)
+        const expectedHighlights = [{ type: LocationHighlightType.City, location: krakowCheckinEvent.location }]
+        assert.deepEqual(highlights, expectedHighlights)
+    })
+    it('should recognise country if multiple regions from given country', function () {
+        const srilankaCheckinEvent = srilanka_trip_events['default'][6]
+        const events = srilanka_trip_events['default']
+        const highlights = getHighlightsFromEvents(events)
+        const expectedHighlights = [{ type: LocationHighlightType.Country, location: srilankaCheckinEvent.location }]
         assert.deepEqual(highlights, expectedHighlights)
     })
 })

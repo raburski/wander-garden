@@ -282,7 +282,7 @@ export function getHighlightsFromEvents(events: Event[]): LocationHighlight[] {
         return []
     }
 
-    const MAIN_WEIGHT_THRESHOLD = 0.7
+    const MAIN_WEIGHT_THRESHOLD = 0.65
     const mainHighlights = highlightsWithCheckinWeights(MAIN_WEIGHT_THRESHOLD)
     if (mainHighlights.length > 0) {
         return mainHighlights
