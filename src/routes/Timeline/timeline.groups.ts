@@ -3,7 +3,7 @@ import Stack from './stack'
 import { isEqualLocationCity, isEqualApproximiteLocation } from '../../location'
 import { checkinHasCategory } from '../../swarm/categories'
 import { getEventDate, createTransportEvent } from './timeline.events'
-import { EventType, TransportMode, GroupType, LocationHighlight, LocationHighlightType } from './types'
+import { EventType, TransportMode, GroupType, LocationHighlight, LocationHighlightType, PlainGroup } from './types'
 import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'
 
 import type { Group, Event, CheckinEvent, TransportEvent, HomeGroup, TransportGroup, TripGroup, ContainerGroup } from "./types"
@@ -11,6 +11,7 @@ import type { Location } from '../../location'
 import type { Moment, MomentInput } from "moment"
 import type { Checkin, Home } from "../../swarm"
 import { onlyUnique } from "../../array"
+import { cleanLocation } from "../../location"
 
 interface TimelineConfig {
     tripsOnly?: boolean
@@ -181,6 +182,18 @@ export function createHomeGroup(events: Event[]): HomeGroup | undefined {
     } : undefined
 }
 
+export function createPlainGroup(events: Event[]): PlainGroup | undefined {
+    if (events.length === 0) { return undefined }
+    const since = events[events.length - 1].date
+    const until = events[0].date
+    return {
+        type: GroupType.Plain,
+        since,
+        until,
+        events,
+    }
+}
+
 function onlyCheckinEvents(event: Event): boolean {
     return event.type == EventType.Checkin
 }
@@ -197,16 +210,25 @@ export function getHighlightsFromEvents(events: Event[]): LocationHighlight[] {
     const stateCheckins: { [state: string]: number } = {}
     const countryCheckins: { [country: string]: number } = {}
     const checkinEvents = events.filter(onlyCheckinEvents) as CheckinEvent[]
-    checkinEvents.forEach(e => {
+    checkinEvents.forEach((e, i) => {
+        const prevCheckinDate = checkinEvents[i - 1]?.date as MomentInput
+        const nextCheckinDate = checkinEvents[i + 1]?.date as MomentInput
+        const checkinMoment = moment(e.date as MomentInput)
+        const prevCheckinHourDiff = prevCheckinDate ? moment(prevCheckinDate).diff(checkinMoment, 'hours') / 2 : 0
+        const nextCheckinHourDiff = nextCheckinDate ? moment(checkinMoment).diff(nextCheckinDate, 'hours') / 2 : 0
+        const checkinWeight = prevCheckinHourDiff + nextCheckinHourDiff
         // TODO: add weights based on checkin category
-        if (e.location.country) {
-            countryCheckins[e.location.country] = (countryCheckins[e.location.country] || 0) + 1 
+        const cleanCountry = cleanLocation(e.location.country)
+        const cleanState = cleanLocation(e.location.state)
+        const cleanCity = cleanLocation(e.location.city)
+        if (cleanCountry) {
+            countryCheckins[cleanCountry] = (countryCheckins[cleanCountry] || 0) + checkinWeight
         }
-        if (e.location.state && Object.keys(countryCheckins).indexOf(e.location.state) < 0) {
-            stateCheckins[e.location.state] = (stateCheckins[e.location.state] || 0) + 1 
+        if (cleanState && Object.keys(countryCheckins).indexOf(cleanState) < 0) {
+            stateCheckins[cleanState] = (stateCheckins[cleanState] || 0) + checkinWeight
         }
-        if (e.location.city) {
-            cityCheckins[e.location.city] = (cityCheckins[e.location.city] || 0) + 1 
+        if (cleanCity) {
+            cityCheckins[cleanCity] = (cityCheckins[cleanCity] || 0) + checkinWeight
         }
     })
     const cities = Object.keys(cityCheckins)
@@ -215,19 +237,20 @@ export function getHighlightsFromEvents(events: Event[]): LocationHighlight[] {
 
     const COUNTRY_CHECKIN_THRESHOLD = 6 // TODO: perhaps change to number of days?
     if (cities.length === 1) {
-        const location = checkinEvents.find(e => e.location.city === cities[0])!.location
+        const location = checkinEvents.find(e => cleanLocation(e.location.city) === cities[0])!.location
         return [{ type: LocationHighlightType.City, location }]
     }
     if (states.length === 1) {
-        const location = checkinEvents.find(e => e.location.state === states[0])!.location
+        const location = checkinEvents.find(e => cleanLocation(e.location.state) === states[0])!.location
         return [{ type: LocationHighlightType.State, location }]
     }
     if (countries.length === 1 && checkinEvents.length > COUNTRY_CHECKIN_THRESHOLD) {
-        const location = checkinEvents.find(e => e.location.country === countries[0])!.location
+        const location = checkinEvents.find(e => cleanLocation(e.location.country) === countries[0])!.location
         return [{ type: LocationHighlightType.Country, location }]
     }
 
-    const WEIGHT_THRESHOLD = 0.5
+    /* MORE THAN SINGLE CITY/STATE/COUNTRY */
+
     const sum = (a: number, v: number) => a + v
     const citiesWeightSum = Object.values(cityCheckins).reduce(sum, 0)
     const statesWeightSum = Object.values(stateCheckins).reduce(sum, 0)
@@ -237,20 +260,50 @@ export function getHighlightsFromEvents(events: Event[]): LocationHighlight[] {
     states.forEach(city => stateCheckins[city] = stateCheckins[city] / statesWeightSum)
     countries.forEach(city => countryCheckins[city] = countryCheckins[city] / countriesWeightSum)
 
-    const mainCity = cities.find(city => cityCheckins[city] > WEIGHT_THRESHOLD)
-    if (mainCity) {
-        const location = checkinEvents.find(e => e.location.city === mainCity)!.location
-        return [{ type: LocationHighlightType.City, location }]
+    const highlightsWithCheckinWeights = (THRESHOLD: number, onlyCountry = false): LocationHighlight[] => {
+        const mainCities = cities.filter(city => cityCheckins[city] > THRESHOLD)
+        if (!onlyCountry && mainCities.length > 0) {
+            return mainCities
+                .map(city => checkinEvents.find(e => cleanLocation(e.location.city) === city)!.location)
+                .map(location => ({ type: LocationHighlightType.City, location }))
+        }
+        const mainStates = states.filter(state => stateCheckins[state] > THRESHOLD)
+        if (!onlyCountry && mainStates.length > 0) {
+            return mainStates
+                .map(state => checkinEvents.find(e => cleanLocation(e.location.state) === state)!.location)
+                .map(location => ({ type: LocationHighlightType.State, location }))
+        }
+        const mainCountries = countries.filter(country => countryCheckins[country] > THRESHOLD)
+        if (mainCountries.length > 0) {
+            return mainCountries
+                .map(country => checkinEvents.find(e => cleanLocation(e.location.country) === country)!.location)
+                .map(location => ({ type: LocationHighlightType.Country, location }))
+        }
+        return []
     }
-    const mainState = states.find(state => stateCheckins[state] > WEIGHT_THRESHOLD)
-    if (mainState) {
-        const location = checkinEvents.find(e => e.location.state === mainState)!.location
-        return [{ type: LocationHighlightType.State, location }]
+
+    const MAIN_WEIGHT_THRESHOLD = 0.7
+    const mainHighlights = highlightsWithCheckinWeights(MAIN_WEIGHT_THRESHOLD)
+    if (mainHighlights.length > 0) {
+        return mainHighlights
     }
-    const mainCountry = countries.find(country => countryCheckins[country] > WEIGHT_THRESHOLD)
-    if (mainCountry) {
-        const location = checkinEvents.find(e => e.location.country === mainCountry)!.location
-        return [{ type: LocationHighlightType.Country, location }]
+
+    const averageCityWeight = Object.values(cityCheckins).reduce(sum, 0) / Object.keys(cityCheckins).length
+    const averageStateWeight = Object.values(stateCheckins).reduce(sum, 0) / Object.keys(stateCheckins).length
+    const averageCountryWeight = Object.values(countryCheckins).reduce(sum, 0) / Object.keys(countryCheckins).length
+
+    if (Object.keys(countryCheckins).length > 2) {
+        const weight = 1/(Object.keys(countryCheckins).length * 2)
+        const fewHighlights = highlightsWithCheckinWeights(weight, true)
+        if (fewHighlights.length > 0) {
+            return fewHighlights
+        }
+    }
+
+    const maxAverageWeight = Math.max(averageCityWeight, averageCountryWeight, averageStateWeight)
+    const unknownHighlights = highlightsWithCheckinWeights(maxAverageWeight)
+    if (unknownHighlights.length > 0) {
+        return unknownHighlights
     }
 
     return []
@@ -316,10 +369,13 @@ class TimelineGroupsFactory {
     isCurrentEventAtHome() {
         const currentHome = this.getCurrentHome()
         const currentEvent = this.getCurrentEvent()
-        if (currentEvent.type === EventType.Transport) {
+        if (currentEvent.type !== EventType.Checkin) {
             return false
         }
         return currentHome ? isTheSameArea(currentHome.location, currentEvent.location) : false
+    }
+    isCurrentEventStandalone() {
+        return this.getCurrentEvent().type === EventType.Calendar
     }
 
     shouldAddToCurrentGroups(newGroup: Group): boolean {
@@ -366,17 +422,31 @@ class TimelineGroupsFactory {
         const events: Event[] = []
 
         if (isAtHome) {
-            while(!this.stack.isFinished() && this.isCurrentEventAtHome()) {
-                events.unshift(this.getCurrentEvent())
-                this.stack.makeStep()
+            while(!this.stack.isFinished()) {
+                if (this.isCurrentEventStandalone()) {
+                    this.groups.unshift(createPlainGroup([this.getCurrentEvent()])!)
+                    this.stack.makeStep()
+                } else if (this.isCurrentEventAtHome()) {
+                    events.unshift(this.getCurrentEvent())
+                    this.stack.makeStep()
+                } else {
+                    break
+                }
             }
-            if (!this.config.tripsOnly) {
+            if (!this.config.tripsOnly && events.length > 0) {
                 this.push(createHomeGroup(events))
             }
         } else {
-            while(!this.stack.isFinished() && !this.isCurrentEventAtHome()) {
-                events.unshift(this.getCurrentEvent())
-                this.stack.makeStep()
+            while(!this.stack.isFinished()) {
+                if (this.isCurrentEventStandalone()) {
+                    this.groups.unshift(createPlainGroup([this.getCurrentEvent()])!)
+                    this.stack.makeStep()
+                } else if (!this.isCurrentEventAtHome()) {
+                    events.unshift(this.getCurrentEvent())
+                    this.stack.makeStep()
+                } else {
+                    break
+                }
             }
             if (events.length > 0) {
                 const isTransportOnly = events.reduce((acc, e: Event) => acc && e.type === EventType.Transport, true)

@@ -6,6 +6,7 @@ import type { Checkin } from '../../swarm'
 export enum EventType {
     Checkin = 'CHECKIN',
     Transport = 'TRANSPORT',
+    Calendar = 'CALENDAR'
 }
 
 export enum TransportMode {
@@ -24,7 +25,7 @@ export enum TransportMode {
 export enum LocationHighlightType {
     Country = 'COUNTRY',
     State = 'STATE',
-    City = 'City',
+    City = 'CITY',
 }
 
 export interface LocationHighlight {
@@ -51,10 +52,21 @@ export interface TransportEvent extends Event {
     to: Location
 }
 
+export enum CalendarDayType {
+    NewYear = 'NEW_YEAR'
+}
+
+export interface CalendarEvent extends Event {
+    type: EventType.Calendar
+    dayType: CalendarDayType
+    name?: String
+}
+
 /* GROUPS */
 
 export enum GroupType {
     Container = 'CONTAINER',
+    Plain = 'PLAIN',
     Home = 'HOME',
     Transport = 'TRANSPORT',
     Trip = 'TRIP',
@@ -69,6 +81,10 @@ export interface Group {
 export interface ContainerGroup extends Group {
     highlights: LocationHighlight[]
     groups: Group[]
+}
+
+export interface PlainGroup extends Group {
+    events: Event[]
 }
 
 export interface HomeGroup extends Group {

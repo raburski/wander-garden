@@ -15,7 +15,7 @@ import { getGroupHighlights } from './timeline.groups'
 import ToggleButton from "../../components/ToggleButton"
 
 import createTimeline from './timeline'
-import { EventType, TransportMode, GroupType, LocationHighlightType } from './types'
+import { EventType, TransportMode, GroupType, LocationHighlightType, CalendarDayType } from './types'
 
 const AllFlagsContainer = styled('div')`
     display: flex;
@@ -51,6 +51,17 @@ const PhaseLabel = styled('div')`
     &:hover {
         background-color: ${colors.neutral.highlight};
     }
+`
+
+const CalendarEventLabel = styled('div')`
+    display: flex;
+    color: inherit;
+    padding: 26px;
+    padding-top: 12px;
+    font-size: 24px;
+    font-weight: bold;
+    justify-content: center;
+    align-items: center;
 `
 
 const TransportLabel = styled('div')`
@@ -89,12 +100,21 @@ const TransportMode_EMOJI = {
     [TransportMode.Unknown]: '❔',
 }
 
+function calendarEventTitle(event) {
+    switch (event.dayType) {
+        case CalendarDayType.NewYear:
+            return moment(event.date).get('year')
+    }
+}
+
 function GroupEvent({ event }) {
     switch (event.type) {
         case EventType.Checkin:
             return <PhaseLabel>{event.location.city}</PhaseLabel>
         case EventType.Transport:
             return <TransportLabel>{TransportMode_EMOJI[event.mode]}</TransportLabel>
+        case EventType.Calendar:
+            return <CalendarEventLabel> --&nbsp;&nbsp;&nbsp;{calendarEventTitle(event)}&nbsp;&nbsp;&nbsp;-- </CalendarEventLabel>
     }
 }
 
@@ -141,7 +161,7 @@ function highlightTitle(highlight) {
 }
 
 function titleFromLocationHighlights(highlights) {
-    return highlights.map(highlightTitle).join(', ')
+    return highlights.map(highlightTitle).reverse().join(', ')
 }
 
 function TimelineGroupContainer({ group, i }) {
@@ -169,8 +189,12 @@ function TimelineGroupContainer({ group, i }) {
     )
 }
 
+const GroupPanel = styled(Panel)`
+    margin-bottom: 0px;
+`
+
 function TimelineGroup({ group, topLevel, i }) {
-    const Container = topLevel ? Panel : Fragment
+    const Container = topLevel ? GroupPanel : Fragment
     switch (group.type) {
         case GroupType.Home:
             return <Container><TimelineGroupHome group={group} i={i}/></Container>
@@ -178,6 +202,8 @@ function TimelineGroup({ group, topLevel, i }) {
             return <Container><TimelineGroupTrip group={group} i={i}/></Container>
         case GroupType.Container:
             return <Container><TimelineGroupContainer group={group} i={i}/></Container>
+        case GroupType.Plain:
+            return group.events.map(event => <GroupEvent event={event}/>)
         case GroupType.Transport:
             return <Container><TimelineGroupTransport group={group} i={i}/></Container>
     }
@@ -200,7 +226,7 @@ export default function TimelinePage() {
         return locations.some(cc => cc.toLowerCase() === selectedCountryCode)
     }) : timeline
 
-    console.log('timeline', filteredTimeline[0])
+    // console.log('timeline', filteredTimeline)
 
     return (
         <Page header="Timeline">

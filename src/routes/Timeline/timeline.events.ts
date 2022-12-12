@@ -4,9 +4,18 @@ import { isTheSameArea } from './timeline.groups'
 import Stack from './stack'
 import moment from 'moment'
 
-import { Event, EventType, TransportMode, CheckinEvent, TransportEvent } from './types'
+import { Event, EventType, TransportMode, CheckinEvent, TransportEvent, CalendarDayType, CalendarEvent } from './types'
 import type { Checkin, Date, Location } from "../../swarm/functions"
 import type { Moment, MomentInput } from "moment"
+
+export function createCalendarEvent(date: Date, type: CalendarDayType, name?: String): CalendarEvent {
+    return {
+        type: EventType.Calendar,
+        date: ensureDateString(date),
+        dayType: type,
+        name,
+    }
+}
 
 export function createCheckinEvent(checkin: Checkin): CheckinEvent  {
     const { type, ...checkinNonType } = checkin
@@ -56,6 +65,18 @@ class TimelineEventsFactory {
         if (!previous) {
             return this.push(createCheckinEvent(current))
         }
+
+        // Check if any calendar events between checkins
+        const previousMoment = getCheckinDate(previous)
+        const currentMoment = getCheckinDate(current)
+
+        // NYE calendar event
+        if (previousMoment.get('year') !== currentMoment.get('year')) {
+            console.log(`NEW YEAR FOUND ${previousMoment.get('year')} -> ${currentMoment.get('year')}`)
+            const newYearMoment = moment(`${currentMoment.get('year')}-01-01T00:00:00`)
+            this.push(createCalendarEvent(newYearMoment, CalendarDayType.NewYear))
+        }
+
         if (!isTheSameArea(getCheckinLocation(current), getCheckinLocation(previous))) {
         // if (hasCity(current) && hasCity(previous) && !isEqualCity(previous, current)) {
             const previousTransportType = getTransportType(previous)
