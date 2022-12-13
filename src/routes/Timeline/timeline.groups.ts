@@ -1,6 +1,6 @@
 import moment from 'moment'
 import Stack from './stack'
-import { isEqualLocationCity, isEqualApproximiteLocation } from '../../location'
+import { isEqualLocationCity, isEqualApproximiteLocation, isEqualMetro } from '../../location'
 import { checkinHasCategory } from '../../swarm/categories'
 import { getEventDate, createTransportEvent } from './timeline.events'
 import { EventType, TransportMode, GroupType, LocationHighlight, LocationHighlightType, PlainGroup } from './types'
@@ -34,10 +34,10 @@ function getCheckinEventLocation(event: Event) {
 }
 
 export function isTheSameArea(leftLocation: Location, rightLocation: Location) {
-    if (leftLocation.city && rightLocation.city) {
-        return isEqualLocationCity(leftLocation, rightLocation)
-    }
-    return isEqualApproximiteLocation(leftLocation, rightLocation)
+    const equalCity = (leftLocation.city && rightLocation.city) ? isEqualLocationCity(leftLocation, rightLocation) : false
+    const equalMetro = isEqualMetro(leftLocation, rightLocation)
+    const approximateLocation = isEqualApproximiteLocation(leftLocation, rightLocation)
+    return equalCity || equalMetro || approximateLocation
 }
 
 const MOP_CATEGORIES = [
@@ -347,6 +347,7 @@ class TimelineGroupsFactory {
     stack: Stack
     context: Context
     groups: Group[]
+    pushAfterCurrentGroups: Group[]
     config: TimelineConfig
 
     currentGroups: Group[]
@@ -357,6 +358,7 @@ class TimelineGroupsFactory {
         this.config = config
         this.groups = []
         this.currentGroups = []
+        this.pushAfterCurrentGroups = []
     }
     getCurrentEvent() {
         return this.stack.getCurrent()
@@ -394,13 +396,29 @@ class TimelineGroupsFactory {
                 this.currentGroups.unshift(group)
             } else {
                 if (this.shouldAddToCurrentGroups(group)) {
-                    this.currentGroups.unshift(group)
+                    if (this.pushAfterCurrentGroups.length > 0) {
+                        this.currentGroups.unshift(group)
+                        const containerGroup = createContainerGroup(this.currentGroups)
+                        if (containerGroup) {
+                            this.groups.unshift(containerGroup)
+                        }
+                        this.currentGroups = []
+                        this.pushAfterCurrentGroups.forEach(group => this.groups.unshift(group))
+                        this.pushAfterCurrentGroups = []
+                    } else {
+                        this.currentGroups.unshift(group)
+                    }
                 } else {
+                    
                     const containerGroup = createContainerGroup(this.currentGroups)
                     if (containerGroup) {
                         this.groups.unshift(containerGroup)
                     }
                     this.currentGroups = [group]
+                    if (this.pushAfterCurrentGroups.length > 0) {
+                        this.pushAfterCurrentGroups.forEach(group => this.groups.unshift(group))
+                        this.pushAfterCurrentGroups = []
+                    }
                 }
             }
         }
@@ -424,7 +442,7 @@ class TimelineGroupsFactory {
         if (isAtHome) {
             while(!this.stack.isFinished()) {
                 if (this.isCurrentEventStandalone()) {
-                    this.groups.unshift(createPlainGroup([this.getCurrentEvent()])!)
+                    this.pushAfterCurrentGroups.unshift(createPlainGroup([this.getCurrentEvent()])!)
                     this.stack.makeStep()
                 } else if (this.isCurrentEventAtHome()) {
                     events.unshift(this.getCurrentEvent())
@@ -439,7 +457,7 @@ class TimelineGroupsFactory {
         } else {
             while(!this.stack.isFinished()) {
                 if (this.isCurrentEventStandalone()) {
-                    this.groups.unshift(createPlainGroup([this.getCurrentEvent()])!)
+                    this.pushAfterCurrentGroups.unshift(createPlainGroup([this.getCurrentEvent()])!)
                     this.stack.makeStep()
                 } else if (!this.isCurrentEventAtHome()) {
                     events.unshift(this.getCurrentEvent())

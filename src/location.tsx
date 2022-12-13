@@ -46,7 +46,7 @@ export function cleanLocation(location: string = "") {
         .replace(/(wiu)$/g, 'w')
 }
 
-export function isEqualApproximiteLocation(leftLocation: Location, rightLocation: Location, radius: number = 5) {
+export function isEqualApproximiteLocation(leftLocation: Location, rightLocation: Location, radius: number = 15) {
     const locationDistance = distance(leftLocation.lat, leftLocation.lng, rightLocation.lat, rightLocation.lng)
     return locationDistance <= radius
 }
@@ -54,6 +54,31 @@ export function isEqualApproximiteLocation(leftLocation: Location, rightLocation
 export function isEqualLocationCity(leftLocation: Location, rightLocation: Location) {
     return cleanLocation(leftLocation.city) == cleanLocation(rightLocation.city)
 }
+
+const STATE_AS_CITY: {[state: string]: string} = {
+    // TODO: add more of these and allow user to define it themselves
+    'Greater London': 'London',
+}
+
+export function isEqualMetro(leftLocation: Location, rightLocation: Location): boolean {
+    const leftCity = cleanLocation(leftLocation.city)
+    const rightCity = cleanLocation(rightLocation.city)
+    const leftState = cleanLocation(leftLocation.state)
+    const rightState = cleanLocation(rightLocation.state)
+    const leftMetroCity = cleanLocation(STATE_AS_CITY[leftState])
+    const rightMetroCity = cleanLocation(STATE_AS_CITY[rightState])
+    if (leftCity === rightState || leftState === rightState) {
+        return true
+    } else if (leftMetroCity && rightMetroCity && leftMetroCity === rightMetroCity) {
+        return true
+    } else if (leftMetroCity && leftMetroCity === rightCity) {
+        return true
+    } else if (rightMetroCity && rightMetroCity === leftCity) {
+        return true
+    }
+    return false
+}
+
 
 export function formattedLocation(location: Location) {
     const parts = [location.city, location.state === location.city ? null : location.state, location.country].filter(Boolean)

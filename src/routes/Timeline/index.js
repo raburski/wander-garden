@@ -114,7 +114,7 @@ function GroupEvent({ event }) {
         case EventType.Transport:
             return <TransportLabel>{TransportMode_EMOJI[event.mode]}</TransportLabel>
         case EventType.Calendar:
-            return <CalendarEventLabel> --&nbsp;&nbsp;&nbsp;{calendarEventTitle(event)}&nbsp;&nbsp;&nbsp;-- </CalendarEventLabel>
+            return <CalendarEventLabel> ⬆&nbsp;&nbsp;&nbsp;{calendarEventTitle(event)}&nbsp;&nbsp;&nbsp;⬆ </CalendarEventLabel>
     }
 }
 
