@@ -282,6 +282,7 @@ export default function TimelinePage() {
     const countryCodes = checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc).filter(onlyUnique)
     const timeline = createTimeline(checkins, { tripsOnly, foreignOnly })
     const filteredTimeline = selectedCountryCode ? timeline.filter(group => {
+        if (group.type === GroupType.Plain) { return true }
         const locations = getGroupHighlights(group).map(h => h.location.cc)
         return locations.some(cc => cc.toLowerCase() === selectedCountryCode)
     }) : timeline

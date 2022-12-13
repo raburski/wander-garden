@@ -318,6 +318,17 @@ export function createContainerGroup(groups: Group[]): ContainerGroup | undefine
     }
 }
 
+export function createGroup(events: Event[] = [], isAtHome: boolean): Group | undefined {
+    const isTransportOnly = events.reduce((acc, e: Event) => acc && e.type === EventType.Transport, true)
+    if (isTransportOnly) {
+        return createTransportGroup(events)
+    } else if (isAtHome) {
+        return createHomeGroup(events)
+    } else {
+        return createTripGroup(events)
+    }
+}
+
 function shallowArrayCompare(a1: any[], a2: any[]) {
     if (a1.length !== a2.length) {
         return false
@@ -326,24 +337,19 @@ function shallowArrayCompare(a1: any[], a2: any[]) {
 }
 
 class TimelineGroupsFactory {
-    stack: Stack
+    eventStack: Stack<Event>
+    groupStack: Stack<Group>
     context: Context
-    groups: Group[]
-    pushAfterCurrentGroups: Group[]
     config: TimelineConfig
 
-    currentGroups: Group[]
-
-    constructor(stack: Stack, context: Context, config: TimelineConfig) {
-        this.stack = stack
+    constructor(stack: Stack<Event>, context: Context, config: TimelineConfig) {
+        this.eventStack = stack
+        this.groupStack = new Stack<Group>()
         this.context = context
         this.config = config
-        this.groups = []
-        this.currentGroups = []
-        this.pushAfterCurrentGroups = []
     }
     getCurrentEvent() {
-        return this.stack.getCurrent()
+        return this.eventStack.getCurrent()
     }
     getCurrentHome() {
         return getHomeForEvent(this.getCurrentEvent(), this.context)
@@ -352,155 +358,102 @@ class TimelineGroupsFactory {
         return isEventAtHome(this.getCurrentEvent(), this.getCurrentHome())
     }
     isCurrentEventStandalone() {
-        return this.getCurrentEvent().type === EventType.Calendar
+        return this.getCurrentEvent()?.type === EventType.Calendar
     }
-    isGroupAtCurrentHomeCountry(group: Group) {
-        const hightlights = (group as TripGroup).highlights
+    isGroupAtCurrentHomeCountry(group: Group): boolean {
         const home = this.getCurrentHome()
-        return home && hightlights && hightlights.some(h => h.location.country === home?.location.country)
+        if (!home) { return false }
+
+        switch (group.type) {
+            case GroupType.Container:
+                const containerHighlights = (group as ContainerGroup).highlights
+                return containerHighlights.some(h => h.location.country === home?.location.country)
+            case GroupType.Home:
+                return true
+            case GroupType.Plain:
+                return false
+            case GroupType.Trip:
+                const tripHighlights = (group as TripGroup).highlights
+                return tripHighlights.some(h => h.location.country === home?.location.country)
+            case GroupType.Transport:
+                const hightlight = (group as TransportGroup).highlight
+                return hightlight.location.country === home?.location.country
+            default:
+                return false 
+        }
     }
 
-    shouldAddToCurrentGroups(newGroup: Group): boolean {
-        if (this.currentGroups.length === 0) {
-            return true
-        }
-        const currentGroupCountryCodes = getGroupHighlights(this.currentGroups[0]).map(h => h.location.cc).filter(onlyUnique)
+    shouldAddToCurrentGroup(currentGroup: ContainerGroup, newGroup: Group): boolean {
+        const currentGroupCountryCodes = getGroupHighlights(currentGroup).map(h => h.location.cc).filter(onlyUnique)
         const newGroupCountryCodes = getGroupHighlights(newGroup).map(h => h.location.cc).filter(onlyUnique)
         const equalCountryCodes = shallowArrayCompare(currentGroupCountryCodes, newGroupCountryCodes)
         return equalCountryCodes
     }
 
-    push(group: Group | undefined) {
-        console.log('PUSH', group)
-        if (group) {
-            if (this.currentGroups.length === 0) {
-                if (this.config.foreignOnly) {
-                    if (!this.isGroupAtCurrentHomeCountry(group!)) {
-                        this.currentGroups.unshift(group)
-                    }
-                } else {
-                    this.currentGroups.unshift(group)
-                }
-            } else {
-                if (this.shouldAddToCurrentGroups(group)) {
-                    if (this.pushAfterCurrentGroups.length > 0) {
-                        if (this.config.foreignOnly) {
-                            if (!this.isGroupAtCurrentHomeCountry(group!)) {
-                                this.currentGroups.unshift(group)
-                            }
-                        } else {
-                            this.currentGroups.unshift(group)
-                        }
-                        const containerGroup = createContainerGroup(this.currentGroups)
-                        if (containerGroup) {
-                            console.log('1current groups', containerGroup)
-                            console.log('1pushAfterCurrentGroups', this.pushAfterCurrentGroups)
-                            this.pushAfterCurrentGroups.forEach(group => this.groups.unshift(group))
-                            this.pushAfterCurrentGroups = []
-                            
-                            this.groups.unshift(containerGroup)
-                        }
-                        this.currentGroups = []
-                    } else {
-                        if (!this.config.foreignOnly || this.isGroupAtCurrentHomeCountry(group!)) {
-                            this.currentGroups.unshift(group)
-                        }
-                    }
-                } else {
-                    
-                    const containerGroup = createContainerGroup(this.currentGroups)
-                    if (containerGroup) {
-                        console.log('2current groups', containerGroup)
-                        console.log('2pushAfterCurrentGroups', this.pushAfterCurrentGroups)
-                        this.pushAfterCurrentGroups.forEach(group => this.groups.unshift(group))
-                        this.pushAfterCurrentGroups = []
+    pushGroup(group: Group | undefined) {
+        if (!group) { return }
 
-                        this.groups.unshift(containerGroup)
-                    }
-                    if (this.config.foreignOnly) {
-                        if (!this.isGroupAtCurrentHomeCountry(group!)) {
-                            this.currentGroups = [group]
-                        } else {
-                            this.currentGroups = []
-                        }
-                    } else {
-                        this.currentGroups = [group]
-                    }
-                }
-            }
+        const currentGroup = this.groupStack.getCurrent()
+        if (!currentGroup) {
+            this.groupStack.push(createContainerGroup([group])!)
+        } else if (currentGroup.type == GroupType.Container && this.shouldAddToCurrentGroup(currentGroup as ContainerGroup, group)) {
+            const containerGroup = currentGroup as ContainerGroup
+            const newContainerGroup = createContainerGroup([group, ...containerGroup.groups])!
+            this.groupStack.replaceCurrent(newContainerGroup)
+        } else {
+            this.groupStack.push(createContainerGroup([group])!)
         }
+        this.groupStack.moveToTop()
     }
 
     process() {
-        this.stack.makeStep()
-        while(!this.stack.isFinished()) {
+        this.eventStack.makeStep()
+        while(!this.eventStack.isFinished()) {
             this.processNext()
         }
-        const containerGroup = createContainerGroup(this.currentGroups)
-        if (containerGroup) {
-            this.groups.unshift(containerGroup)
-        }
-        this.pushAfterCurrentGroups.forEach(group => this.groups.unshift(group))
-        this.pushAfterCurrentGroups = []
     }
 
     processNext() {
-        const isAtHome = this.isCurrentEventAtHome()
+        if (this.isCurrentEventStandalone()) {
+            const event = this.getCurrentEvent()
+            if (event) {
+                const standaloneGroup = createPlainGroup([event])!
+                this.groupStack.push(standaloneGroup)
+                this.eventStack.makeStep()
+            }
+            return
+        } 
+
         const events: Event[] = []
 
-        if (isAtHome) {
-            while(!this.stack.isFinished()) {
-                if (this.isCurrentEventStandalone()) {
-                    // this.pushAfterCurrentGroups(createPlainGroup([this.getCurrentEvent()])!)
-                    const standaloneGroup = createPlainGroup([this.getCurrentEvent()])!
-                    if (events.length === 0) {
-                        this.groups.unshift(standaloneGroup)
-                    } else {
-                        this.pushAfterCurrentGroups.unshift(standaloneGroup)
-                    }
-                    this.stack.makeStep()
-                } else if (this.isCurrentEventAtHome()) {
-                    events.unshift(this.getCurrentEvent())
-                    this.stack.makeStep()
-                } else {
-                    break
-                }
+        const isAtHome = this.isCurrentEventAtHome()
+        const shouldPickCurrentEvent = isAtHome ? () => this.isCurrentEventAtHome() : () => !this.isCurrentEventAtHome()
+        const shouldPushGroup = (group: Group): boolean => {
+            if (isAtHome) {
+                return !this.config.tripsOnly && !this.config.foreignOnly
             }
-            if (!this.config.tripsOnly && events.length > 0) {
-                this.push(createHomeGroup(events))
+            const isAtHomeCountry = this.isGroupAtCurrentHomeCountry(group)
+            return isAtHomeCountry ? !this.config.foreignOnly : true
+        }
+
+        while(!this.eventStack.isFinished()) {
+            const event = this.getCurrentEvent()
+            if (event && shouldPickCurrentEvent()) {
+                events.unshift(event)
+                this.eventStack.makeStep()
+            } else {
+                break
             }
-        } else {
-            while(!this.stack.isFinished()) {
-                if (this.isCurrentEventStandalone()) {
-                    // this.pushAfterCurrentGroups(createPlainGroup([this.getCurrentEvent()])!)
-                    // this.pushAfterCurrentGroups.unshift(createPlainGroup([this.getCurrentEvent()])!)
-                    const standaloneGroup = createPlainGroup([this.getCurrentEvent()])!
-                    if (events.length === 0) {
-                        this.groups.unshift(standaloneGroup)
-                    } else {
-                        this.pushAfterCurrentGroups.unshift(standaloneGroup)
-                    }
-                    this.stack.makeStep()
-                } else if (!this.isCurrentEventAtHome()) {
-                    events.unshift(this.getCurrentEvent())
-                    this.stack.makeStep()
-                } else {
-                    break
-                }
-            }
-            if (events.length > 0) {
-                const isTransportOnly = events.reduce((acc, e: Event) => acc && e.type === EventType.Transport, true)
-                if (isTransportOnly) {
-                    this.push(createTransportGroup(events))
-                } else {
-                    this.push(createTripGroup(events))
-                }
-            }
+        }
+
+        const newGroup = createGroup(events, isAtHome)
+        if (newGroup && shouldPushGroup(newGroup!)) {
+            this.pushGroup(newGroup!)
         }
     }
 
     get(): Group[] {
-        return this.groups.filter(Boolean)
+        return this.groupStack.getAll()
     }
 }
 
@@ -512,7 +465,7 @@ class TimelineGroupsFactory {
 // }
 
 export function createTimelineGroups(events: Event[] = [], context: Context = {homes: []}, config: TimelineConfig = {}): Group[] {
-    const eventsStack = new Stack(events)
+    const eventsStack = new Stack<Event>(events)
     const timelineGroupsFactory = new TimelineGroupsFactory(eventsStack, context, config)
     timelineGroupsFactory.process()
     const groups = timelineGroupsFactory.get()

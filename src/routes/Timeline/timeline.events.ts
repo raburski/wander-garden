@@ -52,11 +52,11 @@ const NON_FLIGHT_DISTANCE_GUESS = 150
 const BUS_DISTANCE_GUESS = 40
 
 class TimelineEventsFactory {
-    stack: Stack
+    stack: Stack<Checkin>
     events: Event[]
     context: Context
 
-    constructor(stack: Stack, context: Context) {
+    constructor(stack: Stack<Checkin>, context: Context) {
         this.stack = stack
         this.events = []
         this.context = context
@@ -72,13 +72,16 @@ class TimelineEventsFactory {
     }
 
     processNext() {
-        const previous: Checkin = this.stack.getPrevious()
-        const current: Checkin = this.stack.getCurrent()
+        const maybePrevious = this.stack.getPrevious()
+        const maybeCurrent = this.stack.getCurrent()
+        if (!maybeCurrent) { return }
+        const current = maybeCurrent!
         
         // First event is always added
-        if (!previous) {
+        if (!maybePrevious) {
             return this.push(createCheckinEvent(current))
         }
+        const previous = maybePrevious!
 
         // Check if any calendar events between checkins
         const previousMoment = getCheckinDate(previous)
@@ -145,7 +148,7 @@ class TimelineEventsFactory {
 }
 
 export function createTimelineEvents(checkins: Checkin[] = [], context: Context = {homes: []}) {
-    const checkinsStack = new Stack(checkins)
+    const checkinsStack = new Stack<Checkin>(checkins)
     const timelineEventsFactory = new TimelineEventsFactory(checkinsStack, context)
     timelineEventsFactory.process()
     return timelineEventsFactory.get()
