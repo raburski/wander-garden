@@ -25,16 +25,17 @@ describe('timeline @ transport', function () {
         ]
         assert.deepEqual(events, expectedEvents)
     })
-    it('should create guess bus transport event with city change from airport and small distance', function () {
-        const checkins = [tearoom_stezzano, airport_lombardy]
-        const events = createTimelineEvents(checkins)
-        const expectedEvents = [
-            createCheckinEvent(tearoom_stezzano),
-            createTransportEvent(TransportMode.Bus, getCheckinDate(airport_lombardy), getCheckinLocation(airport_lombardy), getCheckinLocation(tearoom_stezzano), true),
-            createCheckinEvent(airport_lombardy),
-        ]
-        assert.deepEqual(events, expectedEvents)
-    })
+    // TODO: update once you define better when its actual airport transport vs when its just picking someone up
+    // it('should create guess bus transport event with city change from airport and small distance', function () {
+    //     const checkins = [tearoom_stezzano, airport_lombardy]
+    //     const events = createTimelineEvents(checkins)
+    //     const expectedEvents = [
+    //         createCheckinEvent(tearoom_stezzano),
+    //         createTransportEvent(TransportMode.Bus, getCheckinDate(airport_lombardy), getCheckinLocation(airport_lombardy), getCheckinLocation(tearoom_stezzano), true),
+    //         createCheckinEvent(airport_lombardy),
+    //     ]
+    //     assert.deepEqual(events, expectedEvents)
+    // })
     it('should create guess car transport event with any other city change even with undefined city', function () {
         const checkins = [restaurant_limassol_cyprus, undefined_city_cyprus, restaurant_pafos_cyprus, airport_cyprus]
         const events = createTimelineEvents(checkins)

@@ -3,18 +3,20 @@ import Stack from './stack'
 import { isEqualLocationCity, isEqualApproximiteLocation, isEqualMetro } from '../../location'
 import { checkinHasCategory } from '../../swarm/categories'
 import { getEventDate, createTransportEvent } from './timeline.events'
-import { EventType, TransportMode, GroupType, LocationHighlight, LocationHighlightType, PlainGroup } from './types'
+import { EventType, TransportMode, GroupType, LocationHighlightType, PlainGroup } from './types'
 import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'
 
-import type { Group, Event, CheckinEvent, TransportEvent, HomeGroup, TransportGroup, TripGroup, ContainerGroup } from "./types"
+import type { Group, Event, CheckinEvent, TransportEvent, CalendarEvent, HomeGroup, TransportGroup, TripGroup, ContainerGroup, LocationHighlight, Context } from "./types"
 import type { Location } from '../../location'
 import type { Moment, MomentInput } from "moment"
-import type { Checkin, Home } from "../../swarm"
+import { Checkin, ensureDateString, Home } from "../../swarm"
 import { onlyUnique } from "../../array"
-import { cleanLocation } from "../../location"
+import { cleanLocation, isTheSameArea } from "../../location"
+import { getHomeForEvent, isEventAtHome } from './context'
 
 interface TimelineConfig {
     tripsOnly?: boolean
+    foreignOnly?: boolean
 }
 
 function firstEventsLocation(events: Event[]): Location | undefined {
@@ -33,12 +35,6 @@ function getCheckinEventLocation(event: Event) {
     return checkinEvent.location
 }
 
-export function isTheSameArea(leftLocation: Location, rightLocation: Location) {
-    const equalCity = (leftLocation.city && rightLocation.city) ? isEqualLocationCity(leftLocation, rightLocation) : false
-    const equalMetro = isEqualMetro(leftLocation, rightLocation)
-    const approximateLocation = isEqualApproximiteLocation(leftLocation, rightLocation)
-    return equalCity || equalMetro || approximateLocation
-}
 
 const MOP_CATEGORIES = [
     '4d954b16a243a5684b65b473', // rest place
@@ -322,17 +318,6 @@ export function createContainerGroup(groups: Group[]): ContainerGroup | undefine
     }
 }
 
-const DISTANT_PAST = '1920-01-01'
-const DISTANT_FUTURE = '2055-01-01'
-function getHomeForDate(date: Moment, homes: Home[] = []) {
-    return homes.find(home => {
-        if (!home) return false
-        const since = moment(home?.since as MomentInput || DISTANT_PAST)
-        const until = moment(home?.until as MomentInput || DISTANT_FUTURE)
-        return date.isAfter(since) && date.isBefore(until)
-    })
-}
-
 function shallowArrayCompare(a1: any[], a2: any[]) {
     if (a1.length !== a2.length) {
         return false
@@ -340,9 +325,6 @@ function shallowArrayCompare(a1: any[], a2: any[]) {
     return a1.map(i1 => a2.findIndex(i2 => i2 == i1)).reduce((acc, val) => acc && val >= 0, true)
 }
 
-interface Context {
-    homes: Home[]
-}
 class TimelineGroupsFactory {
     stack: Stack
     context: Context
@@ -364,20 +346,18 @@ class TimelineGroupsFactory {
         return this.stack.getCurrent()
     }
     getCurrentHome() {
-        const currentEvent = this.getCurrentEvent()
-        const currentDate = getEventDate(currentEvent)
-        return getHomeForDate(currentDate, this.context.homes)
+        return getHomeForEvent(this.getCurrentEvent(), this.context)
     }
     isCurrentEventAtHome() {
-        const currentHome = this.getCurrentHome()
-        const currentEvent = this.getCurrentEvent()
-        if (currentEvent.type !== EventType.Checkin) {
-            return false
-        }
-        return currentHome ? isTheSameArea(currentHome.location, currentEvent.location) : false
+        return isEventAtHome(this.getCurrentEvent(), this.getCurrentHome())
     }
     isCurrentEventStandalone() {
         return this.getCurrentEvent().type === EventType.Calendar
+    }
+    isGroupAtCurrentHomeCountry(group: Group) {
+        const hightlights = (group as TripGroup).highlights
+        const home = this.getCurrentHome()
+        return home && hightlights && hightlights.some(h => h.location.country === home?.location.country)
     }
 
     shouldAddToCurrentGroups(newGroup: Group): boolean {
@@ -391,33 +371,60 @@ class TimelineGroupsFactory {
     }
 
     push(group: Group | undefined) {
+        console.log('PUSH', group)
         if (group) {
             if (this.currentGroups.length === 0) {
-                this.currentGroups.unshift(group)
+                if (this.config.foreignOnly) {
+                    if (!this.isGroupAtCurrentHomeCountry(group!)) {
+                        this.currentGroups.unshift(group)
+                    }
+                } else {
+                    this.currentGroups.unshift(group)
+                }
             } else {
                 if (this.shouldAddToCurrentGroups(group)) {
                     if (this.pushAfterCurrentGroups.length > 0) {
-                        this.currentGroups.unshift(group)
+                        if (this.config.foreignOnly) {
+                            if (!this.isGroupAtCurrentHomeCountry(group!)) {
+                                this.currentGroups.unshift(group)
+                            }
+                        } else {
+                            this.currentGroups.unshift(group)
+                        }
                         const containerGroup = createContainerGroup(this.currentGroups)
                         if (containerGroup) {
+                            console.log('1current groups', containerGroup)
+                            console.log('1pushAfterCurrentGroups', this.pushAfterCurrentGroups)
+                            this.pushAfterCurrentGroups.forEach(group => this.groups.unshift(group))
+                            this.pushAfterCurrentGroups = []
+                            
                             this.groups.unshift(containerGroup)
                         }
                         this.currentGroups = []
-                        this.pushAfterCurrentGroups.forEach(group => this.groups.unshift(group))
-                        this.pushAfterCurrentGroups = []
                     } else {
-                        this.currentGroups.unshift(group)
+                        if (!this.config.foreignOnly || this.isGroupAtCurrentHomeCountry(group!)) {
+                            this.currentGroups.unshift(group)
+                        }
                     }
                 } else {
                     
                     const containerGroup = createContainerGroup(this.currentGroups)
                     if (containerGroup) {
-                        this.groups.unshift(containerGroup)
-                    }
-                    this.currentGroups = [group]
-                    if (this.pushAfterCurrentGroups.length > 0) {
+                        console.log('2current groups', containerGroup)
+                        console.log('2pushAfterCurrentGroups', this.pushAfterCurrentGroups)
                         this.pushAfterCurrentGroups.forEach(group => this.groups.unshift(group))
                         this.pushAfterCurrentGroups = []
+
+                        this.groups.unshift(containerGroup)
+                    }
+                    if (this.config.foreignOnly) {
+                        if (!this.isGroupAtCurrentHomeCountry(group!)) {
+                            this.currentGroups = [group]
+                        } else {
+                            this.currentGroups = []
+                        }
+                    } else {
+                        this.currentGroups = [group]
                     }
                 }
             }
@@ -433,6 +440,8 @@ class TimelineGroupsFactory {
         if (containerGroup) {
             this.groups.unshift(containerGroup)
         }
+        this.pushAfterCurrentGroups.forEach(group => this.groups.unshift(group))
+        this.pushAfterCurrentGroups = []
     }
 
     processNext() {
@@ -442,7 +451,13 @@ class TimelineGroupsFactory {
         if (isAtHome) {
             while(!this.stack.isFinished()) {
                 if (this.isCurrentEventStandalone()) {
-                    this.pushAfterCurrentGroups.unshift(createPlainGroup([this.getCurrentEvent()])!)
+                    // this.pushAfterCurrentGroups(createPlainGroup([this.getCurrentEvent()])!)
+                    const standaloneGroup = createPlainGroup([this.getCurrentEvent()])!
+                    if (events.length === 0) {
+                        this.groups.unshift(standaloneGroup)
+                    } else {
+                        this.pushAfterCurrentGroups.unshift(standaloneGroup)
+                    }
                     this.stack.makeStep()
                 } else if (this.isCurrentEventAtHome()) {
                     events.unshift(this.getCurrentEvent())
@@ -457,7 +472,14 @@ class TimelineGroupsFactory {
         } else {
             while(!this.stack.isFinished()) {
                 if (this.isCurrentEventStandalone()) {
-                    this.pushAfterCurrentGroups.unshift(createPlainGroup([this.getCurrentEvent()])!)
+                    // this.pushAfterCurrentGroups(createPlainGroup([this.getCurrentEvent()])!)
+                    // this.pushAfterCurrentGroups.unshift(createPlainGroup([this.getCurrentEvent()])!)
+                    const standaloneGroup = createPlainGroup([this.getCurrentEvent()])!
+                    if (events.length === 0) {
+                        this.groups.unshift(standaloneGroup)
+                    } else {
+                        this.pushAfterCurrentGroups.unshift(standaloneGroup)
+                    }
                     this.stack.makeStep()
                 } else if (!this.isCurrentEventAtHome()) {
                     events.unshift(this.getCurrentEvent())

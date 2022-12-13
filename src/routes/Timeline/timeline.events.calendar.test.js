@@ -1,9 +1,10 @@
 import assert from 'assert'
-import { createTimelineEvents, createCheckinEvent, createCalendarEvent } from './timeline.events'
+import { createTimelineEvents, createCheckinEvent, createNewHomeCalendarEvent, createNewYearCalendarEvent } from './timeline.events'
 import { airport_cyprus, airport_wroclaw, fitness_wroclaw, restaurant_limassol_cyprus, airport_leszno } from './testData'
 import { getCheckinDate, getCheckinLocation } from '../../swarm/functions'
 import { TransportMode, CalendarDayType } from './types'
 import moment from 'moment'
+import { createPotentialHomeWithCheckin } from '../../swarm/functions'
 
 describe('timeline @ calendar', function () {
     it('should create NYE events', function () {
@@ -18,9 +19,38 @@ describe('timeline @ calendar', function () {
         const events = createTimelineEvents(checkins)
         const expectedEvents = [
             createCheckinEvent(fitnessAfterNYE),
-            createCalendarEvent(NYEmoment, CalendarDayType.NewYear),
+            createNewYearCalendarEvent(NYEmoment),
             createCheckinEvent(fitnessBeforeNYE),
         ]
         assert.deepEqual(events, expectedEvents)
     })
+
+    // it('should create NEW HOME events', function () {
+    //     const homeChangeDate = moment('1991-02-01')
+    //     const POLAND_HOME = createPotentialHomeWithCheckin(fitness_wroclaw, moment('1991-01-01'), homeChangeDate)
+    //     const CYPRUS_HOME = createPotentialHomeWithCheckin(restaurant_limassol_cyprus, homeChangeDate, null)
+    //     const CONTEXT = {
+    //         homes: [
+    //             CYPRUS_HOME,
+    //             POLAND_HOME,
+    //         ]
+    //     }
+
+    //     const eventBeforeMoment = moment(homeChangeDate.format())
+    //     const eventAfterMoment = moment(homeChangeDate.format())
+    //     eventBeforeMoment.subtract(2, 'days')
+    //     eventAfterMoment.add(2, 'days')
+
+    //     const polandBeforeMove = { ...fitness_wroclaw, createdAt: eventBeforeMoment.unix() }
+    //     const cyprusAfterMove = { ...fitness_wroclaw, createdAt: eventAfterMoment.unix() }
+    //     const checkins = [cyprusAfterMove, polandBeforeMove]
+
+    //     const events = createTimelineEvents(checkins, CONTEXT)
+    //     const expectedEvents = [
+    //         createCheckinEvent(cyprusAfterMove),
+    //         createNewHomeCalendarEvent(homeChangeDate, POLAND_HOME, CYPRUS_HOME),
+    //         createCheckinEvent(polandBeforeMove),
+    //     ]
+    //     assert.deepEqual(events, expectedEvents)
+    // })
 })

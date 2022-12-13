@@ -1,11 +1,9 @@
 import moment from 'moment'
 import { cleanLocation, isEqualLocationCity, distance } from '../location'
-import type { Location } from '../location'
+import type { Location, Home } from '../location'
 import type { Moment } from "moment"
 
-export type { Location } from '../location'
-
-export type Date = String | Moment
+export type { Location, Home } from '../location'
 
 export interface Venue {
     location: Location
@@ -17,13 +15,7 @@ export interface Checkin {
     createdAt: number
 }
 
-export interface Home {
-    location: Location
-    since?: Date
-    until?: Date
-}
-
-export function ensureDateString(date: Date, format?: string): String {
+export function ensureDateString(date: String | Moment, format?: string): String {
     if (typeof date === "string") {
         return date as String
     } else {
@@ -72,7 +64,7 @@ export function getDistanceBetweenCheckins(checkin1: Checkin, checkin2: Checkin)
     return distance(location1.lat, location1.lng, location2.lat, location2.lng)
 }
 
-export function createPotentialHome(location: Location, since?: Date, until?: Date): Home {
+export function createPotentialHome(location: Location, since?: String | Moment, until?: String | Moment): Home {
     return {
         location,
         since: since && ensureDateString(since, 'YYYY-MM-DD'),
@@ -80,7 +72,7 @@ export function createPotentialHome(location: Location, since?: Date, until?: Da
     }
 }
 
-export function createPotentialHomeWithCheckin(checkin: Checkin, since?: Date, until?: Date) {
+export function createPotentialHomeWithCheckin(checkin: Checkin, since?: String | Moment, until?: String | Moment) {
     const location = getCheckinLocation(checkin)
     return location ? createPotentialHome(location, since, until) : undefined
 }

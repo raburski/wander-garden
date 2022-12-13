@@ -1,19 +1,31 @@
 import { getTransportType, TRANSPORT_TYPE } from '../../swarm/categories'
 import { getCheckinDate, getDistanceBetweenCheckins, getCheckinLocation, ensureDateString } from '../../swarm/functions'
-import { isTheSameArea } from './timeline.groups'
+import { Home, isTheSameArea } from '../../location'
 import Stack from './stack'
 import moment from 'moment'
 
-import { Event, EventType, TransportMode, CheckinEvent, TransportEvent, CalendarDayType, CalendarEvent } from './types'
-import type { Checkin, Date, Location } from "../../swarm/functions"
+import { Event, EventType, TransportMode, CheckinEvent, TransportEvent, CalendarDayType, CalendarEvent, NewYearCalendarEvent, NewHomeCalendarEvent } from './types'
+import type { Context } from './types'
+import type { Checkin } from "../../swarm/functions"
+import type { Location } from '../../location'
 import type { Moment, MomentInput } from "moment"
+import { getHomeForDate } from "./context"
 
-export function createCalendarEvent(date: Date, type: CalendarDayType, name?: String): CalendarEvent {
+export function createNewYearCalendarEvent(date: String | Moment): NewYearCalendarEvent {
     return {
         type: EventType.Calendar,
+        dayType: CalendarDayType.NewYear,
         date: ensureDateString(date),
-        dayType: type,
-        name,
+    }
+}
+
+export function createNewHomeCalendarEvent(date: String | Moment, from: Home, to: Home): NewHomeCalendarEvent {
+    return {
+        type: EventType.Calendar,
+        dayType: CalendarDayType.NewHome,
+        date: ensureDateString(date, 'YYYY-MM-DD'),
+        from,
+        to,
     }
 }
 
@@ -27,7 +39,7 @@ export function createCheckinEvent(checkin: Checkin): CheckinEvent  {
     }
 }
 
-export function createTransportEvent(mode: TransportMode, date: Date, from: Location, to: Location, guess: Boolean = false): TransportEvent {
+export function createTransportEvent(mode: TransportMode, date: String | Moment, from: Location, to: Location, guess: Boolean = false): TransportEvent {
     return { type: EventType.Transport, mode, date: ensureDateString(date), from, to, guess }
 }
 
@@ -42,10 +54,12 @@ const BUS_DISTANCE_GUESS = 40
 class TimelineEventsFactory {
     stack: Stack
     events: Event[]
+    context: Context
 
-    constructor(stack: Stack) {
+    constructor(stack: Stack, context: Context) {
         this.stack = stack
         this.events = []
+        this.context = context
     }
     push(event: Event) {
         this.events.unshift(event)
@@ -70,14 +84,20 @@ class TimelineEventsFactory {
         const previousMoment = getCheckinDate(previous)
         const currentMoment = getCheckinDate(current)
 
-        // NYE calendar event
+        // NEW YEAR calendar event
         if (previousMoment.get('year') !== currentMoment.get('year')) {
             const newYearMoment = moment(`${currentMoment.get('year')}-01-01T00:00:00`)
-            this.push(createCalendarEvent(newYearMoment, CalendarDayType.NewYear))
+            this.push(createNewYearCalendarEvent(newYearMoment))
+        }
+
+        // NEW HOME calendar event
+        const previousHome = getHomeForDate(previousMoment, this.context.homes)
+        const currentHome = getHomeForDate(currentMoment, this.context.homes)
+        if (currentHome && previousHome && previousHome !== currentHome) {
+            this.push(createNewHomeCalendarEvent(currentHome.since!, previousHome!, currentHome!))
         }
 
         if (!isTheSameArea(getCheckinLocation(current), getCheckinLocation(previous))) {
-        // if (hasCity(current) && hasCity(previous) && !isEqualCity(previous, current)) {
             const previousTransportType = getTransportType(previous)
             const currentTransportType = getTransportType(current)
             const distance = getDistanceBetweenCheckins(previous, current)
@@ -124,9 +144,9 @@ class TimelineEventsFactory {
     }
 }
 
-export function createTimelineEvents(checkins: Checkin[] = []) {
+export function createTimelineEvents(checkins: Checkin[] = [], context: Context = {homes: []}) {
     const checkinsStack = new Stack(checkins)
-    const timelineEventsFactory = new TimelineEventsFactory(checkinsStack)
+    const timelineEventsFactory = new TimelineEventsFactory(checkinsStack, context)
     timelineEventsFactory.process()
     return timelineEventsFactory.get()
 }

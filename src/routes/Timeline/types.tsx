@@ -1,4 +1,4 @@
-import type { Location } from '../../location'
+import type { Location, Home } from '../../location'
 import type { Checkin } from '../../swarm'
 
 /* EVENTS */
@@ -53,13 +53,23 @@ export interface TransportEvent extends Event {
 }
 
 export enum CalendarDayType {
-    NewYear = 'NEW_YEAR'
+    NewYear = 'NEW_YEAR',
+    NewHome = 'NEW_HOME',
 }
 
 export interface CalendarEvent extends Event {
     type: EventType.Calendar
     dayType: CalendarDayType
-    name?: String
+}
+
+export interface NewYearCalendarEvent extends CalendarEvent {
+    dayType: CalendarDayType.NewYear
+}
+
+export interface NewHomeCalendarEvent extends CalendarEvent {
+    dayType: CalendarDayType.NewHome
+    from: Home
+    to: Home
 }
 
 /* GROUPS */
@@ -104,5 +114,8 @@ export interface TripGroup extends Group {
     phases: Event[]
 }
 
+export interface Context {
+    homes: Home[]
+}
 
 export default {}

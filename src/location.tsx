@@ -1,3 +1,5 @@
+import type { Moment } from "moment"
+
 var a: {[cyrylic: string]: string} = {"Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z","Х":"H","Ъ":"'","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh","щ":"sch","з":"z","х":"h","ъ":"'","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O","Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o","л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"'","Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"i","т":"t","ь":"'","б":"b","ю":"yu"}
 
 export interface Location {
@@ -9,6 +11,12 @@ export interface Location {
     postalCode: string
     lat: number
     lng: number
+}
+
+export interface Home {
+    location: Location
+    since?: String
+    until?: String
 }
 
 function cyrylicToLatin(word: string){
@@ -67,7 +75,7 @@ export function isEqualMetro(leftLocation: Location, rightLocation: Location): b
     const rightState = cleanLocation(rightLocation.state)
     const leftMetroCity = cleanLocation(STATE_AS_CITY[leftState])
     const rightMetroCity = cleanLocation(STATE_AS_CITY[rightState])
-    if (leftCity === rightState || leftState === rightState) {
+    if (leftCity === rightState || leftState === rightCity) {
         return true
     } else if (leftMetroCity && rightMetroCity && leftMetroCity === rightMetroCity) {
         return true
@@ -79,6 +87,12 @@ export function isEqualMetro(leftLocation: Location, rightLocation: Location): b
     return false
 }
 
+export function isTheSameArea(leftLocation: Location, rightLocation: Location) {
+    const equalCity = (leftLocation.city && rightLocation.city) ? isEqualLocationCity(leftLocation, rightLocation) : false
+    const equalMetro = isEqualMetro(leftLocation, rightLocation)
+    const approximateLocation = isEqualApproximiteLocation(leftLocation, rightLocation)
+    return equalCity || equalMetro || approximateLocation
+}
 
 export function formattedLocation(location: Location) {
     const parts = [location.city, location.state === location.city ? null : location.state, location.country].filter(Boolean)

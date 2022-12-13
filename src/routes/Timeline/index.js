@@ -53,7 +53,7 @@ const PhaseLabel = styled('div')`
     }
 `
 
-const CalendarEventLabel = styled('div')`
+const CalendarNewYearEventLabel = styled('div')`
     display: flex;
     color: inherit;
     padding: 26px;
@@ -61,6 +61,37 @@ const CalendarEventLabel = styled('div')`
     font-size: 24px;
     font-weight: bold;
     justify-content: center;
+    align-items: center;
+`
+
+const CalendarNewHomeEventContainer = styled('div')`
+    display: flex;
+    flex-direction: row;
+    color: inherit;
+    padding: 28px;
+    padding-left: 0px;
+    padding-top: 12px;
+`
+
+const CalendarNewHomeEventIcon = styled('div')`
+    font-size: 48px;
+    align-items: center;
+    margin-right: 26px;
+    margin-bottom: 2px;
+`
+
+const CalendarNewHomeEventLabel = styled('div')`
+    display: flex;
+    flex: 1;
+    font-size: 22px;
+    align-items: center;
+`
+
+const CalendarNewHomeEventDate = styled('div')`
+    display: flex;
+    font-size: 16px;
+    align-items: center;
+    margin-right: 26px;
     align-items: center;
 `
 
@@ -76,6 +107,16 @@ const TransportLabel = styled('div')`
     &:hover {
         background-color: ${colors.neutral.highlight};
     }
+`
+
+const OptionsContainer = styled('div')`
+    display: flex;
+    flex-direction: row;
+`
+
+const Separator = styled('div')`
+    width: 12px;
+    height: 12px;
 `
 
 
@@ -100,10 +141,32 @@ const TransportMode_EMOJI = {
     [TransportMode.Unknown]: '❔',
 }
 
-function calendarEventTitle(event) {
+function highlightTitle(highlight) {
+    switch (highlight.type) {
+        case LocationHighlightType.City:
+            return highlight.location.city
+        case LocationHighlightType.State:
+            return highlight.location.state
+        case LocationHighlightType.Country:
+            return highlight.location.country
+    }
+}
+
+function CalendarEvent({ event }) {
     switch (event.dayType) {
         case CalendarDayType.NewYear:
-            return moment(event.date).get('year')
+            return <CalendarNewYearEventLabel> ⬆&nbsp;&nbsp;&nbsp;{moment(event.date).get('year')}&nbsp;&nbsp;&nbsp;⬆ </CalendarNewYearEventLabel>
+        case CalendarDayType.NewHome:
+            return (
+                <CalendarNewHomeEventContainer>
+                    <CalendarNewHomeEventLabel>
+                        <CalendarNewHomeEventIcon>🏡</CalendarNewHomeEventIcon> Moved from {countryFlagEmoji.get(event.from.location.cc).emoji} {event.from.location.city} to {countryFlagEmoji.get(event.to.location.cc).emoji} {event.to.location.city}
+                    </CalendarNewHomeEventLabel>
+                    <CalendarNewHomeEventDate>
+                        {moment(event.date).format('DD.MM.YYYY')}
+                    </CalendarNewHomeEventDate>
+                </CalendarNewHomeEventContainer>
+            )
     }
 }
 
@@ -114,7 +177,7 @@ function GroupEvent({ event }) {
         case EventType.Transport:
             return <TransportLabel>{TransportMode_EMOJI[event.mode]}</TransportLabel>
         case EventType.Calendar:
-            return <CalendarEventLabel> ⬆&nbsp;&nbsp;&nbsp;{calendarEventTitle(event)}&nbsp;&nbsp;&nbsp;⬆ </CalendarEventLabel>
+            return <CalendarEvent event={event}/>
     }
 }
 
@@ -127,8 +190,7 @@ const EventsContainer = styled('div')`
 `
 
 function TimelineGroupHome({ group }) {
-    const location = group.location
-    return <EventsContainer><PhaseLabel>🏠&nbsp;&nbsp;{location.city}</PhaseLabel></EventsContainer>
+    return <EventsContainer><PhaseLabel>🏠&nbsp;&nbsp;{highlightTitle(group.highlight)}</PhaseLabel></EventsContainer>
 }
 
 function TimelineGroupTrip({ group, i }) { 
@@ -147,17 +209,6 @@ function TimelineGroupTransport({ group, i }) {
 
         </CountryBar>
     )
-}
-
-function highlightTitle(highlight) {
-    switch (highlight.type) {
-        case LocationHighlightType.City:
-            return highlight.location.city
-        case LocationHighlightType.State:
-            return highlight.location.state
-        case LocationHighlightType.Country:
-            return highlight.location.country
-    }
 }
 
 function titleFromLocationHighlights(highlights) {
@@ -224,11 +275,12 @@ function Timeline({ timeline }) {
 export default function TimelinePage() {
     const [params] = useSearchParams()
     const [tripsOnly, setTripsOnly] = useState(true)
+    const [foreignOnly, serForeginOnly] = useState(true)
     const selectedCountryCode = params.get('cc')?.toLowerCase()
 
     const [checkins] = useCheckins()
     const countryCodes = checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc).filter(onlyUnique)
-    const timeline = createTimeline(checkins, { tripsOnly })
+    const timeline = createTimeline(checkins, { tripsOnly, foreignOnly })
     const filteredTimeline = selectedCountryCode ? timeline.filter(group => {
         const locations = getGroupHighlights(group).map(h => h.location.cc)
         return locations.some(cc => cc.toLowerCase() === selectedCountryCode)
@@ -240,7 +292,11 @@ export default function TimelinePage() {
         <Page header="Timeline">
             <Panel spacing>
                 <AllFlags countryCodes={countryCodes} selectedCountryCode={selectedCountryCode}/>
-                <ToggleButton checked={tripsOnly} onClick={() => setTripsOnly(!tripsOnly)}>trips only</ToggleButton>
+                <OptionsContainer>
+                    <ToggleButton checked={tripsOnly} onClick={() => setTripsOnly(!tripsOnly)}>trips only</ToggleButton>
+                    <Separator />
+                    <ToggleButton checked={foreignOnly} onClick={() => serForeginOnly(!foreignOnly)}>foreign only</ToggleButton>
+                </OptionsContainer>
             </Panel>
             <Timeline timeline={filteredTimeline} />
         </Page>
