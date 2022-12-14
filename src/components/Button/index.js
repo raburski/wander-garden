@@ -49,11 +49,14 @@ const IconContainer = styled('div')`
     justify-content: center;
 `
 
-export default function Button({ disabled, icon, children, ...props }) {
+const selectedStyle = { backgroundColor: colors.neutral.highlight }
+
+export default function Button({ disabled, icon, selected, style = {}, children, ...props }) {
     const Component = disabled ? DisabledButton : EnabledButton
+    const componentStyles = selected ? { ...selectedStyle, ...style } : style
     const IconComponent = icon
     return (
-        <Component disabled={disabled} {...props}>
+        <Component disabled={disabled} style={componentStyles} {...props}>
             {icon ? <IconContainer><IconComponent size={16} /></IconContainer> : null}
             {children}
         </Component>

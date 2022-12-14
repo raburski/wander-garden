@@ -16,6 +16,7 @@ import ToggleButton from "../../components/ToggleButton"
 
 import createTimeline from './timeline'
 import { EventType, TransportMode, GroupType, LocationHighlightType, CalendarDayType } from './types'
+import { Segment } from "../../components/Segment"
 
 const AllFlagsContainer = styled('div')`
     display: flex;
@@ -274,19 +275,20 @@ function Timeline({ timeline }) {
 
 export default function TimelinePage() {
     const [params] = useSearchParams()
-    const [tripsOnly, setTripsOnly] = useState(true)
-    const [foreignOnly, serForeginOnly] = useState(true)
+    const [viewSegmentSelected, setViewSegmentSelected] = useState(0)
     const selectedCountryCode = params.get('cc')?.toLowerCase()
 
     const [checkins] = useCheckins()
     const countryCodes = checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc).filter(onlyUnique)
-    const timeline = createTimeline(checkins, { tripsOnly, foreignOnly })
+    const timelineConfig = { tripsOnly: viewSegmentSelected > 0, foreignOnly: viewSegmentSelected === 2 }
+    const timeline = createTimeline(checkins, timelineConfig)
     const filteredTimeline = selectedCountryCode ? timeline.filter(group => {
         if (group.type === GroupType.Plain) { return true }
         const locations = getGroupHighlights(group).map(h => h.location.cc)
         return locations.some(cc => cc.toLowerCase() === selectedCountryCode)
     }) : timeline
 
+    const viewSegmentOptions = ['all', 'trips', 'abroad']
     // console.log('timeline', filteredTimeline)
 
     return (
@@ -294,9 +296,7 @@ export default function TimelinePage() {
             <Panel spacing>
                 <AllFlags countryCodes={countryCodes} selectedCountryCode={selectedCountryCode}/>
                 <OptionsContainer>
-                    <ToggleButton checked={tripsOnly} onClick={() => setTripsOnly(!tripsOnly)}>trips only</ToggleButton>
-                    <Separator />
-                    <ToggleButton checked={foreignOnly} onClick={() => serForeginOnly(!foreignOnly)}>foreign only</ToggleButton>
+                    <Segment titles={viewSegmentOptions} selectedIndex={viewSegmentSelected} onClick={setViewSegmentSelected}/>
                 </OptionsContainer>
             </Panel>
             <Timeline timeline={filteredTimeline} />
