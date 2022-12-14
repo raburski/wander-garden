@@ -17,6 +17,7 @@ import ToggleButton from "../../components/ToggleButton"
 import createTimeline from './timeline'
 import { EventType, TransportMode, GroupType, LocationHighlightType, CalendarDayType } from './types'
 import { Segment } from "../../components/Segment"
+import { createNewYearCalendarEvent } from "./timeline.events"
 
 const AllFlagsContainer = styled('div')`
     display: flex;
@@ -156,7 +157,7 @@ function highlightTitle(highlight) {
 function CalendarEvent({ event }) {
     switch (event.dayType) {
         case CalendarDayType.NewYear:
-            return <CalendarNewYearEventLabel> ⬆&nbsp;&nbsp;&nbsp;{moment(event.date).get('year')}&nbsp;&nbsp;&nbsp;⬆ </CalendarNewYearEventLabel>
+            return <CalendarNewYearEventLabel> -&nbsp;&nbsp;&nbsp;{moment(event.date).get('year') - 1}&nbsp;&nbsp;&nbsp;- </CalendarNewYearEventLabel>
         case CalendarDayType.NewHome:
             return (
                 <CalendarNewHomeEventContainer>
@@ -213,7 +214,7 @@ function TimelineGroupTransport({ group, i }) {
 }
 
 function titleFromLocationHighlights(highlights) {
-    return highlights.map(highlightTitle).reverse().join(', ')
+    return highlights.map(highlightTitle).filter(onlyUnique).reverse().join(', ')
 }
 
 const MONTH_TO_SEASON = ['❄️', '❄️', '🌸', '🌸', '🌸', '☀️', '☀️', '☀️', '🍁', '🍁', '🍁', '❄️']
@@ -223,10 +224,9 @@ function seasonEmojiForDate(date) {
 
 }
 
-function TimelineGroupContainer({ group, i }) {
-    // TODO: add chevron and animate shit out of this
-    const [expanded, setExpanded] = useState(false)
-    const countryCodes = group.highlights.map(highlight => highlight.location.cc).filter(onlyUnique).reverse()
+function getDaysAndRangeForGroup(group) {
+    if (group.groups.length > 1) { return [] }
+    // This only makes sense if single trip is in the group
     const until = moment(group.until)
     const since = moment(group.since)
     const numberOfDays = until.diff(since, 'days')
@@ -234,6 +234,15 @@ function TimelineGroupContainer({ group, i }) {
     const days = `${numberOfDays} ${daysSuffix}`
     const season = seasonEmojiForDate(moment(group.since).add(numberOfDays/2, 'days'))
     const range = `${since.format('DD.MM')} - ${until.format('DD.MM')} ${season}`
+    return [days, range]
+}
+
+function TimelineGroupContainer({ group, i }) {
+    // TODO: add chevron and animate shit out of this
+    const [expanded, setExpanded] = useState(false)
+    const countryCodes = group.highlights.map(highlight => highlight.location.cc).filter(onlyUnique).reverse()
+    const [days, range] = getDaysAndRangeForGroup(group)
+
     const title = titleFromLocationHighlights(group.highlights)
     return (
         <Fragment>

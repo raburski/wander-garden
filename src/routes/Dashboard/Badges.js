@@ -166,8 +166,8 @@ function BadgeDetailsModal({ selectedBadge, visitedCountryCodes = [], onClickAwa
 
 export default function Badges() {
     const [selectedBadge, setSelectedBadge] = useState()
-    const [checkins] = useCheckins().filter(onlyNonTransportation)
-    const visitedCountryCodes = checkins.map(checkin => checkin.venue.location.cc.toLowerCase()).filter(onlyUnique)
+    const [checkins] = useCheckins()
+    const visitedCountryCodes = checkins.filter(onlyNonTransportation).map(checkin => checkin.venue.location.cc.toLowerCase()).filter(onlyUnique)
     const verifiedBadges = badges.map(createBadgeVerifier(visitedCountryCodes))
     const contentStyle = {
         flexDirection: 'row',
