@@ -88,9 +88,14 @@ class TimelineEventsFactory {
         const currentMoment = getCheckinDate(current)
 
         // NEW YEAR calendar event
-        if (previousMoment.get('year') !== currentMoment.get('year')) {
-            const newYearMoment = moment(`${currentMoment.get('year')}-01-01T00:00:00`)
-            this.push(createNewYearCalendarEvent(newYearMoment))
+        const previousYear = previousMoment.get('year')
+        const currentYear = currentMoment.get('year')
+        if (previousYear !== currentYear) {
+            const yearDifference = currentYear - previousYear
+            const years = Array(yearDifference).fill(previousYear).map((year, index) => year + index + 1)
+            const newYearEvents = years.map(year => createNewYearCalendarEvent(moment(`${year}-01-01T00:00:00`)))
+            newYearEvents.forEach(event => this.push(event))
+            console.log(JSON.stringify(newYearEvents))
         }
 
         // NEW HOME calendar event

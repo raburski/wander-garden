@@ -406,6 +406,17 @@ class TimelineGroupsFactory {
         this.groupStack.moveToTop()
     }
 
+    processStandaloneEvents() {
+        while (this.isCurrentEventStandalone()) {
+            const event = this.getCurrentEvent()
+            if (event) {
+                const standaloneGroup = createPlainGroup([event])!
+                this.groupStack.push(standaloneGroup)
+                this.eventStack.makeStep()
+            }
+        } 
+    }
+
     process() {
         this.eventStack.makeStep()
         while(!this.eventStack.isFinished()) {
@@ -414,16 +425,7 @@ class TimelineGroupsFactory {
     }
 
     processNext() {
-        if (this.isCurrentEventStandalone()) {
-            const event = this.getCurrentEvent()
-            if (event) {
-                const standaloneGroup = createPlainGroup([event])!
-                this.groupStack.push(standaloneGroup)
-                this.eventStack.makeStep()
-            }
-            return
-        } 
-
+        this.processStandaloneEvents()
         const events: Event[] = []
 
         const isAtHome = this.isCurrentEventAtHome()
@@ -437,6 +439,7 @@ class TimelineGroupsFactory {
         }
 
         while(!this.eventStack.isFinished()) {
+            this.processStandaloneEvents()
             const event = this.getCurrentEvent()
             if (event && shouldPickCurrentEvent()) {
                 events.unshift(event)
