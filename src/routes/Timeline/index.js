@@ -270,7 +270,7 @@ function TimelineGroup({ group, topLevel, i }) {
         case GroupType.Trip:
             return <Container><TimelineGroupTrip group={group} i={i}/></Container>
         case GroupType.Container:
-            return <Container><TimelineGroupContainer group={group} i={i}/></Container>
+            return group.highlights.length > 0 ? <Container><TimelineGroupContainer group={group} i={i}/></Container> : null
         case GroupType.Plain:
             return group.events.map(event => <GroupEvent event={event}/>)
         case GroupType.Transport:

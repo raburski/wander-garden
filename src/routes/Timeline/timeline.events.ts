@@ -95,7 +95,6 @@ class TimelineEventsFactory {
             const years = Array(yearDifference).fill(previousYear).map((year, index) => year + index + 1)
             const newYearEvents = years.map(year => createNewYearCalendarEvent(moment(`${year}-01-01T00:00:00`)))
             newYearEvents.forEach(event => this.push(event))
-            console.log(JSON.stringify(newYearEvents))
         }
 
         // NEW HOME calendar event
