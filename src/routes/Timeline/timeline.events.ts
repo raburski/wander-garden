@@ -10,6 +10,7 @@ import type { Checkin } from "../../swarm/functions"
 import type { Location } from '../../location'
 import type { Moment, MomentInput } from "moment"
 import { getHomeForDate } from "./context"
+import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'
 
 export function createNewYearCalendarEvent(date: String | Moment): NewYearCalendarEvent {
     return {
@@ -29,13 +30,14 @@ export function createNewHomeCalendarEvent(date: String | Moment, from: Home, to
     }
 }
 
-export function createCheckinEvent(checkin: Checkin): CheckinEvent  {
+export function createCheckinEvent(checkin: Checkin, guess?: boolean): CheckinEvent  {
     const { type, ...checkinNonType } = checkin
     return {
         type: EventType.Checkin, 
         location: getCheckinLocation(checkin),
         date: getCheckinDate(checkin).format(),
-        checkin: checkinNonType
+        checkin: checkinNonType,
+        guess,
     }
 }
 
@@ -151,9 +153,56 @@ class TimelineEventsFactory {
     }
 }
 
+export function createHomeCheckinEvent(beforeDate: String, afterDate: String, context: Context): CheckinEvent | undefined {
+    const beforeMoment = moment(beforeDate as MomentInput)
+    const afterMoment = moment(afterDate as MomentInput)
+    const differenceInHours = beforeMoment.diff(afterMoment, 'hours')
+    const dateBetween = moment(beforeMoment)
+    dateBetween.add(differenceInHours, 'hours')
+    const home = getHomeForDate(dateBetween, context.homes)
+    if (!home) { return undefined }
+
+    return {
+        type: EventType.Checkin, 
+        location: home!.location,
+        date: dateBetween.format(),
+        guess: true,
+    }
+}
+
+export const DAYS_INACTIVE_UNTIL_GUESS_HOME = 7
+function createHomeCheckinEventsWhenLongInactivity(context: Context) {
+    return {
+        pattern: [
+            (e: Event) => e.type === EventType.Checkin,
+            any((e: Event) => e.type !== EventType.Checkin),
+            (current: Event, [previous]: [CheckinEvent]) => {
+                if (current.type !== EventType.Checkin) { return false }
+                const previousMoment = moment(previous.date as MomentInput)
+                const currentMoment = moment(current.date as MomentInput)
+                return previousMoment.diff(currentMoment, 'days') > DAYS_INACTIVE_UNTIL_GUESS_HOME
+            }
+        ],
+        result: (events: Event[]) => {
+            const first = events[0]
+            const remaining = events.slice(1, events.length - 2)
+            const last = events[events.length - 1]
+            return [
+                first,
+                ...remaining,
+                createHomeCheckinEvent(last.date, first.date, context),
+                last,
+            ].filter(Boolean)
+        }
+        
+    }
+}
+
 export function createTimelineEvents(checkins: Checkin[] = [], context: Context = {homes: []}) {
     const checkinsStack = new Stack<Checkin>(checkins)
     const timelineEventsFactory = new TimelineEventsFactory(checkinsStack, context)
     timelineEventsFactory.process()
-    return timelineEventsFactory.get()
+    return arrayQueryReplace([
+        createHomeCheckinEventsWhenLongInactivity(context),
+    ], timelineEventsFactory.get())
 }

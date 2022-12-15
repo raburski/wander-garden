@@ -49,7 +49,7 @@ function normalizePattern(pattern) {
     return pattern.map(e => isExpression(e) ? e : exact(e))
 }
 
-function match(pattern, array, currentIndex = 0) {
+function match(pattern, array, currentIndex = 0, previousValues = []) {
     if (pattern.length === 0) {
         return currentIndex
     }
@@ -67,41 +67,41 @@ function match(pattern, array, currentIndex = 0) {
     const nextExpression = pattern[1]
     switch (currentExpression.type) {
         case EXPRESSION_TYPE.START:
-            if (currentIndex === 0 && currentExpression.fn(currentValue)) {
-                return match(pattern.slice(1), array.slice(1), currentIndex + 1)
+            if (currentIndex === 0 && currentExpression.fn(currentValue, previousValues)) {
+                return match(pattern.slice(1), array.slice(1), currentIndex + 1, [...previousValues, currentValue])
             } else {
                 return false
             }
         case EXPRESSION_TYPE.END:
-            if (array.length === 1 && pattern.length === 1 && currentExpression.fn(currentValue)) {
-                return match(pattern.slice(1), array.slice(1), currentIndex + 1)
+            if (array.length === 1 && pattern.length === 1 && currentExpression.fn(currentValue, previousValues)) {
+                return match(pattern.slice(1), array.slice(1), currentIndex + 1, [...previousValues, currentValue])
             } else {
                 return false
             }
         case EXPRESSION_TYPE.EXACT:
-            if (currentExpression.fn(currentValue)) {
-                return match(pattern.slice(1), array.slice(1), currentIndex + 1)
+            if (currentExpression.fn(currentValue, previousValues)) {
+                return match(pattern.slice(1), array.slice(1), currentIndex + 1, [...previousValues, currentValue])
             } else {
                 return false
             }
         case EXPRESSION_TYPE.ANY:
-            if (nextExpression && nextExpression.fn(currentValue)) {
-                return match(pattern.slice(2), array.slice(1), currentIndex + 1)
+            if (nextExpression && nextExpression.fn(currentValue, previousValues)) {
+                return match(pattern.slice(2), array.slice(1), currentIndex + 1, [...previousValues, currentValue])
             }
-            if (currentExpression.fn(currentValue)) {
-                return match(pattern, array.slice(1), currentIndex + 1)
+            if (currentExpression.fn(currentValue, previousValues)) {
+                return match(pattern, array.slice(1), currentIndex + 1, [...previousValues, currentValue])
             }
             return false
         case EXPRESSION_TYPE.SOME:
-            if (currentExpression.fn(currentValue)) {
+            if (currentExpression.fn(currentValue, previousValues)) {
                 const nextValue = array[1]
                 if (!nextValue) {
                     return false
                 }
                 if (match(pattern.slice(1), array.slice(1), currentIndex + 1)) {
-                    return match(pattern.slice(2), array.slice(2), currentIndex + 2)
+                    return match(pattern.slice(2), array.slice(2), currentIndex + 2, [...previousValues, currentValue])
                 }
-                return match(pattern, array.slice(1), currentIndex + 1)
+                return match(pattern, array.slice(1), currentIndex + 1, [...previousValues, currentValue])
             }
             return false
         default:

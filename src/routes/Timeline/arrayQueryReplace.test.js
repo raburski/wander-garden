@@ -61,6 +61,14 @@ const queryStartEnd = {
     result: () => 'startend'
 }
 
+const queryWithContext = {
+    pattern: [
+        e => e == 1,
+        (e, previous) => e + previous[0] == 3,
+    ],
+    result: () => 'withContext'
+}
+
 describe('array match', function () {
     it('should replace with single query provided', function () {
         const array = [3, 2, 1, 1, 2, 3, 2, 2]
@@ -126,6 +134,12 @@ describe('array match', function () {
         const array = [2, 1, 1, 2, 1, 1]
         const expectedResult = [2, 1, 1, 2, 1, 1]
         const result = arrayQueryReplace(queryStartEnd, array)
+        assert.deepEqual(result, expectedResult)
+    })
+    it('should use previous matched values in consecutive ones within a pattern', function () {
+        const array = [2, 1, 1, 2, 1, 1]
+        const expectedResult = [2, 1, 'withContext', 1, 1]
+        const result = arrayQueryReplace(queryWithContext, array)
         assert.deepEqual(result, expectedResult)
     })
 })

@@ -42,7 +42,7 @@ export interface Event {
 export interface CheckinEvent extends Event {
     type: EventType.Checkin
     location: Location
-    checkin: Checkin
+    checkin?: Checkin
 }
 
 export interface TransportEvent extends Event {
