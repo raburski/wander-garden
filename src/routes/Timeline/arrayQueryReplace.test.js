@@ -61,12 +61,23 @@ const queryStartEnd = {
     result: () => 'startend'
 }
 
-const queryWithContext = {
+const queryWithPrevious = {
     pattern: [
         e => e == 1,
         (e, previous) => e + previous[0] == 3,
     ],
-    result: () => 'withContext'
+    result: () => 'withPrevious'
+}
+
+const queryWithContext = {
+    pattern: [
+        e => e == 1,
+        (e, _, context) => {
+            context.result = 'withContext'
+            return e == 2
+        }
+    ],
+    result: (matched, context) => context.result
 }
 
 describe('array match', function () {
@@ -137,6 +148,12 @@ describe('array match', function () {
         assert.deepEqual(result, expectedResult)
     })
     it('should use previous matched values in consecutive ones within a pattern', function () {
+        const array = [2, 1, 1, 2, 1, 1]
+        const expectedResult = [2, 1, 'withPrevious', 1, 1]
+        const result = arrayQueryReplace(queryWithPrevious, array)
+        assert.deepEqual(result, expectedResult)
+    })
+    it('should use context to pass on computation to result', function () {
         const array = [2, 1, 1, 2, 1, 1]
         const expectedResult = [2, 1, 'withContext', 1, 1]
         const result = arrayQueryReplace(queryWithContext, array)

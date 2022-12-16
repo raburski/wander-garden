@@ -49,7 +49,7 @@ function normalizePattern(pattern) {
     return pattern.map(e => isExpression(e) ? e : exact(e))
 }
 
-function match(pattern, array, currentIndex = 0, previousValues = []) {
+function match(pattern, array, currentIndex = 0, previousValues = [], context) {
     if (pattern.length === 0) {
         return currentIndex
     }
@@ -67,41 +67,41 @@ function match(pattern, array, currentIndex = 0, previousValues = []) {
     const nextExpression = pattern[1]
     switch (currentExpression.type) {
         case EXPRESSION_TYPE.START:
-            if (currentIndex === 0 && currentExpression.fn(currentValue, previousValues)) {
-                return match(pattern.slice(1), array.slice(1), currentIndex + 1, [...previousValues, currentValue])
+            if (currentIndex === 0 && currentExpression.fn(currentValue, previousValues, context)) {
+                return match(pattern.slice(1), array.slice(1), currentIndex + 1, [...previousValues, currentValue], context)
             } else {
                 return false
             }
         case EXPRESSION_TYPE.END:
-            if (array.length === 1 && pattern.length === 1 && currentExpression.fn(currentValue, previousValues)) {
-                return match(pattern.slice(1), array.slice(1), currentIndex + 1, [...previousValues, currentValue])
+            if (array.length === 1 && pattern.length === 1 && currentExpression.fn(currentValue, previousValues, context)) {
+                return match(pattern.slice(1), array.slice(1), currentIndex + 1, [...previousValues, currentValue], context)
             } else {
                 return false
             }
         case EXPRESSION_TYPE.EXACT:
-            if (currentExpression.fn(currentValue, previousValues)) {
-                return match(pattern.slice(1), array.slice(1), currentIndex + 1, [...previousValues, currentValue])
+            if (currentExpression.fn(currentValue, previousValues, context)) {
+                return match(pattern.slice(1), array.slice(1), currentIndex + 1, [...previousValues, currentValue], context)
             } else {
                 return false
             }
         case EXPRESSION_TYPE.ANY:
-            if (nextExpression && nextExpression.fn(currentValue, previousValues)) {
-                return match(pattern.slice(2), array.slice(1), currentIndex + 1, [...previousValues, currentValue])
+            if (nextExpression && nextExpression.fn(currentValue, previousValues, context)) {
+                return match(pattern.slice(2), array.slice(1), currentIndex + 1, [...previousValues, currentValue], context)
             }
-            if (currentExpression.fn(currentValue, previousValues)) {
-                return match(pattern, array.slice(1), currentIndex + 1, [...previousValues, currentValue])
+            if (currentExpression.fn(currentValue, previousValues, context)) {
+                return match(pattern, array.slice(1), currentIndex + 1, [...previousValues, currentValue], context)
             }
             return false
         case EXPRESSION_TYPE.SOME:
-            if (currentExpression.fn(currentValue, previousValues)) {
+            if (currentExpression.fn(currentValue, previousValues, context)) {
                 const nextValue = array[1]
                 if (!nextValue) {
                     return false
                 }
                 if (match(pattern.slice(1), array.slice(1), currentIndex + 1)) {
-                    return match(pattern.slice(2), array.slice(2), currentIndex + 2, [...previousValues, currentValue])
+                    return match(pattern.slice(2), array.slice(2), currentIndex + 2, [...previousValues, currentValue], context)
                 }
-                return match(pattern, array.slice(1), currentIndex + 1, [...previousValues, currentValue])
+                return match(pattern, array.slice(1), currentIndex + 1, [...previousValues, currentValue], context)
             }
             return false
         default:
@@ -116,10 +116,11 @@ export default function arrayQueryReplace(query, initArray) {
         let resultedArray = array
         let searchIndex = 0
         while(searchIndex < resultedArray.length) {
-            const lastIndex = match(normalizedPattern, resultedArray.slice(searchIndex), searchIndex)
+            const context = {}
+            const lastIndex = match(normalizedPattern, resultedArray.slice(searchIndex), searchIndex, [], context)
             if (lastIndex) {
                 const matchedArrayFragment = resultedArray.slice(searchIndex, lastIndex)
-                const actualResult = result(matchedArrayFragment)
+                const actualResult = result(matchedArrayFragment, context)
                 const resultArray = Array.isArray(actualResult) ? actualResult : [actualResult]
                 resultedArray = [...resultedArray.slice(0, searchIndex), ...resultArray, ...resultedArray.slice(lastIndex)]
                 searchIndex = searchIndex + resultArray.length

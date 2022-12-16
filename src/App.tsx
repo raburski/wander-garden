@@ -7,6 +7,7 @@ import SideBar from './SideBar'
 import { Toaster } from 'react-hot-toast'
 import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill"
 import { SwarmProvider } from './swarm'
+import { SettingsProvider } from './settings'
 
 setupGoober(React.createElement)
 if (/windows/i.test(navigator.userAgent)) {
@@ -33,17 +34,19 @@ const RoutesContainer = styled('div')`
 
 function App() {
   return (
-    <SwarmProvider>
-      <AppContainer>
-        <Router>
-          <SideBar />
-          <RoutesContainer>
-            <Routes />
-          </RoutesContainer>
-        </Router>
-        <Toaster />
-      </AppContainer>
-    </SwarmProvider>
+    <SettingsProvider>
+      <SwarmProvider>
+        <AppContainer>
+          <Router>
+            <SideBar />
+            <RoutesContainer>
+              <Routes />
+            </RoutesContainer>
+          </Router>
+          <Toaster />
+        </AppContainer>
+      </SwarmProvider>
+    </SettingsProvider>
   );
 }
 

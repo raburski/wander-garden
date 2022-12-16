@@ -85,27 +85,6 @@ class TimelineEventsFactory {
         }
         const previous = maybePrevious!
 
-        // Check if any calendar events between checkins
-        const previousMoment = getCheckinDate(previous)
-        const currentMoment = getCheckinDate(current)
-
-        // NEW YEAR calendar event
-        const previousYear = previousMoment.get('year')
-        const currentYear = currentMoment.get('year')
-        if (previousYear !== currentYear) {
-            const yearDifference = currentYear - previousYear
-            const years = Array(yearDifference).fill(previousYear).map((year, index) => year + index + 1)
-            const newYearEvents = years.map(year => createNewYearCalendarEvent(moment(`${year}-01-01T00:00:00`)))
-            newYearEvents.forEach(event => this.push(event))
-        }
-
-        // NEW HOME calendar event
-        const previousHome = getHomeForDate(previousMoment, this.context.homes)
-        const currentHome = getHomeForDate(currentMoment, this.context.homes)
-        if (currentHome && previousHome && previousHome !== currentHome) {
-            this.push(createNewHomeCalendarEvent(currentHome.since!, previousHome!, currentHome!))
-        }
-
         if (!isTheSameArea(getCheckinLocation(current), getCheckinLocation(previous))) {
             const previousTransportType = getTransportType(previous)
             const currentTransportType = getTransportType(current)
@@ -170,33 +149,80 @@ export function createHomeCheckinEvent(beforeDate: String, afterDate: String, co
     }
 }
 
+type EventQueryContext = { event: Event }
+type EventsQueryContext = { events: Event[] }
+
 export const DAYS_INACTIVE_UNTIL_GUESS_HOME = 7
-function createHomeCheckinEventsWhenLongInactivity(context: Context) {
+function createHomeCheckinEventsWhenLongInactivity(timelineContext: Context) {
     return {
         pattern: [
             (e: Event) => e.type === EventType.Checkin,
             any((e: Event) => e.type !== EventType.Checkin),
-            (current: Event, [previous]: [CheckinEvent]) => {
+            (current: Event, events: [CheckinEvent], context: EventQueryContext) => {
                 if (current.type !== EventType.Checkin) { return false }
+                const previous = events[events.length - 1]
                 const previousMoment = moment(previous.date as MomentInput)
                 const currentMoment = moment(current.date as MomentInput)
-                return previousMoment.diff(currentMoment, 'days') > DAYS_INACTIVE_UNTIL_GUESS_HOME
+                if (previousMoment.diff(currentMoment, 'days') <= DAYS_INACTIVE_UNTIL_GUESS_HOME) {
+                    return false
+                }
+                const homeCheckin = createHomeCheckinEvent(previous.date, current.date, timelineContext)
+                if (!homeCheckin) {
+                    return false
+                }
+                context.event = homeCheckin!
+                return true
             }
         ],
-        result: (events: Event[]) => {
-            const first = events[0]
-            const remaining = events.slice(1, events.length - 2)
-            const last = events[events.length - 1]
-            return [
-                first,
-                ...remaining,
-                createHomeCheckinEvent(last.date, first.date, context),
-                last,
-            ].filter(Boolean)
-        }
-        
+        result: (events: Event[], context: EventQueryContext) => [
+            ...events.slice(0, events.length - 1),
+            context.event,
+            events[events.length - 1],
+        ].filter(Boolean)
     }
 }
+
+const createNewYearCalendarEvents = () => ({
+    pattern: [
+        (event: Event) => event,
+        (olderEvent: Event, [newerEvent]: [Event], context: EventsQueryContext) => {
+            const previousYear = moment(olderEvent.date as MomentInput).get('year')
+            const currentYear = moment(newerEvent.date as MomentInput).get('year')
+            if (previousYear !== currentYear) {
+                const yearDifference = currentYear - previousYear
+                if (yearDifference < 0) {
+                    return false // TODO: INVESTIGATE!
+                    console.log(newerEvent, olderEvent)
+                }
+                const years = Array(yearDifference).fill(previousYear).map((year, index) => year + index + 1)
+                context.events = years.map(year => createNewYearCalendarEvent(moment(`${year}-01-01T00:00:00`)))
+                return true
+            }
+            return false
+        }
+    ],
+    result: ([event1, event2]: [Event, Event], context: EventsQueryContext): Event[] => 
+        [event1, ...context.events, event2]
+})
+
+const createNewHomeCalendarEvents = (timelineContext: Context) => ({
+    pattern: [
+        (event: Event) => event,
+        (previousEvent: Event, [currentEvent]: [Event], context: EventQueryContext) => {
+            const previousMoment = moment(previousEvent.date as MomentInput)
+            const currentMoment = moment(currentEvent.date as MomentInput)
+            const previousHome = getHomeForDate(previousMoment, timelineContext.homes)
+            const currentHome = getHomeForDate(currentMoment, timelineContext.homes)
+            if (currentHome && previousHome && previousHome !== currentHome) {
+                context.event = createNewHomeCalendarEvent(currentHome!.since!, previousHome!, currentHome!)
+                return true
+            }
+            return false
+        },
+    ],
+    result: ([currentEvent, previousEvent]: [Event, Event], context: EventQueryContext): Event[] => 
+        [currentEvent, context.event, previousEvent]
+})
 
 export function createTimelineEvents(checkins: Checkin[] = [], context: Context = {homes: []}) {
     const checkinsStack = new Stack<Checkin>(checkins)
@@ -204,5 +230,7 @@ export function createTimelineEvents(checkins: Checkin[] = [], context: Context 
     timelineEventsFactory.process()
     return arrayQueryReplace([
         createHomeCheckinEventsWhenLongInactivity(context),
+        createNewYearCalendarEvents(),
+        createNewHomeCalendarEvents(context),
     ], timelineEventsFactory.get())
 }

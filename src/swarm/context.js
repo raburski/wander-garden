@@ -1,25 +1,17 @@
-import { LocalStorageAdapter } from "./adapters"
-import { createContext, useState, useContext, useCallback } from "react"
+import { createContext, useState, useContext } from "react"
 import { fetchCheckins, UnauthorizedError } from './API'
-import { dateTransforms, jsonTransforms, stringTransforms } from './transforms'
+import { dateTransforms, zipsonTransforms, stringTransforms, LocalStorageAdapter, useStatePersistedCallback } from '../storage'
 import moment from 'moment'
 
 export const SwarmContext = createContext({})
 
-const localStorageCheckins = new LocalStorageAdapter('swarm_checkins', '[]', jsonTransforms)
+const localStorageCheckins = new LocalStorageAdapter('swarm_checkins', '[]', zipsonTransforms)
 const localStorageLastUpdated = new LocalStorageAdapter('swarm_checkins_last_update', null, dateTransforms)
 const localStorageToken = new LocalStorageAdapter('access_token', null, stringTransforms)
 
 const initialLocalStorageCheckinsValue = localStorageCheckins.get()
 const initialLocalStorageLastUpdatedValue = localStorageLastUpdated.get()
 const initialLocalStorageTokenValue = localStorageToken.get()
-
-function useStatePersistedCallback(currentState, setState, persistState) {
-    return useCallback(newState => {
-        setState(newState)
-        persistState(newState)
-    }, [currentState])
-}
 
 export function SwarmProvider(props) {
     const [checkins, setCheckinsState] = useState(initialLocalStorageCheckinsValue)
@@ -37,18 +29,6 @@ export function SwarmProvider(props) {
     }
     return <SwarmContext.Provider value={value} {...props}/>
 }
-
-// essentialCheckinComponents(checkin) {
-//     return {
-//         createdAt: checkin.createdAt,
-//         createdBy: checkin.createdBy,
-//         id: checkin.id,
-//         timeZoneOffset: checkin.timeZoneOffset,
-//         type: checkin.type,
-//         venue: checkin.venue,
-//     }
-// }
-
 
 export function useCheckins() {
     const context = useContext(SwarmContext)

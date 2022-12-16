@@ -18,6 +18,7 @@ import createTimeline from './timeline'
 import { EventType, TransportMode, GroupType, LocationHighlightType, CalendarDayType } from './types'
 import { Segment } from "../../components/Segment"
 import { createNewYearCalendarEvent } from "./timeline.events"
+import { useSetting } from "../../settings"
 
 const AllFlagsContainer = styled('div')`
     display: flex;
@@ -282,14 +283,16 @@ function Timeline({ timeline }) {
     return timeline.map((group, i) => <TimelineGroup group={group} i={i} topLevel/>)
 }
 
+const TIMELINE_SEGMENT_OPTION_SETTING = 'TIMELINE_SEGMENT_OPTION'
 export default function TimelinePage() {
+    const [segmentOptionSetting, setSegmentOptionSetting] = useSetting(TIMELINE_SEGMENT_OPTION_SETTING)
     const [params] = useSearchParams()
-    const [viewSegmentSelected, setViewSegmentSelected] = useState(0)
+    // const [viewSegmentSelected, setViewSegmentSelected] = useState(segmentOptionSetting | 0)
     const selectedCountryCode = params.get('cc')?.toLowerCase()
 
     const [checkins] = useCheckins()
     const countryCodes = checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc).filter(onlyUnique)
-    const timelineConfig = { tripsOnly: viewSegmentSelected > 0, foreignOnly: viewSegmentSelected === 2 }
+    const timelineConfig = { tripsOnly: segmentOptionSetting > 0, foreignOnly: segmentOptionSetting === 2 }
     const timeline = createTimeline(checkins, timelineConfig)
     const filteredTimeline = selectedCountryCode ? timeline.filter(group => {
         if (group.type === GroupType.Plain) { return true }
@@ -305,7 +308,7 @@ export default function TimelinePage() {
             <Panel spacing>
                 <AllFlags countryCodes={countryCodes} selectedCountryCode={selectedCountryCode}/>
                 <OptionsContainer>
-                    <Segment titles={viewSegmentOptions} selectedIndex={viewSegmentSelected} onClick={setViewSegmentSelected}/>
+                    <Segment titles={viewSegmentOptions} selectedIndex={segmentOptionSetting} onClick={setSegmentOptionSetting}/>
                 </OptionsContainer>
             </Panel>
             <Timeline timeline={filteredTimeline} />

@@ -1,7 +1,7 @@
 import assert from 'assert'
 import moment from 'moment'
-import { createTimelineEvents, createCheckinEvent, createHomeCheckinEvent, DAYS_INACTIVE_UNTIL_GUESS_HOME } from './timeline.events'
-import { airport_cyprus, airport_wroclaw, fitness_wroclaw, restaurant_limassol_cyprus, airport_leszno } from './testData'
+import { createTimelineEvents, createCheckinEvent, createHomeCheckinEvent, DAYS_INACTIVE_UNTIL_GUESS_HOME, createTransportEvent } from './timeline.events'
+import { airport_cyprus, airport_wroclaw, fitness_wroclaw, restaurant_limassol_cyprus, bus_station_warsaw } from './testData'
 import { createPotentialHomeWithCheckin, getCheckinDate, getCheckinLocation } from '../../swarm/functions'
 import { TransportMode } from './types'
 
@@ -32,4 +32,28 @@ describe('timeline @ home fill', function () {
         ]
         assert.deepEqual(events, expectedEvents)
     })
+
+    // it('should create home checkin events if no activity after landing in home country', function () {
+    //     const NOW = moment()
+    //     const localCheckinDate = moment(NOW).subtract(10, 'days')
+    //     const airportCheckin = { ...airport_cyprus, createdAt: moment(NOW).subtract(11, 'days').unix() }
+    //     const localCheckin = { ...bus_station_warsaw, createdAt: localCheckinDate.unix() }
+    //     const distantTripCheckin = { ...restaurant_limassol_cyprus, createdAt: moment(NOW).unix() }
+
+
+    //     const checkins = [distantTripCheckin, localCheckin, airportCheckin]
+    //     const expectedHomeCheckinEvent = createHomeCheckinEvent(localCheckinDate.format(), moment(NOW).format(), CONTEXT)
+    //     const events = createTimelineEvents(checkins, CONTEXT)
+    //     const expectedEvents = [
+    //         createCheckinEvent(distantTripCheckin),
+    //         createTransportEvent(TransportMode.Plane, expectedHomeCheckinEvent.date, expectedHomeCheckinEvent.location, getCheckinLocation(distantTripCheckin)),
+    //         expectedHomeCheckinEvent,
+    //         createCheckinEvent(localCheckin),
+    //         createTransportEvent(TransportMode.Plane, getCheckinDate(airportCheckin), getCheckinLocation(airportCheckin), getCheckinLocation(localCheckin)),
+    //         createCheckinEvent(airportCheckin),
+    //     ]
+
+    //     console.dir(events)
+    //     assert.deepEqual(events, expectedEvents)
+    // })
 })

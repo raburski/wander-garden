@@ -20,6 +20,7 @@ export * as srilanka_trip_events from './srilanka_trip_events.json'
 export * as germany_swiss_trip_events from './germany_swiss_trip_events.json'
 export * as cafe_nicosia_cyprus from './cafe_nicosia_cyprus.json'
 export * as eurotrip from './eurotrip.json'
+export * as bus_station_warsaw from './bus_station_warsaw.json'
 
 export * as kobierzyce_trip_events from './kobierzyce_trip_events.json'
 export * as cyprus from './cyprus.json'
