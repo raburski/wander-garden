@@ -5,14 +5,15 @@ import { checkinHasCategory } from '../../swarm/categories'
 import { getEventDate, createTransportEvent } from './timeline.events'
 import { EventType, TransportMode, GroupType, LocationHighlightType, PlainGroup } from './types'
 import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'
-
-import type { Group, Event, CheckinEvent, TransportEvent, CalendarEvent, HomeGroup, TransportGroup, TripGroup, ContainerGroup, LocationHighlight, Context } from "./types"
-import type { Location } from '../../location'
-import type { Moment, MomentInput } from "moment"
-import { Checkin, ensureDateString, Home } from "../../swarm"
+import { Checkin, ensureDateString } from "../../swarm"
 import { onlyUnique } from "../../array"
 import { cleanLocation, isTheSameArea } from "../../location"
 import { getHomeForEvent, isEventAtHome } from './context'
+
+import type { Group, Event, CheckinEvent, TransportEvent, CalendarEvent, HomeGroup, TransportGroup, TripGroup, ContainerGroup, LocationHighlight, Context } from "./types"
+import type { Location, Home } from '../../location'
+import type { Moment, MomentInput } from "moment"
+
 
 interface TimelineConfig {
     tripsOnly?: boolean

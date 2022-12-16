@@ -1,13 +1,14 @@
 import categories from './categories.json'
+import type { Checkin, Venue } from "./types"
 
-export const TRANSPORT_TYPE = {
+export const TRANSPORT_TYPE: {[name: string]: string} = {
     PLANE: 'PLANE',
     CAR: 'CAR',
     TRAIN: 'TRAIN',
     SHIP: 'SHIP',
 }
 
-const TRANSPORT_CATEGORY_TYPES = {
+const TRANSPORT_CATEGORY_TYPES: {[name: string]: string} = {
     '4bf58dd8d48988d1ed931735': TRANSPORT_TYPE.PLANE,
     '4bf58dd8d48988d1eb931735': TRANSPORT_TYPE.PLANE,
     '4bf58dd8d48988d113951735': TRANSPORT_TYPE.CAR,
@@ -18,7 +19,7 @@ const TRANSPORT_CATEGORY_TYPES = {
 
 const TRANSPORT_CATEGORIES = Object.keys(TRANSPORT_CATEGORY_TYPES)
 
-const SHOP_CATEGORIES = [
+const SHOP_CATEGORIES: string[] = [
     '4bf58dd8d48988d1ff941735', // Miscellaneous Shops
     '5744ccdfe4b0c0459246b4dc', // Shopping Plaza
     '4bf58dd8d48988d1fd941735', // Shopping Mall
@@ -26,40 +27,40 @@ const SHOP_CATEGORIES = [
     '4bf58dd8d48988d1f6941735', // Department Store
 ]
 
-export function getTransportType(checkin) {
+export function getTransportType(checkin: Checkin) {
     const category = checkin.venue ? checkin.venue.categories.find(category => TRANSPORT_CATEGORIES.includes(category.id)) : null
-    return category ? TRANSPORT_CATEGORY_TYPES[category.id] : null
+    return category ? TRANSPORT_CATEGORY_TYPES[category.id] : undefined
 }
 
-export function isTransportation(checkin) {
+export function isTransportation(checkin: Checkin): boolean {
     return checkin.venue ? checkin.venue.categories.some(category => TRANSPORT_CATEGORIES.includes(category.id)) : false
 }
 
-export function onlyNonTransportation(checkin) {
+export function onlyNonTransportation(checkin: Checkin): boolean {
     return !isTransportation(checkin)
     return checkin.venue ? !checkin.venue.categories.some(category => TRANSPORT_CATEGORIES.includes(category.id)) : true
 }
 
-export function onlyNonGrocery(checkin) {
+export function onlyNonGrocery(checkin: Checkin): boolean {
     return checkin.venue ? !checkin.venue.categories.some(category => SHOP_CATEGORIES.includes(category.id)) : true
 }
 
-export function checkinHasCategory({ venue }, categories) {
+export function checkinHasCategory(checkin: Checkin, categories: string[] | string) {
     const _categories = Array.isArray(categories) ? categories : [categories]
-    return venue?.categories?.some(cat => _categories.some(catID => cat.id === catID))
+    return checkin.venue.categories.some(cat => _categories.some(catID => cat.id === catID))
 }
 
 
-export function getCategory(catID) {
+export function getCategory(catID: string) {
     return categories.find(cat => cat.id === catID)
 }
 
-export function categoryEmoji(catID) {
+export function categoryEmoji(catID: string) {
     const category = getCategory(catID)
     return category ? category.emoji : null
 }
 
-export function venueEmoji(venue) {
+export function venueEmoji(venue: Venue) {
     const emojis = venue.categories.map(cat => categoryEmoji(cat.id)).filter(e => e)
     return emojis.length > 0 ? emojis[0] : '📍'
 }

@@ -2,18 +2,7 @@ import moment from 'moment'
 import { cleanLocation, isEqualLocationCity, distance } from '../location'
 import type { Location, Home } from '../location'
 import type { Moment } from "moment"
-
-export type { Location, Home } from '../location'
-
-export interface Venue {
-    location: Location
-}
-
-export interface Checkin {
-    type?: any
-    venue: Venue
-    createdAt: number
-}
+import type { Checkin } from "./types"
 
 export function ensureDateString(date: String | Moment, format?: string): String {
     if (typeof date === "string") {
@@ -24,7 +13,7 @@ export function ensureDateString(date: String | Moment, format?: string): String
 }
 
 export function isEqualCountry(leftCheckin: Checkin, rightCheckin: Checkin) {
-    return leftCheckin?.venue?.location?.country == rightCheckin?.venue?.location?.country
+    return leftCheckin.venue.location.country == rightCheckin.venue.location.country
 }
 
 export function isEqualCity(leftCheckin: Checkin, rightCheckin: Checkin) {

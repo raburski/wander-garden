@@ -6,7 +6,7 @@ import moment from 'moment'
 
 import { Event, EventType, TransportMode, CheckinEvent, TransportEvent, CalendarDayType, CalendarEvent, NewYearCalendarEvent, NewHomeCalendarEvent } from './types'
 import type { Context } from './types'
-import type { Checkin } from "../../swarm/functions"
+import type { Checkin } from "../../swarm"
 import type { Location } from '../../location'
 import type { Moment, MomentInput } from "moment"
 import { getHomeForDate } from "./context"
