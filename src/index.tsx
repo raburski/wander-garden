@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 const ROOT_DIV = document.getElementById('root')!
 const root = ReactDOM.createRoot(ROOT_DIV)

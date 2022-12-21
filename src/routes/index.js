@@ -9,6 +9,7 @@ import Phone from './Phone'
 import PhoneConnect from './PhoneConnect'
 import AuthenticationFinish from './AuthenticationFinish'
 import WebsiteInfo from "./WebsiteInfo"
+import Map from './Map'
 
 export default function AllRoutes() {
     return (
@@ -21,6 +22,7 @@ export default function AllRoutes() {
         <Route path="timeline" element={<Timeline />}/>
         <Route path="events" element={<Events />}/>
         <Route path="context" element={<Context />}/>
+        <Route path="map" element={<Map />}/>
         <Route path="info" element={<WebsiteInfo />}/>
         <Route path="/" element={<Dashboard />}/>
         <Route path="*" element={<Navigate to="/" />}/>

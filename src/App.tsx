@@ -8,6 +8,9 @@ import { Toaster } from 'react-hot-toast'
 import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill"
 import { SwarmProvider } from './swarm'
 import { SettingsProvider } from './settings'
+import mapboxgl from 'mapbox-gl'
+ 
+
 
 setupGoober(React.createElement)
 if (/windows/i.test(navigator.userAgent)) {

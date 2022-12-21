@@ -3,3 +3,5 @@ declare module "country-flag-emoji" {
         get: () => any
     }
 }
+
+declare module 'mapbox-gl';
