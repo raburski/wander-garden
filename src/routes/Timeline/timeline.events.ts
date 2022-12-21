@@ -132,7 +132,7 @@ class TimelineEventsFactory {
     }
 }
 
-export function createHomeCheckinEvent(beforeDate: String, afterDate: String, context: Context): CheckinEvent | undefined {
+export function createHomeCheckin(beforeDate: String, afterDate: String, context: Context): Checkin | undefined {
     const beforeMoment = moment(beforeDate as MomentInput)
     const afterMoment = moment(afterDate as MomentInput)
     const differenceInHours = beforeMoment.diff(afterMoment, 'hours')
@@ -142,43 +142,44 @@ export function createHomeCheckinEvent(beforeDate: String, afterDate: String, co
     if (!home) { return undefined }
 
     return {
-        type: EventType.Checkin, 
-        location: home!.location,
-        date: dateBetween.format(),
-        guess: true,
+        venue: {
+            categories: [],
+            location: home!.location
+        },
+        createdAt: dateBetween.unix(),
     }
 }
 
 type EventQueryContext = { event: Event }
 type EventsQueryContext = { events: Event[] }
 
+type CheckinQueryContext = { checkin: Checkin }
+
 export const DAYS_INACTIVE_UNTIL_GUESS_HOME = 7
-function createHomeCheckinEventsWhenLongInactivity(timelineContext: Context) {
+function createHomeCheckinWhenLongInactivity(timelineContext: Context) {
     return {
         pattern: [
-            (e: Event) => e.type === EventType.Checkin,
-            any((e: Event) => e.type !== EventType.Checkin),
-            (current: Event, events: [CheckinEvent], context: EventQueryContext) => {
-                if (current.type !== EventType.Checkin) { return false }
-                const previous = events[events.length - 1]
-                const previousMoment = moment(previous.date as MomentInput)
-                const currentMoment = moment(current.date as MomentInput)
-                if (previousMoment.diff(currentMoment, 'days') <= DAYS_INACTIVE_UNTIL_GUESS_HOME) {
+            (e: Checkin) => true,
+            (current: Checkin, checkins: [Checkin], context: CheckinQueryContext) => {
+                const newerCheckin = checkins[0]
+                const newerCheckinMoment = moment.unix(newerCheckin.createdAt)
+                const currentMoment = moment.unix(current.createdAt)
+                const numberOfDaysInactive = newerCheckinMoment.diff(currentMoment, 'days')
+                if (numberOfDaysInactive <= DAYS_INACTIVE_UNTIL_GUESS_HOME) {
                     return false
                 }
-                const homeCheckin = createHomeCheckinEvent(previous.date, current.date, timelineContext)
-                if (!homeCheckin) {
-                    return false
-                }
-                context.event = homeCheckin!
+
+                const homeCheckin = createHomeCheckin(currentMoment.format(), newerCheckinMoment.format(), timelineContext)
+                if (!homeCheckin) { return false }
+                context.checkin = homeCheckin!
                 return true
-            }
+            },
         ],
-        result: (events: Event[], context: EventQueryContext) => [
-            ...events.slice(0, events.length - 1),
-            context.event,
-            events[events.length - 1],
-        ].filter(Boolean)
+        result: (checkins: [Checkin, Checkin], context: CheckinQueryContext) => [
+            checkins[0],
+            context.checkin,
+            checkins[1]
+        ]
     }
 }
 
@@ -225,11 +226,11 @@ const createNewHomeCalendarEvents = (timelineContext: Context) => ({
 })
 
 export function createTimelineEvents(checkins: Checkin[] = [], context: Context = {homes: []}) {
-    const checkinsStack = new Stack<Checkin>(checkins)
+    const enhancedCheckins = arrayQueryReplace([createHomeCheckinWhenLongInactivity(context)], checkins)
+    const checkinsStack = new Stack<Checkin>(enhancedCheckins)
     const timelineEventsFactory = new TimelineEventsFactory(checkinsStack, context)
     timelineEventsFactory.process()
     return arrayQueryReplace([
-        createHomeCheckinEventsWhenLongInactivity(context),
         createNewYearCalendarEvents(),
         createNewHomeCalendarEvents(context),
     ], timelineEventsFactory.get())

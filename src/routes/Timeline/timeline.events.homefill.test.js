@@ -1,6 +1,6 @@
 import assert from 'assert'
 import moment from 'moment'
-import { createTimelineEvents, createCheckinEvent, createHomeCheckinEvent, DAYS_INACTIVE_UNTIL_GUESS_HOME, createTransportEvent } from './timeline.events'
+import { createTimelineEvents, createCheckinEvent, createHomeCheckinEvent, DAYS_INACTIVE_UNTIL_GUESS_HOME, createTransportEvent, createHomeCheckin } from './timeline.events'
 import { airport_cyprus, airport_wroclaw, fitness_wroclaw, restaurant_limassol_cyprus, bus_station_warsaw } from './testData'
 import { createPotentialHomeWithCheckin, getCheckinDate, getCheckinLocation } from '../../swarm/functions'
 import { TransportMode } from './types'
@@ -27,7 +27,7 @@ describe('timeline @ home fill', function () {
         const events = createTimelineEvents(checkins, CONTEXT)
         const expectedEvents = [
             createCheckinEvent(fitnessAfterHome),
-            createHomeCheckinEvent(fitnessBeforeMoment.format(), fitnessAfterMoment.format(), CONTEXT),
+            createCheckinEvent(createHomeCheckin(fitnessBeforeMoment.format(), fitnessAfterMoment.format(), CONTEXT)),
             createCheckinEvent(fitnessBeforeHome),
         ]
         assert.deepEqual(events, expectedEvents)
