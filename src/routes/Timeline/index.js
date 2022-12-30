@@ -3,22 +3,20 @@ import { useSearchParams, Link } from "react-router-dom"
 import countryFlagEmoji from "country-flag-emoji"
 import moment from "moment"
 import { styled } from 'goober'
-import { onlyUnique } from "../../array"
-import { useCheckins } from "../../domain/swarm"
-import { onlyNonTransportation, venueEmoji } from '../../domain/swarm/categories'
-import { getCategory } from "../../domain/swarm/categories"
+import { onlyUnique } from "array"
+import { useCheckins } from "domain/swarm"
+import { onlyNonTransportation, venueEmoji } from 'domain/swarm/categories'
+import { getCategory } from "domain/swarm/categories"
 import CountryBar from "./CountryBar"
-import Page from "../../components/Page"
-import colors from "../../colors"
-import Panel from "../../components/Panel"
-import { getGroupHighlights } from './timeline.groups'
-import ToggleButton from "../../components/ToggleButton"
+import Page from "components/Page"
+import colors from "colors"
+import Panel from "components/Panel"
+import { getGroupHighlights } from 'domain/timeline/groups'
 
-import createTimeline from './timeline'
-import { EventType, TransportMode, GroupType, LocationHighlightType, CalendarDayType } from './types'
-import { Segment } from "../../components/Segment"
-import { createNewYearCalendarEvent } from "./timeline.events"
-import { useSetting } from "../../settings"
+import createTimeline from 'domain/timeline'
+import { EventType, TransportMode, GroupType, LocationHighlightType, CalendarDayType } from 'domain/timeline/types'
+import { Segment } from "components/Segment"
+import { useSetting } from "settings"
 
 const AllFlagsContainer = styled('div')`
     display: flex;

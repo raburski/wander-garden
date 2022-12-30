@@ -1,6 +1,6 @@
-import { createTimelineEvents } from './timeline.events'
-import { createTimelineGroups } from './timeline.groups'
-import { getPotentialHomes } from '../../domain/swarm/functions'
+import { createTimelineEvents } from './events'
+import { createTimelineGroups } from './groups'
+import { getPotentialHomes } from 'domain/swarm/functions'
 
 export default function createTimeline(checkins, config) {
     const homes = getPotentialHomes(checkins)

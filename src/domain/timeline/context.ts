@@ -1,10 +1,10 @@
 import { EventType } from "./types"
 import moment from "moment"
-import { isTheSameArea } from '../../domain/location'
+import { isTheSameArea } from 'domain/location'
 import type { Context, Event, CalendarEvent, CheckinEvent, TransportEvent } from "./types"
-import type { Home } from "../../domain/location"
+import type { Home } from "domain/location"
 import type { Moment, MomentInput } from "moment"
-import { Checkin, getCheckinDate, getCheckinLocation } from "../../domain/swarm"
+import { Checkin, getCheckinDate, getCheckinLocation } from "domain/swarm"
 
 function ensureDateMoment(date: Moment | String): Moment {
     return typeof date === 'string' ? moment(date as MomentInput) : date! as Moment

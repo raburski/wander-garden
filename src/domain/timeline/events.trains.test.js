@@ -1,8 +1,8 @@
 import assert from 'assert'
 import moment from 'moment'
-import { createTimelineEvents, createCheckinEvent, createTransportEvent } from './timeline.events'
+import { createTimelineEvents, createCheckinEvent, createTransportEvent } from './events'
 import { trainstation_krakow, trainstation_wroclaw, fitness_wroclaw } from './testData'
-import { getCheckinDate, getCheckinLocation } from '../../domain/swarm/functions'
+import { getCheckinDate, getCheckinLocation } from '../swarm/functions'
 import { TransportMode } from './types'
 
 describe('timeline @ trains', function () {

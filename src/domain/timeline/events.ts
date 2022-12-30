@@ -1,13 +1,13 @@
-import { getTransportType, TRANSPORT_TYPE } from '../../domain/swarm/categories'
-import { getCheckinDate, getDistanceBetweenCheckins, getCheckinLocation, ensureDateString, isEqualCountry } from '../../domain/swarm/functions'
-import { Home, isEqualLocationCountry, isTheSameArea } from '../../domain/location'
-import Stack from './stack'
+import { getTransportType, TRANSPORT_TYPE } from 'domain/swarm/categories'
+import { getCheckinDate, getDistanceBetweenCheckins, getCheckinLocation, ensureDateString, isEqualCountry } from 'domain/swarm/functions'
+import { Home, isEqualLocationCountry, isTheSameArea } from 'domain/location'
+import Stack from 'domain/stack'
 import moment from 'moment'
 
 import { Event, EventType, TransportMode, CheckinEvent, TransportEvent, CalendarDayType, CalendarEvent, NewYearCalendarEvent, NewHomeCalendarEvent } from './types'
 import type { Context } from './types'
-import type { Checkin } from "../../domain/swarm"
-import type { Location } from '../../domain/location'
+import type { Checkin } from "domain/swarm"
+import type { Location } from 'domain/location'
 import type { Moment, MomentInput } from "moment"
 import { getHomeForDate, isCheckinAtHome } from "./context"
 import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'

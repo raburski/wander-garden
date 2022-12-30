@@ -1,4 +1,4 @@
-import Button from "../../components/Button"
+import Button from "components/Button"
 import toast from "react-hot-toast"
 import { useState } from "react"
 import { IoLogoFoursquare } from 'react-icons/io'
