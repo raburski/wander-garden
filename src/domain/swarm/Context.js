@@ -1,6 +1,6 @@
 import { createContext, useState, useContext } from "react"
 import { fetchCheckins, UnauthorizedError } from './API'
-import { dateTransforms, zipsonTransforms, stringTransforms, LocalStorageAdapter, useStatePersistedCallback } from '../../storage'
+import { dateTransforms, zipsonTransforms, stringTransforms, LocalStorageAdapter, useStatePersistedCallback } from 'storage'
 import moment from 'moment'
 
 export const SwarmContext = createContext({})

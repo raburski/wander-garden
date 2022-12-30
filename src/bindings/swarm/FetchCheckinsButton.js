@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { useFetchCheckins } from 'domain/swarm'
+import { useRefreshHomes } from 'domain/homes'
 import Button from 'components/Button'
 import { VscSync } from 'react-icons/vsc'
 
@@ -15,12 +16,13 @@ function toastSandwich(fnReturningPromise) {
     )
 }
 
-function useFetchSwarm() {
+function useFetchSwarm(refreshHomes) {
     const [isFetching, setFetching] = useState(false)
     const fetchCheckins = useFetchCheckins()
     function fetch() {
         setFetching(true)
         function onLoaded() {
+            refreshHomes()
             setFetching(false)
         }
         return fetchCheckins().then(onLoaded)
@@ -29,7 +31,8 @@ function useFetchSwarm() {
 }
 
 export default function FetchCheckinsButton() {
-    const [isFetching, fetchSwarm] = useFetchSwarm()
+    const refreshHomes = useRefreshHomes()
+    const [isFetching, fetchSwarm] = useFetchSwarm(refreshHomes)
     const fetch = toastSandwich(fetchSwarm)
     return <Button icon={VscSync} disabled={isFetching} onClick={fetch}>{isFetching ? 'Fetching checkins...' : 'Update checkins'}</Button>
 }

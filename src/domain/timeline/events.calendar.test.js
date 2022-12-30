@@ -4,7 +4,7 @@ import { airport_cyprus, airport_wroclaw, fitness_wroclaw, restaurant_limassol_c
 import { getCheckinDate, getCheckinLocation } from '../swarm/functions'
 import { TransportMode, CalendarDayType } from './types'
 import moment from 'moment'
-import { createPotentialHomeWithCheckin } from '../swarm/functions'
+import { createPotentialHomeWithCheckin } from '../homes/functions'
 
 describe('timeline @ calendar', function () {
     it('should create NYE events', function () {

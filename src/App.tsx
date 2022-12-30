@@ -7,6 +7,7 @@ import SideBar from './SideBar'
 import { Toaster } from 'react-hot-toast'
 import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill"
 import { SwarmProvider } from 'domain/swarm'
+import { HomesProvider } from "domain/homes"
 import { SettingsProvider } from './settings'
 import mapboxgl from 'mapbox-gl'
  
@@ -39,15 +40,17 @@ function App() {
   return (
     <SettingsProvider>
       <SwarmProvider>
-        <AppContainer>
-          <Router>
-            <SideBar />
-            <RoutesContainer>
-              <Routes />
-            </RoutesContainer>
-          </Router>
-          <Toaster />
-        </AppContainer>
+        <HomesProvider>
+          <AppContainer>
+            <Router>
+              <SideBar />
+              <RoutesContainer>
+                <Routes />
+              </RoutesContainer>
+            </Router>
+            <Toaster />
+          </AppContainer>
+        </HomesProvider>
       </SwarmProvider>
     </SettingsProvider>
   );
