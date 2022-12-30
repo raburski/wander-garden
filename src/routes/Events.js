@@ -2,9 +2,9 @@ import { useEffect, useState } from "react"
 import { styled } from "goober"
 import { SiSwarm, SiNetflix } from 'react-icons/si'
 import moment from 'moment'
-import { TYPE, useEvents } from '../events'
+import { TYPE, useEvents } from '../domain/events'
 import Page from '../components/Page'
-import { formattedLocation } from '../location'
+import { formattedLocation } from '../domain/location'
 
 const EventContainer = styled('div')`
     display: flex;

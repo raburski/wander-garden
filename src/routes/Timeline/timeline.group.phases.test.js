@@ -3,7 +3,7 @@ import moment from 'moment'
 import { createCheckinEvent, createTransportEvent } from './timeline.events'
 import { createPhasesWithEvents } from './timeline.groups'
 import { undefined_city_cyprus, airport_cyprus, fitness_wroclaw, restaurant_limassol_cyprus, restaurant_pafos_cyprus, car_mop } from './testData'
-import { getCheckinDate, getCheckinLocation } from '../../swarm/functions'
+import { getCheckinDate, getCheckinLocation } from '../../domain/swarm/functions'
 import { TransportMode } from './types'
 
 describe('timeline @ phases', function () {

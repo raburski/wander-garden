@@ -1,10 +1,10 @@
 import assert from 'assert'
 import { createTimelineEvents, createCheckinEvent, createNewHomeCalendarEvent, createNewYearCalendarEvent } from './timeline.events'
 import { airport_cyprus, airport_wroclaw, fitness_wroclaw, restaurant_limassol_cyprus, airport_leszno } from './testData'
-import { getCheckinDate, getCheckinLocation } from '../../swarm/functions'
+import { getCheckinDate, getCheckinLocation } from '../../domain/swarm/functions'
 import { TransportMode, CalendarDayType } from './types'
 import moment from 'moment'
-import { createPotentialHomeWithCheckin } from '../../swarm/functions'
+import { createPotentialHomeWithCheckin } from '../../domain/swarm/functions'
 
 describe('timeline @ calendar', function () {
     it('should create NYE events', function () {

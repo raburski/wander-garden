@@ -1,9 +1,9 @@
-import { onlyNonGrocery, onlyNonTransportation } from '../../swarm/categories'
-import { TYPE, useEvents } from '../../events'
+import { onlyNonGrocery, onlyNonTransportation } from '../../domain/swarm/categories'
+import { TYPE, useEvents } from '../../domain/events'
 import { styled } from "goober"
 import moment from 'moment'
 import countryFlagEmoji from "country-flag-emoji"
-import { cleanLocation } from '../../location'
+import { cleanLocation } from '../../domain/location'
 import NoneFound from './NoneFound'
 
 const DATE_FORMAT = 'DD/MM/YYYY'

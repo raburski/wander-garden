@@ -1,7 +1,7 @@
-import { useCheckins } from "../../swarm"
+import { useCheckins } from "../../domain/swarm"
 import { styled } from "goober"
 import countryFlagEmoji from "country-flag-emoji"
-import { getPotentialHomes } from '../../swarm/functions'
+import { getPotentialHomes } from '../../domain/swarm/functions'
 import Panel from '../../components/Panel'
 import NoneFound from './NoneFound'
 

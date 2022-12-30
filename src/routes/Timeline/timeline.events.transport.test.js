@@ -1,7 +1,7 @@
 import assert from 'assert'
 import { createTimelineEvents, createCheckinEvent, createTransportEvent } from './timeline.events'
 import { fitness_wroclaw, restaurant_leszno, airport_lombardy, tearoom_stezzano, undefined_city_cyprus, restaurant_limassol_cyprus, airport_cyprus, restaurant_pafos_cyprus } from './testData'
-import { getCheckinDate, getCheckinLocation } from '../../swarm/functions'
+import { getCheckinDate, getCheckinLocation } from '../../domain/swarm/functions'
 import { TransportMode } from './types'
 
 describe('timeline @ transport', function () {

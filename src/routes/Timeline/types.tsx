@@ -1,5 +1,5 @@
-import type { Location, Home } from '../../location'
-import type { Checkin } from '../../swarm'
+import type { Location, Home } from '../../domain/location'
+import type { Checkin } from '../../domain/swarm'
 
 /* EVENTS */
 

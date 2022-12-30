@@ -1,4 +1,4 @@
-import { useCheckins, useIsAuthenticated } from '../../swarm'
+import { useCheckins, useIsAuthenticated } from '../../domain/swarm'
 import { styled } from 'goober'
 import Page from '../../components/Page'
 import CountryRow from '../../components/CountryRow'
@@ -9,8 +9,8 @@ import Swarm from './Swarm'
 
 import countryFlagEmoji from "country-flag-emoji"
 import { onlyUnique } from "../../array"
-import { onlyNonTransportation } from '../../swarm/categories'
-import { formattedLocation } from '../../location'
+import { onlyNonTransportation } from '../../domain/swarm/categories'
+import { formattedLocation } from '../../domain/location'
 
 const PanelsContainer = styled('div')`
     display: flex;

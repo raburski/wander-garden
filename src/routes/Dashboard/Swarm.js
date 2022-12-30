@@ -1,4 +1,4 @@
-import { useLastUpdated, useIsAuthenticated } from '../../swarm'
+import { useLastUpdated, useIsAuthenticated } from '../../domain/swarm'
 import Panel from '../../components/Panel'
 import InfoPanel from '../../components/InfoPanel'
 import SquareImage from '../../components/SquareImage'

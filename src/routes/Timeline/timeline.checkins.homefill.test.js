@@ -2,7 +2,7 @@ import assert from 'assert'
 import moment from 'moment'
 import { createTimelineEvents, createCheckinEvent, createHomeCheckinEvent, DAYS_INACTIVE_UNTIL_GUESS_HOME, createTransportEvent, createHomeCheckin } from './timeline.events'
 import { airport_cyprus, airport_wroclaw, fitness_wroclaw, restaurant_limassol_cyprus, bus_station_warsaw, restaurant_leszno } from './testData'
-import { createPotentialHomeWithCheckin, getCheckinDate, getCheckinLocation } from '../../swarm/functions'
+import { createPotentialHomeWithCheckin, getCheckinDate, getCheckinLocation } from '../../domain/swarm/functions'
 import { TransportMode } from './types'
 
 const HOME = createPotentialHomeWithCheckin(fitness_wroclaw, moment('1991-01-01'), null)

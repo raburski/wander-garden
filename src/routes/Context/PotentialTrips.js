@@ -1,5 +1,5 @@
-import { onlyNonGrocery, onlyNonTransportation } from '../../swarm/categories'
-import { TYPE, useEvents } from '../../events'
+import { onlyNonGrocery, onlyNonTransportation } from '../../domain/swarm/categories'
+import { TYPE, useEvents } from '../../domain/events'
 import { styled } from "goober"
 import moment from 'moment'
 import NoneFound from './NoneFound'

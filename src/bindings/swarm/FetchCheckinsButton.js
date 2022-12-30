@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-import { useFetchCheckins } from '../../swarm'
+import { useFetchCheckins } from '../../domain/swarm'
 import Button from '../../components/Button'
 import { VscSync } from 'react-icons/vsc'
 

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useToken } from '../../swarm'
+import { useToken } from '../../domain/swarm'
 import { styled } from 'goober'
 import InfoPanel from '../../components/InfoPanel'
 import SquareImage from '../../components/SquareImage'

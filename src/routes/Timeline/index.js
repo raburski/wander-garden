@@ -4,9 +4,9 @@ import countryFlagEmoji from "country-flag-emoji"
 import moment from "moment"
 import { styled } from 'goober'
 import { onlyUnique } from "../../array"
-import { useCheckins } from "../../swarm"
-import { onlyNonTransportation, venueEmoji } from '../../swarm/categories'
-import { getCategory } from "../../swarm/categories"
+import { useCheckins } from "../../domain/swarm"
+import { onlyNonTransportation, venueEmoji } from '../../domain/swarm/categories'
+import { getCategory } from "../../domain/swarm/categories"
 import CountryBar from "./CountryBar"
 import Page from "../../components/Page"
 import colors from "../../colors"

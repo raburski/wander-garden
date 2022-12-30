@@ -1,4 +1,4 @@
-import { _movies } from '../singletons'
+import { _movies } from '../domain/singletons'
 import { uploadFile, parseCSVLine } from '../files'
 import Button from '../components/Button'
 import Page from '../components/Page'

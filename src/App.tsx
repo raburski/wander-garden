@@ -6,7 +6,7 @@ import { setup as setupGoober, styled } from 'goober'
 import SideBar from './SideBar'
 import { Toaster } from 'react-hot-toast'
 import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill"
-import { SwarmProvider } from './swarm'
+import { SwarmProvider } from './domain/swarm'
 import { SettingsProvider } from './settings'
 import mapboxgl from 'mapbox-gl'
  

@@ -3,9 +3,9 @@ import { useRef, useState, useEffect } from 'react'
 import Page from '../../components/Page'
 import Panel from '../../components/Panel'
 import mapboxgl from 'mapbox-gl'
-import { useCheckins } from '../../swarm'
+import { useCheckins } from '../../domain/swarm'
 import { onlyUnique } from '../../array'
-import { onlyNonTransportation } from '../../swarm/categories'
+import { onlyNonTransportation } from '../../domain/swarm/categories'
 import colors from "../../colors"
 
 function Map() {

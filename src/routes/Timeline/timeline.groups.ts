@@ -1,17 +1,17 @@
 import moment from 'moment'
 import Stack from './stack'
-import { isEqualLocationCity, isEqualApproximiteLocation, isEqualMetro } from '../../location'
-import { checkinHasCategory } from '../../swarm/categories'
+import { isEqualLocationCity, isEqualApproximiteLocation, isEqualMetro } from '../../domain/location'
+import { checkinHasCategory } from '../../domain/swarm/categories'
 import { getEventDate, createTransportEvent } from './timeline.events'
 import { EventType, TransportMode, GroupType, LocationHighlightType, PlainGroup } from './types'
 import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'
-import { Checkin, ensureDateString } from "../../swarm"
+import { Checkin, ensureDateString } from "../../domain/swarm"
 import { onlyUnique } from "../../array"
-import { cleanLocation, isTheSameArea } from "../../location"
+import { cleanLocation, isTheSameArea } from "../../domain/location"
 import { getHomeForEvent, isEventAtHome } from './context'
 
 import type { Group, Event, CheckinEvent, TransportEvent, CalendarEvent, HomeGroup, TransportGroup, TripGroup, ContainerGroup, LocationHighlight, Context } from "./types"
-import type { Location, Home } from '../../location'
+import type { Location, Home } from '../../domain/location'
 import type { Moment, MomentInput } from "moment"
 
 
