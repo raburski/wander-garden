@@ -63,6 +63,10 @@ export function isEqualLocationCity(leftLocation: Location, rightLocation: Locat
     return cleanLocation(leftLocation.city) == cleanLocation(rightLocation.city)
 }
 
+export function isEqualLocationCountry(leftLocation: Location, rightLocation: Location) {
+    return cleanLocation(leftLocation.country) == cleanLocation(rightLocation.country)
+}
+
 const STATE_AS_CITY: {[state: string]: string} = {
     // TODO: add more of these and allow user to define it themselves
     'Greater London': 'London',

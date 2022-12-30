@@ -1,6 +1,6 @@
 import { getTransportType, TRANSPORT_TYPE } from '../../swarm/categories'
-import { getCheckinDate, getDistanceBetweenCheckins, getCheckinLocation, ensureDateString } from '../../swarm/functions'
-import { Home, isTheSameArea } from '../../location'
+import { getCheckinDate, getDistanceBetweenCheckins, getCheckinLocation, ensureDateString, isEqualCountry } from '../../swarm/functions'
+import { Home, isEqualLocationCountry, isTheSameArea } from '../../location'
 import Stack from './stack'
 import moment from 'moment'
 
@@ -9,7 +9,7 @@ import type { Context } from './types'
 import type { Checkin } from "../../swarm"
 import type { Location } from '../../location'
 import type { Moment, MomentInput } from "moment"
-import { getHomeForDate } from "./context"
+import { getHomeForDate, isCheckinAtHome } from "./context"
 import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'
 
 export function createNewYearCalendarEvent(date: String | Moment): NewYearCalendarEvent {
@@ -183,6 +183,51 @@ function createHomeCheckinWhenLongInactivity(timelineContext: Context) {
     }
 }
 
+const DAYS_INACTIVE_UNTIL_GUESS_HOME_AFTER_TRIP = 2
+function createHomeCheckinAfterFlyingBackHome(timelineContext: Context) {
+    return {
+        pattern: [
+            // NOT HOME LOCATION
+            // [X days without checkin]
+            // HOME COUNTRY LOCATION
+            // any(HOME COUNTRY LOCATION)
+            // FOREIGN LOCATION
+            (checkin: Checkin) => {
+                return !isCheckinAtHome(checkin)
+            },
+            some((current: Checkin, checkins: [Checkin]) => {
+                const home = getHomeForDate(getCheckinDate(current), timelineContext.homes)
+                const isInHomeCountry = home && isEqualLocationCountry(getCheckinLocation(current), home.location)
+                const isAtHome = isCheckinAtHome(current)
+
+                const newerCheckin = checkins[0]
+                const newerCheckinMoment = getCheckinDate(newerCheckin)
+                const currentMoment = getCheckinDate(current)
+                const numberOfDaysInactive = newerCheckinMoment.diff(currentMoment, 'days')
+                const isPeriodWithoutCheckin = numberOfDaysInactive >= DAYS_INACTIVE_UNTIL_GUESS_HOME_AFTER_TRIP
+                return !isAtHome && isInHomeCountry && isPeriodWithoutCheckin
+            }),
+            (current: Checkin, checkins: [Checkin], context: CheckinQueryContext) => {
+                const home = getHomeForDate(getCheckinDate(current), timelineContext.homes)
+                return home ? !isEqualLocationCountry(getCheckinLocation(current), home.location) : false
+            },
+        ],
+        result: (checkins: Checkin[], context: CheckinQueryContext) => {
+            const notHomeCheckin = checkins[0]
+            const homeCountryCheckins = checkins.slice(1, -1)
+            const foreignCheckin = checkins[checkins.length - 1]
+
+            const homeCheckin = createHomeCheckin(getCheckinDate(homeCountryCheckins[0]).format(), getCheckinDate(notHomeCheckin).format(), timelineContext)
+            return [
+                notHomeCheckin,
+                homeCheckin,
+                ...homeCountryCheckins,
+                foreignCheckin,
+            ]
+        }
+    }
+}
+
 const createNewYearCalendarEvents = () => ({
     pattern: [
         (event: Event) => event,
@@ -226,7 +271,10 @@ const createNewHomeCalendarEvents = (timelineContext: Context) => ({
 })
 
 export function createTimelineEvents(checkins: Checkin[] = [], context: Context = {homes: []}) {
-    const enhancedCheckins = arrayQueryReplace([createHomeCheckinWhenLongInactivity(context)], checkins)
+    const enhancedCheckins = arrayQueryReplace([
+        createHomeCheckinWhenLongInactivity(context),
+        createHomeCheckinAfterFlyingBackHome(context),
+    ], checkins)
     const checkinsStack = new Stack<Checkin>(enhancedCheckins)
     const timelineEventsFactory = new TimelineEventsFactory(checkinsStack, context)
     timelineEventsFactory.process()

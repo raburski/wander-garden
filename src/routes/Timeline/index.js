@@ -249,6 +249,7 @@ function TimelineGroupContainer({ group, i }) {
         <Fragment>
             <CountryBar
                 title={title}
+                subtitle={i}
                 countryCodes={countryCodes}
                 onClick={() => setExpanded(!expanded)}
                 days={days}
@@ -301,7 +302,7 @@ export default function TimelinePage() {
     }) : timeline
 
     const viewSegmentOptions = ['all', 'trips', 'abroad']
-    // console.log('timeline', filteredTimeline)
+    console.log('timeline', filteredTimeline[14])
 
     return (
         <Page header="Timeline">

@@ -10,7 +10,7 @@ import { SwarmProvider } from './swarm'
 import { SettingsProvider } from './settings'
 import mapboxgl from 'mapbox-gl'
  
-
+mapboxgl.accessToken = 'pk.eyJ1IjoicmFidXJza2kiLCJhIjoiR2ltZ1pkSSJ9.BKiZ33LQkwsLgyyrAw4EyQ';
 
 setupGoober(React.createElement)
 if (/windows/i.test(navigator.userAgent)) {
