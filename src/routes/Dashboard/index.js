@@ -8,9 +8,8 @@ import Badges from './Badges'
 import Swarm from './Swarm'
 
 import countryFlagEmoji from "country-flag-emoji"
-import { onlyUnique } from "../../array"
-import { onlyNonTransportation } from '../../domain/swarm/categories'
-import { formattedLocation } from '../../domain/location'
+import { formattedLocation } from 'domain/location'
+import { useVisitedCountryCodes } from 'domain/timeline'
 
 const PanelsContainer = styled('div')`
     display: flex;
@@ -37,8 +36,7 @@ function NoData() {
 }
 
 function Countries() {
-    const [checkins] = useCheckins()
-    const countryCodes = checkins.filter(onlyNonTransportation).map(checkin => checkin.venue.location.cc).filter(onlyUnique)
+    const [countryCodes] = useVisitedCountryCodes()
     if (countryCodes.length <= 0) {
         return null
     }

@@ -17,7 +17,7 @@ import { EventType, TransportMode, GroupType, LocationHighlightType, CalendarDay
 import { Segment } from "components/Segment"
 import { useSetting } from "settings"
 import { useHomes } from "domain/homes"
-import { useTimelineEvents } from "domain/timeline"
+import { useTimelineEvents, useVisitedCountryCodes } from "domain/timeline"
 
 const AllFlagsContainer = styled('div')`
     display: flex;
@@ -289,11 +289,10 @@ export default function TimelinePage() {
     const [params] = useSearchParams()
     const selectedCountryCode = params.get('cc')?.toLowerCase()
 
-    const [checkins] = useCheckins()
     const [homes] = useHomes()
     const [timelineEvents] = useTimelineEvents()
-
-    const countryCodes = checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc).filter(onlyUnique)
+    const [countryCodes] = useVisitedCountryCodes()
+    
     const timelineConfig = { tripsOnly: segmentOptionSetting > 0, foreignOnly: segmentOptionSetting === 2 }
     const timeline = createTimelineGroups(timelineEvents, { homes }, timelineConfig)
     const filteredTimeline = selectedCountryCode ? timeline.filter(group => {
