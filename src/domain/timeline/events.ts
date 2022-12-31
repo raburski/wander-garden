@@ -135,12 +135,11 @@ class TimelineEventsFactory {
 export function createHomeCheckin(beforeDate: String, afterDate: String, context: Context): Checkin | undefined {
     const beforeMoment = moment(beforeDate as MomentInput)
     const afterMoment = moment(afterDate as MomentInput)
-    const differenceInHours = beforeMoment.diff(afterMoment, 'hours')
-    const dateBetween = moment(beforeMoment)
-    dateBetween.add(differenceInHours, 'hours')
+    const differenceInHours = afterMoment.diff(beforeMoment, 'hours')
+    const halfTheDifference = differenceInHours / 2
+    const dateBetween = moment(beforeMoment).add(halfTheDifference, 'hours')
     const home = getHomeForDate(dateBetween, context.homes)
     if (!home) { return undefined }
-
     return {
         venue: {
             categories: [],

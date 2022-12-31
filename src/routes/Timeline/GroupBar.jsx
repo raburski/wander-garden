@@ -55,9 +55,9 @@ const Range = styled('div')`
 export default function GroupBar({ countryCodes = [], title, subtitle, onClick, days, range }) {
     const flags = countryCodes.map(code => countryFlagEmoji.get(code)?.emoji).filter(Boolean).map((emoji, index) => {
         if (index == 0) {
-            return <FirstFlag>{emoji}</FirstFlag>
+            return <FirstFlag key={countryCodes[index]}>{emoji}</FirstFlag>
         } else {
-            return <NextFlag>{emoji}</NextFlag>
+            return <NextFlag key={countryCodes[index]}>{emoji}</NextFlag>
         }
     })
 

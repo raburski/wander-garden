@@ -177,7 +177,7 @@ export default function Badges() {
     }
     return (
         <Panel header="Your regional badges" contentStyle={contentStyle}>
-            {verifiedBadges.map(badge => <Badge badge={badge} onClick={() => setSelectedBadge(badge)}/>)}
+            {verifiedBadges.map(badge => <Badge badge={badge} key={badge.name} onClick={() => setSelectedBadge(badge)}/>)}
             <BadgeDetailsModal
                 selectedBadge={selectedBadge}
                 visitedCountryCodes={visitedCountryCodes}

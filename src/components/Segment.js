@@ -25,7 +25,7 @@ export function Segment({ selectedIndex, titles = [], onClick }) {
         <SegmentContainer>
             {titles.map((title, index) => {
                 const segmentStyle = getSegmentStyle(index, titles.length)
-                return <Button selected={index === selectedIndex} style={segmentStyle} onClick={() => onClick(index)}>{title}</Button>
+                return <Button selected={index === selectedIndex} key={title} style={segmentStyle} onClick={() => onClick(index)}>{title}</Button>
             })}
         </SegmentContainer>
     )

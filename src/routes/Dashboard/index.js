@@ -43,7 +43,7 @@ function Countries() {
     const header = `You have visited ${countryCodes.length} countries`
     return (
         <Panel header={header}>
-            {countryCodes.length == 0 ? <NoData /> : countryCodes.map(cc => <CountryRow code={cc} to={`/timeline?cc=${cc.toLowerCase()}`}/>)}
+            {countryCodes.length == 0 ? <NoData /> : countryCodes.map(cc => <CountryRow code={cc} key={cc} to={`/timeline?cc=${cc.toLowerCase()}`}/>)}
         </Panel>
     )
 }
