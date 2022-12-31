@@ -1,29 +1,20 @@
-import { createContext, useState, useContext, useEffect } from "react"
-import { dateTransforms, zipsonTransforms, stringTransforms, LocalStorageAdapter, useStatePersistedCallback } from 'storage'
+import { createContext, useState, useContext } from "react"
+import { jsonTransforms, LocalStorageAdapter, useStatePersistedCallback } from 'storage'
 import { useCheckins } from "domain/swarm"
 import { getPotentialHomes } from "./functions"
-import toast from "react-hot-toast"
 
 export const HomesContext = createContext({})
 
-const localStorageHomes = new LocalStorageAdapter('homes', null, zipsonTransforms)
+const localStorageHomes = new LocalStorageAdapter('homes', null, jsonTransforms)
 const initialLocalStorageHomesValue = localStorageHomes.get()
-
-function useCalculatePotentialHomesEffect(checkins, setHomes) {
-    useEffect(() => {
-        setHomes(getPotentialHomes(checkins))
-    }, [checkins.length])
-}
 
 export function HomesProvider(props) {
     const [homes, setHomesState] = useState(initialLocalStorageHomesValue)
     const [checkins] = useCheckins()
 
     const setHomes = useStatePersistedCallback(homes, setHomesState, localStorageHomes.set.bind(localStorageHomes))
-    useCalculatePotentialHomesEffect(checkins, setHomes)
 
     if (homes === null) {
-        console.log('CALC HOMES')
         setHomes(getPotentialHomes(checkins))
     }
 

@@ -11,13 +11,13 @@ import CountryBar from "./CountryBar"
 import Page from "components/Page"
 import colors from "colors"
 import Panel from "components/Panel"
-import { getGroupHighlights } from 'domain/timeline/groups'
+import { createTimelineGroups, getGroupHighlights } from 'domain/timeline/groups'
 
-import createTimeline from 'domain/timeline'
 import { EventType, TransportMode, GroupType, LocationHighlightType, CalendarDayType } from 'domain/timeline/types'
 import { Segment } from "components/Segment"
 import { useSetting } from "settings"
 import { useHomes } from "domain/homes"
+import { useTimelineEvents } from "domain/timeline"
 
 const AllFlagsContainer = styled('div')`
     display: flex;
@@ -287,14 +287,15 @@ const TIMELINE_SEGMENT_OPTION_SETTING = 'TIMELINE_SEGMENT_OPTION'
 export default function TimelinePage() {
     const [segmentOptionSetting, setSegmentOptionSetting] = useSetting(TIMELINE_SEGMENT_OPTION_SETTING)
     const [params] = useSearchParams()
-    // const [viewSegmentSelected, setViewSegmentSelected] = useState(segmentOptionSetting | 0)
     const selectedCountryCode = params.get('cc')?.toLowerCase()
 
     const [checkins] = useCheckins()
     const [homes] = useHomes()
+    const [timelineEvents] = useTimelineEvents()
+
     const countryCodes = checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc).filter(onlyUnique)
     const timelineConfig = { tripsOnly: segmentOptionSetting > 0, foreignOnly: segmentOptionSetting === 2 }
-    const timeline = createTimeline(checkins, homes, timelineConfig)
+    const timeline = createTimelineGroups(timelineEvents, { homes }, timelineConfig)
     const filteredTimeline = selectedCountryCode ? timeline.filter(group => {
         if (group.type === GroupType.Plain) { return true }
         const locations = getGroupHighlights(group).map(h => h.location.cc)
@@ -302,7 +303,6 @@ export default function TimelinePage() {
     }) : timeline
 
     const viewSegmentOptions = ['all', 'trips', 'abroad']
-    console.log('timeline', filteredTimeline[14])
 
     return (
         <Page header="Timeline">
