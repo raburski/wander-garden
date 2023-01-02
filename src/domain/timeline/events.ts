@@ -12,16 +12,18 @@ import type { Moment, MomentInput } from "moment"
 import { getHomeForDate, isCheckinAtHome } from "./functions"
 import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'
 
-export function createNewYearCalendarEvent(date: String | Moment): NewYearCalendarEvent {
+export function createNewYearCalendarEvent(date: Moment): NewYearCalendarEvent {
     return {
+        id: `new-year-${date.format('YYYY')}`,
         type: EventType.Calendar,
         dayType: CalendarDayType.NewYear,
-        date: ensureDateString(date),
+        date: date.format(),
     }
 }
 
 export function createNewHomeCalendarEvent(date: String | Moment, from: Home, to: Home): NewHomeCalendarEvent {
     return {
+        id: `new-home-${ensureDateString(date, 'YYYY-MM-DD')}`,
         type: EventType.Calendar,
         dayType: CalendarDayType.NewHome,
         date: ensureDateString(date, 'YYYY-MM-DD'),
@@ -33,6 +35,7 @@ export function createNewHomeCalendarEvent(date: String | Moment, from: Home, to
 export function createCheckinEvent(checkin: Checkin, guess?: boolean): CheckinEvent  {
     const { type, ...checkinNonType } = checkin
     return {
+        id: checkin.id,
         type: EventType.Checkin, 
         location: getCheckinLocation(checkin),
         date: getCheckinDate(checkin).format(),
@@ -42,7 +45,7 @@ export function createCheckinEvent(checkin: Checkin, guess?: boolean): CheckinEv
 }
 
 export function createTransportEvent(mode: TransportMode, date: String | Moment, from: Location, to: Location, guess: Boolean = false): TransportEvent {
-    return { type: EventType.Transport, mode, date: ensureDateString(date), from, to, guess }
+    return { id: `transport-${ensureDateString(date)}`, type: EventType.Transport, mode, date: ensureDateString(date), from, to, guess }
 }
 
 export function getEventDate(event: Event): Moment {
@@ -141,6 +144,7 @@ export function createHomeCheckin(beforeDate: String, afterDate: String, context
     const home = getHomeForDate(dateBetween, context.homes)
     if (!home) { return undefined }
     return {
+        id: `home-${dateBetween.format()}`,
         venue: {
             categories: [],
             location: home!.location

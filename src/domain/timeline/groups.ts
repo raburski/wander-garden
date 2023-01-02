@@ -141,6 +141,7 @@ export function createTripGroup(events: Event[]): TripGroup | undefined {
     const until = events[0].date
     const highlights = getHighlightsFromEvents(events)
     return highlights ? {
+        id: `trip-${events[0].id}`,
         type: GroupType.Trip,
         highlights,
         phases: createPhasesWithEvents(events),
@@ -156,6 +157,7 @@ export function createTransportGroup(events: Event[]): TransportGroup | undefine
     const since = events[events.length - 1].date
     const until = events[0].date
     return location ? {
+        id: `transport-${events[0].id}`,
         type: GroupType.Transport,
         highlight: { type: LocationHighlightType.Country, location: location }, // TODO: fix hightlight generation here
         phases: createPhasesWithEvents(events),
@@ -171,6 +173,7 @@ export function createHomeGroup(events: Event[]): HomeGroup | undefined {
     const since = events[events.length - 1].date
     const until = events[0].date
     return location ? {
+        id: `home-${events[0].id}`,
         type: GroupType.Home,
         highlight: { type: LocationHighlightType.City, location: location },
         since,
@@ -184,10 +187,36 @@ export function createPlainGroup(events: Event[]): PlainGroup | undefined {
     const since = events[events.length - 1].date
     const until = events[0].date
     return {
+        id: `plain-${events[0].id}`,
         type: GroupType.Plain,
         since,
         until,
         events,
+    }
+}
+
+export function createContainerGroup(groups: Group[]): ContainerGroup | undefined {
+    if (groups.length === 0) { return undefined }
+    const since = groups[groups.length - 1].since
+    const until = groups[0].until
+    return {
+        id: `container-${groups[0].id}`,
+        type: GroupType.Container,
+        highlights: groups.flatMap(getGroupHighlights),
+        since,
+        until,
+        groups,
+    }
+}
+
+export function createGroup(events: Event[] = [], isAtHome: boolean): Group | undefined {
+    const isTransportOnly = events.reduce((acc, e: Event) => acc && e.type === EventType.Transport, true)
+    if (isTransportOnly) {
+        return createTransportGroup(events)
+    } else if (isAtHome) {
+        return createHomeGroup(events)
+    } else {
+        return createTripGroup(events)
     }
 }
 
@@ -304,30 +333,6 @@ export function getHighlightsFromEvents(events: Event[]): LocationHighlight[] {
     }
 
     return []
-}
-
-export function createContainerGroup(groups: Group[]): ContainerGroup | undefined {
-    if (groups.length === 0) { return undefined }
-    const since = groups[groups.length - 1].since
-    const until = groups[0].until
-    return {
-        type: GroupType.Container,
-        highlights: groups.flatMap(getGroupHighlights),
-        since,
-        until,
-        groups,
-    }
-}
-
-export function createGroup(events: Event[] = [], isAtHome: boolean): Group | undefined {
-    const isTransportOnly = events.reduce((acc, e: Event) => acc && e.type === EventType.Transport, true)
-    if (isTransportOnly) {
-        return createTransportGroup(events)
-    } else if (isAtHome) {
-        return createHomeGroup(events)
-    } else {
-        return createTripGroup(events)
-    }
 }
 
 function shallowArrayCompare(a1: any[], a2: any[]) {

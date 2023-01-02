@@ -10,6 +10,7 @@ export interface Venue {
 }
 
 export interface Checkin {
+    id: String
     type?: any
     venue: Venue
     createdAt: number
