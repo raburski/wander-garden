@@ -11,7 +11,7 @@ import CountryBar from "./CountryBar"
 import Page from "components/Page"
 import colors from "colors"
 import Panel from "components/Panel"
-import { createTimelineGroups, getGroupHighlights } from 'domain/timeline/groups'
+import { createTimelineGroups, getGroupHighlights, useTimeline } from 'domain/timeline/groups'
 
 import { EventType, TransportMode, GroupType, LocationHighlightType, CalendarDayType } from 'domain/timeline/types'
 import { Segment } from "components/Segment"
@@ -293,13 +293,10 @@ export default function TimelinePage() {
     const [segmentOptionSetting, setSegmentOptionSetting] = useSetting(TIMELINE_SEGMENT_OPTION_SETTING)
     const [params] = useSearchParams()
     const selectedCountryCode = params.get('cc')?.toLowerCase()
-
-    const [homes] = useHomes()
-    const [timelineEvents] = useTimelineEvents()
     const [countryCodes] = useVisitedCountryCodes()
 
     const timelineConfig = { tripsOnly: segmentOptionSetting > 0, foreignOnly: segmentOptionSetting === 2 }
-    const timeline = createTimelineGroups(timelineEvents, { homes }, timelineConfig)
+    const timeline = useTimeline(timelineConfig)
     const filteredTimeline = selectedCountryCode ? timeline.filter(group => {
         if (group.type === GroupType.Plain) { return true }
         const locations = getGroupHighlights(group).map(h => h.location.cc)

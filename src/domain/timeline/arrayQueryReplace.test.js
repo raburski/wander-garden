@@ -36,6 +36,14 @@ const queryAny = {
     result: () => 'any'
 }
 
+const queryEndingAny = {
+    pattern: [
+        e => e == 2,
+        any(e => e == 1),
+    ],
+    result: () => 'any'
+}
+
 const queryStart = {
     pattern: [
         start(e => e == 2),
@@ -109,6 +117,12 @@ describe('array match', function () {
         const array = [3, 2, 1, 1, 2, 3, 2, 2]
         const expectedResult = [3, 'any', 3, 'any']
         const result = arrayQueryReplace(queryAny, array)
+        assert.deepEqual(result, expectedResult)
+    })
+    it('should replace with query ending any', function () {
+        const array = [3, 2, 1, 1, 1, 2]
+        const expectedResult = [3, 'any', 2]
+        const result = arrayQueryReplace(queryEndingAny, array)
         assert.deepEqual(result, expectedResult)
     })
     it('should replace all patterns from query', function () {

@@ -5,30 +5,38 @@ import { useHomes } from 'domain/homes'
 import { createTimelineEvents } from "./events"
 import { onlyUnique } from "array"
 import { onlyNonTransportation } from "domain/swarm/categories"
+import { createTimelineGroups } from "./groups"
 
 export const TimelineContext = createContext({})
 
 const localStorageEvents = new LocalStorageAdapter('timeline.events', '[]', zipsonTransforms)
+const localStorageGroups = new LocalStorageAdapter('timeline.groups', '[]', zipsonTransforms)
 const localStorageVisited = new LocalStorageAdapter('timeline.visited', '[]', jsonTransforms)
 const localStorageTitles = new LocalStorageAdapter('timeline.titles', '{}', jsonTransforms)
 const initialLocalStorageEventsValue = localStorageEvents.get()
+const initialLocalStorageGroupsValue = localStorageGroups.get()
 const initialLocalStorageVisitedValue = localStorageVisited.get()
 const initialLocalStorageTitlesValue = localStorageTitles.get()
 
 export function TimelineProvider(props) {
     const [events, setEventsState] = useState(initialLocalStorageEventsValue)
+    const [groups, setGroupsState] = useState(initialLocalStorageGroupsValue)
     const [visitedCountryCodes, setVisitedCountryCodesState] = useState(initialLocalStorageVisitedValue)
     const [titles, setTitlesState] = useState(initialLocalStorageTitlesValue)
     const [checkins] = useCheckins()
     const [homes] = useHomes()
 
     const setEvents = useStatePersistedCallback(events, setEventsState, localStorageEvents.set.bind(localStorageEvents))
+    const setGroups = useStatePersistedCallback(groups, setGroupsState, localStorageGroups.set.bind(localStorageGroups))
     const setVisitedCountryCodes = useStatePersistedCallback(visitedCountryCodes, setVisitedCountryCodesState, localStorageVisited.set.bind(localStorageVisited))
     const setTitles = useStatePersistedCallback(titles, setTitlesState, localStorageTitles.set.bind(localStorageTitles))
 
     if (events.length === 0 && checkins.length > 0) {
         setVisitedCountryCodes(checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc).filter(onlyUnique))
-        setEvents(createTimelineEvents(checkins, { homes }))
+        const events = createTimelineEvents(checkins, { homes })
+        const groups = createTimelineGroups(events, { homes })
+        setEvents(events)
+        setGroups(groups)
     }
 
     // TODO: add caching etc
@@ -38,6 +46,7 @@ export function TimelineProvider(props) {
 
     const value = {
         events: [events, setEvents],
+        groups: [groups, setGroups],
         visitedCountryCodes: [visitedCountryCodes, setVisitedCountryCodes],
         titles: [titles, setTitles],
         refresh,
@@ -53,6 +62,11 @@ export function useRefreshTimeline() {
 export function useTimelineEvents() {
     const context = useContext(TimelineContext)
     return context.events
+}
+
+export function useTimelineGroups() {
+    const context = useContext(TimelineContext)
+    return context.groups
 }
 
 export function useVisitedCountryCodes() {

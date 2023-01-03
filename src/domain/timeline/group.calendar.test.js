@@ -10,7 +10,7 @@ import { TransportMode, LocationHighlightType } from './types'
 describe('timeline group calendar', function () {
     it('should create plain group for calendar event', function () {
         const events = [
-            createNewYearCalendarEvent('1991-01-01'),
+            createNewYearCalendarEvent(moment('1991-01-01', 'YYYY-MM-DD')),
         ]
         const groups = createTimelineGroups(events)
         const expectedGroups = [
@@ -37,7 +37,7 @@ describe('timeline group calendar', function () {
     // })
     it('should place calendar event straight away if no current groups', function () {
         const checkinEvent = createCheckinEvent(fitness_wroclaw)
-        const calendarEvent = createNewYearCalendarEvent('1991-01-01')
+        const calendarEvent = createNewYearCalendarEvent(moment('1991-01-01', 'YYYY-MM-DD'))
         const events = [
             checkinEvent,
             checkinEvent,

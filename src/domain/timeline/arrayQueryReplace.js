@@ -89,7 +89,12 @@ function match(pattern, array, currentIndex = 0, previousValues = [], context) {
                 return match(pattern.slice(2), array.slice(1), currentIndex + 1, [...previousValues, currentValue], context)
             }
             if (currentExpression.fn(currentValue, previousValues, context)) {
-                return match(pattern, array.slice(1), currentIndex + 1, [...previousValues, currentValue], context)
+                const nextIndex = match(pattern, array.slice(1), currentIndex + 1, [...previousValues, currentValue], context)
+                if (!nextIndex) {
+                    return currentIndex + 1
+                } else {
+                    return nextIndex
+                }
             }
             return false
         case EXPRESSION_TYPE.SOME:

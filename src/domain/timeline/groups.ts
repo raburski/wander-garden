@@ -8,11 +8,13 @@ import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'
 import { Checkin, ensureDateString } from "../swarm"
 import { onlyUnique } from "../../array"
 import { cleanLocation, isTheSameArea } from "../location"
-import { getHomeForEvent, isEventAtHome } from './functions'
+import { getHomeForDate, getHomeForEvent, isEventAtHome } from './functions'
 
 import type { Group, Event, CheckinEvent, TransportEvent, CalendarEvent, HomeGroup, TransportGroup, TripGroup, ContainerGroup, LocationHighlight, Context } from "./types"
 import type { Location, Home } from '../location'
 import type { Moment, MomentInput } from "moment"
+import { useTimelineGroups } from "./Context"
+import { useHomes } from "domain/homes"
 
 
 interface TimelineConfig {
@@ -342,145 +344,120 @@ function shallowArrayCompare(a1: any[], a2: any[]) {
     return a1.map(i1 => a2.findIndex(i2 => i2 == i1)).reduce((acc, val) => acc && val >= 0, true)
 }
 
-class TimelineGroupsFactory {
-    eventStack: Stack<Event>
-    groupStack: Stack<Group>
-    context: Context
-    config: TimelineConfig
-
-    constructor(stack: Stack<Event>, context: Context, config: TimelineConfig) {
-        this.eventStack = stack
-        this.groupStack = new Stack<Group>()
-        this.context = context
-        this.config = config
-    }
-    getCurrentEvent() {
-        return this.eventStack.getCurrent()
-    }
-    getCurrentHome() {
-        return getHomeForEvent(this.getCurrentEvent(), this.context)
-    }
-    isCurrentEventAtHome() {
-        return isEventAtHome(this.getCurrentEvent(), this.getCurrentHome())
-    }
-    isCurrentEventStandalone() {
-        return this.getCurrentEvent()?.type === EventType.Calendar
-    }
-    isGroupAtCurrentHomeCountry(group: Group): boolean {
-        const home = this.getCurrentHome()
-        if (!home) { return false }
-
-        switch (group.type) {
-            case GroupType.Container:
-                const containerHighlights = (group as ContainerGroup).highlights
-                return containerHighlights.some(h => h.location.country === home?.location.country)
-            case GroupType.Home:
+type GroupQueryContext = { isAtHome: boolean }
+function groupEvents(timelineContext: Context) {
+    return {
+        pattern: [
+            (event: Event, _: Event[], context: GroupQueryContext) => {
+                const home = getHomeForEvent(event, timelineContext)
+                context.isAtHome = isEventAtHome(event, home)
                 return true
-            case GroupType.Plain:
-                return false
-            case GroupType.Trip:
-                const tripHighlights = (group as TripGroup).highlights
-                return tripHighlights.some(h => h.location.country === home?.location.country)
-            case GroupType.Transport:
-                const hightlight = (group as TransportGroup).highlight
-                return hightlight.location.country === home?.location.country
-            default:
-                return false 
-        }
-    }
-
-    shouldAddToCurrentGroup(currentGroup: ContainerGroup, newGroup: Group): boolean {
-        const currentGroupCountryCodes = getGroupHighlights(currentGroup).map(h => h.location.cc).filter(onlyUnique)
-        const newGroupCountryCodes = getGroupHighlights(newGroup).map(h => h.location.cc).filter(onlyUnique)
-        const equalCountryCodes = shallowArrayCompare(currentGroupCountryCodes, newGroupCountryCodes)
-        return equalCountryCodes
-    }
-
-    pushGroup(group: Group | undefined) {
-        if (!group) { return }
-
-        const currentGroup = this.groupStack.getCurrent()
-        if (!currentGroup) {
-            this.groupStack.push(createContainerGroup([group])!)
-        } else if (currentGroup.type == GroupType.Container && this.shouldAddToCurrentGroup(currentGroup as ContainerGroup, group)) {
-            const containerGroup = currentGroup as ContainerGroup
-            const newContainerGroup = createContainerGroup([group, ...containerGroup.groups])!
-            this.groupStack.replaceCurrent(newContainerGroup)
-        } else {
-            this.groupStack.push(createContainerGroup([group])!)
-        }
-        this.groupStack.moveToTop()
-    }
-
-    processStandaloneEvents() {
-        while (this.isCurrentEventStandalone()) {
-            const event = this.getCurrentEvent()
-            if (event) {
-                const standaloneGroup = createPlainGroup([event])!
-                this.groupStack.push(standaloneGroup)
-                this.eventStack.makeStep()
+            },
+            any((event: Event, events: Event[], context: GroupQueryContext) => {
+                if (event.type === EventType.Calendar) {
+                    return true
+                }
+                const home = getHomeForEvent(event, timelineContext)
+                const isAtHome = isEventAtHome(event, home)
+                return context.isAtHome === isAtHome
+            }),
+        ],
+        result: (events: Event[], context: GroupQueryContext) => {
+            const calendarEvents = events.filter(e => e.type === EventType.Calendar)
+            const otherEvents = events.filter(e => e.type != EventType.Calendar)
+            if (calendarEvents.length === 0) {
+                return createGroup(otherEvents, context.isAtHome)
             }
-        } 
-    }
-
-    process() {
-        this.eventStack.makeStep()
-        while(!this.eventStack.isFinished()) {
-            this.processNext()
+            return [
+                createPlainGroup(calendarEvents),
+                createGroup(otherEvents, context.isAtHome)
+            ]
         }
-    }
-
-    processNext() {
-        this.processStandaloneEvents()
-        const events: Event[] = []
-
-        const isAtHome = this.isCurrentEventAtHome()
-        const shouldPickCurrentEvent = isAtHome ? () => this.isCurrentEventAtHome() : () => !this.isCurrentEventAtHome()
-        const shouldPushGroup = (group: Group): boolean => {
-            if (isAtHome) {
-                return !this.config.tripsOnly && !this.config.foreignOnly
-            }
-            const isAtHomeCountry = this.isGroupAtCurrentHomeCountry(group)
-            return isAtHomeCountry ? !this.config.foreignOnly : true
-        }
-
-        while(!this.eventStack.isFinished()) {
-            this.processStandaloneEvents()
-            const event = this.getCurrentEvent()
-            if (event && shouldPickCurrentEvent()) {
-                events.unshift(event)
-                this.eventStack.makeStep()
-            } else {
-                break
-            }
-        }
-
-        const newGroup = createGroup(events, isAtHome)
-        if (newGroup && shouldPushGroup(newGroup!)) {
-            this.pushGroup(newGroup!)
-        }
-    }
-
-    get(): Group[] {
-        return this.groupStack.getAll()
     }
 }
 
-// const GROUP_HOME_AND_LOCAL = {
-//     pattern: [
-//         some((g: Group) => e.type === EventType.Checkin && checkinHasCategory(e.checkin, MOP_CATEGORIES)),
-//     ],
-//     result: (groups: Group[]) => createContainerGroup(groups)
-// }
+function isGroupAtHomeCountry(group: Group, home?: Home): boolean {
+    if (!home) { return false }
 
-export function createTimelineGroups(events: Event[] = [], context: Context = {homes: []}, config: TimelineConfig = {}): Group[] {
-    const eventsStack = new Stack<Event>(events)
-    const timelineGroupsFactory = new TimelineGroupsFactory(eventsStack, context, config)
-    timelineGroupsFactory.process()
-    const groups = timelineGroupsFactory.get()
+    switch (group.type) {
+        case GroupType.Container:
+            const containerHighlights = (group as ContainerGroup).highlights
+            return containerHighlights.some(h => h.location.country === home?.location.country)
+        case GroupType.Home:
+            return true
+        case GroupType.Plain:
+            return false
+        case GroupType.Trip:
+            const tripHighlights = (group as TripGroup).highlights
+            return tripHighlights.some(h => h.location.country === home?.location.country)
+        case GroupType.Transport:
+            const hightlight = (group as TransportGroup).highlight
+            return hightlight.location.country === home?.location.country
+        default:
+            return false 
+    }
+}
+
+function cleanUngroupedEvents() {
+    // Investigate why would there by any
+    return {
+        pattern: [(e: Event) => e.type === EventType.Checkin || e.type === EventType.Calendar || e.type === EventType.Transport],
+        result: () => [],
+    }
+}
+
+
+type GroupGroupsQueryContext = { isAtHomeCountry: boolean }
+function groupGroups(timelineContext: Context) {
+    return {
+        pattern: [
+            any((group: Group, groups: Group[], context: GroupGroupsQueryContext) => {
+                const shouldGroup = group.type !== GroupType.Plain && group.type !== GroupType.Container
+                if (!shouldGroup) { return false }
+
+                const home = getHomeForDate(group.since, timelineContext.homes)
+                const isAtHomeCountry = isGroupAtHomeCountry(group, home)
+                if (groups.length === 0) {
+                    context.isAtHomeCountry = isAtHomeCountry
+                } else if (!isAtHomeCountry) {
+                    return false
+                }
+                return context.isAtHomeCountry === isAtHomeCountry
+            }),
+        ],
+        result: (groups: Group[], context: GroupGroupsQueryContext) => {
+            return createContainerGroup(groups)
+        }
+    }
+}
+
+function filterGroupsBasedOnConfig(context: Context, config: TimelineConfig) {
+    return (group: Group) => {
+        if (config.tripsOnly && group.type === GroupType.Home) {
+            return false
+        } else if (config.foreignOnly) {
+            const home = getHomeForDate(group.since, context.homes)
+            return !isGroupAtHomeCountry(group, home)
+        }
+        return true
+    }
+}
+
+export function createTimelineGroups(events: Event[] = [], context: Context = {homes: []}): Group[] {
     return arrayQueryReplace([
-        // GROUP_HOME_AND_LOCAL,
-    ], groups)
+        groupEvents(context),
+        cleanUngroupedEvents(),
+    ], events)
+}
+
+export function useTimeline(config: TimelineConfig = {}): Group[] {
+    const [groups] = useTimelineGroups()
+    const [homes] = useHomes()
+    const context = { homes }
+    const cleanedGroups = groups.filter(filterGroupsBasedOnConfig(context, config))
+    return arrayQueryReplace([
+        groupGroups(context)
+    ], cleanedGroups)
 }
 
 export function highlightTitle(highlight: LocationHighlight) {
