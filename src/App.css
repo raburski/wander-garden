@@ -21,3 +21,30 @@ body {
   background-color: white;
 }
 
+/* Text field */
+
+.text-field-container {
+  display: flex;
+  flex: 0;
+  flex-direction: column;
+
+}
+.text-field-input {
+  outline: none;
+  font-size: 16px;
+  border: 0; 
+  padding: 7px 0; 
+  border-bottom: 1px solid #ccc;
+}
+
+.text-field-input ~ .focus-border {
+  width: 0;
+  height: 2px;
+  background-color: #4caf50;
+  transition: 0.4s;
+  margin-top: -2px;
+}
+.text-field-input:focus ~ .focus-border {
+  width: 100%;
+  transition: 0.4s;
+}

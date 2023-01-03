@@ -1,7 +1,9 @@
+import PinButton from "components/PinButton"
 import countryFlagEmoji from "country-flag-emoji"
 import { styled } from 'goober'
 import colors from "../../colors"
 import { Row } from "../../components/Panel"
+import { TbDotsVertical } from 'react-icons/tb'
 
 const TitleContent = styled('div')`
     display: flex;
@@ -35,11 +37,19 @@ const Subtitle = styled('div')`
     margin-bottom: 2px;
 `
 
+const ActionsContent = styled('div')`
+    display: flex;
+    flex-direction: row;
+    margin-right: 12px;
+    align-items: flex-end;
+`
+
 const RightContent = styled('div')`
     display: flex;
     flex-direction: column;
     margin-right: 12px;
     align-items: flex-end;
+    min-width: 90px;
 `
 
 const Days = styled('div')`
@@ -52,7 +62,7 @@ const Range = styled('div')`
     margin-bottom: 4px;
 `
 
-export default function GroupBar({ countryCodes = [], title, subtitle, onClick, days, range }) {
+export default function GroupBar({ countryCodes = [], title, subtitle, onClick, days, range, onMoreClick }) {
     const flags = countryCodes.map(code => countryFlagEmoji.get(code)?.emoji).filter(Boolean).map((emoji, index) => {
         if (index == 0) {
             return <FirstFlag key={countryCodes[index]}>{emoji}</FirstFlag>
@@ -72,6 +82,9 @@ export default function GroupBar({ countryCodes = [], title, subtitle, onClick, 
                 <Days>{days}</Days>
                 <Range>{range}</Range>
             </RightContent>
+            <ActionsContent>
+                <PinButton icon={TbDotsVertical} onClick={onMoreClick}/>
+            </ActionsContent>
         </Row>
     )
 }

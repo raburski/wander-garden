@@ -92,8 +92,8 @@ export const ClickRow = styled('div')`
     cursor: pointer;
 
     &:hover {
-        border-top: 1px solid #ebebeb;
-        background-color: ${colors.neutral.highlight};
+        border-top: 1px solid ${colors.neutral.light};
+        background-color: ${colors.neutral.light};
     }
 `
 

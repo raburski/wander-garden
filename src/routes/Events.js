@@ -66,11 +66,18 @@ function EventBar({ event }) {
     }
 }
 
+function usePagination(items, perPage = 30) {
+    const [page, setPage] = useState(1)
+    const loadMore = () => setPage(page + 1)
+    return [items ? items.slice(0, page * perPage) : [], loadMore]
+}
+
 export default function Event() {
     const events = useEvents()
+    const [items, loadMore] = usePagination(events)
     return (
         <Page header="Events">
-            {events === null ? "Loading..." : events.map(event => <EventBar event={event} key={events.id}/>)}
+            {events === null ? "Loading..." : items.map(event => <EventBar event={event} key={events.id}/>)}
         </Page>
     )
 }

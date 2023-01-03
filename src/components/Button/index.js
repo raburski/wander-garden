@@ -44,20 +44,28 @@ const DisabledButton = styled('button')`
 const IconContainer = styled('div')`
     display: flex;
     flex: 0;
-    margin-right: .55rem;
     align-items: center;
     justify-content: center;
 `
 
+const Separator = styled('div')`
+    width: .55rem;
+`
+
 const selectedStyle = { backgroundColor: colors.neutral.highlight }
 
-export default function Button({ disabled, icon, selected, style = {}, children, ...props }) {
+export default function Button({ disabled, icon, selected, style = {}, children, onClick, ...props }) {
     const Component = disabled ? DisabledButton : EnabledButton
     const componentStyles = selected ? { ...selectedStyle, ...style } : style
     const IconComponent = icon
+    const noPropagateClick = (event) => {
+        event.stopPropagation()
+        onClick(event)
+    }
     return (
-        <Component disabled={disabled} style={componentStyles} {...props}>
+        <Component disabled={disabled} style={componentStyles} onClick={noPropagateClick} {...props}>
             {icon ? <IconContainer><IconComponent size={16} /></IconContainer> : null}
+            {icon && children ? <Separator /> : null}
             {children}
         </Component>
     )

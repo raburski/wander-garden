@@ -481,5 +481,19 @@ export function createTimelineGroups(events: Event[] = [], context: Context = {h
     return arrayQueryReplace([
         // GROUP_HOME_AND_LOCAL,
     ], groups)
+}
 
+export function highlightTitle(highlight: LocationHighlight) {
+    switch (highlight.type) {
+        case LocationHighlightType.City:
+            return highlight.location.city
+        case LocationHighlightType.State:
+            return highlight.location.state
+        case LocationHighlightType.Country:
+            return highlight.location.country
+    }
+}
+
+export function titleFromLocationHighlights(highlights: LocationHighlight[]) {
+    return highlights.map(highlightTitle).filter(onlyUnique).reverse().join(', ')
 }

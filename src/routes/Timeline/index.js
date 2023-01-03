@@ -17,7 +17,9 @@ import { EventType, TransportMode, GroupType, LocationHighlightType, CalendarDay
 import { Segment } from "components/Segment"
 import { useSetting } from "settings"
 import { useHomes } from "domain/homes"
-import { useTimelineEvents, useVisitedCountryCodes } from "domain/timeline"
+import { useSetTitle, useTimelineEvents, useTitle, useVisitedCountryCodes } from "domain/timeline"
+import GroupMoreModal from "./GroupMoreModal"
+import { titleFromLocationHighlights, highlightTitle } from "domain/timeline/groups"
 
 const AllFlagsContainer = styled('div')`
     display: flex;
@@ -143,17 +145,6 @@ const TransportMode_EMOJI = {
     [TransportMode.Unknown]: '❔',
 }
 
-function highlightTitle(highlight) {
-    switch (highlight.type) {
-        case LocationHighlightType.City:
-            return highlight.location.city
-        case LocationHighlightType.State:
-            return highlight.location.state
-        case LocationHighlightType.Country:
-            return highlight.location.country
-    }
-}
-
 function CalendarEvent({ event }) {
     switch (event.dayType) {
         case CalendarDayType.NewYear:
@@ -213,10 +204,6 @@ function TimelineGroupTransport({ group, i }) {
     )
 }
 
-function titleFromLocationHighlights(highlights) {
-    return highlights.map(highlightTitle).filter(onlyUnique).reverse().join(', ')
-}
-
 const MONTH_TO_SEASON = ['❄️', '❄️', '🌸', '🌸', '🌸', '☀️', '☀️', '☀️', '🍁', '🍁', '🍁', '❄️']
 function seasonEmojiForDate(date) {
     const month = date.get('month') // index from 0
@@ -237,22 +224,25 @@ function getDaysAndRangeForGroup(group) {
     return [days, range]
 }
 
-function TimelineGroupContainer({ group, i }) {
+function TimelineGroupContainer({ group, onMoreClick, i }) {
     // TODO: add chevron and animate shit out of this
     const [expanded, setExpanded] = useState(false)
+    const tripGroup = extractTripGroup(group)
+    const title = useTitle(tripGroup && tripGroup.id)
+    const locationTitle = titleFromLocationHighlights(group.highlights)
     const countryCodes = group.highlights.map(highlight => highlight.location.cc).filter(onlyUnique).reverse()
     const [days, range] = getDaysAndRangeForGroup(group)
 
-    const title = titleFromLocationHighlights(group.highlights)
     return (
         <Fragment>
             <CountryBar
-                title={title}
-                subtitle={i}
+                title={title ? title : locationTitle}
+                subtitle={title ? locationTitle : null}
                 countryCodes={countryCodes}
                 onClick={() => setExpanded(!expanded)}
                 days={days}
                 range={range}
+                onMoreClick={onMoreClick}
             />
             {expanded && group.groups.map(g => <TimelineGroup group={g} />)}
         </Fragment>
@@ -263,7 +253,7 @@ const GroupPanel = styled(Panel)`
     margin-bottom: 0px;
 `
 
-function TimelineGroup({ group, topLevel, i }) {
+function TimelineGroup({ group, topLevel, onMoreClick, i }) {
     const Container = topLevel ? GroupPanel : Fragment
     switch (group.type) {
         case GroupType.Home:
@@ -271,7 +261,7 @@ function TimelineGroup({ group, topLevel, i }) {
         case GroupType.Trip:
             return <Container><TimelineGroupTrip group={group} i={i}/></Container>
         case GroupType.Container:
-            return group.highlights.length > 0 ? <Container><TimelineGroupContainer group={group} i={i}/></Container> : null
+            return group.highlights.length > 0 ? <Container><TimelineGroupContainer group={group} i={i} onMoreClick={onMoreClick}/></Container> : null
         case GroupType.Plain:
             return group.events.map(event => <GroupEvent event={event}/>)
         case GroupType.Transport:
@@ -279,8 +269,23 @@ function TimelineGroup({ group, topLevel, i }) {
     }
 }
 
+function extractTripGroup(group) {
+    if (group.type === GroupType.Trip) {
+        return group
+    } else if (group.type === GroupType.Container) {
+        return group.groups.find(g => g.type === GroupType.Trip)
+    }
+    return undefined
+}
+
 function Timeline({ timeline }) {
-    return timeline.map((group, i) => <TimelineGroup group={group} i={i} topLevel/>)
+    const [selectedGroup, setSelectedGroup] = useState()
+    return (
+        <Fragment>
+            {timeline.map((group, i) => <TimelineGroup group={group} onMoreClick={() => setSelectedGroup(extractTripGroup(group))} i={i} topLevel/>)}
+            {selectedGroup ? <GroupMoreModal group={selectedGroup} onClickAway={() => setSelectedGroup(undefined)}/> : null}
+        </Fragment>
+    )
 }
 
 const TIMELINE_SEGMENT_OPTION_SETTING = 'TIMELINE_SEGMENT_OPTION'
@@ -292,7 +297,7 @@ export default function TimelinePage() {
     const [homes] = useHomes()
     const [timelineEvents] = useTimelineEvents()
     const [countryCodes] = useVisitedCountryCodes()
-    
+
     const timelineConfig = { tripsOnly: segmentOptionSetting > 0, foreignOnly: segmentOptionSetting === 2 }
     const timeline = createTimelineGroups(timelineEvents, { homes }, timelineConfig)
     const filteredTimeline = selectedCountryCode ? timeline.filter(group => {

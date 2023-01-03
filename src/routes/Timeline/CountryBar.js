@@ -47,10 +47,10 @@ function Icon({ category }) {
     return <StyledIcon title={category.name}>{category.emoji}</StyledIcon>
 }
 
-export default function CountryBar({ name, children, ...props }) {
+export default function CountryBar({ name, children, onMoreClick, ...props }) {
     return (
         <Fragment>
-            <GroupBar title={name} {...props}/>
+            <GroupBar title={name} onMoreClick={onMoreClick} {...props}/>
             {children}
         </Fragment>
     )

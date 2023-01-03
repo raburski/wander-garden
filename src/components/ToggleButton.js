@@ -1,4 +1,3 @@
-import { styled } from 'goober'
 import Button from './Button'
 import { ImCheckboxChecked, ImCheckboxUnchecked } from 'react-icons/im'
 
