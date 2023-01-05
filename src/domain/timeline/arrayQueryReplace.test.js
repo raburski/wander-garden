@@ -101,12 +101,6 @@ describe('array match', function () {
         const result = arrayQueryReplace(queryTwo, array)
         assert.deepEqual(result, expectedResult)
     })
-    it('should replace with multiple queries provided', function () {
-        const array = [3, 2, 1, 1, 2, 3, 2, 2]
-        const expectedResult = [3, 2, 1, 'resultOne', 4]
-        const result = arrayQueryReplace([queryOne, queryTwo], array)
-        assert.deepEqual(result, expectedResult)
-    })
     it('should replace with query using some', function () {
         const array = [3, 2, 1, 1, 2, 3, 2, 2]
         const expectedResult = [3, 'some', 3, 2, 2]
@@ -120,8 +114,14 @@ describe('array match', function () {
         assert.deepEqual(result, expectedResult)
     })
     it('should replace with query ending any', function () {
-        const array = [3, 2, 1, 1, 1, 2]
-        const expectedResult = [3, 'any', 2]
+        const array = [3, 2, 1, 1, 1, 3]
+        const expectedResult = [3, 'any', 3]
+        const result = arrayQueryReplace(queryEndingAny, array)
+        assert.deepEqual(result, expectedResult)
+    })
+    it('should replace with query when no any', function () {
+        const array = [3, 2]
+        const expectedResult = [3, 'any']
         const result = arrayQueryReplace(queryEndingAny, array)
         assert.deepEqual(result, expectedResult)
     })

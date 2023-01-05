@@ -367,11 +367,14 @@ function groupEvents(timelineContext: Context) {
             const otherEvents = events.filter(e => e.type != EventType.Calendar)
             if (calendarEvents.length === 0) {
                 return createGroup(otherEvents, context.isAtHome)
+            } else if (otherEvents.length === 0) {
+                return createPlainGroup(calendarEvents)
+            } else {
+                return [
+                    createPlainGroup(calendarEvents),
+                    createGroup(otherEvents, context.isAtHome)
+                ]
             }
-            return [
-                createPlainGroup(calendarEvents),
-                createGroup(otherEvents, context.isAtHome)
-            ]
         }
     }
 }

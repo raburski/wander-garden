@@ -45,8 +45,8 @@ describe('timeline group calendar', function () {
         ]
         const groups = createTimelineGroups(events)
         const expectedGroups = [
-            createContainerGroup([createTripGroup([checkinEvent, checkinEvent])]),
             createPlainGroup([calendarEvent]),
+            createTripGroup([checkinEvent, checkinEvent]),
         ]
         assert.deepEqual(groups, expectedGroups)
     })

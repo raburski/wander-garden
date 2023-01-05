@@ -58,6 +58,8 @@ function match(pattern, array, currentIndex = 0, previousValues = [], context) {
     if (array.length === 0) {
         if (pattern.length === 1 && currentExpression.type === EXPRESSION_TYPE.SOME) {
             return currentIndex + 1
+        } else if (pattern.length === 1 && currentExpression.type === EXPRESSION_TYPE.ANY) {
+            return currentIndex 
         } else {
             return false
         }

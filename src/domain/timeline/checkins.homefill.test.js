@@ -35,8 +35,8 @@ describe('timeline @ home fill', function () {
     })
 
     it('should create home checkin events if no activity after landing in home country', function () {
-        const NOW = moment()
-        const homeCountryCheckinDate = moment(NOW).subtract(6, 'days')
+        const NOW = moment('1991-06-06', 'YYYY-MM-DD')
+        const homeCountryCheckinDate = moment('1991-06-06', 'YYYY-MM-DD').subtract(6, 'days')
         
         const otherHomeCountryTripCheckin = { ...restaurant_leszno, createdAt: moment(NOW).unix() }
         const homeCountryCheckin = { ...bus_station_warsaw, createdAt: homeCountryCheckinDate.unix() }
