@@ -5,15 +5,15 @@ import type { Location, Home } from 'domain/location'
 import type { Moment } from "moment"
 import type { Checkin } from "domain/swarm/types"
 
-export function ensureDateString(date: String | Moment, format?: string): String {
+export function ensureDateString(date: string | Moment, format?: string): string {
     if (typeof date === "string") {
-        return date as String
+        return date as string
     } else {
         return (date as Moment).format(format)
     }
 }
 
-export function createPotentialHome(location: Location, since?: String | Moment, until?: String | Moment): Home {
+export function createPotentialHome(location: Location, since?: string | Moment, until?: string | Moment): Home {
     return {
         location,
         since: since && ensureDateString(since, 'YYYY-MM-DD'),
@@ -21,7 +21,7 @@ export function createPotentialHome(location: Location, since?: String | Moment,
     }
 }
 
-export function createPotentialHomeWithCheckin(checkin: Checkin, since?: String | Moment, until?: String | Moment) {
+export function createPotentialHomeWithCheckin(checkin: Checkin, since?: string | Moment, until?: string | Moment) {
     const location = getCheckinLocation(checkin)
     return location ? createPotentialHome(location, since, until) : undefined
 }

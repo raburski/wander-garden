@@ -34,9 +34,9 @@ export interface LocationHighlight {
 }
 
 export interface Event {
-    id: String
+    id: string
     type: EventType
-    date: String
+    date: string
     guess?: Boolean
 }
 
@@ -84,10 +84,10 @@ export enum GroupType {
 }
 
 export interface Group {
-    id: String
+    id: string
     type: GroupType
-    since: String
-    until: String
+    since: string
+    until: string
 }
 
 export interface ContainerGroup extends Group {

@@ -21,7 +21,7 @@ export function createNewYearCalendarEvent(date: Moment): NewYearCalendarEvent {
     }
 }
 
-export function createNewHomeCalendarEvent(date: String | Moment, from: Home, to: Home): NewHomeCalendarEvent {
+export function createNewHomeCalendarEvent(date: string | Moment, from: Home, to: Home): NewHomeCalendarEvent {
     return {
         id: `new-home-${ensureDateString(date, 'YYYY-MM-DD')}`,
         type: EventType.Calendar,
@@ -44,7 +44,7 @@ export function createCheckinEvent(checkin: Checkin, guess?: boolean): CheckinEv
     }
 }
 
-export function createTransportEvent(mode: TransportMode, date: String | Moment, from: Location, to: Location, guess: Boolean = false): TransportEvent {
+export function createTransportEvent(mode: TransportMode, date: string | Moment, from: Location, to: Location, guess: Boolean = false): TransportEvent {
     return { id: `transport-${ensureDateString(date)}`, type: EventType.Transport, mode, date: ensureDateString(date), from, to, guess }
 }
 
@@ -137,7 +137,7 @@ class TimelineEventsFactory {
     }
 }
 
-export function createHomeCheckin(beforeDate: String, afterDate: String, context: Context): Checkin | undefined {
+export function createHomeCheckin(beforeDate: string, afterDate: string, context: Context): Checkin | undefined {
     const beforeMoment = moment(beforeDate as MomentInput)
     const afterMoment = moment(afterDate as MomentInput)
     const differenceInHours = afterMoment.diff(beforeMoment, 'hours')

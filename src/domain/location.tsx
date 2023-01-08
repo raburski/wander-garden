@@ -15,8 +15,8 @@ export interface Location {
 
 export interface Home {
     location: Location
-    since?: String
-    until?: String
+    since?: string
+    until?: string
 }
 
 function cyrylicToLatin(word: string){

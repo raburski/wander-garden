@@ -8,14 +8,13 @@ import CountryBar from "./CountryBar"
 import Page from "components/Page"
 import colors from "colors"
 import Panel from "components/Panel"
-import { getGroupHighlights, useTimeline } from 'domain/timeline/groups'
+import { getGroupHighlights, useTimeline, titleFromLocationHighlights, highlightTitle } from 'domain/timeline/groups'
 
 import { EventType, TransportMode, GroupType, CalendarDayType } from 'domain/timeline/types'
 import { Segment } from "components/Segment"
 import { useSetting } from "settings"
 import { useTitle, useVisitedCountryCodes } from "domain/timeline"
 import GroupMoreModal from "./GroupMoreModal"
-import { titleFromLocationHighlights, highlightTitle } from "domain/timeline/groups"
 
 const AllFlagsContainer = styled('div')`
     display: flex;
@@ -113,12 +112,6 @@ const OptionsContainer = styled('div')`
     display: flex;
     flex-direction: row;
 `
-
-const Separator = styled('div')`
-    width: 12px;
-    height: 12px;
-`
-
 
 function FlagButton({ selected, style, ...props }) {
     return <StyledFlagButton style={selected ? {backgroundColor: colors.neutral.dark} : {}} {...props}/>

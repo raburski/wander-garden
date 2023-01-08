@@ -4,9 +4,9 @@ import type { Location, Home } from '../location'
 import type { Moment } from "moment"
 import type { Checkin } from "./types"
 
-export function ensureDateString(date: String | Moment, format?: string): String {
+export function ensureDateString(date: string | Moment, format?: string): string {
     if (typeof date === "string") {
-        return date as String
+        return date as string
     } else {
         return (date as Moment).format(format)
     }

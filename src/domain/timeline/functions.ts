@@ -6,13 +6,13 @@ import type { Home } from "domain/location"
 import type { Moment, MomentInput } from "moment"
 import { Checkin, getCheckinDate, getCheckinLocation } from "domain/swarm"
 
-function ensureDateMoment(date: Moment | String): Moment {
+function ensureDateMoment(date: Moment | string): Moment {
     return typeof date === 'string' ? moment(date as MomentInput) : date! as Moment
 }
 
 const DISTANT_PAST = '1920-01-01'
 const DISTANT_FUTURE = '2055-01-01'
-export function getHomeForDate(date: Moment | String, homes: Home[] = []): Home | undefined {
+export function getHomeForDate(date: Moment | string, homes: Home[] = []): Home | undefined {
     const ensuredDate = ensureDateMoment(date)
     return homes.find(home => {
         if (!home) return false
