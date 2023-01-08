@@ -112,6 +112,8 @@ class TimelineEventsFactory {
                     case TRANSPORT_TYPE.CAR:
                         this.push(createTransportEvent(TransportMode.Car, getCheckinDate(transportCheckin), getCheckinLocation(previous), getCheckinLocation(current)))
                         break
+                    default:
+                        break;
                 }
             } else if (isTransportTypeConflicting) {
                 // TODO: deal with airport -> train or bus -> train mixes
@@ -241,7 +243,6 @@ const createNewYearCalendarEvents = () => ({
                 const yearDifference = currentYear - previousYear
                 if (yearDifference < 0) {
                     return false // TODO: INVESTIGATE!
-                    console.log(newerEvent, olderEvent)
                 }
                 const years = Array(yearDifference).fill(previousYear).map((year, index) => year + index + 1)
                 context.events = years.map(year => createNewYearCalendarEvent(moment(`${year}-01-01T00:00:00`)))

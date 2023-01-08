@@ -157,7 +157,7 @@ function BadgeDetailsModal({ selectedBadge, visitedCountryCodes = [], onClickAwa
         <Modal isOpen={!!selectedBadge} onClickAway={onClickAway}>
             <Page header={selectedBadge?.name}>
             <Panel header="Countries in the region">
-                {selectedBadge?.oneOfCountry?.map(cc => <CountryRow code={cc} right={visitedCountryCodes.includes(cc) ? <VscCheck /> : null}/>)}
+                {selectedBadge?.oneOfCountry?.map(cc => <CountryRow key={cc} code={cc} right={visitedCountryCodes.includes(cc) ? <VscCheck /> : null}/>)}
             </Panel>
             </Page>
         </Modal>

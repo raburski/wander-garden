@@ -1,11 +1,8 @@
 import assert from 'assert'
 import moment from 'moment'
-import { createCheckinEvent, createNewYearCalendarEvent, createTransportEvent } from './events'
-import { createTimelineGroups, createTripGroup, createContainerGroup, getHighlightsFromEvents, createPlainGroup, createHomeGroup } from './groups'
-import { airport_cyprus, trainstation_wroclaw, fitness_wroclaw, burger_berlin, restaurant_limassol_cyprus, restaurant_pafos_cyprus, karpacz_events, krakow_events, germany_swiss_trip_events, cafe_nicosia_cyprus, srilanka_trip_events, eurotrip } from './testData'
-import { createPotentialHomeWithCheckin, getCheckinLocation, getCheckinDate } from '../swarm/functions'
-import { TransportMode, LocationHighlightType } from './types'
-
+import { createCheckinEvent, createNewYearCalendarEvent } from './events'
+import { createTimelineGroups, createTripGroup, createPlainGroup } from './groups'
+import { fitness_wroclaw } from './testData'
 
 describe('timeline group calendar', function () {
     it('should create plain group for calendar event', function () {

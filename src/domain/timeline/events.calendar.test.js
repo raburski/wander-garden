@@ -1,8 +1,6 @@
 import assert from 'assert'
 import { createTimelineEvents, createCheckinEvent, createNewHomeCalendarEvent, createNewYearCalendarEvent } from './events'
-import { airport_cyprus, airport_wroclaw, fitness_wroclaw, restaurant_limassol_cyprus, airport_leszno } from './testData'
-import { getCheckinDate, getCheckinLocation } from '../swarm/functions'
-import { TransportMode, CalendarDayType } from './types'
+import { fitness_wroclaw, restaurant_limassol_cyprus } from './testData'
 import moment from 'moment'
 import { createPotentialHomeWithCheckin } from '../homes/functions'
 

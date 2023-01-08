@@ -471,6 +471,8 @@ export function highlightTitle(highlight: LocationHighlight) {
             return highlight.location.state
         case LocationHighlightType.Country:
             return highlight.location.country
+        default:
+            return undefined
     }
 }
 

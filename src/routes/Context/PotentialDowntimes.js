@@ -59,12 +59,9 @@ function getPotentialDowntimes(events) {
         const numberOfWatches = groupedEventsByDate[date].filter(e => e.type === TYPE.WATCH).length
         const numberOfCheckins = groupedEventsByDate[date].filter(e => e.type === TYPE.CHECKIN).length
         const downtimeScoreForDate = calculateScore(numberOfWatches, numberOfCheckins, daysSinceLastEvents)
-        console.log('daysSinceLastEvents', daysSinceLastEvents)
         currentDowntimeScore = Math.max(0, currentDowntimeScore + downtimeScoreForDate) //* Math.pow(0.9, daysSinceLastEvents)
-        console.log(date, '[', numberOfWatches, numberOfCheckins, downtimeScoreForDate, ']', currentDowntimeScore)
         if (currentDowntimeScore >= DOWNTIME_THRESHOLD) {
             if (!downtimeStartDate) {
-                console.log('over threshold new downtime')
                 downtimeStartDate = date
             }
         } else {
@@ -75,7 +72,6 @@ function getPotentialDowntimes(events) {
             }
         }
     }
-    console.log(' ----------- ')
     return potentialDowntimes
 }
 

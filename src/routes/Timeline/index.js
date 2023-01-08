@@ -4,20 +4,16 @@ import countryFlagEmoji from "country-flag-emoji"
 import moment from "moment"
 import { styled } from 'goober'
 import { onlyUnique } from "array"
-import { useCheckins } from "domain/swarm"
-import { onlyNonTransportation, venueEmoji } from 'domain/swarm/categories'
-import { getCategory } from "domain/swarm/categories"
 import CountryBar from "./CountryBar"
 import Page from "components/Page"
 import colors from "colors"
 import Panel from "components/Panel"
-import { createTimelineGroups, getGroupHighlights, useTimeline } from 'domain/timeline/groups'
+import { getGroupHighlights, useTimeline } from 'domain/timeline/groups'
 
-import { EventType, TransportMode, GroupType, LocationHighlightType, CalendarDayType } from 'domain/timeline/types'
+import { EventType, TransportMode, GroupType, CalendarDayType } from 'domain/timeline/types'
 import { Segment } from "components/Segment"
 import { useSetting } from "settings"
-import { useHomes } from "domain/homes"
-import { useSetTitle, useTimelineEvents, useTitle, useVisitedCountryCodes } from "domain/timeline"
+import { useTitle, useVisitedCountryCodes } from "domain/timeline"
 import GroupMoreModal from "./GroupMoreModal"
 import { titleFromLocationHighlights, highlightTitle } from "domain/timeline/groups"
 
@@ -160,6 +156,8 @@ function CalendarEvent({ event }) {
                     </CalendarNewHomeEventDate>
                 </CalendarNewHomeEventContainer>
             )
+        default:
+            return null
     }
 }
 
@@ -171,6 +169,8 @@ function GroupEvent({ event }) {
             return <TransportLabel>{TransportMode_EMOJI[event.mode]}</TransportLabel>
         case EventType.Calendar:
             return <CalendarEvent event={event}/>
+        default:
+            return null
     }
 }
 
@@ -187,21 +187,14 @@ function TimelineGroupHome({ group }) {
 }
 
 function TimelineGroupTrip({ group, i }) { 
-    const countryCodes = group.highlights.map(highlight => highlight.location.cc)
     const leftToRightPhases = [...group.phases].reverse()
     return (
-        <EventsContainer>{leftToRightPhases.map(event => <GroupEvent event={event}/>)}</EventsContainer>
+        <EventsContainer>{leftToRightPhases.map(event => <GroupEvent key={event.id} event={event}/>)}</EventsContainer>
     )
 }
 
 function TimelineGroupTransport({ group, i }) { 
-    const firstTransport = group.phases[0]
     return null // TODO
-    return (
-        <CountryBar name={`Transport ${firstTransport.from.cc} to ${firstTransport.to.cc}`} code={firstTransport.from.cc}>
-
-        </CountryBar>
-    )
 }
 
 const MONTH_TO_SEASON = ['❄️', '❄️', '🌸', '🌸', '🌸', '☀️', '☀️', '☀️', '🍁', '🍁', '🍁', '❄️']
@@ -244,7 +237,7 @@ function TimelineGroupContainer({ group, onMoreClick, i }) {
                 range={range}
                 onMoreClick={onMoreClick}
             />
-            {expanded && group.groups.map(g => <TimelineGroup group={g} />)}
+            {expanded && group.groups.map(g => <TimelineGroup key={g.id} group={g} />)}
         </Fragment>
     )
 }
@@ -263,9 +256,11 @@ function TimelineGroup({ group, topLevel, onMoreClick, i }) {
         case GroupType.Container:
             return group.highlights.length > 0 ? <Container><TimelineGroupContainer group={group} i={i} onMoreClick={onMoreClick}/></Container> : null
         case GroupType.Plain:
-            return group.events.map(event => <GroupEvent event={event}/>)
+            return group.events.map(event => <GroupEvent key={event.id} event={event}/>)
         case GroupType.Transport:
             return <Container><TimelineGroupTransport group={group} i={i}/></Container>
+        default:
+            return null
     }
 }
 
@@ -282,7 +277,7 @@ function Timeline({ timeline }) {
     const [selectedGroup, setSelectedGroup] = useState()
     return (
         <Fragment>
-            {timeline.map((group, i) => <TimelineGroup group={group} onMoreClick={() => setSelectedGroup(extractTripGroup(group))} i={i} topLevel/>)}
+            {timeline.map((group, i) => <TimelineGroup key={group.id} group={group} onMoreClick={() => setSelectedGroup(extractTripGroup(group))} i={i} topLevel/>)}
             {selectedGroup ? <GroupMoreModal group={selectedGroup} onClickAway={() => setSelectedGroup(undefined)}/> : null}
         </Fragment>
     )

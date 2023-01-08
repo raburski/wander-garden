@@ -11,7 +11,6 @@ function onImportNetflix() {
                     title: line[0],
                     date: line[1],
             }))
-            console.log(movies)
             if (movies.length > 0 && window.confirm(`${movies.length} titles found. Are you sure you want to replace currently stored ones?`)) {
                 _movies.set(movies)
                 alert('Imported!')

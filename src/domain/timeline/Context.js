@@ -33,10 +33,10 @@ export function TimelineProvider(props) {
 
     if (events.length === 0 && checkins.length > 0) {
         setVisitedCountryCodes(checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc).filter(onlyUnique))
-        const events = createTimelineEvents(checkins, { homes })
-        const groups = createTimelineGroups(events, { homes })
-        setEvents(events)
-        setGroups(groups)
+        const timelineEvents = createTimelineEvents(checkins, { homes })
+        const timelineGroups = createTimelineGroups(timelineEvents, { homes })
+        setEvents(timelineEvents)
+        setGroups(timelineGroups)
     }
 
     // TODO: add caching etc

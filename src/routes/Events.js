@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { styled } from "goober"
 import { SiSwarm, SiNetflix } from 'react-icons/si'
 import moment from 'moment'
