@@ -1,6 +1,6 @@
 declare module "country-flag-emoji" {
     export default {
-        get: () => any
+        get: (code: string) => any
     }
 }
 

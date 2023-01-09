@@ -62,8 +62,18 @@ const Range = styled('div')`
     margin-bottom: 4px;
 `
 
-export default function GroupBar({ countryCodes = [], title, subtitle, onClick, days, range, onMoreClick }) {
-    const flags = countryCodes.map(code => countryFlagEmoji.get(code)?.emoji).filter(Boolean).map((emoji, index) => {
+export type GroupBarProps = {
+    countryCodes: string[],
+    title?: string,
+    subtitle?: string,
+    days?: string,
+    range?: string,
+    onClick?: () => void,
+    onMoreClick?: () => void
+}
+
+export default function GroupBar({ countryCodes = [], title, subtitle, onClick, days, range, onMoreClick }: GroupBarProps): JSX.Element {
+    const flags = countryCodes.map((code: string) => countryFlagEmoji.get(code)?.emoji).filter(Boolean).map((emoji, index) => {
         if (index == 0) {
             return <FirstFlag key={countryCodes[index]}>{emoji}</FirstFlag>
         } else {
@@ -72,7 +82,7 @@ export default function GroupBar({ countryCodes = [], title, subtitle, onClick, 
     })
 
     return (
-        <Row onClick={onClick}>
+        <Row onClick={onClick} to={null}>
             {flags}
             <TitleContent>
                 <Title>{title}</Title>
