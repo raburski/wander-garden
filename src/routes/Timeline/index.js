@@ -15,26 +15,12 @@ import { Segment } from "components/Segment"
 import { useSetting } from "settings"
 import { useTitle, useVisitedCountryCodes } from "domain/timeline"
 import GroupMoreModal from "./GroupMoreModal"
+import FlagButton from "./FlagButton"
 
 const AllFlagsContainer = styled('div')`
     display: flex;
     flex-direction: row;
     margin-bottom: 8px;
-`
-
-const StyledFlagButton = styled(Link)`
-    display: flex;
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-    padding-left: 4px;
-    padding-right: 4px;
-    border-radius: 6px;
-    font-size: 28px;
-
-    &:hover {
-        background-color: ${colors.neutral.highlight};
-    }
 `
 
 const PhaseLabel = styled('div')`
@@ -112,10 +98,6 @@ const OptionsContainer = styled('div')`
     display: flex;
     flex-direction: row;
 `
-
-function FlagButton({ selected, style, ...props }) {
-    return <StyledFlagButton style={selected ? {backgroundColor: colors.neutral.dark} : {}} {...props}/>
-}
 
 function AllFlags({ countryCodes = [], selectedCountryCode }) {
     return <AllFlagsContainer>{countryCodes.map(cc => <FlagButton key={cc} to={selectedCountryCode === cc.toLowerCase() ? `?` : `?cc=${cc.toLowerCase()}`} selected={selectedCountryCode == cc.toLowerCase()}>{countryFlagEmoji.get(cc).emoji}</FlagButton>)}</AllFlagsContainer>

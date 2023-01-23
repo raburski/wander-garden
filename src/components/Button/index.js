@@ -54,7 +54,7 @@ const Separator = styled('div')`
 
 const selectedStyle = { backgroundColor: colors.neutral.highlight }
 
-export default function Button({ disabled, icon, selected, style = {}, children, onClick, ...props }) {
+export default function Button({ disabled = false, icon = undefined, selected = false, style = {}, children, onClick = () => {}, ...props }) {
     const Component = disabled ? DisabledButton : EnabledButton
     const componentStyles = selected ? { ...selectedStyle, ...style } : style
     const IconComponent = icon

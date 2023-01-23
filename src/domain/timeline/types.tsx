@@ -90,8 +90,11 @@ export interface Group {
     until: string
 }
 
-export interface ContainerGroup extends Group {
+export interface AggregateGroup extends Group {
     highlights: LocationHighlight[]
+}
+
+export interface ContainerGroup extends AggregateGroup {
     groups: Group[]
 }
 
@@ -110,8 +113,7 @@ export interface TransportGroup extends Group {
     phases: Event[]
 }
 
-export interface TripGroup extends Group {
-    highlights: LocationHighlight[]
+export interface TripGroup extends AggregateGroup {
     events: Event[]
     phases: Event[]
 }

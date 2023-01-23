@@ -59,15 +59,37 @@ export function useRefreshTimeline() {
     return context.refresh
 }
 
-export function useTimelineEvents() {
+function isDEV() {
+    return process.env.NODE_ENV == 'development'
+}
+
+export function useTimelineEventsProd() {
     const context = useContext(TimelineContext)
     return context.events
 }
 
-export function useTimelineGroups() {
+export function useTimelineEventsDev() {
+    const [checkins] = useCheckins()
+    const [homes] = useHomes()
+    return createTimelineEvents(checkins, { homes })
+}
+
+export const useTimelineEvents = isDEV() ? useTimelineEventsDev : useTimelineEventsProd
+
+
+function useTimelineGroupsProd() {
     const context = useContext(TimelineContext)
     return context.groups
 }
+
+function useTimelineGroupsDev() {
+    const [homes] = useHomes()
+    const timelineEvents = useTimelineEvents()
+    return [createTimelineGroups(timelineEvents, { homes })]
+}
+
+export const useTimelineGroups = isDEV() ? useTimelineGroupsDev : useTimelineGroupsProd
+
 
 export function useVisitedCountryCodes() {
     const context = useContext(TimelineContext)
