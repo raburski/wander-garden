@@ -198,12 +198,12 @@ function createHomeCheckinAfterFlyingBackHome(timelineContext: Context) {
             // any(HOME COUNTRY LOCATION)
             // FOREIGN LOCATION
             (checkin: Checkin) => {
-                return !isCheckinAtHome(checkin)
+                return !isCheckinAtHome(checkin, timelineContext.homes)
             },
             some((current: Checkin, checkins: [Checkin]) => {
                 const home = getHomeForDate(getCheckinDate(current), timelineContext.homes)
                 const isInHomeCountry = home && isEqualLocationCountry(getCheckinLocation(current), home.location)
-                const isAtHome = isCheckinAtHome(current)
+                const isAtHome = isCheckinAtHome(current, timelineContext.homes)
 
                 const newerCheckin = checkins[0]
                 const newerCheckinMoment = getCheckinDate(newerCheckin)

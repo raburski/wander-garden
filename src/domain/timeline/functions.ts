@@ -12,7 +12,7 @@ function ensureDateMoment(date: Moment | string): Moment {
 
 const DISTANT_PAST = '1920-01-01'
 const DISTANT_FUTURE = '2055-01-01'
-export function getHomeForDate(date: Moment | string, homes: Home[] = []): Home | undefined {
+export function getHomeForDate(date: Moment | string, homes: Home[]): Home | undefined {
     const ensuredDate = ensureDateMoment(date)
     return homes.find(home => {
         if (!home) return false
@@ -22,8 +22,8 @@ export function getHomeForDate(date: Moment | string, homes: Home[] = []): Home 
     })
 }
 
-export function isCheckinAtHome(checkin: Checkin): boolean {
-    const home = getHomeForDate(getCheckinDate(checkin))
+export function isCheckinAtHome(checkin: Checkin, homes: Home[]): boolean {
+    const home = getHomeForDate(getCheckinDate(checkin), homes)
     return home ? isTheSameArea(home.location, getCheckinLocation(checkin)) : false
 }
 
