@@ -4,6 +4,7 @@ import Events from './Events'
 import Netflix from './Netflix'
 import Context from "./Context"
 import Timeline from './Timeline'
+import Badges from './Badges'
 import Dashboard from './Dashboard'
 import Phone from './Phone'
 import PhoneConnect from './PhoneConnect'
@@ -20,6 +21,7 @@ export default function AllRoutes() {
         <Route path="phone" element={<Phone />}/>
         <Route path="phone-connect" element={<PhoneConnect />}/>
         <Route path="timeline" element={<Timeline />}/>
+        <Route path="badges" element={<Badges />}/>
         <Route path="events" element={<Events />}/>
         <Route path="context" element={<Context />}/>
         <Route path="map" element={<Map />}/>
