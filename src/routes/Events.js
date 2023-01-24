@@ -77,7 +77,7 @@ export default function Event() {
     const [items, loadMore] = usePagination(events)
     return (
         <Page header="Events">
-            {events === null ? "Loading..." : items.map(event => <EventBar event={event} key={events.id}/>)}
+            {events === null ? "Loading..." : events.map(event => <EventBar event={event} key={event.id}/>)}
         </Page>
     )
 }
