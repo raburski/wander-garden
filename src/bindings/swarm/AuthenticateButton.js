@@ -4,7 +4,7 @@ import { useState } from "react"
 import { IoLogoFoursquare } from 'react-icons/io'
 
 const CLIENT_ID = 'JRGEIAQP3LTJWSO2C2U25KSOTLAIPOHOCAWXS31MJXVB1OPP'
-const REDIRECT_URL = 'http://wander.garden/auth.php?type=foursquare'
+const REDIRECT_URL = 'http://auth.wander.garden/api/foursquare'
 
 const AUTH_URL = `https://foursquare.com/oauth2/authenticate?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URL}`
 
