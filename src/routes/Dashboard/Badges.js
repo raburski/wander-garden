@@ -14,6 +14,8 @@ const contentStyle = {
 export default function Badges() {
     const [selectedBadge, setSelectedBadge] = useState()
     const verifiedBadges = useAcquiredBadges()
+    if (verifiedBadges.length <= 0) { return null }
+    
     return (
         <Panel header="Collected badges" contentStyle={contentStyle}>
             {verifiedBadges.map(badge => <Badge name={badge.name} emoji={badge.emoji} key={badge.name} onClick={() => setSelectedBadge(badge)}/>)}

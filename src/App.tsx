@@ -9,6 +9,8 @@ import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill"
 import { SwarmProvider } from 'domain/swarm'
 import { HomesProvider } from "domain/homes"
 import { TimelineProvider } from "domain/timeline"
+import { ExtensionProvider } from "domain/extension"
+import { StaysProvider } from 'domain/stays'
 import { SettingsProvider } from './settings'
 import mapboxgl from 'mapbox-gl'
  
@@ -40,21 +42,25 @@ const RoutesContainer = styled('div')`
 function App() {
   return (
     <SettingsProvider>
-      <SwarmProvider>
-        <HomesProvider>
-          <TimelineProvider>
-            <AppContainer>
-              <Router>
-                <SideBar />
-                <RoutesContainer>
-                  <Routes />
-                </RoutesContainer>
-              </Router>
-              <Toaster />
-            </AppContainer>
-          </TimelineProvider>
-        </HomesProvider>
-      </SwarmProvider>
+      <StaysProvider>
+        <ExtensionProvider>
+          <SwarmProvider>
+            <HomesProvider>
+              <TimelineProvider>
+                <AppContainer>
+                  <Router>
+                    <SideBar />
+                    <RoutesContainer>
+                      <Routes />
+                    </RoutesContainer>
+                  </Router>
+                  <Toaster />
+                </AppContainer>
+              </TimelineProvider>
+            </HomesProvider>
+          </SwarmProvider>
+        </ExtensionProvider>
+      </StaysProvider>
     </SettingsProvider>
   );
 }

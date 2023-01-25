@@ -3,6 +3,7 @@ import { Link, useResolvedPath, useMatch } from 'react-router-dom'
 import { VscDashboard, VscCloudUpload, VscPulse, VscVersions, VscDeviceMobile } from 'react-icons/vsc'
 import { TfiMapAlt } from 'react-icons/tfi'
 import { SiSwarm, SiNetflix } from 'react-icons/si'
+// import { IoExtensionPuzzleOutline } from 'react-icons/io'
 import { BsAward } from 'react-icons/bs'
 import Logo from './Logo'
 import colors from '../colors'
@@ -144,7 +145,8 @@ export default function SideBar() {
             <Separator />
             <TextSeparator>Sources</TextSeparator>
             <PillLink to="swarm" icon={SiSwarm}>Swarm</PillLink>
-            <PillLink to="phone" icon={VscDeviceMobile}>Phone</PillLink>
+            <PillLink to="extension" icon={SiSwarm}>Extension</PillLink>
+            {/* <PillLink to="phone" icon={VscDeviceMobile}>Phone</PillLink> */}
             {/* <PillLink to="netflix" icon={SiNetflix}>Netflix</PillLink> */}
             <SpreadSeparator />
             <SubNotes />

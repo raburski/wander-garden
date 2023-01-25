@@ -1,0 +1,29 @@
+{
+    "manifest_version": 2,
+    "name": "Wander Garden",
+    "version": "1.0.0",
+    "description": "",
+    "content_scripts":[
+        {
+            "matches":[
+                "*://*.booking.com/*"
+            ],
+            "run_at": "document_start",
+            "js":["js/consts.js", "js/booking.js"]
+        },
+        {
+          "matches":[
+              "*://wander.garden/*",
+              "*://127.0.0.1/*"
+          ],
+          "js":["js/consts.js", "js/garden.js"]
+      }
+    ],
+    "background": {
+      "scripts": ["js/consts.js", "js/background.js"],
+      "persistent": true
+    },
+    "permissions": [
+      "tabs"
+    ]
+}

@@ -11,11 +11,13 @@ import PhoneConnect from './PhoneConnect'
 import AuthenticationFinish from './AuthenticationFinish'
 import WebsiteInfo from "./WebsiteInfo"
 import Map from './Map'
+import Extension from './Extension'
 
 export default function AllRoutes() {
     return (
     <Routes>
         <Route path="swarm" element={<Swarm />}/>
+        <Route path="extension" element={<Extension />}/>
         <Route path="auth" element={<AuthenticationFinish />}/>
         <Route path="netflix" element={<Netflix />}/>
         <Route path="phone" element={<Phone />}/>
