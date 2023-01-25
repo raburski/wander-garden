@@ -4,7 +4,7 @@ import { styled } from "goober"
 import moment from 'moment'
 import countryFlagEmoji from "country-flag-emoji"
 import { cleanLocation } from '../../domain/location'
-import NoneFound from './NoneFound'
+import NoneFound from '../../components/NoneFound'
 
 const DATE_FORMAT = 'DD/MM/YYYY'
 const BINGE_WATCH_THRESHOLD = 5

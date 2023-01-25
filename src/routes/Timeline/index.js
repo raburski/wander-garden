@@ -11,7 +11,7 @@ import Panel from "components/Panel"
 import { getGroupHighlights, useTimeline, titleFromLocationHighlights, highlightTitle } from 'domain/timeline/groups'
 
 import { EventType, TransportMode, GroupType, CalendarDayType } from 'domain/timeline/types'
-import { Segment } from "components/Segment"
+import Segment from "components/Segment"
 import { useSetting } from "settings"
 import { useTitle, useVisitedCountryCodes } from "domain/timeline"
 import GroupMoreModal from "./GroupMoreModal"

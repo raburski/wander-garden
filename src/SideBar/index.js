@@ -1,10 +1,11 @@
 import { styled } from 'goober'
 import { Link, useResolvedPath, useMatch } from 'react-router-dom'
-import { VscDashboard, VscCloudUpload, VscPulse, VscVersions, VscDeviceMobile } from 'react-icons/vsc'
+import { VscDashboard, VscTable, VscPulse, VscVersions, VscDeviceMobile } from 'react-icons/vsc'
 import { TfiMapAlt } from 'react-icons/tfi'
 import { SiSwarm, SiNetflix } from 'react-icons/si'
 import { SlPuzzle } from 'react-icons/sl'
 import { BsAward } from 'react-icons/bs'
+import { RxFileText } from 'react-icons/rx'
 import Logo from './Logo'
 import colors from '../colors'
 
@@ -140,8 +141,8 @@ export default function SideBar() {
             <PillLink to="timeline" icon={VscVersions}>Timeline</PillLink>
             <PillLink to="badges" icon={BsAward}>Badges</PillLink>
             <PillLink to="context" icon={VscPulse}>Context</PillLink>
-            <PillLink to="events" icon={VscCloudUpload}>Events</PillLink>
             <PillLink to="map" icon={TfiMapAlt}>Map</PillLink>
+            <PillLink to="data" icon={RxFileText}>Data</PillLink>
             <Separator />
             <TextSeparator>Sources</TextSeparator>
             <PillLink to="swarm" icon={SiSwarm}>Swarm</PillLink>

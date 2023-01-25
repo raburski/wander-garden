@@ -2,7 +2,7 @@ import { onlyNonGrocery, onlyNonTransportation } from '../../domain/swarm/catego
 import { TYPE, useEvents } from '../../domain/events'
 import { styled } from "goober"
 import moment from 'moment'
-import NoneFound from './NoneFound'
+import NoneFound from '../../components/NoneFound'
 
 // Converts numeric degrees to radians
 function toRad(Value) {

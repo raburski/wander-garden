@@ -1,9 +1,8 @@
-import { useCheckins } from "../../domain/swarm"
 import { styled } from "goober"
 import countryFlagEmoji from "country-flag-emoji"
 import { useHomes } from 'domain/homes'
 import Panel from '../../components/Panel'
-import NoneFound from './NoneFound'
+import NoneFound from '../../components/NoneFound'
 
 const HomeContainer = styled('div')`
     display: flex;

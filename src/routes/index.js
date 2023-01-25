@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router"
 import Swarm from './Swarm'
-import Events from './Events'
+import Data from './Data'
 import Netflix from './Netflix'
 import Context from "./Context"
 import Timeline from './Timeline'
@@ -24,7 +24,7 @@ export default function AllRoutes() {
         <Route path="phone-connect" element={<PhoneConnect />}/>
         <Route path="timeline" element={<Timeline />}/>
         <Route path="badges" element={<Badges />}/>
-        <Route path="events" element={<Events />}/>
+        <Route path="data" element={<Data />}/>
         <Route path="context" element={<Context />}/>
         <Route path="map" element={<Map />}/>
         <Route path="info" element={<WebsiteInfo />}/>
