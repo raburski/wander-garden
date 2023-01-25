@@ -24,7 +24,7 @@ function StayRow({ stay }) {
 
 function SwarmCheckinsList() {
     const [checkins] = useCheckins()
-    return !checkins ? checkins.map(checkin => <CheckinRow checkin={checkin} key={checkin.id} />) : <NoneFound />
+    return checkins ? checkins.map(checkin => <CheckinRow checkin={checkin} key={checkin.id} />) : <NoneFound />
 }
 
 function BookingComList() {
