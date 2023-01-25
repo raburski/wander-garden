@@ -1,13 +1,20 @@
 import Page from "components/Page"
 import InfoPanel from "components/InfoPanel"
-import { useIsConnected } from 'domain/extension'
+import SquareImage from 'components/SquareImage'
+import { useIsConnected, useIsMatchingVersion } from 'domain/extension'
 import OnlineDot from './OnlineDot'
 import Booking from './Booking'
+import ExtensionVersionNotMatching from './VersionMismatch'
+import WebStoreButton from "./WebStoreButton"
 
+const COPY = `In order to enhance your dataset you can install garden browser extension. It will help you import your booking.com, airbnb and agoda bookings.
+
+`
 function ExtensionNotConnected() {
     return (
-        <InfoPanel spacing style={{alignSelf:'flex-start'}} >
-            In order to enhance your dataset you can install garden browser extension. It will help you import your booking.com, airbnb and agoda bookings.
+        <InfoPanel spacing style={{alignSelf:'flex-start', whiteSpace: 'pre-wrap'}} image={<SquareImage size={320} src="/3d/puzzle.png"/>}>
+            {COPY}
+            <WebStoreButton />
         </InfoPanel>
     )
 }
@@ -21,10 +28,12 @@ function ExtensionStatus() {
 }
 
 function ExtensionConnected() {
+    const isMatchingVersion = useIsMatchingVersion()
     return (
         <>
             <ExtensionStatus />
-            <Booking />
+            {isMatchingVersion ? null : <ExtensionVersionNotMatching />}
+            {isMatchingVersion ? <Booking /> : null}
         </>
     )
 }

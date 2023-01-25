@@ -1,6 +1,8 @@
 import { createContext, useState, useContext } from "react"
 import { useStays } from 'domain/stays'
 
+const CURRENT_VERSION = '1.0'
+
 export const ExtensionContext = createContext({})
 
 function sendExtensionMessage(msg) {
@@ -11,15 +13,15 @@ function sendExtensionMessage(msg) {
 }
 
 export function ExtensionProvider(props) {
-    const [isConnected, setConnected] = useState(false)
+    const [version, setVersion] = useState()
     const [stays, setStays] = useStays()
 
     window.addEventListener('message', function(event) {
         const message = event.data
         if (!message) { return }
         if (message.source === 'wander_garden_extension') {
-            if (!isConnected) {
-                setConnected(true)
+            if (message.type === 'init') {
+                setVersion(message.version)
             }
             if (message.type === 'capture_finished') {
                 if (message.subject === 'booking.com_extension') {
@@ -30,7 +32,8 @@ export function ExtensionProvider(props) {
     })
 
     const value = {
-        isConnected
+        isConnected: !!version,
+        version,
     }
     return <ExtensionContext.Provider value={value} {...props}/>
 }
@@ -38,6 +41,11 @@ export function ExtensionProvider(props) {
 export function useIsConnected() {
     const context = useContext(ExtensionContext)
     return context.isConnected
+}
+
+export function useIsMatchingVersion() {
+    const context = useContext(ExtensionContext)
+    return false//context.version === CURRENT_VERSION
 }
 
 export function useScrapeBooking() {
