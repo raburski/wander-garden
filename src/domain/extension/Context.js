@@ -45,7 +45,7 @@ export function useIsConnected() {
 
 export function useIsMatchingVersion() {
     const context = useContext(ExtensionContext)
-    return false//context.version === CURRENT_VERSION
+    return context.version === CURRENT_VERSION
 }
 
 export function useScrapeBooking() {

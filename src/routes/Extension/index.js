@@ -12,7 +12,7 @@ const COPY = `In order to enhance your dataset you can install garden browser ex
 `
 function ExtensionNotConnected() {
     return (
-        <InfoPanel spacing style={{alignSelf:'flex-start', whiteSpace: 'pre-wrap'}} image={<SquareImage size={320} src="/3d/puzzle.png"/>}>
+        <InfoPanel spacing style={{alignSelf:'flex-start', whiteSpace: 'pre-wrap'}} image={<SquareImage size={200} src="/3d/puzzle.png"/>}>
             {COPY}
             <WebStoreButton />
         </InfoPanel>
