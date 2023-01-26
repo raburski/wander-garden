@@ -53,7 +53,7 @@ export function TimelineProvider({ children }) {
 }
 
 function isDEV() {
-    return false//process.env.NODE_ENV == 'development'
+    return process.env.NODE_ENV == 'development'
 }
 
 export function useTimelineEventsProd() {
