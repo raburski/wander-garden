@@ -284,9 +284,9 @@ interface TimelineData {
 const staysConvertedIntoCheckins = (stays: Stay[]): Checkin[] => {
     return stays.flatMap((stay: Stay): Checkin[] => {
         const firstDay = moment(stay.since)
-        firstDay.set('hour', 13)
+        firstDay.set('hour', 22) // Assuming reaching a hotel by night
         const lastDay = moment(stay.until)
-        lastDay.set('hour', 11)
+        lastDay.set('hour', 7) // Assuming staying in a hotel by early morning
         const numberOfDaysInBetween = Math.max(lastDay.diff(firstDay, 'days'), 0)
         const daysBetween = Array.from({length: numberOfDaysInBetween}, (v, i) => moment(firstDay).add(i + 1, 'days'))
         const dates = [firstDay, ...daysBetween, lastDay]
