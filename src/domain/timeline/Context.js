@@ -35,10 +35,9 @@ export function TimelineProvider({ children }) {
 
     usePersistedEffect(() => {
         setVisitedCountryCodes([
-            ...checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc),
-            ...stays.map(stay => stay.location.cc)
+            ...checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc.toLowerCase()),
+            ...stays.map(stay => stay.location.cc.toLowerCase())
         ].filter(onlyUnique))
-        console.log('createTimelineEvents', stays)
         const timelineEvents = createTimelineEvents({ checkins, stays }, { homes })
         const timelineGroups = createTimelineGroups(timelineEvents, { homes })
         setEvents(timelineEvents)

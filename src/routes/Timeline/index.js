@@ -20,6 +20,7 @@ import FlagButton from "./FlagButton"
 const AllFlagsContainer = styled('div')`
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     margin-bottom: 8px;
 `
 

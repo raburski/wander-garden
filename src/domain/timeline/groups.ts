@@ -404,7 +404,7 @@ function isGroupAtHomeCountry(group: Group, home?: Home): boolean {
 function cleanUngroupedEvents() {
     // Investigate why would there by any
     return {
-        pattern: [(e: Event) => e.type === EventType.Checkin || e.type === EventType.Calendar || e.type === EventType.Transport],
+        pattern: [(e: Event) => !e || e.type === EventType.Checkin || e.type === EventType.Calendar || e.type === EventType.Transport],
         result: () => [],
     }
 }
