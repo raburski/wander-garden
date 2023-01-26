@@ -1,5 +1,5 @@
-import { createContext, useState, useContext } from "react"
-import { zipsonTransforms, LocalStorageAdapter, useStatePersistedCallback, jsonTransforms } from 'storage'
+import { createContext, useState, useContext, useEffect } from "react"
+import { zipsonTransforms, LocalStorageAdapter, useStatePersistedCallback, usePersistedEffect, jsonTransforms } from 'storage'
 import { useCheckins } from "domain/swarm"
 import { useHomes } from 'domain/homes'
 import { createTimelineEvents } from "./events"
@@ -18,7 +18,7 @@ const initialLocalStorageGroupsValue = localStorageGroups.get()
 const initialLocalStorageVisitedValue = localStorageVisited.get()
 const initialLocalStorageTitlesValue = localStorageTitles.get()
 
-export function TimelineProvider(props) {
+export function TimelineProvider({ children }) {
     const [events, setEventsState] = useState(initialLocalStorageEventsValue)
     const [groups, setGroupsState] = useState(initialLocalStorageGroupsValue)
     const [visitedCountryCodes, setVisitedCountryCodesState] = useState(initialLocalStorageVisitedValue)
@@ -31,36 +31,29 @@ export function TimelineProvider(props) {
     const setVisitedCountryCodes = useStatePersistedCallback(visitedCountryCodes, setVisitedCountryCodesState, localStorageVisited.set.bind(localStorageVisited))
     const setTitles = useStatePersistedCallback(titles, setTitlesState, localStorageTitles.set.bind(localStorageTitles))
 
-    if (events.length === 0 && checkins.length > 0) {
+    usePersistedEffect(() => {
         setVisitedCountryCodes(checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc).filter(onlyUnique))
         const timelineEvents = createTimelineEvents(checkins, { homes })
         const timelineGroups = createTimelineGroups(timelineEvents, { homes })
         setEvents(timelineEvents)
         setGroups(timelineGroups)
-    }
-
-    // TODO: add caching etc
-    const refresh = () => {
-        setEventsState([])
-    }
+    }, [checkins.length, homes.length])
 
     const value = {
         events: [events, setEvents],
         groups: [groups, setGroups],
         visitedCountryCodes: [visitedCountryCodes, setVisitedCountryCodes],
         titles: [titles, setTitles],
-        refresh,
     }
-    return <TimelineContext.Provider value={value} {...props}/>
-}
-
-export function useRefreshTimeline() {
-    const context = useContext(TimelineContext)
-    return context.refresh
+    return (
+        <TimelineContext.Provider value={value}>
+            {children}
+        </TimelineContext.Provider>
+    )
 }
 
 function isDEV() {
-    return process.env.NODE_ENV == 'development'
+    return false//process.env.NODE_ENV == 'development'
 }
 
 export function useTimelineEventsProd() {

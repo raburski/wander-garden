@@ -1,38 +1,32 @@
-import { createContext, useState, useContext } from "react"
-import { jsonTransforms, LocalStorageAdapter, useStatePersistedCallback } from 'storage'
+import { createContext, useState, useContext, useMemo } from "react"
+import { jsonTransforms, LocalStorageAdapter, useStatePersistedCallback, usePersistedEffect } from 'storage'
 import { useCheckins } from "domain/swarm"
 import { getPotentialHomes } from "./functions"
 
 export const HomesContext = createContext({})
 
-const localStorageHomes = new LocalStorageAdapter('homes', null, jsonTransforms)
+const localStorageHomes = new LocalStorageAdapter('homes', '[]', jsonTransforms)
 const initialLocalStorageHomesValue = localStorageHomes.get()
 
-export function HomesProvider(props) {
+export function HomesProvider({ children }) {
     const [homes, setHomesState] = useState(initialLocalStorageHomesValue)
     const [checkins] = useCheckins()
 
     const setHomes = useStatePersistedCallback(homes, setHomesState, localStorageHomes.set.bind(localStorageHomes))
 
-    if (homes === null) {
+    usePersistedEffect(() => {
         setHomes(getPotentialHomes(checkins))
-    }
+    }, [checkins.length])
 
-    // TODO: add caching etc
-    const refresh = () => {
-        setHomesState(null)
-    }
 
-    const value = {
+    const value = useMemo(() => ({
         homes: [homes, setHomes],
-        refresh,
-    }
-    return <HomesContext.Provider value={value} {...props}/>
-}
-
-export function useRefreshHomes() {
-    const context = useContext(HomesContext)
-    return context.refresh
+    }), [homes.length])
+    return (
+        <HomesContext.Provider value={value}>
+            {children}
+        </HomesContext.Provider>
+    )
 }
 
 export function useHomes() {

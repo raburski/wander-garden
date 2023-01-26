@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from "react"
+import { createContext, useState, useContext, useMemo } from "react"
 import { useStays } from 'domain/stays'
 
 const CURRENT_VERSION = '1.0'
@@ -12,9 +12,9 @@ function sendExtensionMessage(msg) {
     }, '*')
 }
 
-export function ExtensionProvider(props) {
+export function ExtensionProvider({ children }) {
     const [version, setVersion] = useState()
-    const [stays, setStays] = useStays()
+    const [_, setStays] = useStays()
 
     window.addEventListener('message', function(event) {
         const message = event.data
@@ -31,11 +31,16 @@ export function ExtensionProvider(props) {
         }
     })
 
-    const value = {
+    const value = useMemo(() => ({
         isConnected: !!version,
         version,
-    }
-    return <ExtensionContext.Provider value={value} {...props}/>
+    }), [version])
+
+    return (
+        <ExtensionContext.Provider value={value}>
+            {children}
+        </ExtensionContext.Provider>
+    )
 }
 
 export function useIsConnected() {

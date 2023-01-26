@@ -1,5 +1,4 @@
-import { useIsAuthenticated, useCheckins, useToken } from '../domain/swarm'
-import { useLastUpdated } from '../domain/swarm'
+import { useIsAuthenticated, useCheckins, useToken, useLastUpdated } from '../domain/swarm'
 import { onlyUnique } from '../array'
 import { getCategory } from '../domain/swarm/categories'
 import { downloadString, uploadFile } from '../files'

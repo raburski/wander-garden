@@ -13,7 +13,7 @@
         },
         {
           "matches":[
-              "*://wander.garden/*",
+              "*://*.wander.garden/*",
               "*://127.0.0.1/*"
           ],
           "js":["js/consts.js", "js/garden.js"]
