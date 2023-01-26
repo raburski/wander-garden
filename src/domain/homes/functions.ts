@@ -5,6 +5,21 @@ import type { Location, Home } from 'domain/location'
 import type { Moment } from "moment"
 import type { Checkin } from "domain/swarm/types"
 
+const DEFAULT_HOME: Home = {
+    location: {
+        address: '',
+        city: 'unknown',
+        state: '',
+        country: '',
+        cc: '',
+        postalCode: '',
+        lat: 0,
+        lng: 0,
+    },
+    since: undefined,
+    until: undefined
+}
+
 export function ensureDateString(date: string | Moment, format?: string): string {
     if (typeof date === "string") {
         return date as string
@@ -27,7 +42,7 @@ export function createPotentialHomeWithCheckin(checkin: Checkin, since?: string 
 }
 
 export function getPotentialHomes(checkins: [Checkin?] = []): [Home?] {
-    if (checkins.length === 0) return []
+    if (checkins.length === 0) return [DEFAULT_HOME]
 
     let currentHomeCheckin: Checkin | undefined = undefined
     let currentHomeCheckinCity: string | undefined = undefined
@@ -114,6 +129,7 @@ export function getPotentialHomes(checkins: [Checkin?] = []): [Home?] {
             )!
         )
     }
-    return potentialHomes
+
+    return potentialHomes.length > 0 ? potentialHomes : [DEFAULT_HOME]
 }
 

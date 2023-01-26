@@ -24,12 +24,12 @@ function StayRow({ stay }) {
 
 function SwarmCheckinsList() {
     const [checkins] = useCheckins()
-    return checkins ? checkins.map(checkin => <CheckinRow checkin={checkin} key={checkin.id} />) : <NoneFound />
+    return checkins.length > 0 ? checkins.map(checkin => <CheckinRow checkin={checkin} key={checkin.id} />) : <NoneFound />
 }
 
 function BookingComList() {
     const [stays] = useStays()
-    return stays ? stays.map(stay => <StayRow stay={stay} key={stay.id} />) : <NoneFound />
+    return stays.length > 0 ? stays.map(stay => <StayRow stay={stay} key={stay.id} />) : <NoneFound />
 }
 
 export default function Data() {

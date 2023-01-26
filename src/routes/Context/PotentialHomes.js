@@ -34,11 +34,13 @@ const HomeDates = styled('div')`
     margin-right: 12px;
 `
 
+const DEFAULT_FLAG = '🏳️'
 function Home({ home }) {
     const locationParts = [home.location.state, home.location.country].filter(Boolean)
+    const flag = countryFlagEmoji.get(home.location.cc)
     return (
         <HomeContainer>
-            <HomeName>{countryFlagEmoji.get(home.location.cc).emoji}&nbsp;&nbsp;&nbsp;{home.location.city}</HomeName>
+            <HomeName>{flag ? flag.emoji : DEFAULT_FLAG}&nbsp;&nbsp;&nbsp;{home.location.city}</HomeName>
             <HomeState>{locationParts.join(', ')}</HomeState>
             <HomeDates>{home.since} {home.since ? '-' : 'until'} {home.until || 'now'}</HomeDates>
         </HomeContainer>
