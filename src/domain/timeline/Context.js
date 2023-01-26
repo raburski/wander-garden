@@ -1,7 +1,8 @@
-import { createContext, useState, useContext, useEffect } from "react"
+import { createContext, useState, useContext, useMemo } from "react"
 import { zipsonTransforms, LocalStorageAdapter, useStatePersistedCallback, usePersistedEffect, jsonTransforms } from 'storage'
 import { useCheckins } from "domain/swarm"
 import { useHomes } from 'domain/homes'
+import { useStays } from 'domain/stays'
 import { createTimelineEvents } from "./events"
 import { onlyUnique } from "array"
 import { onlyNonTransportation } from "domain/swarm/categories"
@@ -24,6 +25,7 @@ export function TimelineProvider({ children }) {
     const [visitedCountryCodes, setVisitedCountryCodesState] = useState(initialLocalStorageVisitedValue)
     const [titles, setTitlesState] = useState(initialLocalStorageTitlesValue)
     const [checkins] = useCheckins()
+    const [stays] = useStays()
     const [homes] = useHomes()
 
     const setEvents = useStatePersistedCallback(events, setEventsState, localStorageEvents.set.bind(localStorageEvents))
@@ -32,19 +34,24 @@ export function TimelineProvider({ children }) {
     const setTitles = useStatePersistedCallback(titles, setTitlesState, localStorageTitles.set.bind(localStorageTitles))
 
     usePersistedEffect(() => {
-        setVisitedCountryCodes(checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc).filter(onlyUnique))
-        const timelineEvents = createTimelineEvents(checkins, { homes })
+        setVisitedCountryCodes([
+            ...checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc),
+            ...stays.map(stay => stay.location.cc)
+        ].filter(onlyUnique))
+        console.log('createTimelineEvents', stays)
+        const timelineEvents = createTimelineEvents({ checkins, stays }, { homes })
         const timelineGroups = createTimelineGroups(timelineEvents, { homes })
         setEvents(timelineEvents)
         setGroups(timelineGroups)
-    }, [checkins.length, homes.length])
+    }, [checkins.length, homes.length, stays.length])
 
-    const value = {
+    const value = useMemo(() => ({
         events: [events, setEvents],
         groups: [groups, setGroups],
         visitedCountryCodes: [visitedCountryCodes, setVisitedCountryCodes],
         titles: [titles, setTitles],
-    }
+    }), [events.length, groups.length, visitedCountryCodes.length, titles.length])
+
     return (
         <TimelineContext.Provider value={value}>
             {children}
@@ -64,7 +71,8 @@ export function useTimelineEventsProd() {
 export function useTimelineEventsDev() {
     const [checkins] = useCheckins()
     const [homes] = useHomes()
-    return createTimelineEvents(checkins, { homes })
+    const [stays] = useStays()
+    return createTimelineEvents({ checkins, stays }, { homes })
 }
 
 export const useTimelineEvents = isDEV() ? useTimelineEventsDev : useTimelineEventsProd

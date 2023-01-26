@@ -184,7 +184,7 @@ function getDaysAndRangeForGroup(group) {
     // This only makes sense if single trip is in the group
     const until = moment(group.until)
     const since = moment(group.since)
-    const numberOfDays = until.diff(since, 'days')
+    const numberOfDays = until.diff(since, 'days') + 1
     const daysSuffix = numberOfDays === 1 ? 'day' : 'days'
     const days = `${numberOfDays} ${daysSuffix}`
     const season = seasonEmojiForDate(moment(group.since).add(numberOfDays/2, 'days'))
@@ -200,7 +200,7 @@ function TimelineGroupContainer({ group, onMoreClick, i }) {
     const locationTitle = titleFromLocationHighlights(group.highlights)
     const countryCodes = group.highlights.map(highlight => highlight.location.cc).filter(onlyUnique).reverse()
     const [days, range] = getDaysAndRangeForGroup(group)
-
+    
     return (
         <Fragment>
             <CountryBar

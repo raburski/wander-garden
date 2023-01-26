@@ -9,6 +9,7 @@ import type { Context } from './types'
 import type { Checkin } from "domain/swarm"
 import type { Location } from 'domain/location'
 import type { Moment, MomentInput } from "moment"
+import type { Stay } from 'domain/stays/types'
 import { getHomeForDate, isCheckinAtHome } from "./functions"
 import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'
 
@@ -123,7 +124,8 @@ class TimelineEventsFactory {
                 // TODO check wether city has airport nearby
                 if (distance >= FLIGHT_DISTANCE_GUESS) {
                     // TODO: extrapolate date
-                    this.push(createTransportEvent(TransportMode.Plane, getCheckinDate(current), getCheckinLocation(previous), getCheckinLocation(current), true))
+                    const flightDate = isCheckinAtHome(current, this.context.homes) ?  getCheckinDate(previous) : getCheckinDate(current)
+                    this.push(createTransportEvent(TransportMode.Plane, flightDate, getCheckinLocation(previous), getCheckinLocation(current), true))
                 } else {
                     this.push(createTransportEvent(TransportMode.Car, getCheckinDate(current), getCheckinLocation(previous), getCheckinLocation(current), true))
                 }
@@ -274,11 +276,41 @@ const createNewHomeCalendarEvents = (timelineContext: Context) => ({
         [currentEvent, context.event, previousEvent]
 })
 
-export function createTimelineEvents(checkins: Checkin[] = [], context: Context = {homes: []}) {
+interface TimelineData {
+    checkins: Checkin[],
+    stays: Stay[],
+}
+
+const staysConvertedIntoCheckins = (stays: Stay[]): Checkin[] => {
+    return stays.flatMap((stay: Stay): Checkin[] => {
+        const firstDay = moment(stay.since)
+        firstDay.set('hour', 13)
+        const lastDay = moment(stay.until)
+        lastDay.set('hour', 11)
+        const numberOfDaysInBetween = Math.max(lastDay.diff(firstDay, 'days'), 0)
+        const daysBetween = Array.from({length: numberOfDaysInBetween}, (v, i) => moment(firstDay).add(i + 1, 'days'))
+        const dates = [firstDay, ...daysBetween, lastDay]
+        return dates.map((date): Checkin => ({
+            id: `${stay.id}-${date.format('YYYY-MM-DD')}`,
+            createdAt: date.unix(),
+            venue: {
+                categories: [],
+                location: stay.location,
+            }
+        }))
+    })
+}
+
+export function createTimelineEvents({ checkins = [], stays = [] }: TimelineData, context: Context = { homes: [] }) {
+    const sortedCheckins = [
+        ...checkins,
+        ...staysConvertedIntoCheckins(stays),
+    ]
+    sortedCheckins.sort((a, b) => b.createdAt - a.createdAt)
     const enhancedCheckins = arrayQueryReplace([
         createHomeCheckinWhenLongInactivity(context),
         createHomeCheckinAfterFlyingBackHome(context),
-    ], checkins)
+    ], sortedCheckins)
     const checkinsStack = new Stack<Checkin>(enhancedCheckins)
     const timelineEventsFactory = new TimelineEventsFactory(checkinsStack, context)
     timelineEventsFactory.process()

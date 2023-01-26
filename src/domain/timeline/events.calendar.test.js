@@ -14,7 +14,7 @@ describe('timeline @ calendar', function () {
         const fitnessBeforeNYE = { ...fitness_wroclaw, createdAt: fitnessBeforeMoment.unix() }
         const fitnessAfterNYE = { ...fitness_wroclaw, createdAt: fitnessAfterMoment.unix() }
         const checkins = [fitnessAfterNYE, fitnessBeforeNYE]
-        const events = createTimelineEvents(checkins)
+        const events = createTimelineEvents({ checkins })
         const expectedEvents = [
             createCheckinEvent(fitnessAfterNYE),
             createNewYearCalendarEvent(NYEmoment),
@@ -43,7 +43,7 @@ describe('timeline @ calendar', function () {
         const cyprusAfterMove = { ...fitness_wroclaw, createdAt: eventAfterMoment.unix() }
         const checkins = [cyprusAfterMove, polandBeforeMove]
 
-        const events = createTimelineEvents(checkins, CONTEXT)
+        const events = createTimelineEvents({ checkins }, CONTEXT)
         const expectedEvents = [
             createCheckinEvent(cyprusAfterMove),
             createNewHomeCalendarEvent(homeChangeDate, POLAND_HOME, CYPRUS_HOME),

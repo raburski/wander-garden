@@ -25,7 +25,7 @@ describe('timeline @ home fill', function () {
         const fitnessAfterHome = { ...fitness_wroclaw, createdAt: fitnessAfterMoment.unix() }
 
         const checkins = [fitnessAfterHome, fitnessBeforeHome]
-        const events = createTimelineEvents(checkins, CONTEXT)
+        const events = createTimelineEvents({ checkins }, CONTEXT)
         const expectedEvents = [
             createCheckinEvent(fitnessAfterHome),
             createCheckinEvent(createHomeCheckin(fitnessBeforeMoment.format(), fitnessAfterMoment.format(), CONTEXT)),
@@ -49,7 +49,7 @@ describe('timeline @ home fill', function () {
         ]
         const expectedHomeCheckin = createHomeCheckin(getCheckinDate(homeCountryCheckin).format(), getCheckinDate(otherHomeCountryTripCheckin).format(), CONTEXT)
 
-        const events = createTimelineEvents(checkins, CONTEXT)
+        const events = createTimelineEvents({ checkins }, CONTEXT)
         const expectedEvents = [
             createCheckinEvent(otherHomeCountryTripCheckin),
             createTransportEvent(TransportMode.Car, getCheckinDate(otherHomeCountryTripCheckin), getCheckinLocation(expectedHomeCheckin), getCheckinLocation(otherHomeCountryTripCheckin), true),
