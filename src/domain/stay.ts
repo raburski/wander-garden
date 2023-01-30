@@ -7,6 +7,7 @@ export interface Accomodation {
 
 export interface Stay {
     id: string
+    url: string
     since: string
     until: string
     location: Location

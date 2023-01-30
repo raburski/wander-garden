@@ -4,6 +4,7 @@ import countryFlagEmoji from "country-flag-emoji"
 import moment from "moment"
 import { styled } from 'goober'
 import { onlyUnique } from "array"
+import { getDaysAndRangeText } from 'date'
 import CountryBar from "./CountryBar"
 import Page from "components/Page"
 import colors from "colors"
@@ -173,26 +174,6 @@ function TimelineGroupTransport({ group, i }) {
     return null // TODO
 }
 
-const MONTH_TO_SEASON = ['❄️', '❄️', '🌸', '🌸', '🌸', '☀️', '☀️', '☀️', '🍁', '🍁', '🍁', '❄️']
-function seasonEmojiForDate(date) {
-    const month = date.get('month') // index from 0
-    return MONTH_TO_SEASON[month]
-
-}
-
-function getDaysAndRangeForGroup(group) {
-    if (group.groups.length > 1) { return [] }
-    // This only makes sense if single trip is in the group
-    const until = moment(group.until)
-    const since = moment(group.since)
-    const numberOfDays = until.diff(since, 'days') + 1
-    const daysSuffix = numberOfDays === 1 ? 'day' : 'days'
-    const days = `${numberOfDays} ${daysSuffix}`
-    const season = seasonEmojiForDate(moment(group.since).add(numberOfDays/2, 'days'))
-    const range = `${since.format('DD.MM')} - ${until.format('DD.MM')} ${season}`
-    return [days, range]
-}
-
 function TimelineGroupContainer({ group, onMoreClick, i }) {
     // TODO: add chevron and animate shit out of this
     const [expanded, setExpanded] = useState(false)
@@ -200,7 +181,7 @@ function TimelineGroupContainer({ group, onMoreClick, i }) {
     const title = useTitle(tripGroup && tripGroup.id)
     const locationTitle = titleFromLocationHighlights(group.highlights)
     const countryCodes = group.highlights.map(highlight => highlight.location.cc).filter(onlyUnique).reverse()
-    const [days, range] = getDaysAndRangeForGroup(group)
+    const [days, range] = group.groups.length === 1 ? getDaysAndRangeText(group.since, group.until) : undefined
     
     return (
         <Fragment>

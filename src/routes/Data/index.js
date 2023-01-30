@@ -1,7 +1,10 @@
 import { useState } from "react"
+import { styled } from 'goober'
 import { SiSwarm } from 'react-icons/si'
 import { TbBrandBooking, TbBrandAirbnb } from 'react-icons/tb'
+import { FiExternalLink, FiMapPin } from 'react-icons/fi'
 import moment from 'moment'
+import { getDaysAndRangeText } from 'date'
 import Page from 'components/Page'
 import Panel from '../../components/Panel'
 import { formattedLocation } from 'domain/location'
@@ -11,16 +14,40 @@ import { useAirbnbStays } from 'domain/airbnb'
 import Segment from 'components/Segment'
 import NoneFound from 'components/NoneFound'
 import InfoRow from 'components/InfoRow'
+import PinButton from "components/PinButton"
+import Separator from 'components/Separator'
 
 function CheckinRow({ checkin }) {
     const subtitle = `in ${formattedLocation(checkin.venue.location)}`
     return <InfoRow icon={SiSwarm} title={checkin.venue.name} subtitle={subtitle} right={moment(checkin.date).format('DD/MM/YYYY')}/>
 }
 
+const StayActionsContainer = styled('div')`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+`
+
+function StayActions({ stay }) {
+    const [days, range] = getDaysAndRangeText(stay.since, stay.until)
+    const year = moment(stay.since).format('YYYY')
+    const onExternalClick = () => window.open(stay.url)
+    const onMapClick = () => window.open(`https://maps.google.com/?q=${stay.location.lat},${stay.location.lng}`)
+
+    return (
+        <StayActionsContainer>
+            {range} {year}
+            <Separator />
+            <PinButton icon={FiMapPin} onClick={onMapClick}/>
+            <Separator />
+            <PinButton icon={FiExternalLink} onClick={onExternalClick}/>
+        </StayActionsContainer>
+    )
+}
+
 function StayRow({ stay, icon }) {
     const subtitle = `in ${formattedLocation(stay.location)}`
-    const dateRange = `${moment(stay.since).format('DD/MM/YYYY')} - ${moment(stay.until).format('DD/MM/YYYY')}`
-    return <InfoRow icon={icon} title={stay.accomodation.name} subtitle={subtitle} right={dateRange}/>
+    return <InfoRow icon={icon} title={stay.accomodation.name} subtitle={subtitle} right={<StayActions stay={stay}/>}/>
 }
 
 function SwarmCheckinsList() {

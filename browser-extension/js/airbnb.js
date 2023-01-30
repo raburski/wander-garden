@@ -1,13 +1,5 @@
 globalThis
 
-function ensureFullURL(url) {
-    if (url.startsWith('/')) {
-        return `${window.location.protocol}//${window.location.hostname}${url}`
-    } else {
-        return url
-    }
-}
-
 init(ORIGIN.AIRBNB, function(captureStay, captureFinished) {
 
     showLoadingIndicator()
@@ -47,6 +39,7 @@ init(ORIGIN.AIRBNB, function(captureStay, captureFinished) {
             const cc = metadata.country
             const stay = {
                 id,
+                url: window.location.href,
                 since: `${metadata.check_in_date}T00:00:00+00:00`,
                 until: `${metadata.check_out_date}T00:00:00+00:00`,
                 location: {

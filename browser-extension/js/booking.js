@@ -8,6 +8,7 @@ function stayFromReservation(reservation) {
     const data = reservation.reservation_data
     return {
         id: data.public_id,
+        url: ensureFullURL(data.booking_url),
         since: data.reservation_start,
         until: data.reservation_end,
         location: {
