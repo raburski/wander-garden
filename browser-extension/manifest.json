@@ -5,17 +5,17 @@
     "description": "",
     "content_scripts":[
         {
-            "matches":[
-                "*://*.booking.com/*"
-            ],
-            "run_at": "document_start",
-            "js":["js/consts.js", "js/ui.js", "js/booking.js"]
+          "matches":[
+              "*://*.booking.com/*"
+          ],
+          "run_at": "document_start",
+          "js":["js/consts.js", "js/ui.js", "js/capture.js", "js/booking.js"]
         },
         {
           "matches":[
               "*://*.airbnb.com/*"
           ],
-          "js":["js/consts.js", "js/ui.js", "js/country.js", "js/airbnb.js"]
+          "js":["js/consts.js", "js/ui.js", "js/capture.js", "js/country.js", "js/airbnb.js"]
       },
         {
           "matches":[

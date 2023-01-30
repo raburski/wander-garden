@@ -1,27 +1,8 @@
-const ORIGIN = globalThis.ORIGIN
-const browser = chrome
+globalThis
 
 let LOADING_TRIPS = true
 let CAPTURING = false
 let ALL_STAYS = []
-function onExtensionMessage(message) {
-    if (message.source !== ORIGIN.EXTENSION) {
-        return
-    }
-    
-    if (message.type === 'init' && message.start_capture) {
-        CAPTURING = true
-        if (!LOADING_TRIPS) {
-            findViewMoreBookings()
-        }
-    }
-}
-
-function onCaptureFinished() {
-    browser.runtime.sendMessage({ source: ORIGIN.BOOKING, target: ORIGIN.EXTENSION, type: 'capture_finished', stays: ALL_STAYS })
-}
-
-browser.runtime.onMessage.addListener(onExtensionMessage)
 
 function stayFromReservation(reservation) {
     const data = reservation.reservation_data
@@ -63,19 +44,6 @@ function staysFromTrips(tripsResponse) {
     return []
 }
 
-window.addEventListener('message', function(event) {
-    if (event.data && event.data.target === ORIGIN.BOOKING) {
-        const stays = staysFromTrips(event.data.data)
-        ALL_STAYS = [...ALL_STAYS, ...stays]
-        if (event.data.type === 'trip_captured') {
-            LOADING_TRIPS = false
-            if (CAPTURING) {
-                findViewMoreBookings()
-            }
-        }
-    }
-})
-
 function injectXMLScript() {
     const injectedScript ="(" +
     function() {
@@ -110,40 +78,55 @@ function injectXMLScript() {
     script.remove();
 }
 
-function findViewMoreBookings() {
-    setTimeout(function() {
-        showLoadingIndicator()
-        if (LOADING_TRIPS) {
-            findViewMoreBookings()
-        } else {
-            const button = document.querySelector(".mtr-timeline > span > button")
-            if (button) {
-                button.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
-
-                setTimeout(function() {
-                    const loadingButton = document.querySelector(".mtr-timeline > span > button")
-                    if (loadingButton) {
-                        findViewMoreBookings()
-                        console.log('IS LOADING BUTTON')
-                    } else {
-                        console.log('FETCHING MORE TRIPS')
-                        LOADING_TRIPS = true
-                    }
-                    
-                }, 100)
-
-            } else {
-                console.log('ENDED!')
-                onCaptureFinished()
-            }
-        }
-    }, 200)
-}
-
 injectXMLScript()
 
-browser.runtime.sendMessage({
-    source: ORIGIN.BOOKING,
-    target: ORIGIN.EXTENSION, 
-    type: 'init',
+init(ORIGIN.BOOKING, function(captureStay, captureFinished) {
+
+    function findViewMoreBookings() {
+        setTimeout(function() {
+            showLoadingIndicator()
+            if (LOADING_TRIPS) {
+                findViewMoreBookings()
+            } else {
+                const button = document.querySelector(".mtr-timeline > span > button")
+                if (button) {
+                    button.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
+    
+                    setTimeout(function() {
+                        const loadingButton = document.querySelector(".mtr-timeline > span > button")
+                        if (loadingButton) {
+                            findViewMoreBookings()
+                            console.log('IS LOADING BUTTON')
+                        } else {
+                            console.log('FETCHING MORE TRIPS')
+                            LOADING_TRIPS = true
+                        }
+                    }, 100)
+    
+                } else {
+                    console.log('ENDED!')
+                    captureFinished(ALL_STAYS)
+                }
+            }
+        }, 200)
+    }
+    
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.target === ORIGIN.BOOKING) {
+            const stays = staysFromTrips(event.data.data)
+            ALL_STAYS = [...ALL_STAYS, ...stays]
+            console.log('WINDOW DATA')
+            if (event.data.type === 'trip_captured') {
+                LOADING_TRIPS = false
+                if (CAPTURING) {
+                    findViewMoreBookings()
+                }
+            }
+        }
+    })
+
+    CAPTURING = true
+    if (!LOADING_TRIPS) {
+        setTimeout(findViewMoreBookings, 300)
+    }
 })

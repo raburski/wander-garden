@@ -1,6 +1,4 @@
-const ORIGIN = globalThis.ORIGIN
-const countryCodeToName = globalThis.countryCodeToName
-const browser = chrome
+globalThis
 
 function ensureFullURL(url) {
     if (url.startsWith('/')) {
@@ -10,7 +8,8 @@ function ensureFullURL(url) {
     }
 }
 
-function startCapture() {
+init(ORIGIN.AIRBNB, function(captureStay, captureFinished) {
+
     showLoadingIndicator()
     const hash = !!window.location.hash ? window.location.hash : '#root&0'
     const parts = `${hash}`.substring(1).split('&')
@@ -20,7 +19,7 @@ function startCapture() {
         const index = parseInt(parts[1])
         const allCards = [...document.querySelectorAll("div[data-section-id='PAST_TRIPS'] div[data-testid='reservation-card'] > a")]
         if (index > allCards.length - 1) {
-            onCaptureFinished()
+            captureFinished()
         } else {
             const urlBase = window.location.href.split('#')[0]
             const nextURL = `${urlBase}#root&${index+1}`
@@ -65,33 +64,11 @@ function startCapture() {
                     url: ensureFullURL(accomodationURL),
                 }
             }
-            browser.runtime.sendMessage({ source: ORIGIN.AIRBNB, target: ORIGIN.EXTENSION, type: 'capture_stay', stay })
+            captureStay(stay)
             setTimeout(() => window.location = nextURL, 200)
         } catch (e) {
             console.log('airbnb capture failed', e)
             alert('Airbnb capture failed :(')
         }
     }
-}
-
-function onExtensionMessage(message) {
-    if (message.source !== ORIGIN.EXTENSION) {
-        return
-    }
-    
-    if (message.type === 'init' && message.start_capture) {
-        setTimeout(startCapture, 300)
-    }
-}
-
-function onCaptureFinished() {
-    browser.runtime.sendMessage({ source: ORIGIN.AIRBNB, target: ORIGIN.EXTENSION, type: 'capture_finished' })
-}
-
-browser.runtime.onMessage.addListener(onExtensionMessage)
-
-browser.runtime.sendMessage({
-    source: ORIGIN.AIRBNB,
-    target: ORIGIN.EXTENSION, 
-    type: 'init',
 })
