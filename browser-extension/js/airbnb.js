@@ -43,12 +43,9 @@ init(ORIGIN.AIRBNB, function(captureStay, captureFinished) {
                 since: `${metadata.check_in_date}T00:00:00+00:00`,
                 until: `${metadata.check_out_date}T00:00:00+00:00`,
                 location: {
-                    address: '',
                     city,
-                    state: '',
                     country: countryCodeToName[cc.toUpperCase()],
                     cc: cc.toLowerCase(),
-                    postalCode: '',
                     lat: metadata.lat,
                     lng: metadata.lng,
                 },
