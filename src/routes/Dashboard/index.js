@@ -42,7 +42,7 @@ function Countries() {
     }
     const header = `You have visited ${countryCodes.length} countries`
     return (
-        <Panel header={header}>
+        <Panel header={header} margin>
             {countryCodes.length == 0 ? <NoData /> : countryCodes.map(cc => <CountryRow code={cc} key={cc} to={`/timeline?cc=${cc.toLowerCase()}`}/>)}
         </Panel>
     )
@@ -71,7 +71,7 @@ function Current() {
     
     const header = `Currently staying in ${currentCountry.name}`
     return (
-        <Panel header={header}>
+        <Panel header={header} margin>
             <CurrentContent><BigFlag>{currentCountry.emoji}</BigFlag> {formattedLocation(latestCheckin.venue.location)}</CurrentContent>
         </Panel>
     )
@@ -93,8 +93,8 @@ function AuthenticatedDashboard() {
 function DefaultDashboard() {
     return (
         <PanelsContainer>
-            <WhatIsWanderGarden />
-            <Swarm />
+            <WhatIsWanderGarden margin/>
+            <Swarm margin/>
         </PanelsContainer>
     )
 }

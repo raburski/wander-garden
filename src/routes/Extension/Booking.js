@@ -16,7 +16,7 @@ const COPY = `Extension will open new browser tab. It will fetch all your trips 
 export default function Booking() {
     const captureBooking = useCaptureBooking()
     return (
-        <InfoPanel header="Booking.com" spacing image={<Logo src="/logo/bookingcom.svg"/>} containerStyle={{whiteSpace: 'pre-wrap'}}>
+        <InfoPanel title="Booking.com" spacing image={<Logo src="/logo/bookingcom.svg"/>} containerStyle={{whiteSpace: 'pre-wrap'}}>
             {COPY}
             <Button icon={FiExternalLink} onClick={captureBooking}>Open and capture booking.com</Button>
         </InfoPanel>

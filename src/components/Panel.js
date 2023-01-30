@@ -7,9 +7,7 @@ const Container = styled('div')`
     flex-direction: column;
     padding-bottom: 12px;
     padding-left: 0px;
-    padding-right: 14px;
     margin-bottom: 12px;
-    margin-right: 22px;
     min-width: 400px;
 `
 const Content = styled('div')`
@@ -32,10 +30,11 @@ const Header = styled('div')`
     padding-left: 12px;
 `
 
-export default function Panel({ header, children, spacing, contentStyle = {}, ...props }) {
+export default function Panel({ style, header, children, spacing, margin, contentStyle = {}, ...props }) {
     const _contentStyle = {...contentStyle, ...(spacing ? { padding: 14 } : {}) }
+    const _containerStyle = {...style, ...(margin ? { marginRight: 22, paddingRight: 14 } : {})}
     return (
-        <Container {...props}>
+        <Container style={_containerStyle} {...props}>
             {header ? <Header>{header}</Header> : null}
             <Content style={_contentStyle}>
                 {children}

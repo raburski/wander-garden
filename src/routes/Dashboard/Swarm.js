@@ -12,6 +12,7 @@ function SwarmAuthenticatePanel() {
         <InfoPanel 
             header="Swarm"
             spacing
+            margin
             title="Connect your account"
             image={<SquareImage src="/3d/beegarden1.png"/>}
             containerStyle={{alignItems: 'center'}}
@@ -26,6 +27,7 @@ function SwarmUpdateRequiredPanel() {
         <InfoPanel 
             header="Swarm"
             spacing
+            margin
             title="Your data may be outdated..."
             image={<SquareImage src="/3d/beegarden1.png"/>}
         >
@@ -38,7 +40,7 @@ function SwarmDefaultPanel({ lastUpdated }) {
     const daysAgo = lastUpdated.diff(moment(), 'days')
     const text = daysAgo < 2 ? 'Recently updated...' : `Last updated ${daysAgo} days ago...`
 
-    return <Panel header="Swarm"><EmojiRow emoji="✅" value={text} to="swarm"/></Panel>
+    return <Panel header="Swarm" margin><EmojiRow emoji="✅" value={text} to="swarm"/></Panel>
 }
 
 export default function Swarm() {

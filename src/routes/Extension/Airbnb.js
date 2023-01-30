@@ -16,7 +16,7 @@ const COPY = `Extension will open new browser tab. It will fetch all your trips 
 export default function Airbnb() {
     const captureAirbnb = useCaptureAirbnb()
     return (
-        <InfoPanel header="Airbnb" spacing image={<Logo src="/logo/airbnb.svg"/>} containerStyle={{whiteSpace: 'pre-wrap'}}>
+        <InfoPanel title="Airbnb" spacing image={<Logo src="/logo/airbnb.svg"/>} containerStyle={{whiteSpace: 'pre-wrap'}}>
             {COPY}
             <Button icon={FiExternalLink} onClick={captureAirbnb}>Open and capture Airbnb</Button>
         </InfoPanel>
