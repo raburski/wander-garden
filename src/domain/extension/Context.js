@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useMemo } from "react"
-import { useStays } from 'domain/stays'
+import { useBookingStays } from 'domain/bookingcom'
+import { useAirbnbStays } from 'domain/airbnb'
 
 const CURRENT_VERSION = '1.0'
 
@@ -14,7 +15,8 @@ function sendExtensionMessage(msg) {
 
 export function ExtensionProvider({ children }) {
     const [version, setVersion] = useState()
-    const [_, setStays] = useStays()
+    const [_, setBookingStays] = useBookingStays()
+    const [__, setAirbnbStays] = useAirbnbStays()
 
     window.addEventListener('message', function(event) {
         const message = event.data
@@ -25,7 +27,9 @@ export function ExtensionProvider({ children }) {
             }
             if (message.type === 'capture_finished') {
                 if (message.subject === 'booking.com_extension') {
-                    setStays(message.stays)
+                    setBookingStays(message.stays)
+                } else if (message.subject === 'airbnb_extension') {
+                    setAirbnbStays(message.stays)
                 }
             }
         }
@@ -53,8 +57,14 @@ export function useIsMatchingVersion() {
     return context.version === CURRENT_VERSION
 }
 
-export function useScrapeBooking() {
-    return function scrapeBooking() {
+export function useCaptureBooking() {
+    return function captureBooking() {
         sendExtensionMessage({ type: 'start_capture', subject: 'booking.com_extension', target: 'wander_garden_extension' })
+    }
+}
+
+export function useCaptureAirbnb() {
+    return function captureAirbnb() {
+        sendExtensionMessage({ type: 'start_capture', subject: 'airbnb_extension', target: 'wander_garden_extension' })
     }
 }

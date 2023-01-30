@@ -2,7 +2,8 @@ const ORIGIN = globalThis.ORIGIN
 
 const browser = chrome
 const STORE = {
-    captureTabID: {}
+    captureTabID: {},
+    capturedStays: {},
 }
 
 function sendMessage(message) {
@@ -13,21 +14,14 @@ function sendMessage(message) {
     } else {
         console.log('Tab not found for', message.target)
     }
-
 }
 
-function startCapture(message) {
-    switch (message.subject) {
-        case ORIGIN.BOOKING:
-            const url = 'https://secure.booking.com/myreservations.en-gb.html'
-            browser.tabs.create({ url }, function(newTab) {
-                STORE.captureTabID[message.subject] = newTab.id
-            })
-            break
-    }
+const ORIGIN_URL = {
+    [ORIGIN.BOOKING]: 'https://secure.booking.com/myreservations.en-gb.html',
+    [ORIGIN.AIRBNB]: 'https://www.airbnb.com/trips/v1',
 }
 
-function handleWanderGardenMessage(message, sender) {
+function handleGardenMessage(message, sender) {
     switch (message.type) {
         case 'init':
             STORE.captureTabID[ORIGIN.GARDEN] = sender.tab.id
@@ -37,48 +31,52 @@ function handleWanderGardenMessage(message, sender) {
                 type: 'init',
                 version: '1.0',
             })
+            break
         case 'start_capture':
-            startCapture(message)
+            const url = ORIGIN_URL[message.subject]
+            STORE.capturedStays[message.subject] = []
+            browser.tabs.create({ url }, function(newTab) {
+                STORE.captureTabID[message.subject] = newTab.id
+            })
             break
     }
 }
 
-function handleBookingComMessage(message) {
+function handleExtensionMessage(message) {
     switch (message.type) {
         case 'init':
             sendMessage({
                 source: ORIGIN.EXTENSION,
-                target: ORIGIN.BOOKING, 
+                target: message.source, 
                 type: 'init',
-                start_capture: !!STORE.captureTabID[ORIGIN.BOOKING]
+                start_capture: !!STORE.captureTabID[message.source]
             })
             break
+        case 'capture_stay':
+            STORE.capturedStays[message.source].push(message.stay)
+            break
         case 'capture_finished':
-            browser.tabs.remove(STORE.captureTabID[ORIGIN.BOOKING])
+            browser.tabs.remove(STORE.captureTabID[message.source])
             browser.tabs.update(STORE.captureTabID[ORIGIN.GARDEN], { active: true })
-            STORE.captureTabID[ORIGIN.BOOKING] = undefined
+            STORE.captureTabID[message.source] = undefined
+            const stays = !message.stays ? STORE.capturedStays[message.source] : message.stays
             sendMessage({
                 source: ORIGIN.EXTENSION,
                 target: ORIGIN.GARDEN,
-                subject: ORIGIN.BOOKING,
+                subject: message.source,
                 type: 'capture_finished',
-                stays: message.stays,
+                stays,
             })
+            break
     }
 }
 
 function onMessage(message, sender) {
-    console.log('RECEIVED:', message)
-    if (message.data) {
-        console.log(JSON.parse(message.data))
-    }
-    switch (message.source) {
-        case ORIGIN.GARDEN:
-            handleWanderGardenMessage(message, sender)
-            break
-        case ORIGIN.BOOKING:
-            handleBookingComMessage(message, sender)
-            break
+    console.log('RECV: ', message)
+    if (message.source === ORIGIN.GARDEN) {
+        handleGardenMessage(message, sender)
+    } else {
+        handleExtensionMessage(message, sender)
     }
 }
 

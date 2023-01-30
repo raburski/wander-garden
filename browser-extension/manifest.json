@@ -13,6 +13,12 @@
         },
         {
           "matches":[
+              "*://*.airbnb.com/*"
+          ],
+          "js":["js/consts.js", "js/country.js", "js/airbnb.js"]
+      },
+        {
+          "matches":[
               "*://*.wander.garden/*",
               "*://127.0.0.1/*"
           ],

@@ -9,7 +9,7 @@ import type { Context } from './types'
 import type { Checkin } from "domain/swarm"
 import type { Location } from 'domain/location'
 import type { Moment, MomentInput } from "moment"
-import type { Stay } from 'domain/stays/types'
+import type { Stay } from 'domain/stay'
 import { getHomeForDate, isCheckinAtHome } from "./functions"
 import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'
 

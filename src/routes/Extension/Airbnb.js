@@ -2,7 +2,7 @@ import { styled } from 'goober'
 import InfoPanel from "components/InfoPanel"
 import Button from '../../components/Button'
 import { FiExternalLink } from 'react-icons/fi'
-import { useCaptureBooking } from 'domain/extension'
+import { useCaptureAirbnb } from 'domain/extension'
 
 const Logo = styled('img')`
     width: 42px;
@@ -13,12 +13,12 @@ const COPY = `Extension will open new browser tab. It will fetch all your trips 
 
 `
 
-export default function Booking() {
-    const captureBooking = useCaptureBooking()
+export default function Airbnb() {
+    const captureAirbnb = useCaptureAirbnb()
     return (
-        <InfoPanel header="Booking.com" spacing image={<Logo src="/logo/bookingcom.svg"/>} containerStyle={{whiteSpace: 'pre-wrap'}}>
+        <InfoPanel header="Airbnb" spacing image={<Logo src="/logo/airbnb.svg"/>} containerStyle={{whiteSpace: 'pre-wrap'}}>
             {COPY}
-            <Button icon={FiExternalLink} onClick={captureBooking}>Open and capture booking.com</Button>
+            <Button icon={FiExternalLink} onClick={captureAirbnb}>Open and capture Airbnb</Button>
         </InfoPanel>
     )
 }

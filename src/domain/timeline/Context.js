@@ -2,7 +2,8 @@ import { createContext, useState, useContext, useMemo } from "react"
 import { zipsonTransforms, LocalStorageAdapter, useStatePersistedCallback, usePersistedEffect, jsonTransforms } from 'storage'
 import { useCheckins } from "domain/swarm"
 import { useHomes } from 'domain/homes'
-import { useStays } from 'domain/stays'
+import { useBookingStays } from 'domain/bookingcom'
+import { useAirbnbStays } from 'domain/airbnb'
 import { createTimelineEvents } from "./events"
 import { onlyUnique } from "array"
 import { onlyNonTransportation } from "domain/swarm/categories"
@@ -25,7 +26,8 @@ export function TimelineProvider({ children }) {
     const [visitedCountryCodes, setVisitedCountryCodesState] = useState(initialLocalStorageVisitedValue)
     const [titles, setTitlesState] = useState(initialLocalStorageTitlesValue)
     const [checkins] = useCheckins()
-    const [stays] = useStays()
+    const [bookingStays] = useBookingStays()
+    const [airbnbStays] = useAirbnbStays()
     const [homes] = useHomes()
 
     const setEvents = useStatePersistedCallback(events, setEventsState, localStorageEvents.set.bind(localStorageEvents))
@@ -36,13 +38,14 @@ export function TimelineProvider({ children }) {
     usePersistedEffect(() => {
         setVisitedCountryCodes([
             ...checkins.filter(onlyNonTransportation).map(checkin => checkin?.venue?.location?.cc.toLowerCase()),
-            ...stays.map(stay => stay.location.cc.toLowerCase())
+            ...bookingStays.map(stay => stay.location.cc.toLowerCase()),
+            ...airbnbStays.map(stay => stay.location.cc.toLowerCase())
         ].filter(onlyUnique))
-        const timelineEvents = createTimelineEvents({ checkins, stays }, { homes })
+        const timelineEvents = createTimelineEvents({ checkins, stays: [...bookingStays, ...airbnbStays] }, { homes })
         const timelineGroups = createTimelineGroups(timelineEvents, { homes })
         setEvents(timelineEvents)
         setGroups(timelineGroups)
-    }, [checkins.length, homes.length, stays.length])
+    }, [checkins.length, homes.length, bookingStays.length, airbnbStays.length])
 
     const value = useMemo(() => ({
         events: [events, setEvents],
@@ -70,8 +73,9 @@ export function useTimelineEventsProd() {
 export function useTimelineEventsDev() {
     const [checkins] = useCheckins()
     const [homes] = useHomes()
-    const [stays] = useStays()
-    return createTimelineEvents({ checkins, stays }, { homes })
+    const [bookingStays] = useBookingStays()
+    const [airbnbStays] = useAirbnbStays()
+    return createTimelineEvents({ checkins, stays: [...bookingStays, ...airbnbStays] }, { homes })
 }
 
 export const useTimelineEvents = isDEV() ? useTimelineEventsDev : useTimelineEventsProd

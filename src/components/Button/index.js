@@ -31,6 +31,9 @@ const EnabledButton = styled('button')`
     &:hover {
         background-color: ${colors.neutral.highlight};
     }
+    &:active {
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) inset;
+    }
 `
 
 const DisabledButton = styled('button')`

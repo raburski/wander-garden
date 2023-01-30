@@ -10,7 +10,8 @@ import { SwarmProvider } from 'domain/swarm'
 import { HomesProvider } from "domain/homes"
 import { TimelineProvider } from "domain/timeline"
 import { ExtensionProvider } from "domain/extension"
-import { StaysProvider } from 'domain/stays'
+import { BookingStaysProvider } from 'domain/bookingcom'
+import { AirbnbStaysProvider } from 'domain/airbnb'
 import { SettingsProvider } from './settings'
 import mapboxgl from 'mapbox-gl'
  
@@ -42,25 +43,27 @@ const RoutesContainer = styled('div')`
 function App() {
   return (
     <SettingsProvider>
-      <StaysProvider>
-        <ExtensionProvider>
-          <SwarmProvider>
-            <HomesProvider>
-              <TimelineProvider>
-                <AppContainer>
-                  <Router>
-                    <SideBar />
-                    <RoutesContainer>
-                      <Routes />
-                    </RoutesContainer>
-                  </Router>
-                  <Toaster />
-                </AppContainer>
-              </TimelineProvider>
-            </HomesProvider>
-          </SwarmProvider>
-        </ExtensionProvider>
-      </StaysProvider>
+      <BookingStaysProvider>
+        <AirbnbStaysProvider>
+          <ExtensionProvider>
+            <SwarmProvider>
+              <HomesProvider>
+                <TimelineProvider>
+                  <AppContainer>
+                    <Router>
+                      <SideBar />
+                      <RoutesContainer>
+                        <Routes />
+                      </RoutesContainer>
+                    </Router>
+                    <Toaster />
+                  </AppContainer>
+                </TimelineProvider>
+              </HomesProvider>
+            </SwarmProvider>
+          </ExtensionProvider>
+        </AirbnbStaysProvider>
+      </BookingStaysProvider>
     </SettingsProvider>
   );
 }

@@ -4,6 +4,7 @@ import SquareImage from 'components/SquareImage'
 import { useIsConnected, useIsMatchingVersion } from 'domain/extension'
 import OnlineDot from './OnlineDot'
 import Booking from './Booking'
+import Airbnb from './Airbnb'
 import ExtensionVersionNotMatching from './VersionMismatch'
 import WebStoreButton from "./WebStoreButton"
 
@@ -34,6 +35,7 @@ function ExtensionConnected() {
             <ExtensionStatus />
             {isMatchingVersion ? null : <ExtensionVersionNotMatching />}
             {isMatchingVersion ? <Booking /> : null}
+            {isMatchingVersion ? <Airbnb /> : null}
         </>
     )
 }

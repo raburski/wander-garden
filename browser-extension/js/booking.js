@@ -36,7 +36,7 @@ function stayFromReservation(reservation) {
             lat: parseFloat(data.hotel.location.latitude),
             lng: parseFloat(data.hotel.location.longitude),
         },
-        hotel: {
+        accomodation: {
             name: data.hotel.name,
             url: data.hotel.url,
         }
