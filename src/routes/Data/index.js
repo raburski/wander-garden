@@ -18,6 +18,8 @@ import InfoRow from 'components/InfoRow'
 import PinButton from "components/PinButton"
 import Button from "components/Button"
 import Separator from 'components/HalfSeparator'
+import useDebouncedInput from 'hooks/useDebouncedInput'
+import TextField from 'components/TextField'
 
 function CheckinRow({ checkin }) {
     const subtitle = `in ${formattedLocation(checkin.venue.location)}`
@@ -52,19 +54,46 @@ function StayRow({ stay, icon }) {
     return <InfoRow icon={icon} title={stay.accomodation.name} subtitle={subtitle} right={<StayActions stay={stay}/>}/>
 }
 
-function SwarmCheckinsList() {
+function isCheckingMatchingPhrase(phrase) {
+    return checkin => {
+        const candidates = [
+            checkin.venue.name,
+            checkin.venue.location.address,
+            checkin.venue.location.city,
+            checkin.venue.location.country
+        ]
+        return candidates.filter(Boolean).map(c => c.toLowerCase()).find(c => c.includes(phrase.toLowerCase()))
+    }
+}
+
+function SwarmCheckinsList({ search }) {
     const [checkins] = useCheckins()
-    return checkins.length > 0 ? checkins.map(checkin => <CheckinRow checkin={checkin} key={checkin.id} />) : <NoneFound />
+    const filteredCheckins = search ? checkins.filter(isCheckingMatchingPhrase(search)) : checkins
+    return filteredCheckins.length > 0 ? filteredCheckins.map(checkin => <CheckinRow checkin={checkin} key={checkin.id} />) : <NoneFound />
 }
 
-function BookingComList() {
+function isStayMatchingPhrase(phrase) {
+    return stay => {
+        const candidates = [
+            stay?.accomodation.name,
+            stay.location.address,
+            stay.location.city,
+            stay.location.country
+        ]
+        return candidates.filter(Boolean).map(c => c.toLowerCase()).find(c => c.includes(phrase.toLowerCase()))
+    }
+}
+
+function BookingComList({ search }) {
     const [stays] = useBookingStays()
-    return stays.length > 0 ? stays.map(stay => <StayRow icon={TbBrandBooking} stay={stay} key={stay.id} />) : <NoneFound />
+    const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : stays
+    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={TbBrandBooking} stay={stay} key={stay.id} />) : <NoneFound />
 }
 
-function AirbnbList() {
+function AirbnbList({ search }) {
     const [stays] = useAirbnbStays()
-    return stays.length > 0 ? stays.map(stay => <StayRow icon={TbBrandAirbnb} stay={stay} key={stay.id} />) : <NoneFound />
+    const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : stays
+    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={TbBrandAirbnb} stay={stay} key={stay.id} />) : <NoneFound />
 }
 
 const HeaderContainer = styled('div')`
@@ -80,7 +109,7 @@ const ActionsContainer = styled('div')`
     align-items: flex-end;
 `
 
-function Header({ selectedIndex, setSelectedIndex, onDownloadClick, onUploadClick }) {
+function Header({ selectedIndex, setSelectedIndex, onDownloadClick, onUploadClick, onChangeSearch }) {
     const titles = ['Swarm', 'Booking.com', 'Airbnb']
     return (
         <HeaderContainer>
@@ -88,7 +117,9 @@ function Header({ selectedIndex, setSelectedIndex, onDownloadClick, onUploadClic
             <ActionsContainer>
                 <Button icon={TbDownload} onClick={onDownloadClick} disabled={!onDownloadClick}/>
                 <Separator />
-                <Button icon={TbCloudUpload} onClick={onUploadClick}/>
+                <Button icon={TbCloudUpload} onClick={onUploadClick} disabled/>
+                <Separator />
+                <TextField placeholder="Search" onChange={onChangeSearch}/>
             </ActionsContainer>
         </HeaderContainer>
     )
@@ -109,14 +140,15 @@ function useDownload(index) {
 export default function Data() {
     const [selectedIndex, setSelectedIndex] = useState(0)
     const onDownloadClick = useDownload(selectedIndex)
+    const [search, onChangeSearch] = useDebouncedInput()
     
     return (
         <Page header="Data">
-            <Header selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} onDownloadClick={onDownloadClick}/>
+            <Header selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} onDownloadClick={onDownloadClick} onChangeSearch={onChangeSearch}/>
             <Panel style={{maxHeight: '84%', marginTop: 22}} contentStyle={{ overflow: 'scroll' }}>
-                {selectedIndex === 0 ? <SwarmCheckinsList /> : null}
-                {selectedIndex === 1 ? <BookingComList /> : null}
-                {selectedIndex === 2 ? <AirbnbList /> : null}
+                {selectedIndex === 0 ? <SwarmCheckinsList search={search}/> : null}
+                {selectedIndex === 1 ? <BookingComList search={search}/> : null}
+                {selectedIndex === 2 ? <AirbnbList search={search}/> : null}
             </Panel>
         </Page>
     )

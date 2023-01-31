@@ -52,7 +52,7 @@ export function TimelineProvider({ children }) {
         groups: [groups, setGroups],
         visitedCountryCodes: [visitedCountryCodes, setVisitedCountryCodes],
         titles: [titles, setTitles],
-    }), [events.length, groups.length, visitedCountryCodes.length, titles.length])
+    }), [events.length, groups.length, visitedCountryCodes.length, titles])
 
     return (
         <TimelineContext.Provider value={value}>

@@ -150,6 +150,7 @@ export function createHomeCheckin(beforeDate: string, afterDate: string, context
     return {
         id: `home-${dateBetween.format()}`,
         venue: {
+            name: 'Home',
             categories: [],
             location: home!.location
         },
@@ -294,6 +295,7 @@ const staysConvertedIntoCheckins = (stays: Stay[]): Checkin[] => {
             id: `${stay.id}-${date.format('YYYY-MM-DD')}`,
             createdAt: date.unix(),
             venue: {
+                name: stay.accomodation?.name || 'Stay',
                 categories: [],
                 location: stay.location,
             }

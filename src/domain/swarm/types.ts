@@ -5,6 +5,7 @@ export interface Category {
 }
 
 export interface Venue {
+    name: string
     location: Location
     categories: Category[]
 }

@@ -15,7 +15,7 @@ const defaultStyle = `
     font-size: .875rem;
     font-weight: 600;
     line-height: 1.25rem;
-    padding: .55rem .8rem;
+    padding: .65rem .8rem;
     text-align: center;
     text-decoration: none #D1D5DB solid;
     text-decoration-thickness: auto;
