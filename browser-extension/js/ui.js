@@ -20,5 +20,3 @@ function showLoadingIndicator() {
     document.body.style.marginTop = '44px'
     document.body.prepend(indicatorElement)
 }
-
-globalThis.showLoadingIndicator = showLoadingIndicator

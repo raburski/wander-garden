@@ -1,4 +1,3 @@
-const ORIGIN = globalThis.ORIGIN
 const browser = chrome
 
 window.addEventListener('message', function(event) {

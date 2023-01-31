@@ -1,5 +1,3 @@
-globalThis
-
 init(ORIGIN.AIRBNB, function(captureStay, captureFinished) {
 
     showLoadingIndicator()

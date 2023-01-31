@@ -1,5 +1,5 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "Wander Garden",
     "version": "0.0.1",
     "description": "Companion extension for wander.garden website.",
@@ -32,9 +32,12 @@
       }
     ],
     "background": {
-      "scripts": ["js/consts.js", "js/background.js"],
-      "persistent": true
+      "service_worker": "js/background.js"
     },
+    "web_accessible_resources": [{
+      "resources": ["injectXML.js"],
+      "matches": ["*://*.booking.com/*"]
+    }],
     "permissions": [
       "tabs"
     ]

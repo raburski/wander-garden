@@ -1,6 +1,6 @@
 const browser = chrome
 
-globalThis.ensureFullURL = function ensureFullURL(url) {
+function ensureFullURL(url) {
     if (url.startsWith('/')) {
         return `${window.location.protocol}//${window.location.hostname}${url}`
     } else {

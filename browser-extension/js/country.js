@@ -1,4 +1,4 @@
-globalThis.countryCodeToName = {
+const countryCodeToName = {
     "AF": "Afghanistan",
     "AX": "Åland Islands",
     "AL": "Albania",

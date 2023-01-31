@@ -1,5 +1,3 @@
-globalThis
-
 let LOADING_TRIPS = true
 let CAPTURING = false
 let ALL_STAYS = []
@@ -46,37 +44,12 @@ function staysFromTrips(tripsResponse) {
 }
 
 function injectXMLScript() {
-    const injectedScript ="(" +
-    function() {
-        function isTripsURL(url) {
-            return url.startsWith('https://secure.booking.com/trip/timeline')
-        }
-
-        const monkeyPatch = () => {
-        let oldXHROpen = window.XMLHttpRequest.prototype.open;
-        window.XMLHttpRequest.prototype.open = function() {
-            this.addEventListener("load", function() {
-            const responseBody = this.responseText;
-            if (isTripsURL(this.responseURL)) {
-                console.log('Captured', this.responseURL)
-                window.postMessage({
-                    target: 'booking.com_extension',
-                    type: 'trip_captured',
-                    data: responseBody,
-                }, '*')
-            }
-            });
-            return oldXHROpen.apply(this, arguments);
-        };
-        };
-        monkeyPatch();
-    } + ")();";
-
-    console.log("Injecting Wander Garden secateur.");
-    var script = document.createElement("script");
-    script.textContent = injectedScript;
-    (document.head || document.documentElement).appendChild(script);
-    script.remove();
+    var s = document.createElement('script');
+    s.src = chrome.runtime.getURL('injectXML.js');
+    s.onload = function() {
+        this.remove();
+    };
+    (document.head || document.documentElement).appendChild(s);
 }
 
 injectXMLScript()
