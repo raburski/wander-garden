@@ -2,7 +2,7 @@ import { createContext, useState, useContext, useMemo } from "react"
 import { useBookingStays } from 'domain/bookingcom'
 import { useAirbnbStays } from 'domain/airbnb'
 
-const CURRENT_VERSION = '1.0'
+const CURRENT_VERSION = '0.0.1'
 
 export const STATUS = {
     UNKNOWN: 'UNKNOWN',

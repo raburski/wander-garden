@@ -11,6 +11,8 @@ const STORE = {
     capturedStays: {},
 }
 
+const manifest = chrome.runtime.getManifest()
+
 function sendMessage(message) {
     const tabID = STORE.captureTabID[message.target]
     if (tabID) {
@@ -34,7 +36,7 @@ function handleGardenMessage(message, sender) {
                 source: ORIGIN.EXTENSION,
                 target: ORIGIN.GARDEN, 
                 type: 'init',
-                version: '1.0',
+                version: manifest.version,
             })
             break
         case 'start_capture':
