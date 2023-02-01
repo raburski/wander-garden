@@ -15,12 +15,16 @@ function onExtensionMessage(message) {
 
 browser.runtime.onMessage.addListener(onExtensionMessage)
 
+function onRuntimeFailed() {
+    window.postMessage({ source: ORIGIN.GARDEN, type: 'init_failed' })
+}
+
 try {
     browser.runtime.sendMessage({
         source: ORIGIN.GARDEN,
         target: ORIGIN.EXTENSION, 
         type: 'init',
-    })
+    }).catch(onRuntimeFailed)
 } catch (e) {
-    window.postMessage({ source: ORIGIN.GARDEN, type: 'init_failed' })
+    onRuntimeFailed(e)
 }

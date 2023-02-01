@@ -18,22 +18,6 @@ function useLogout() {
     return () => setToken(null)
 }
 
-function useClearData() {
-    const [_, setCheckins] = useCheckins()
-    const [__, setLastUpdated] = useLastUpdated()
-    return () => {
-        if (window.confirm('Are you really sure you want to wipe checkin data from your browsers storage?')) {
-            setCheckins([])
-            setLastUpdated(null)
-        }
-    }
-}
-
-function useDownloadCheckins() {
-    const [checkins] = useCheckins()
-    return () => downloadString(JSON.stringify(checkins), 'json', 'checkins.json')
-}
-
 function useDownloadCategories() {
     const [checkins] = useCheckins()
     return () => {
@@ -106,8 +90,6 @@ function FetchCheckinsPanel() {
 export default function Swarm() {
     const isAuthenticated = useIsAuthenticated()
     const onLogout = useLogout()
-    const onClearData = useClearData()
-    const onDownloadCheckins = useDownloadCheckins()
     const onDownloadCategories = useDownloadCategories()
     const onImportCheckins = useImportCheckins()
 
@@ -118,11 +100,7 @@ export default function Swarm() {
                 {isAuthenticated ? <Button onClick={onLogout} icon={IoLogoFoursquare}>Disconnect</Button> : <AuthenticateButton />}
             </ButtonsPanel>
             <ButtonsPanel header="Your data" text="All your checkins are stored in browsers local storage. You can create a backup or restore them anytime.">
-                <Button onClick={onDownloadCheckins}>Download checkins.json</Button>
-                <Separator />
                 <Button onClick={onImportCheckins}>Import and replace checkins.json</Button>
-                <Separator />
-                <Button onClick={onClearData}>Clear all your foursquare data</Button>
             </ButtonsPanel>
             <ButtonsPanel header="Developer tools">
                 <Button onClick={onDownloadCategories}>Download categories.json</Button>

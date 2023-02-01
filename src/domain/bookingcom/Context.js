@@ -25,3 +25,8 @@ export function useBookingStays() {
     const context = useContext(BookingStaysContext)
     return context.stays
 }
+
+export function useClearData() {
+    const [_, setStays] = useBookingStays()
+    return () => setStays([])
+}

@@ -77,3 +77,12 @@ export function useFetchCheckins() {
         })
     }
 }
+
+export function useClearData() {
+    const [_, setCheckins] = useCheckins()
+    const [__, setLastUpdated] = useLastUpdated()
+    return () => {
+        setCheckins([])
+        setLastUpdated(null)
+    }
+}

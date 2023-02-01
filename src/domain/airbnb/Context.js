@@ -25,3 +25,8 @@ export function useAirbnbStays() {
     const context = useContext(AirbnbStaysContext)
     return context.stays
 }
+
+export function useClearData() {
+    const [_, setStays] = useAirbnbStays()
+    return () => setStays([])
+}

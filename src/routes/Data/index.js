@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { styled } from 'goober'
 import { SiSwarm } from 'react-icons/si'
-import { TbBrandBooking, TbBrandAirbnb, TbDownload, TbCloudUpload } from 'react-icons/tb'
+import { TbBrandBooking, TbBrandAirbnb, TbDownload, TbCloudUpload, TbTrash } from 'react-icons/tb'
 import { FiExternalLink, FiMapPin } from 'react-icons/fi'
 import { downloadString, uploadFile } from 'files'
 import moment from 'moment'
@@ -9,9 +9,9 @@ import { getDaysAndRangeText } from 'date'
 import Page from 'components/Page'
 import Panel from '../../components/Panel'
 import { formattedLocation } from 'domain/location'
-import { useCheckins } from 'domain/swarm'
-import { useBookingStays } from 'domain/bookingcom'
-import { useAirbnbStays } from 'domain/airbnb'
+import { useCheckins, useClearData as useClearSwarmData } from 'domain/swarm'
+import { useBookingStays, useClearData as useClearBookingData } from 'domain/bookingcom'
+import { useAirbnbStays, useClearData as useClearAirbnbData } from 'domain/airbnb'
 import Segment from 'components/Segment'
 import NoneFound from 'components/NoneFound'
 import InfoRow from 'components/InfoRow'
@@ -109,12 +109,14 @@ const ActionsContainer = styled('div')`
     align-items: flex-end;
 `
 
-function Header({ selectedIndex, setSelectedIndex, onDownloadClick, onUploadClick, onChangeSearch }) {
-    const titles = ['Swarm', 'Booking.com', 'Airbnb']
+const TITLES = ['Swarm', 'Booking.com', 'Airbnb']
+function Header({ selectedIndex, setSelectedIndex, onDownloadClick, onUploadClick, onTrashClick, onChangeSearch }) {
     return (
         <HeaderContainer>
-            <Segment titles={titles} selectedIndex={selectedIndex} onClick={setSelectedIndex}/>
+            <Segment titles={TITLES} selectedIndex={selectedIndex} onClick={setSelectedIndex}/>
             <ActionsContainer>
+                <Button icon={TbTrash} onClick={onTrashClick} disabled={!onTrashClick}/>
+                <Separator />
                 <Button icon={TbDownload} onClick={onDownloadClick} disabled={!onDownloadClick}/>
                 <Separator />
                 <Button icon={TbCloudUpload} onClick={onUploadClick} disabled/>
@@ -137,14 +139,37 @@ function useDownload(index) {
     }
 }
 
+function useTrash(index) {
+    const clearSwarmData = useClearSwarmData()
+    const clearBookingData = useClearBookingData()
+    const clearAirbnbData = useClearAirbnbData()
+
+    return () => {
+        if (window.confirm(`Are you sure you want to delete all ${TITLES[index]} data?`) && window.confirm(`Are you REALLY sure you want to CLEAN IT?`)) {
+            switch (index) {
+                case 0: clearSwarmData(); break
+                case 1: clearBookingData(); break
+                case 2: clearAirbnbData(); break
+                default: break
+            }
+        }
+    }
+}
+
 export default function Data() {
     const [selectedIndex, setSelectedIndex] = useState(0)
     const onDownloadClick = useDownload(selectedIndex)
+    const onTrashClick = useTrash(selectedIndex)
     const [search, onChangeSearch] = useDebouncedInput()
     
     return (
         <Page header="Data">
-            <Header selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} onDownloadClick={onDownloadClick} onChangeSearch={onChangeSearch}/>
+            <Header 
+                selectedIndex={selectedIndex}
+                setSelectedIndex={setSelectedIndex}
+                onDownloadClick={onDownloadClick}
+                onTrashClick={onDownloadClick ? onTrashClick : undefined}
+                onChangeSearch={onChangeSearch}/>
             <Panel style={{maxHeight: '84%', marginTop: 22}} contentStyle={{ overflow: 'scroll' }}>
                 {selectedIndex === 0 ? <SwarmCheckinsList search={search}/> : null}
                 {selectedIndex === 1 ? <BookingComList search={search}/> : null}
