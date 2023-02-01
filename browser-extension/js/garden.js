@@ -15,8 +15,12 @@ function onExtensionMessage(message) {
 
 browser.runtime.onMessage.addListener(onExtensionMessage)
 
-browser.runtime.sendMessage({
-    source: ORIGIN.GARDEN,
-    target: ORIGIN.EXTENSION, 
-    type: 'init',
-})
+try {
+    browser.runtime.sendMessage({
+        source: ORIGIN.GARDEN,
+        target: ORIGIN.EXTENSION, 
+        type: 'init',
+    })
+} catch (e) {
+    window.postMessage({ source: ORIGIN.GARDEN, type: 'init_failed' })
+}

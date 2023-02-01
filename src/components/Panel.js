@@ -30,9 +30,9 @@ const Header = styled('div')`
     padding-left: 12px;
 `
 
-export default function Panel({ style, header, children, spacing, margin, contentStyle = {}, ...props }) {
+export default function Panel({ style, header, flex, children, spacing, margin, contentStyle = {}, ...props }) {
     const _contentStyle = {...contentStyle, ...(spacing ? { padding: 14 } : {}) }
-    const _containerStyle = {...style, ...(margin ? { marginRight: 22, paddingRight: 14 } : {})}
+    const _containerStyle = {...style, ...(flex ? {flex: 1} : {}), ...(margin ? { marginRight: 22, paddingRight: 14 } : {})}
     return (
         <Container style={_containerStyle} {...props}>
             {header ? <Header>{header}</Header> : null}

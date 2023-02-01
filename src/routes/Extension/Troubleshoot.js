@@ -7,9 +7,13 @@ const Icon = styled(VscWarning)`
     font-size: 32px;
     padding: 6px;
     padding-right: 0px;
+
 `
 
-const COPY = `Version mismatch detected between website and extension. Please reload this website and make sure you have latest extension installed.
+const COPY = `We have detected some issues connecting to the extension. It is still a maturing technology that browsers can't handle consistently.
+
+Please try removing the extension and installing it again from the web store.
+Your data will not be lost. It is stored in the browser itself, not in the extension.
 
 `
 

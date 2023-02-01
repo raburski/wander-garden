@@ -30,9 +30,9 @@ export function useSettings(): [Settings, SetSettings] {
     return context.settings
 }
 
-export function useSetting(name: string) {
+export function useSetting(name: string, defaultValue: any) {
     const [settings, setSettings] = useSettings()
     const setSetting = (value: any) => setSettings({ ...settings, [name]: value }) 
-    return [settings[name], setSetting]
+    return [settings[name] === undefined ? defaultValue : settings[name], setSetting]
 }
 

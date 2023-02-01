@@ -10,6 +10,7 @@ const Container = styled('div')`
     justify-content: center;
     margin-right: 42px;
     margin-left: 22px;
+    white-space: pre-wrap;
 `
 
 const Title = styled('div')`

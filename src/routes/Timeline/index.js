@@ -242,7 +242,7 @@ function Timeline({ timeline }) {
 
 const TIMELINE_SEGMENT_OPTION_SETTING = 'TIMELINE_SEGMENT_OPTION'
 export default function TimelinePage() {
-    const [segmentOptionSetting, setSegmentOptionSetting] = useSetting(TIMELINE_SEGMENT_OPTION_SETTING)
+    const [segmentOptionSetting, setSegmentOptionSetting] = useSetting(TIMELINE_SEGMENT_OPTION_SETTING, 1)
     const [params] = useSearchParams()
     const selectedCountryCode = params.get('cc')?.toLowerCase()
     const [countryCodes] = useVisitedCountryCodes()

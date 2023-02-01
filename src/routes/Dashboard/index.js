@@ -3,24 +3,15 @@ import { styled } from 'goober'
 import Page from '../../components/Page'
 import CountryRow from '../../components/CountryRow'
 import Panel from '../../components/Panel'
-import WhatIsWanderGarden from '../WebsiteInfo/WhatIsWanderGarden'
 import Badges from './Badges'
+import Welcome from './Welcome'
 import Swarm from './Swarm'
+import { Column, Row } from 'components/container'
+import { useVisitedCountries } from 'domain/timeline'
 
 import countryFlagEmoji from "country-flag-emoji"
 import { formattedLocation } from 'domain/location'
 import { useVisitedCountryCodes } from 'domain/timeline'
-
-const PanelsContainer = styled('div')`
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-`
-
-const PanelColumn = styled('div')`
-    display: flex;
-    flex-direction: column;
-`
 
 const Text = styled('p')`
     display: flex;
@@ -78,32 +69,25 @@ function Current() {
 }
 
 function AuthenticatedDashboard() {
-    return (
-        <PanelsContainer>
-            <PanelColumn>
-                <Current />
-                <Swarm />
-                <Badges />
-            </PanelColumn>
-            <Countries />
-        </PanelsContainer>
-    )
-}
-
-function DefaultDashboard() {
-    return (
-        <PanelsContainer>
-            <WhatIsWanderGarden margin/>
-            <Swarm margin/>
-        </PanelsContainer>
-    )
-}
-
-export default function Dashboard() {
     const isAuthenticated = useIsAuthenticated()
     return (
+        <Row>
+            <Column>
+                <Current />
+                {isAuthenticated ? <Swarm /> : null}
+                <Badges />
+            </Column>
+            <Countries />
+        </Row>
+    )
+}
+
+
+export default function Dashboard() {
+    const [countries] = useVisitedCountryCodes()
+    return (
         <Page header="Dashboard">
-            {isAuthenticated ? <AuthenticatedDashboard /> : <DefaultDashboard />}
+            {countries.length ? <AuthenticatedDashboard /> : <Welcome />}
         </Page>
     )
 }

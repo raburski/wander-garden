@@ -6,7 +6,7 @@ export default styled('div')`
 
     width: 10px;
     height: 10px;
-    background-color: green;
+    background-color: ${({ isConnected }) => isConnected ? 'green' : 'red'};
     border-radius: 5px;
     margin-left: 10px;
 
