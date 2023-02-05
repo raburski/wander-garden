@@ -15,7 +15,7 @@
               "*://*.booking.com/*"
           ],
           "run_at": "document_start",
-          "js":["js/consts.js", "js/ui.js", "js/capture.js", "js/booking.js"]
+          "js":["js/consts.js", "js/ui.js", "js/capture.js", "js/country.js", "js/booking.js"]
         },
         {
           "matches":[
@@ -38,7 +38,5 @@
       "resources": ["injectXML.js"],
       "matches": ["*://*.booking.com/*"]
     }],
-    "permissions": [
-      "tabs"
-    ]
+    "permissions": []
 }

@@ -17,7 +17,5 @@ export function isOfType(data: any, type: dataCheckFn | string, isOptional: bool
 }
 
 export function isArrayOfType(array: any[], isItemOfType: (item: any) => boolean) {
-    const index = array.findIndex(item => !isItemOfType(item))
-    console.log('NOT TYPE', array[index])
-    return isOfType(array, 'array') && index < 0
+    return isOfType(array, 'array') && array.findIndex(item => !isItemOfType(item)) < 0
 }

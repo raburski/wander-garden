@@ -12,6 +12,7 @@ function stayFromReservation(reservation) {
         location: {
             address: data.hotel.location.address.value,
             city: data.hotel.location.city,
+            country: countryCodeToName[data.hotel.location.cc1.toUpperCase()],
             cc: data.hotel.location.cc1,
             lat: parseFloat(data.hotel.location.latitude),
             lng: parseFloat(data.hotel.location.longitude),
