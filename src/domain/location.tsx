@@ -1,10 +1,11 @@
 import type { Moment } from "moment"
+import { isOptionalOfType, isOfType } from "type"
 
 var a: {[cyrylic: string]: string} = {"Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z","Х":"H","Ъ":"'","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh","щ":"sch","з":"z","х":"h","ъ":"'","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O","Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o","л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"'","Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"i","т":"t","ь":"'","б":"b","ю":"yu"}
 
 export interface Location {
     address?: string
-    city: string
+    city?: string
     state?: string
     country: string
     cc: string
@@ -17,6 +18,25 @@ export interface Home {
     location: Location
     since?: string
     until?: string
+}
+
+export function isLocationType(location?: Location): boolean {
+    return location !== undefined
+        && isOptionalOfType(location.address, 'string')
+        && isOptionalOfType(location.city, 'string')
+        && isOptionalOfType(location.state, 'string')
+        && isOfType(location.country, 'string')
+        && isOfType(location.cc, 'string')
+        && isOptionalOfType(location.postalCode, 'string')
+        && isOfType(location.lat, 'number')
+        && isOfType(location.lng, 'number')
+}
+
+export function isHomeType(home?: Home): boolean {
+    return home !== undefined
+        && isOfType(home.location, isLocationType)
+        && isOptionalOfType(home.since, 'string')
+        && isOptionalOfType(home.until, 'string')
 }
 
 function cyrylicToLatin(word: string){

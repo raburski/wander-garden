@@ -1,5 +1,7 @@
 import moment from 'moment'
 import { cleanLocation, isEqualLocationCity, distance } from '../location'
+import { isArrayOfType } from "type"
+import { isCheckinType } from "./types"
 import type { Location, Home } from '../location'
 import type { Moment } from "moment"
 import type { Checkin } from "./types"
@@ -55,4 +57,8 @@ export function getDistanceBetweenCheckins(checkin1: Checkin, checkin2: Checkin)
     const location1 = getCheckinLocation(checkin1)
     const location2 = getCheckinLocation(checkin2)
     return distance(location1.lat, location1.lng, location2.lat, location2.lng)
+}
+
+export function isSwarmData(data: any) {
+    return isArrayOfType(data, isCheckinType)
 }

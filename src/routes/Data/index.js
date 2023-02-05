@@ -9,9 +9,9 @@ import { getDaysAndRangeText } from 'date'
 import Page from 'components/Page'
 import Panel from '../../components/Panel'
 import { formattedLocation } from 'domain/location'
-import { useCheckins, useClearData as useClearSwarmData } from 'domain/swarm'
-import { useBookingStays, useClearData as useClearBookingData } from 'domain/bookingcom'
-import { useAirbnbStays, useClearData as useClearAirbnbData } from 'domain/airbnb'
+import { useCheckins, useClearData as useClearSwarmData, isSwarmData } from 'domain/swarm'
+import { useBookingStays, useClearData as useClearBookingData, isBookingData } from 'domain/bookingcom'
+import { useAirbnbStays, useClearData as useClearAirbnbData, isAirbnbData } from 'domain/airbnb'
 import Segment from 'components/Segment'
 import NoneFound from 'components/NoneFound'
 import InfoRow from 'components/InfoRow'
@@ -20,6 +20,7 @@ import Button from "components/Button"
 import Separator from 'components/HalfSeparator'
 import useDebouncedInput from 'hooks/useDebouncedInput'
 import TextField from 'components/TextField'
+import toast from 'react-hot-toast'
 
 function CheckinRow({ checkin }) {
     const subtitle = `in ${formattedLocation(checkin.venue.location)}`
@@ -119,7 +120,7 @@ function Header({ selectedIndex, setSelectedIndex, onDownloadClick, onUploadClic
                 <Separator />
                 <Button icon={TbDownload} onClick={onDownloadClick} disabled={!onDownloadClick}/>
                 <Separator />
-                <Button icon={TbCloudUpload} onClick={onUploadClick} disabled/>
+                <Button icon={TbCloudUpload} onClick={onUploadClick}/>
                 <Separator />
                 <TextField placeholder="Search" onChange={onChangeSearch}/>
             </ActionsContainer>
@@ -136,6 +137,32 @@ function useDownload(index) {
         case 0: return swarm.length > 0 ? () => downloadString(JSON.stringify(swarm), 'json', 'swarm.json') : undefined
         case 1: return booking.length > 0 ? () => downloadString(JSON.stringify(booking), 'json', 'booking.json') : undefined
         case 2: return airbnb.length > 0 ? () => downloadString(JSON.stringify(airbnb), 'json', 'airbnb.json') : undefined
+    }
+}
+
+function createFileUpload(verifyData, setData) {
+    return () => uploadFile().then(files => {
+        const items = JSON.parse(files)
+        if (!verifyData(items)) {
+            alert('Data does not seem to be in a correct format...')
+            return
+        }
+        if (items.length > 0 && window.confirm(`${items.length} items found. Are you sure you want to REPLACE currently stored ones?`)) {
+            setData(items)
+            toast.success('Data imported!')
+        }
+    }).catch(() => alert('Data does not seem to be in a correct format...'))
+}
+
+function useUpload(index) {
+    const [_, setCheckins] = useCheckins()
+    const [__, setBookings] = useBookingStays()
+    const [___, setAirbnb] = useAirbnbStays()
+
+    switch (index) {
+        case 0: return createFileUpload(isSwarmData, setCheckins)
+        case 1: return createFileUpload(isBookingData, setBookings)
+        case 2: return createFileUpload(isAirbnbData, setAirbnb)
     }
 }
 
@@ -159,15 +186,17 @@ function useTrash(index) {
 export default function Data() {
     const [selectedIndex, setSelectedIndex] = useState(0)
     const onDownloadClick = useDownload(selectedIndex)
+    const onUploadClick = useUpload(selectedIndex)
     const onTrashClick = useTrash(selectedIndex)
     const [search, onChangeSearch] = useDebouncedInput()
-    
+
     return (
         <Page header="Data">
             <Header 
                 selectedIndex={selectedIndex}
                 setSelectedIndex={setSelectedIndex}
                 onDownloadClick={onDownloadClick}
+                onUploadClick={onUploadClick}
                 onTrashClick={onDownloadClick ? onTrashClick : undefined}
                 onChangeSearch={onChangeSearch}/>
             <Panel style={{maxHeight: '84%', marginTop: 22}} contentStyle={{ overflow: 'scroll' }}>

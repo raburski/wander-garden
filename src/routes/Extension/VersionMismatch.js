@@ -9,7 +9,7 @@ const Icon = styled(VscWarning)`
     padding-right: 0px;
 `
 
-const COPY = `Version mismatch detected between website and extension. Please reload this website and make sure you have latest extension installed.
+const COPY = `Version mismatch or communication failure detected between website and extension. Please reload this website and make sure you have latest extension installed.
 
 `
 

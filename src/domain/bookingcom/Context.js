@@ -1,5 +1,7 @@
 import { createContext, useState, useContext, useMemo } from "react"
 import { zipsonTransforms, LocalStorageAdapter, useStatePersistedCallback } from 'storage'
+import { isStayType } from "domain/stay"
+import { isArrayOfType } from "type"
 
 export const BookingStaysContext = createContext({})
 
@@ -29,4 +31,8 @@ export function useBookingStays() {
 export function useClearData() {
     const [_, setStays] = useBookingStays()
     return () => setStays([])
+}
+
+export function isBookingData(data) {
+    return isArrayOfType(data, isStayType)
 }
