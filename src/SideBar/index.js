@@ -90,6 +90,11 @@ const StylelessLink = styled(Link)`
     text-decoration: none;
     display: flex;
     justify-content: center;
+    color: black;
+
+    &:hover {
+        color: gray;
+    }
 `
 
 const MountainImg = styled('img')`
@@ -114,7 +119,7 @@ function MountainSeparator() {
 
 
 const StyledNotes = styled('div')`
-  font-size: 10px;
+  font-size: 11px;
   color: ${colors.neutral.dark};
   align-self: center;
   text-align: center;
