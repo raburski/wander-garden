@@ -1,17 +1,8 @@
 import { useEffect } from 'react'
-import { useToken } from '../../domain/swarm'
-import { styled } from 'goober'
-import InfoPanel from '../../components/InfoPanel'
-import SquareImage from '../../components/SquareImage'
-
-const Container = styled('div')`
-    display: flex;
-    flex: 1;
-    height: 100%;
-    align-self: stretch;
-    align-items: center;
-    justify-content: center;
-`
+import { useToken } from 'domain/swarm'
+import InfoPanel from 'components/InfoPanel'
+import SquareImage from 'components/SquareImage'
+import CenterChildren from 'components/CenterChildren'
 
 function SwarmImage() {
     return <SquareImage src="/3d/beegarden1.png" />
@@ -96,9 +87,9 @@ export default function AuthenticationFinish() {
     useStatusEffect(status)
 
     return (
-        <Container>
+        <CenterChildren>
             <StatusPanel status={status}/>
-        </Container>
+        </CenterChildren>
     )
 }
 

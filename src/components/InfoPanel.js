@@ -20,11 +20,10 @@ const Title = styled('div')`
 
 const Text = styled('div')``
 
-const contentStyle = {flexDirection: 'row'}
-
-export default function InfoPanel({ image, title, text, children, containerStyle, ...props }) {
+export default function InfoPanel({ image, title, text, children, containerStyle, contentStyle = {}, ...props }) {
+    const _contentStyle = { flexDirection: 'row', ...contentStyle }
     return (
-        <Panel contentStyle={contentStyle} {...props}>
+        <Panel contentStyle={_contentStyle} {...props}>
             {image}
             <Container style={containerStyle}>
                 <Title>{title}</Title>
