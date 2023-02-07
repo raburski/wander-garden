@@ -181,7 +181,7 @@ function TimelineGroupContainer({ group, onMoreClick, i }) {
     const title = useTitle(tripGroup && tripGroup.id)
     const locationTitle = titleFromLocationHighlights(group.highlights)
     const countryCodes = group.highlights.map(highlight => highlight.location.cc).filter(onlyUnique).reverse()
-    const [days, range] = group.groups.length === 1 ? getDaysAndRangeText(group.since, group.until) : undefined
+    const [days, range] = group.groups.length === 1 ? getDaysAndRangeText(group.since, group.until) : []
     
     return (
         <Fragment>
