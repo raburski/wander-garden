@@ -61,7 +61,7 @@ export function useExtensionStatus() {
     const context = useContext(ExtensionContext)
     if (context.failed) {
         return STATUS.FAILED
-    } else if (context.version !== CURRENT_VERSION) {
+    } else if (context.version && context.version !== CURRENT_VERSION) {
         return STATUS.INCOMPATIBLE
     } else if (context.isConnected) {
         return STATUS.CONNECTED
