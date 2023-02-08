@@ -1,12 +1,11 @@
 import { useIsAuthenticated, useCheckins, useToken, useLastUpdated } from '../domain/swarm'
 import { onlyUnique } from '../array'
 import { getCategory } from '../domain/swarm/categories'
-import { downloadString, uploadFile } from '../files'
+import { downloadString } from '../files'
 import Button from '../components/Button'
 import Page from '../components/Page'
 import Panel from '../components/Panel'
 import InfoPanel from '../components/InfoPanel'
-import Separator from '../components/Separator'
 import SquareImage from '../components/SquareImage'
 import AuthenticateButton from '../bindings/swarm/AuthenticateButton'
 import FetchCheckinsButton from '../bindings/swarm/FetchCheckinsButton'
@@ -33,17 +32,6 @@ function useDownloadCategories() {
 
         downloadString(JSON.stringify(uniqueCategories), 'json', 'categories.json')
     }
-}
-
-function useImportCheckins() {
-    const [_, setCheckins] = useCheckins()
-    return () => uploadFile().then(files => {
-        const items = JSON.parse(files)
-        if (items.length > 0 && window.confirm(`${items.length} checkins found. Are you sure you want to replace currently stored ones?`)) {
-            setCheckins(items)
-            alert('Imported!')
-        }
-    })
 }
 
 const ButtonsContainer = styled('div')`
@@ -91,16 +79,12 @@ export default function Swarm() {
     const isAuthenticated = useIsAuthenticated()
     const onLogout = useLogout()
     const onDownloadCategories = useDownloadCategories()
-    const onImportCheckins = useImportCheckins()
 
     return (
         <Page header="Swarm">
             {isAuthenticated ? <FetchCheckinsPanel />  : null}
             <ButtonsPanel header="Connected account" text={isAuthenticated ? ACCOUNT_COPY_AUTHED : ACCOUNT_COPY_DEFAULT}>
                 {isAuthenticated ? <Button onClick={onLogout} icon={IoLogoFoursquare}>Disconnect</Button> : <AuthenticateButton />}
-            </ButtonsPanel>
-            <ButtonsPanel header="Your data" text="All your checkins are stored in browsers local storage. You can create a backup or restore them anytime.">
-                <Button onClick={onImportCheckins}>Import and replace checkins.json</Button>
             </ButtonsPanel>
             <ButtonsPanel header="Developer tools">
                 <Button onClick={onDownloadCategories}>Download categories.json</Button>
