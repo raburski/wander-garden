@@ -14,6 +14,7 @@ const Content = styled('div')`
     display: flex;
     flex-direction: column;
     background-color: white;
+    white-space: pre-wrap;
     
     border-radius: 8px;
     overflow: hidden;

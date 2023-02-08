@@ -15,6 +15,8 @@ export function HomesProvider({ children }) {
     const setHomes = useStatePersistedCallback(homes, setHomesState, localStorageHomes.set.bind(localStorageHomes))
 
     usePersistedEffect(() => {
+        // Use airbnb and booking for potential homes
+        // You'd never book a hotel for your home town
         setHomes(getPotentialHomes(checkins))
     }, [checkins.length])
 

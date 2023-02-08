@@ -11,9 +11,8 @@ All your data is stored solely in your browser. There are no databases and backe
 export default function WhatIsWanderGarden() {
     return (
         <InfoPanel 
-            containerStyle={{whiteSpace: 'pre-wrap'}}
             header="What is Wander Garden?"
-            image={<SquareImage size={320} src="/3d/backpackgarden.png"/>}
+            image={<SquareImage size={260} src="/3d/backpackgarden.png"/>}
         >
             {COPY}
         </InfoPanel>

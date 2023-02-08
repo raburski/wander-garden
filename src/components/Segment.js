@@ -25,7 +25,7 @@ export default function Segment({ selectedIndex, style, titles = [], onClick }) 
         <SegmentContainer style={{style}}>
             {titles.map((title, index) => {
                 const segmentStyle = getSegmentStyle(index, titles.length)
-                return <Button selected={index === selectedIndex} key={title} style={segmentStyle} onClick={() => onClick(index)}>{title}</Button>
+                return <Button selected={index === selectedIndex} key={title} style={segmentStyle} onClick={() => onClick && onClick(index)}>{title}</Button>
             })}
         </SegmentContainer>
     )

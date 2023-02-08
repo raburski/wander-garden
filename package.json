@@ -35,7 +35,8 @@
     "watchtest": "react-scripts test --watchAll=true",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "build-extension": "cd browser-extension; zip -r extension.zip ./*"
   },
   "eslintConfig": {
     "extends": [

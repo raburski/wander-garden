@@ -12,18 +12,14 @@ import Panel from "components/Panel"
 import { getGroupHighlights, useTimeline, titleFromLocationHighlights, highlightTitle } from 'domain/timeline/groups'
 
 import { EventType, TransportMode, GroupType, CalendarDayType } from 'domain/timeline/types'
-import Segment from "components/Segment"
 import { useSetting } from "settings"
 import { useTitle, useVisitedCountryCodes } from "domain/timeline"
 import GroupMoreModal from "./GroupMoreModal"
-import FlagButton from "./FlagButton"
 
-const AllFlagsContainer = styled('div')`
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-bottom: 8px;
-`
+import NoTimelineContent from './NoTimelineContent'
+import FiltersPanel from './FiltersPanel'
+
+
 
 const PhaseLabel = styled('div')`
     display: flex;
@@ -95,15 +91,6 @@ const TransportLabel = styled('div')`
         background-color: ${colors.neutral.highlight};
     }
 `
-
-const OptionsContainer = styled('div')`
-    display: flex;
-    flex-direction: row;
-`
-
-function AllFlags({ countryCodes = [], selectedCountryCode }) {
-    return <AllFlagsContainer>{countryCodes.map(cc => <FlagButton key={cc} to={selectedCountryCode === cc.toLowerCase() ? `?` : `?cc=${cc.toLowerCase()}`} selected={selectedCountryCode == cc.toLowerCase()}>{countryFlagEmoji.get(cc).emoji}</FlagButton>)}</AllFlagsContainer>
-}
 
 const TransportMode_EMOJI = {
     [TransportMode.Bicycle]: '🚲',
@@ -241,11 +228,10 @@ function Timeline({ timeline }) {
 }
 
 const TIMELINE_SEGMENT_OPTION_SETTING = 'TIMELINE_SEGMENT_OPTION'
-export default function TimelinePage() {
+function TimelineContent({ countryCodes }) {
     const [segmentOptionSetting, setSegmentOptionSetting] = useSetting(TIMELINE_SEGMENT_OPTION_SETTING, 1)
     const [params] = useSearchParams()
     const selectedCountryCode = params.get('cc')?.toLowerCase()
-    const [countryCodes] = useVisitedCountryCodes()
 
     const timelineConfig = { tripsOnly: segmentOptionSetting > 0, foreignOnly: segmentOptionSetting === 2 }
     const timeline = useTimeline(timelineConfig)
@@ -255,17 +241,25 @@ export default function TimelinePage() {
         return locations.some(cc => cc.toLowerCase() === selectedCountryCode)
     }) : timeline
 
-    const viewSegmentOptions = ['all', 'trips', 'abroad']
+    return (
+        <>
+            <FiltersPanel
+                countryCodes={countryCodes}
+                selectedCountryCode={selectedCountryCode}
+                selectedSegmentIndex={segmentOptionSetting}
+                onSetSegmentIndex={setSegmentOptionSetting}
+            />
+            <Timeline timeline={filteredTimeline} />
+        </>
+    )
+}
+
+export default function TimelinePage() {
+    const [countryCodes] = useVisitedCountryCodes()
 
     return (
         <Page header="Timeline">
-            <Panel spacing>
-                <AllFlags countryCodes={countryCodes} selectedCountryCode={selectedCountryCode}/>
-                <OptionsContainer>
-                    <Segment titles={viewSegmentOptions} selectedIndex={segmentOptionSetting} onClick={setSegmentOptionSetting}/>
-                </OptionsContainer>
-            </Panel>
-            <Timeline timeline={filteredTimeline} />
+            {countryCodes.length === 0 ? <NoTimelineContent /> : <TimelineContent countryCodes={countryCodes}/>}
         </Page>
     )
 }
