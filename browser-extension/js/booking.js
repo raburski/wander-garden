@@ -55,53 +55,43 @@ function injectXMLScript() {
 
 injectXMLScript()
 
+function clickLoadMoreButtonUntilGone(callback) {
+    const button = document.querySelector(".mtr-timeline > span > button")
+    const text = button ? button.innerText : ''
+    if (button && text.length > 6) { // View more bookings
+        button.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
+        setTimeout(function() { clickLoadMoreButtonUntilGone(callback) }, 300)
+    } else if (button) { // Loading indicator
+        setTimeout(function() { clickLoadMoreButtonUntilGone(callback) }, 300)
+    } else { // button gone
+        if (LOADING_TRIPS) {
+            setTimeout(function() { clickLoadMoreButtonUntilGone(callback) }, 300)
+        } else {
+            callback()
+        }
+    }
+}
+
 init(ORIGIN.BOOKING, function(captureStay, captureFinished) {
 
     function findViewMoreBookings() {
-        setTimeout(function() {
-            showLoadingIndicator()
-            if (LOADING_TRIPS) {
-                findViewMoreBookings()
-            } else {
-                const button = document.querySelector(".mtr-timeline > span > button")
-                if (button) {
-                    button.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
-    
-                    setTimeout(function() {
-                        const loadingButton = document.querySelector(".mtr-timeline > span > button")
-                        if (loadingButton) {
-                            findViewMoreBookings()
-                            console.log('IS LOADING BUTTON')
-                        } else {
-                            console.log('FETCHING MORE TRIPS')
-                            LOADING_TRIPS = true
-                        }
-                    }, 100)
-    
-                } else {
-                    console.log('ENDED!')
-                    captureFinished(ALL_STAYS)
-                }
-            }
-        }, 200)
+        showLoadingIndicator()
+        clickLoadMoreButtonUntilGone(function() {
+            captureFinished(ALL_STAYS)
+        })
     }
     
     window.addEventListener('message', function(event) {
         if (event.data && event.data.target === ORIGIN.BOOKING) {
-            const stays = staysFromTrips(event.data.data)
-            ALL_STAYS = [...ALL_STAYS, ...stays]
-            console.log('WINDOW DATA')
             if (event.data.type === 'trip_captured') {
+                const stays = staysFromTrips(event.data.data)
+                ALL_STAYS = [...ALL_STAYS, ...stays]
                 LOADING_TRIPS = false
-                if (CAPTURING) {
-                    findViewMoreBookings()
-                }
+            } else if (event.data.type === 'request_started') {
+                LOADING_TRIPS = true
             }
         }
     })
 
-    CAPTURING = true
-    if (!LOADING_TRIPS) {
-        setTimeout(findViewMoreBookings, 300)
-    }
+    setTimeout(findViewMoreBookings, 300)
 })
