@@ -91,3 +91,10 @@ browser.runtime.onInstalled.addListener(() => {
     console.log('onInstalled...');
     browser.runtime.onMessage.addListener(onMessage)
 })
+
+// When service worker is stopped it is not waken up when it recevied runtime.message
+// so in order to keep background service responsive we need to keep it alive
+browser.alarms.create({ periodInMinutes: 4.9 })
+browser.alarms.onAlarm.addListener(() => {
+  console.log('keep alive')
+})

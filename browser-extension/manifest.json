@@ -38,5 +38,5 @@
       "resources": ["injectXML.js"],
       "matches": ["*://*.booking.com/*"]
     }],
-    "permissions": []
+    "permissions": ["alarms"]
 }
