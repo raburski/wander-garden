@@ -12,6 +12,7 @@ import { TimelineProvider } from "domain/timeline"
 import { ExtensionProvider } from "domain/extension"
 import { BookingStaysProvider } from 'domain/bookingcom'
 import { AirbnbStaysProvider } from 'domain/airbnb'
+import { AgodaStaysProvider } from 'domain/agoda'
 import { SettingsProvider } from './settings'
 import mapboxgl from 'mapbox-gl'
  
@@ -45,23 +46,25 @@ function App() {
     <SettingsProvider>
       <BookingStaysProvider>
         <AirbnbStaysProvider>
-          <ExtensionProvider>
-            <SwarmProvider>
-              <HomesProvider>
-                <TimelineProvider>
-                  <AppContainer>
-                    <Router>
-                      <SideBar />
-                      <RoutesContainer>
-                        <Routes />
-                      </RoutesContainer>
-                    </Router>
-                    <Toaster />
-                  </AppContainer>
-                </TimelineProvider>
-              </HomesProvider>
-            </SwarmProvider>
-          </ExtensionProvider>
+          <AgodaStaysProvider>
+            <ExtensionProvider>
+              <SwarmProvider>
+                <HomesProvider>
+                  <TimelineProvider>
+                    <AppContainer>
+                      <Router>
+                        <SideBar />
+                        <RoutesContainer>
+                          <Routes />
+                        </RoutesContainer>
+                      </Router>
+                      <Toaster />
+                    </AppContainer>
+                  </TimelineProvider>
+                </HomesProvider>
+              </SwarmProvider>
+            </ExtensionProvider>
+          </AgodaStaysProvider>
         </AirbnbStaysProvider>
       </BookingStaysProvider>
     </SettingsProvider>

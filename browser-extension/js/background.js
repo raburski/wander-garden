@@ -2,7 +2,8 @@ const ORIGIN = {
     GARDEN: 'wander_garden',
     EXTENSION: 'wander_garden_extension',
     BOOKING: 'booking.com_extension',
-    AIRBNB: 'airbnb_extension'
+    AIRBNB: 'airbnb_extension',
+    AGODA: 'agoda_extension'
 }
 
 const browser = chrome
@@ -26,6 +27,7 @@ function sendMessage(message) {
 const ORIGIN_URL = {
     [ORIGIN.BOOKING]: 'https://secure.booking.com/myreservations.en-gb.html',
     [ORIGIN.AIRBNB]: 'https://www.airbnb.com/trips/v1',
+    [ORIGIN.AGODA]: 'https://www.agoda.com/en-gb/account/bookings.html?sort=CheckinDate&state=Past&page=1',
 }
 
 function handleGardenMessage(message, sender) {

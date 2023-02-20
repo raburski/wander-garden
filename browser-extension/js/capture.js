@@ -1,5 +1,14 @@
 const browser = chrome
 
+function injectScript(scriptName) {
+    var s = document.createElement('script')
+    s.src = chrome.runtime.getURL(scriptName)
+    s.onload = function() {
+        this.remove()
+    }
+    (document.head || document.documentElement).appendChild(s)
+}
+
 function ensureFullURL(url) {
     if (url.startsWith('/')) {
         return `${window.location.protocol}//${window.location.hostname}${url}`

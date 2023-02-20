@@ -10,20 +10,31 @@
       "128": "icon/128.png"
     },
     "content_scripts":[
-        {
-          "matches":[
-              "*://*.booking.com/*"
-          ],
-          "run_at": "document_start",
-          "js":["js/consts.js", "js/ui.js", "js/capture.js", "js/country.js", "js/booking.js"]
-        },
-        {
-          "matches":[
-              "*://*.airbnb.com/*"
-          ],
-          "js":["js/consts.js", "js/ui.js", "js/capture.js", "js/country.js", "js/airbnb.js"]
+      {
+        "matches":[
+            "*://*.booking.com/*"
+        ],
+        "run_at": "document_start",
+        "js":["js/consts.js", "js/ui.js", "js/capture.js", "js/country.js", "js/booking.js"]
       },
-        {
+      {
+        "matches":[
+            "*://*.airbnb.com/*",
+            "*://*.airbnb.co.uk/*",
+            "*://*.airbnb.com.sg/*",
+            "*://*.airbnb.pl/*",
+            "*://*.airbnb.hu/*"
+        ],
+        "js":["js/consts.js", "js/ui.js", "js/capture.js", "js/country.js", "js/airbnb.js"]
+      },
+      {
+        "matches":[
+            "*://*.agoda.com/*"
+        ],
+        "run_at": "document_start",
+        "js":["js/consts.js", "js/ui.js", "js/capture.js", "js/country.js", "js/agoda.js"]
+      },
+      {
           "matches":[
               "*://*.wander.garden/*",
               "*://127.0.0.1/*"
@@ -35,8 +46,8 @@
       "service_worker": "js/background.js"
     },
     "web_accessible_resources": [{
-      "resources": ["injectXML.js"],
-      "matches": ["*://*.booking.com/*"]
+      "resources": ["injectXML.js", "injectWindowExtract.js"],
+      "matches": ["*://*.booking.com/*", "*://*.agoda.com/*"]
     }],
     "permissions": ["alarms"]
 }

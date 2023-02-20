@@ -9,6 +9,7 @@ import ExtensionVersionNotMatching from './VersionMismatch'
 import ExtensionTroubleshoot from './Troubleshoot'
 import ExtensionCapturing from './Capturing'
 import WebStoreButton from "./WebStoreButton"
+import Agoda from "./Agoda"
 
 const COPY = `In order to enhance your dataset you can install garden browser extension. It will help you import your booking.com, airbnb and agoda bookings.
 
@@ -39,6 +40,7 @@ function ExtensionConnected() {
             <ExtensionStatus isConnected/>
             <Booking />
             <Airbnb />
+            <Agoda />
         </>
     )
 }

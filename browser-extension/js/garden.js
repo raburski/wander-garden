@@ -1,6 +1,7 @@
 const browser = chrome
 
-function onRuntimeFailed() {
+function onRuntimeFailed(e) {
+    console.log('onRuntimeFailed', e)
     window.postMessage({ source: ORIGIN.GARDEN, type: 'init_failed' })
 }
 

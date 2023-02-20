@@ -243,3 +243,13 @@ const countryCodeToName = {
     "ZM": "Zambia",
     "ZW": "Zimbabwe"
 }
+
+function getCountryCode(countryName) {
+    const loweredCountryName = countryName.toLowerCase()
+    const allNames = Object.values(countryCodeToName)
+    const nameIndex = allNames.findIndex(name => name.toLowerCase() === loweredCountryName)
+    if (nameIndex > -1) {
+        return Object.keys(countryCodeToName)[nameIndex]
+    }
+    return undefined
+}

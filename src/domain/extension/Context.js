@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useMemo, useEffect } from "react"
 import { useBookingStays } from 'domain/bookingcom'
 import { useAirbnbStays } from 'domain/airbnb'
+import { useAgodaStays } from "domain/agoda"
 
 const CURRENT_VERSION = '0.0.2'
 
@@ -27,6 +28,7 @@ export function ExtensionProvider({ children }) {
     const [capturing, setCapturing] = useState(false)
     const [_, setBookingStays] = useBookingStays()
     const [__, setAirbnbStays] = useAirbnbStays()
+    const [___, setAgodaStays] = useAgodaStays()
 
     useEffect(() => {
         function eventListener(event) {
@@ -43,6 +45,8 @@ export function ExtensionProvider({ children }) {
                         setBookingStays(message.stays)
                     } else if (message.subject === 'airbnb_extension') {
                         setAirbnbStays(message.stays)
+                    } else if (message.subject === 'agoda_extension') {
+                        setAgodaStays(message.stays)
                     }
                 }
             }
@@ -99,5 +103,12 @@ export function useCaptureAirbnb() {
     const context = useContext(ExtensionContext)
     return function captureAirbnb() {
         context.startCapture('airbnb_extension')
+    }
+}
+
+export function useCaptureAgoda() {
+    const context = useContext(ExtensionContext)
+    return function captureAgoda() {
+        context.startCapture('agoda_extension')
     }
 }
