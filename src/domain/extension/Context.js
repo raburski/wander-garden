@@ -3,7 +3,7 @@ import { useBookingStays } from 'domain/bookingcom'
 import { useAirbnbStays } from 'domain/airbnb'
 import { useAgodaStays } from "domain/agoda"
 
-const CURRENT_VERSION = '0.0.2'
+const CURRENT_VERSION = '0.0.3'
 
 export const STATUS = {
     UNKNOWN: 'UNKNOWN',

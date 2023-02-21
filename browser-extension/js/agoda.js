@@ -13,7 +13,7 @@ function dataToStay(data) {
     const cc = getCountryCode(data.BookingItem.Property.Address.Country)
 
     return {
-        id: data.BookingItem.BookingId,
+        id: `agoda:${data.BookingItem.BookingId}`,
         url: window.location.href,
         since: `${since}T00:00:00+00:00`,
         until: `${until}T00:00:00+00:00`,
