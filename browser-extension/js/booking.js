@@ -73,6 +73,10 @@ function clickLoadMoreButtonUntilGone(callback) {
 }
 
 init(ORIGIN.BOOKING, function(captureStay, captureFinished) {
+    if (window.location.href.includes('password')) {
+        // on a login page
+        return
+    }
 
     function findViewMoreBookings() {
         clickLoadMoreButtonUntilGone(function() {

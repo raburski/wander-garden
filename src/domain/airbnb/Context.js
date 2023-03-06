@@ -1,14 +1,14 @@
-import { createContext, useState, useContext, useMemo } from "react"
-import { zipsonTransforms, LocalStorageAdapter, useStatePersistedCallback, useSyncedStorage } from 'storage'
+import { createContext, useContext, useMemo } from "react"
+import { IndexedDBStorageAdapter, useSyncedStorage } from 'storage'
 import { isStayType } from "domain/stay"
 import { isArrayOfType } from "type"
 
 export const AirbnbStaysContext = createContext({})
 
-const localStorageStays = new LocalStorageAdapter('airbnb_stays', '[]', zipsonTransforms)
+const indexedDBStorageStays = new IndexedDBStorageAdapter([], 'wander-garden', 'airbnb', 2)
 
 export function AirbnbStaysProvider({ children }) {
-    const [stays, setStays] = useSyncedStorage(localStorageStays)
+    const [stays, setStays] = useSyncedStorage(indexedDBStorageStays)
 
     const value = useMemo(() => ({
         stays: [stays, setStays],

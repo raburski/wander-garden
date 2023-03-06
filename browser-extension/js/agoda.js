@@ -34,6 +34,10 @@ function dataToStay(data) {
 
 init(ORIGIN.AGODA, function(captureStay, captureFinished) {
     window.addEventListener("load", function() {
+        if (window.location.href.includes('signin')) {
+            // on a login page
+            return
+        }
 
         const params = new URLSearchParams(window.location.search)
         const page = params.get('garden-page') || 'root'

@@ -1,4 +1,4 @@
-export * from './adapters'
+export * from './adapter'
 export * from './types'
 export * from './transforms'
 export * from './hooks'
