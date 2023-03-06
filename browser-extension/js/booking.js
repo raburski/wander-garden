@@ -75,7 +75,6 @@ function clickLoadMoreButtonUntilGone(callback) {
 init(ORIGIN.BOOKING, function(captureStay, captureFinished) {
 
     function findViewMoreBookings() {
-        showLoadingIndicator()
         clickLoadMoreButtonUntilGone(function() {
             captureFinished(ALL_STAYS)
         })

@@ -18,6 +18,9 @@ function ensureFullURL(url) {
 }
 
 function init(origin, onInit) {
+    window.addEventListener("DOMContentLoaded", function() {
+        showLoadingIndicator()
+    })
 
     function sendCaptureFinished(stays) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.EXTENSION, type: 'capture_finished', stays })

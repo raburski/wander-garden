@@ -1,6 +1,4 @@
 init(ORIGIN.AIRBNB, function(captureStay, captureFinished) {
-
-    showLoadingIndicator()
     const hash = !!window.location.hash ? window.location.hash : '#root&0'
     const parts = `${hash}`.substring(1).split('&')
     const page = parts[0]

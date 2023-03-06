@@ -33,7 +33,6 @@ function dataToStay(data) {
 }
 
 init(ORIGIN.AGODA, function(captureStay, captureFinished) {
-    showLoadingIndicator()
     window.addEventListener("load", function() {
 
         const params = new URLSearchParams(window.location.search)
