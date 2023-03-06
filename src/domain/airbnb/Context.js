@@ -1,16 +1,14 @@
 import { createContext, useState, useContext, useMemo } from "react"
-import { zipsonTransforms, LocalStorageAdapter, useStatePersistedCallback } from 'storage'
+import { zipsonTransforms, LocalStorageAdapter, useStatePersistedCallback, useSyncedStorage } from 'storage'
 import { isStayType } from "domain/stay"
 import { isArrayOfType } from "type"
 
 export const AirbnbStaysContext = createContext({})
 
 const localStorageStays = new LocalStorageAdapter('airbnb_stays', '[]', zipsonTransforms)
-const initialLocalStorageStaysValue = localStorageStays.get()
 
 export function AirbnbStaysProvider({ children }) {
-    const [stays, setStaysState] = useState(initialLocalStorageStaysValue)
-    const setStays = useStatePersistedCallback(stays, setStaysState, localStorageStays.set.bind(localStorageStays))
+    const [stays, setStays] = useSyncedStorage(localStorageStays)
 
     const value = useMemo(() => ({
         stays: [stays, setStays],

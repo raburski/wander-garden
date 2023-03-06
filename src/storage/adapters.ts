@@ -1,23 +1,45 @@
 import { Transforms } from "./types"
 
-export class LocalStorageAdapter<Type> {
+export interface StorageAdapter<Type> {
+    initialValue: Type
+
+    get(): Promise<Type>
+    set(data: Type): Promise<void>
+    clearAll(): Promise<void>
+}
+
+export class LocalStorageAdapter<Type> implements StorageAdapter<Type> {
     storeKey: string
     defaultStoreValue: string
     transforms: Transforms<Type>
+    initialValue: Type
 
     constructor(storeKey: string, defaultStoreValue: string = '[]', transforms: Transforms<Type>) {
         this.storeKey = storeKey
         this.defaultStoreValue = defaultStoreValue
         this.transforms = transforms
+        this.initialValue = this.transforms.get(this.defaultStoreValue)
     }
-    get(): Type {
+    get(): Promise<Type> {
         const storedValue: string = localStorage.getItem(this.storeKey) || this.defaultStoreValue
-        return this.transforms.get(storedValue)
+        return Promise.resolve(this.transforms.get(storedValue))
     }
     set(data: Type) {
-        localStorage.setItem(this.storeKey, this.transforms.set(data))
+        try {
+            localStorage.setItem(this.storeKey, this.transforms.set(data))
+        } catch (e) {
+            return Promise.reject(e)
+        } finally {
+            return Promise.resolve()
+        }
     }
-    clear() {
-        localStorage.setItem(this.storeKey, this.defaultStoreValue)
+    clearAll() {
+        try {
+            localStorage.setItem(this.storeKey, this.defaultStoreValue)
+        } catch (e) {
+            return Promise.reject(e)
+        } finally {
+            return Promise.resolve()
+        }
     }
 }

@@ -1,16 +1,14 @@
-import { createContext, useState, useContext, useMemo } from "react"
-import { zipsonTransforms, LocalStorageAdapter, useStatePersistedCallback } from 'storage'
+import { createContext, useState, useContext, useMemo, useEffect } from "react"
+import { zipsonTransforms, LocalStorageAdapter, useStatePersistedCallback, useSyncedStorage } from 'storage'
 import { isStayType } from "domain/stay"
 import { isArrayOfType } from "type"
 
 export const AgodaStaysContext = createContext({})
 
 const localStorageStays = new LocalStorageAdapter('agoda_stays', '[]', zipsonTransforms)
-const initialLocalStorageStaysValue = localStorageStays.get()
 
 export function AgodaStaysProvider({ children }) {
-    const [stays, setStaysState] = useState(initialLocalStorageStaysValue)
-    const setStays = useStatePersistedCallback(stays, setStaysState, localStorageStays.set.bind(localStorageStays))
+    const [stays, setStays] = useSyncedStorage(localStorageStays)
 
     const value = useMemo(() => ({
         stays: [stays, setStays],

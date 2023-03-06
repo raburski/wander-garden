@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useMemo } from "react"
-import { zipsonTransforms, LocalStorageAdapter, useStatePersistedCallback, usePersistedEffect, jsonTransforms } from 'storage'
+import { zipsonTransforms, LocalStorageAdapter, useStatePersistedCallback, usePersistedEffect, jsonTransforms, useSyncedStorage } from 'storage'
 import { useCheckins } from "domain/swarm"
 import { useHomes } from 'domain/homes'
 import { useBookingStays } from 'domain/bookingcom'
@@ -15,25 +15,17 @@ const localStorageEvents = new LocalStorageAdapter('timeline.events', '[]', zips
 const localStorageGroups = new LocalStorageAdapter('timeline.groups', '[]', zipsonTransforms)
 const localStorageVisited = new LocalStorageAdapter('timeline.visited', '[]', jsonTransforms)
 const localStorageTitles = new LocalStorageAdapter('timeline.titles', '{}', jsonTransforms)
-const initialLocalStorageEventsValue = localStorageEvents.get()
-const initialLocalStorageGroupsValue = localStorageGroups.get()
-const initialLocalStorageVisitedValue = localStorageVisited.get()
-const initialLocalStorageTitlesValue = localStorageTitles.get()
 
 export function TimelineProvider({ children }) {
-    const [events, setEventsState] = useState(initialLocalStorageEventsValue)
-    const [groups, setGroupsState] = useState(initialLocalStorageGroupsValue)
-    const [visitedCountryCodes, setVisitedCountryCodesState] = useState(initialLocalStorageVisitedValue)
-    const [titles, setTitlesState] = useState(initialLocalStorageTitlesValue)
+    const [events, setEvents] = useSyncedStorage(localStorageEvents)
+    const [groups, setGroups] = useSyncedStorage(localStorageGroups)
+    const [visitedCountryCodes, setVisitedCountryCodes] = useSyncedStorage(localStorageVisited)
+    const [titles, setTitles] = useSyncedStorage(localStorageTitles)
+
     const [checkins] = useCheckins()
     const [bookingStays] = useBookingStays()
     const [airbnbStays] = useAirbnbStays()
     const [homes] = useHomes()
-
-    const setEvents = useStatePersistedCallback(events, setEventsState, localStorageEvents.set.bind(localStorageEvents))
-    const setGroups = useStatePersistedCallback(groups, setGroupsState, localStorageGroups.set.bind(localStorageGroups))
-    const setVisitedCountryCodes = useStatePersistedCallback(visitedCountryCodes, setVisitedCountryCodesState, localStorageVisited.set.bind(localStorageVisited))
-    const setTitles = useStatePersistedCallback(titles, setTitlesState, localStorageTitles.set.bind(localStorageTitles))
 
     usePersistedEffect(() => {
         setVisitedCountryCodes([

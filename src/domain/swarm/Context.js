@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useMemo } from "react"
 import { fetchCheckins, UnauthorizedError } from './API'
-import { dateTransforms, zipsonTransforms, stringTransforms, LocalStorageAdapter, useStatePersistedCallback } from 'storage'
+import { dateTransforms, zipsonTransforms, stringTransforms, LocalStorageAdapter, useStatePersistedCallback, useSyncedStorage } from 'storage'
 import moment from 'moment'
 
 export const SwarmContext = createContext({})
@@ -9,19 +9,11 @@ const localStorageCheckins = new LocalStorageAdapter('swarm_checkins', '[]', zip
 const localStorageLastUpdated = new LocalStorageAdapter('swarm_checkins_last_update', null, dateTransforms)
 const localStorageToken = new LocalStorageAdapter('access_token', null, stringTransforms)
 
-const initialLocalStorageCheckinsValue = localStorageCheckins.get()
-const initialLocalStorageLastUpdatedValue = localStorageLastUpdated.get()
-const initialLocalStorageTokenValue = localStorageToken.get()
-
 export function SwarmProvider({ children }) {
-    const [checkins, setCheckinsState] = useState(initialLocalStorageCheckinsValue)
-    const [lastUpdated, setLastUpdatedState] = useState(initialLocalStorageLastUpdatedValue)
-    const [token, setTokenState] = useState(initialLocalStorageTokenValue)
-
-    const setCheckins = useStatePersistedCallback(checkins, setCheckinsState, localStorageCheckins.set.bind(localStorageCheckins))
-    const setLastUpdated = useStatePersistedCallback(lastUpdated, setLastUpdatedState, localStorageLastUpdated.set.bind(localStorageLastUpdated))
-    const setToken = useStatePersistedCallback(token, setTokenState, localStorageToken.set.bind(localStorageToken))
-
+    const [checkins, setCheckins] = useSyncedStorage(localStorageCheckins)
+    const [lastUpdated, setLastUpdated] = useSyncedStorage(localStorageLastUpdated)
+    const [token, setToken] = useSyncedStorage(localStorageToken)
+    
     const value = useMemo(() => ({
         checkins: [checkins, setCheckins],
         lastUpdated: [lastUpdated, setLastUpdated],
