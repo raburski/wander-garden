@@ -5,9 +5,16 @@ const DEFAULT_PARAMETERS = {
   keyPath: 'id'
 }
 
+type ObjectID = string | IDBValidKey
+type ObjectWithID = {
+  id: ObjectID
+}
+
 interface IndexedDBStore<Type> {
   getAll(): Promise<Type[]>
+  getAllKeys(): Promise<ObjectID[]>
   put(object: Type): Promise<any>
+  delete(key: ObjectID): Promise<any>
   clear(): Promise<any>
 }
 
@@ -30,7 +37,9 @@ class IndexedDBSingleton {
     this.stores[storeName] = parameters
     return {
       getAll: () => this.db(dbName).then(db => db.getAll(storeName)),
+      getAllKeys: () => this.db(dbName).then(db => db.getAllKeys(storeName)),
       put: (object) => this.db(dbName).then(db => db.put(storeName, object)),
+      delete: (key) => this.db(dbName).then(db => db.delete(storeName, key)),
       clear: () => this.db(dbName).then(db => db.clear(storeName)),
     }
   }
@@ -68,7 +77,9 @@ class IndexedDBSingleton {
 
 const indexedDBSingleton = new IndexedDBSingleton()
 
-export default class IndexedDBStorageAdapter<Type> implements StorageAdapter<Type[]> {
+
+
+export default class IndexedDBStorageAdapter<Type extends ObjectWithID> implements StorageAdapter<Type[]> {
     initialValue: Type[]
     store: IndexedDBStore<Type>
 
@@ -79,8 +90,17 @@ export default class IndexedDBStorageAdapter<Type> implements StorageAdapter<Typ
     get(): Promise<Type[]> {
       return this.store.getAll()
     }
-    set(data: Type[]) {
-      return this.clearAll().then(() => Promise.all(data.map(object => this.store.put(object))))
+    async set(data: Type[]) {
+      const allDataKeys = data.map(item => item.id)
+      const allStoreKeys = await this.store.getAllKeys()
+
+      const keysToAdd = allDataKeys.filter(key => !allStoreKeys.includes(key))
+      const keysToRemove = allStoreKeys.filter(key => !allDataKeys.includes(key))
+
+      const added = keysToAdd.map(key => this.store.put(data.find(item => item.id === key)!))
+      const deleted = keysToRemove.map(key => this.store.delete(key))
+
+      await Promise.all([...added, ...deleted])
     }
     clearAll() {
       return this.store.clear()
