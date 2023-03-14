@@ -44,6 +44,8 @@ export function createPotentialHomeWithCheckin(checkin: Checkin, since?: string 
 export function getPotentialHomes(checkins: [Checkin?] = []): [Home?] {
     if (checkins.length === 0) return [DEFAULT_HOME]
 
+    checkins.sort((b, a) => a!.createdAt - b!.createdAt)
+
     let currentHomeCheckin: Checkin | undefined = undefined
     let currentHomeCheckinCity: string | undefined = undefined
 

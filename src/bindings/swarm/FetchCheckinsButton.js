@@ -25,7 +25,6 @@ function useFetchSwarm() {
     const refreshTimeline = useRefreshTimeline()
 
     function fetch() {
-        // refreshHomes()
         setFetching(true)
         function onLoaded() {
             setFetching(false)
