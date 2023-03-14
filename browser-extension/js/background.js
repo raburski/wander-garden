@@ -1,6 +1,7 @@
 const ORIGIN = {
     GARDEN: 'wander_garden',
     EXTENSION: 'wander_garden_extension',
+    SERVICE: 'wander_garden_service',
     BOOKING: 'booking.com_extension',
     AIRBNB: 'airbnb_extension',
     AGODA: 'agoda_extension'
@@ -35,7 +36,7 @@ function handleGardenMessage(message, sender) {
         case 'init':
             STORE.captureTabID[ORIGIN.GARDEN] = sender.tab.id
             sendMessage({
-                source: ORIGIN.EXTENSION,
+                source: ORIGIN.SERVICE,
                 target: ORIGIN.GARDEN, 
                 type: 'init',
                 version: manifest.version,
@@ -55,7 +56,7 @@ function handleExtensionMessage(message) {
     switch (message.type) {
         case 'init':
             sendMessage({
-                source: ORIGIN.EXTENSION,
+                source: ORIGIN.SERVICE,
                 target: message.source, 
                 type: 'init',
                 start_capture: !!STORE.captureTabID[message.source]
@@ -70,7 +71,7 @@ function handleExtensionMessage(message) {
             STORE.captureTabID[message.source] = undefined
             const stays = !message.stays ? STORE.capturedStays[message.source] : message.stays
             sendMessage({
-                source: ORIGIN.EXTENSION,
+                source: ORIGIN.SERVICE,
                 target: ORIGIN.GARDEN,
                 subject: message.source,
                 type: 'capture_finished',
@@ -82,7 +83,7 @@ function handleExtensionMessage(message) {
 
 function onMessage(message, sender) {
     console.log('RECV: ', message)
-    if (message.source === ORIGIN.GARDEN) {
+    if (message.source === ORIGIN.EXTENSION || message.source === ORIGIN.GARDEN) {
         handleGardenMessage(message, sender)
     } else {
         handleExtensionMessage(message, sender)

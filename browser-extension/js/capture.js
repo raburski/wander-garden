@@ -23,15 +23,15 @@ function init(origin, onInit) {
     })
 
     function sendCaptureFinished(stays) {
-        browser.runtime.sendMessage({ source: origin, target: ORIGIN.EXTENSION, type: 'capture_finished', stays })
+        browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_finished', stays })
     }
 
     function sendCaptureStay(stay) {
-        browser.runtime.sendMessage({ source: origin, target: ORIGIN.EXTENSION, type: 'capture_stay', stay })
+        browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_stay', stay })
     }
 
     function onExtensionMessage(message) {
-        if (message.target !== origin || message.source !== ORIGIN.EXTENSION) {
+        if (message.target !== origin || message.source !== ORIGIN.SERVICE) {
             return
         }
         
@@ -45,7 +45,7 @@ function init(origin, onInit) {
     
     browser.runtime.sendMessage({
         source: origin,
-        target: ORIGIN.EXTENSION, 
+        target: ORIGIN.SERVICE, 
         type: 'init',
     })
 }

@@ -15,11 +15,20 @@ export const STATUS = {
     CAPTURING: 'CAPTURING',
 }
 
+const ORIGIN = {
+    GARDEN: 'wander_garden',
+    EXTENSION: 'wander_garden_extension',
+    SERVICE: 'wander_garden_service',
+    BOOKING: 'booking.com_extension',
+    AIRBNB: 'airbnb_extension',
+    AGODA: 'agoda_extension',
+}
+
 export const ExtensionContext = createContext({})
 
 function sendExtensionMessage(msg) {
     window.postMessage({
-        source: 'wander_garden',
+        source: ORIGIN.GARDEN,
         ...msg,
     }, '*')
 }
@@ -44,18 +53,18 @@ export function ExtensionProvider({ children }) {
         async function eventListener(event) {
             const message = event.data
             if (!message) { return }
-            if (message.source === 'wander_garden_extension' || message.source === 'wander_garden') {
+            if (message.source === ORIGIN.SERVICE || message.source === ORIGIN.EXTENSION) {
                 if (message.type === 'init') {
                     setVersion(message.version)
                 } else if (message.type === 'init_failed') {
                     setFailed(true)
                 } else if (message.type === 'capture_finished') {
                     setCapturing(false)
-                    if (message.subject === 'booking.com_extension') {
+                    if (message.subject === ORIGIN.BOOKING) {
                         await setBookingStays(message.stays)
-                    } else if (message.subject === 'airbnb_extension') {
+                    } else if (message.subject === ORIGIN.AIRBNB) {
                         await setAirbnbStays(message.stays)
-                    } else if (message.subject === 'agoda_extension') {
+                    } else if (message.subject === ORIGIN.AGODA) {
                         await setAgodaStays(message.stays)
                     }
                     await refresh()
@@ -70,7 +79,7 @@ export function ExtensionProvider({ children }) {
 
     const startCapture = (subject) => {
         setCapturing(true)
-        sendExtensionMessage({ type: 'start_capture', subject, target: 'wander_garden_extension' })
+        sendExtensionMessage({ type: 'start_capture', subject, target: ORIGIN.EXTENSION })
     }
 
     const value = useMemo(() => ({
@@ -106,20 +115,20 @@ export function useExtensionStatus() {
 export function useCaptureBooking() {
     const context = useContext(ExtensionContext)
     return function captureBooking() {
-        context.startCapture('booking.com_extension')
+        context.startCapture(ORIGIN.BOOKING)
     }
 }
 
 export function useCaptureAirbnb() {
     const context = useContext(ExtensionContext)
     return function captureAirbnb() {
-        context.startCapture('airbnb_extension')
+        context.startCapture(ORIGIN.AIRBNB)
     }
 }
 
 export function useCaptureAgoda() {
     const context = useContext(ExtensionContext)
     return function captureAgoda() {
-        context.startCapture('agoda_extension')
+        context.startCapture(ORIGIN.AGODA)
     }
 }

@@ -2,7 +2,7 @@ const browser = chrome
 
 function onRuntimeFailed(e) {
     console.log('onRuntimeFailed', e)
-    window.postMessage({ source: ORIGIN.GARDEN, type: 'init_failed' })
+    window.postMessage({ source: ORIGIN.EXTENSION, type: 'init_failed' })
 }
 
 window.addEventListener('message', function(event) {
@@ -12,16 +12,15 @@ window.addEventListener('message', function(event) {
 })
 
 browser.runtime.onMessage.addListener(function(message) {
-    if (message.source !== ORIGIN.EXTENSION && message.target !== ORIGIN.GARDEN) {
-        return
+    if (message.source === ORIGIN.SERVICE) {
+        window.postMessage(message)
     }
-    window.postMessage(message)
 })
 
 try {
     browser.runtime.sendMessage({
-        source: ORIGIN.GARDEN,
-        target: ORIGIN.EXTENSION, 
+        source: ORIGIN.EXTENSION,
+        target: ORIGIN.SERVICE, 
         type: 'init',
     }).catch(onRuntimeFailed)
 } catch (e) {
