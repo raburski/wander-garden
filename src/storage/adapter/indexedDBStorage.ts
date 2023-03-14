@@ -77,8 +77,6 @@ class IndexedDBSingleton {
 
 const indexedDBSingleton = new IndexedDBSingleton()
 
-
-
 export default class IndexedDBStorageAdapter<Type extends ObjectWithID> implements StorageAdapter<Type[]> {
     initialValue: Type[]
     store: IndexedDBStore<Type>

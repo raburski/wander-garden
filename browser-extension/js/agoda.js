@@ -44,9 +44,19 @@ init(ORIGIN.AGODA, function(captureStay, captureFinished) {
         if (page === 'root') {
             const index = parseInt(localStorage.getItem('garden-index')) || 0
             const allCards = [...document.querySelectorAll("div[data-element-name='blp-booking-item-card']")]
+            const nextButton = document.querySelector("button[aria-label='Next']")
+
             if (index > allCards.length - 1) {
-                localStorage.removeItem('garden-index')
-                captureFinished()
+                if (!nextButton || nextButton.disabled) {
+                    localStorage.removeItem('garden-index')
+                    captureFinished()
+                } else {
+                    localStorage.setItem('garden-index', 0)
+                    nextButton.click()
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 300)
+                }
             } else {
                 localStorage.setItem('garden-index', index + 1)
                 const urlBase = window.location.href.split('#')[0]

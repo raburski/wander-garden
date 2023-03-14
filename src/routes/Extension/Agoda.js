@@ -16,7 +16,7 @@ const COPY = `Extension will open new browser tab. It will fetch all your trips 
 export default function Agoda() {
     const captureAgode = useCaptureAgoda()
     return (
-        <InfoPanel title="Agoda (alpha)" spacing image={<Logo src="/logo/agoda.svg"/>}>
+        <InfoPanel title="Agoda" spacing image={<Logo src="/logo/agoda.svg"/>}>
             {COPY}
             <Button icon={FiExternalLink} onClick={captureAgode}>Open and capture Agoda</Button>
         </InfoPanel>
