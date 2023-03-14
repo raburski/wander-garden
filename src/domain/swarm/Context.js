@@ -57,28 +57,30 @@ export function useFetchCheckins() {
     const [token, setToken] = useToken()
     const latestCheckinIDs = [checkins[0], checkins[1], checkins[2]].filter(Boolean).map(c => c.id)
 
-    return function fetchCheckinsHook() {
-        return fetchCheckins(token, latestCheckinIDs).then(fetchedCheckins => {
+    return async function fetchCheckinsHook() {
+        try {
+            const fetchedCheckins = await fetchCheckins(token, latestCheckinIDs)
             const newCheckins = [
                 ...fetchedCheckins,
                 ...checkins,
             ]
-            setCheckins(newCheckins)
-            setLastUpdated(moment())
-        }).catch(e => {
+            await setCheckins(newCheckins)
+            await setLastUpdated(moment())
+
+        } catch (e) {
             if (e === UnauthorizedError) {
-                setToken(null)
+                await setToken(null)
             }
             throw e
-        })
+        }
     }
 }
 
 export function useClearData() {
     const [_, setCheckins] = useCheckins()
     const [__, setLastUpdated] = useLastUpdated()
-    return () => {
-        setCheckins([])
-        setLastUpdated(null)
+    return async function clearData() {
+        await setCheckins([])
+        await setLastUpdated(null)
     }
 }

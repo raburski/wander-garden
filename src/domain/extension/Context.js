@@ -52,11 +52,11 @@ export function ExtensionProvider({ children }) {
                 } else if (message.type === 'capture_finished') {
                     setCapturing(false)
                     if (message.subject === 'booking.com_extension') {
-                        setBookingStays(message.stays)
+                        await setBookingStays(message.stays)
                     } else if (message.subject === 'airbnb_extension') {
-                        setAirbnbStays(message.stays)
+                        await setAirbnbStays(message.stays)
                     } else if (message.subject === 'agoda_extension') {
-                        setAgodaStays(message.stays)
+                        await setAgodaStays(message.stays)
                     }
                     await refresh()
                 }

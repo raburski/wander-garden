@@ -28,7 +28,9 @@ export function useAgodaStays() {
 
 export function useClearData() {
     const [_, setStays] = useAgodaStays()
-    return () => setStays([])
+    return async function clearData() {
+        await setStays([])
+    }
 }
 
 export function isAgodaData(data) {

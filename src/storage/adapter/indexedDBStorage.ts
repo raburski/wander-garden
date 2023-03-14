@@ -80,7 +80,7 @@ export default class IndexedDBStorageAdapter<Type> implements StorageAdapter<Typ
       return this.store.getAll()
     }
     set(data: Type[]) {
-      return Promise.all(data.map(object => this.store.put(object)))
+      return this.clearAll().then(() => Promise.all(data.map(object => this.store.put(object))))
     }
     clearAll() {
       return this.store.clear()

@@ -28,7 +28,9 @@ export function useBookingStays() {
 
 export function useClearData() {
     const [_, setStays] = useBookingStays()
-    return () => setStays([])
+    return async function clearData() {
+        await setStays([])
+    }
 }
 
 export function isBookingData(data) {

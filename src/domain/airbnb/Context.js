@@ -28,7 +28,9 @@ export function useAirbnbStays() {
 
 export function useClearData() {
     const [_, setStays] = useAirbnbStays()
-    return () => setStays([])
+    return async function clearData() {
+        await setStays([])
+    }
 }
 
 export function isAirbnbData(data) {
