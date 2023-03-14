@@ -5,10 +5,10 @@ import { isArrayOfType } from "type"
 
 export const AgodaStaysContext = createContext({})
 
-const indexedDBStorageStays = new IndexedDBStorageAdapter([], 'wander-garden', 'agoda', 2)
+export const agodaStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'agoda')
 
 export function AgodaStaysProvider({ children }) {
-    const [stays, setStays] = useSyncedStorage(indexedDBStorageStays)
+    const [stays, setStays] = useSyncedStorage(agodaStaysStorage)
 
     const value = useMemo(() => ({
         stays: [stays, setStays],

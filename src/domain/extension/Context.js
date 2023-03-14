@@ -2,6 +2,8 @@ import { createContext, useState, useContext, useMemo, useEffect } from "react"
 import { useBookingStays } from 'domain/bookingcom'
 import { useAirbnbStays } from 'domain/airbnb'
 import { useAgodaStays } from "domain/agoda"
+import { useRefreshHomes } from "domain/homes"
+import { useRefreshTimeline } from "domain/timeline"
 
 const CURRENT_VERSION = '0.0.3'
 
@@ -30,8 +32,16 @@ export function ExtensionProvider({ children }) {
     const [__, setAirbnbStays] = useAirbnbStays()
     const [___, setAgodaStays] = useAgodaStays()
 
+    const refreshHomes = useRefreshHomes()
+    const refreshTimeline = useRefreshTimeline()
+
     useEffect(() => {
-        function eventListener(event) {
+        async function refresh() {
+            await refreshHomes()
+            await refreshTimeline()
+        }
+
+        async function eventListener(event) {
             const message = event.data
             if (!message) { return }
             if (message.source === 'wander_garden_extension' || message.source === 'wander_garden') {
@@ -48,6 +58,7 @@ export function ExtensionProvider({ children }) {
                     } else if (message.subject === 'agoda_extension') {
                         setAgodaStays(message.stays)
                     }
+                    await refresh()
                 }
             }
         }
@@ -55,7 +66,7 @@ export function ExtensionProvider({ children }) {
             window.addEventListener('message', eventListener)
         }
         return () => window.removeEventListener('message', eventListener)
-    }, [failed, setFailed, setCapturing, setVersion, setBookingStays, setAirbnbStays])
+    }, [failed, refreshHomes, refreshTimeline, setFailed, setCapturing, setVersion, setBookingStays, setAirbnbStays])
 
     const startCapture = (subject) => {
         setCapturing(true)

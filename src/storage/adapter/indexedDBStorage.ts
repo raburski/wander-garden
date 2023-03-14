@@ -72,7 +72,7 @@ export default class IndexedDBStorageAdapter<Type> implements StorageAdapter<Typ
     initialValue: Type[]
     store: IndexedDBStore<Type>
 
-    constructor(initialValue: Type[], dbName: string, storeName: string, version: number, parameters: IDBObjectStoreParameters = DEFAULT_PARAMETERS) {
+    constructor(initialValue: Type[], dbName: string, storeName: string, version: number = 5, parameters: IDBObjectStoreParameters = DEFAULT_PARAMETERS) {
         this.initialValue = initialValue
         this.store = indexedDBSingleton.registerStore<Type>(dbName, version, storeName, parameters)
     }

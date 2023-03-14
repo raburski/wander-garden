@@ -47,10 +47,10 @@ function App() {
       <BookingStaysProvider>
         <AirbnbStaysProvider>
           <AgodaStaysProvider>
-            <ExtensionProvider>
-              <SwarmProvider>
-                <HomesProvider>
-                  <TimelineProvider>
+            <SwarmProvider>
+              <HomesProvider>
+                <TimelineProvider>
+                  <ExtensionProvider>
                     <AppContainer>
                       <Router>
                         <SideBar />
@@ -60,10 +60,10 @@ function App() {
                       </Router>
                       <Toaster />
                     </AppContainer>
-                  </TimelineProvider>
-                </HomesProvider>
-              </SwarmProvider>
-            </ExtensionProvider>
+                  </ExtensionProvider>
+                </TimelineProvider>
+              </HomesProvider>
+            </SwarmProvider>
           </AgodaStaysProvider>
         </AirbnbStaysProvider>
       </BookingStaysProvider>

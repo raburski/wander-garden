@@ -5,10 +5,11 @@ import { isArrayOfType } from "type"
 
 export const BookingStaysContext = createContext({})
 
-const indexedDBStorageStays = new IndexedDBStorageAdapter([], 'wander-garden', 'booking', 2)
+export const bookingStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'booking')
 
 export function BookingStaysProvider({ children }) {
-    const [stays, setStays] = useSyncedStorage(indexedDBStorageStays)
+    const [stays, setStays] = useSyncedStorage(bookingStaysStorage)
+
     const value = useMemo(() => ({
         stays: [stays, setStays],
     }), [stays.length])

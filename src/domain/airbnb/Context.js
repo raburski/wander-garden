@@ -5,10 +5,10 @@ import { isArrayOfType } from "type"
 
 export const AirbnbStaysContext = createContext({})
 
-const indexedDBStorageStays = new IndexedDBStorageAdapter([], 'wander-garden', 'airbnb', 2)
+export const airbnbStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'airbnb')
 
 export function AirbnbStaysProvider({ children }) {
-    const [stays, setStays] = useSyncedStorage(indexedDBStorageStays)
+    const [stays, setStays] = useSyncedStorage(airbnbStaysStorage)
 
     const value = useMemo(() => ({
         stays: [stays, setStays],

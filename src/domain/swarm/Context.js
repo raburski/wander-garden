@@ -1,21 +1,25 @@
 import { createContext, useState, useContext, useMemo } from "react"
 import { fetchCheckins, UnauthorizedError } from './API'
-import { dateTransforms, zipsonTransforms, stringTransforms, LocalStorageAdapter, useStatePersistedCallback, useSyncedStorage } from 'storage'
+import { dateTransforms, zipsonTransforms, stringTransforms, LocalStorageAdapter, useStatePersistedCallback, useSyncedStorage, IndexedDBStorageAdapter } from 'storage'
 import moment from 'moment'
 
 export const SwarmContext = createContext({})
 
-const localStorageCheckins = new LocalStorageAdapter('swarm_checkins', '[]', zipsonTransforms)
 const localStorageLastUpdated = new LocalStorageAdapter('swarm_checkins_last_update', null, dateTransforms)
 const localStorageToken = new LocalStorageAdapter('access_token', null, stringTransforms)
 
+export const checkinsStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'checkins')
+
 export function SwarmProvider({ children }) {
-    const [checkins, setCheckins] = useSyncedStorage(localStorageCheckins)
+    const [checkins, setCheckins] = useSyncedStorage(checkinsStorage)
     const [lastUpdated, setLastUpdated] = useSyncedStorage(localStorageLastUpdated)
     const [token, setToken] = useSyncedStorage(localStorageToken)
+
+    const sortedCheckins = [...checkins]
+    sortedCheckins.sort((a, b) => b.createdAt - a.createdAt)
     
     const value = useMemo(() => ({
-        checkins: [checkins, setCheckins],
+        checkins: [sortedCheckins, setCheckins],
         lastUpdated: [lastUpdated, setLastUpdated],
         token: [token, setToken],
     }), [checkins.length, lastUpdated, token])

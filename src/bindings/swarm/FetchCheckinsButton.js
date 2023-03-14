@@ -3,6 +3,8 @@ import toast from 'react-hot-toast'
 import { useFetchCheckins } from 'domain/swarm'
 import Button from 'components/Button'
 import { VscSync } from 'react-icons/vsc'
+import { useRefreshHomes } from 'domain/homes'
+import { useRefreshTimeline } from 'domain/timeline'
 
 function toastSandwich(fnReturningPromise) {
     return () => toast.promise(
@@ -18,12 +20,16 @@ function toastSandwich(fnReturningPromise) {
 function useFetchSwarm() {
     const [isFetching, setFetching] = useState(false)
     const fetchCheckins = useFetchCheckins()
+
+    const refreshHomes = useRefreshHomes()
+    const refreshTimeline = useRefreshTimeline()
+
     function fetch() {
         setFetching(true)
         function onLoaded() {
             setFetching(false)
         }
-        return fetchCheckins().then(onLoaded)
+        return fetchCheckins().then(onLoaded).then(() => refreshHomes()).then(() => refreshTimeline())
     } 
     return [isFetching, fetch]
 }
