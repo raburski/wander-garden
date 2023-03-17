@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Wander Garden",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Companion extension for wander.garden website.",
     "icons": {
       "16": "icon/16.png",
@@ -48,6 +48,5 @@
     "web_accessible_resources": [{
       "resources": ["injectXML.js", "injectWindowExtract.js"],
       "matches": ["*://*.booking.com/*", "*://*.agoda.com/*"]
-    }],
-    "permissions": ["alarms"]
+    }]
 }

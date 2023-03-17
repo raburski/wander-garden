@@ -18,10 +18,6 @@ function ensureFullURL(url) {
 }
 
 function init(origin, onInit) {
-    window.addEventListener("DOMContentLoaded", function() {
-        showLoadingIndicator()
-    })
-
     function sendCaptureFinished(stays) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_finished', stays })
     }
@@ -37,6 +33,13 @@ function init(origin, onInit) {
         
         if (message.type === 'init' && message.start_capture) {
             console.log('Wander Garden capture initialised.')
+            if (document.readyState === "complete" || document.readyState === "loaded") {
+                showLoadingIndicator()
+            } else {
+                window.addEventListener("DOMContentLoaded", function() {
+                    showLoadingIndicator()
+                })
+            }
             onInit(sendCaptureStay, sendCaptureFinished)
         }
     }
