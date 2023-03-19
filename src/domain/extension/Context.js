@@ -5,7 +5,7 @@ import { useAgodaStays } from "domain/agoda"
 import { useRefreshHomes } from "domain/homes"
 import { useRefreshTimeline } from "domain/timeline"
 
-const CURRENT_VERSION = '0.0.3'
+const CURRENT_VERSION = '0.0.4'
 
 export const STATUS = {
     UNKNOWN: 'UNKNOWN',
