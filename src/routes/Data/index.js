@@ -91,19 +91,22 @@ function isStayMatchingPhrase(phrase) {
 
 function BookingComList({ search }) {
     const [stays] = useBookingStays()
-    const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : stays
+    const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : [...stays]
+    filteredStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
     return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={TbBrandBooking} stay={stay} key={stay.id} />) : <NoneFound />
 }
 
 function AirbnbList({ search }) {
     const [stays] = useAirbnbStays()
-    const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : stays
+    const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : [...stays]
+    filteredStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
     return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={TbBrandAirbnb} stay={stay} key={stay.id} />) : <NoneFound />
 }
 
 function AgodaList({ search }) {
     const [stays] = useAgodaStays()
-    const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : stays
+    const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : [...stays]
+    filteredStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
     return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={MdHotel} stay={stay} key={stay.id} />) : <NoneFound />
 }
 

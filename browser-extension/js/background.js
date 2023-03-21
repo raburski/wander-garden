@@ -43,6 +43,7 @@ function handleGardenMessage(message, sender) {
             })
             break
         case 'start_capture':
+            STORE.captureTabID[ORIGIN.GARDEN] = sender.tab.id
             const url = ORIGIN_URL[message.subject]
             STORE.capturedStays[message.subject] = []
             browser.tabs.create({ url }, function(newTab) {
