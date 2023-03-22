@@ -43,6 +43,13 @@ const EventsContainer = styled('div')`
     border-bottom: 1px solid ${colors.border.light};
 `
 
+const PlainGroupContainer = styled('div')`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+`
+
 function TimelineGroupHome({ group }) {
     return <EventsContainer><PhaseLabel>🏠&nbsp;&nbsp;{highlightTitle(group.highlight)}</PhaseLabel></EventsContainer>
 }
@@ -78,7 +85,7 @@ function TimelineGroup({ group, topLevel, onMoreClick, i }) {
         case GroupType.Trip:
             return <Container><TimelineGroupTrip group={group} i={i}/></Container>
         case GroupType.Plain:
-            return group.events.map(event => <GroupEvent key={event.id} event={event}/>)
+            return <PlainGroupContainer>{group.events.map(event => <GroupEvent key={event.id} event={event}/>)}</PlainGroupContainer>
         default:
             return null
     }

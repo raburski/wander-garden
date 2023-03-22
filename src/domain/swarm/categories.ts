@@ -38,7 +38,6 @@ export function isTransportation(checkin: Checkin): boolean {
 
 export function onlyNonTransportation(checkin: Checkin): boolean {
     return !isTransportation(checkin)
-    return checkin.venue ? !checkin.venue.categories.some(category => TRANSPORT_CATEGORIES.includes(category.id)) : true
 }
 
 export function onlyNonGrocery(checkin: Checkin): boolean {

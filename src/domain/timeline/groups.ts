@@ -1,9 +1,9 @@
 import moment from 'moment'
 import Stack from '../stack'
 import { isEqualLocationCity, isEqualApproximiteLocation, isEqualMetro } from '../location'
-import { checkinHasCategory } from '../swarm/categories'
+import { checkinHasCategory, onlyNonTransportation } from '../swarm/categories'
 import { getEventDate, createTransportEvent } from './events'
-import { EventType, TransportMode, GroupType, LocationHighlightType, PlainGroup } from './types'
+import { EventType, TransportMode, GroupType, LocationHighlightType, PlainGroup, CalendarDayType } from './types'
 import arrayQueryReplace, { some, any, start, end } from './arrayQueryReplace'
 import { Checkin, ensureDateString } from "../swarm"
 import { onlyUnique } from "../../array"
@@ -234,7 +234,19 @@ function uniqueEventsLocations(events: Event[]): Location[] {
     return countryLocations
 }
 
-export function getHighlightsFromEvents(events: Event[]): LocationHighlight[] {
+export function getHighlightsFromEvents(_events: Event[]): LocationHighlight[] {
+    const events = _events
+        .filter(e => e.type === EventType.Checkin)
+        .filter(e => {
+            const checkin = (e as CheckinEvent).checkin
+            return checkin ? onlyNonTransportation(checkin) : false
+        })
+
+    const DEBUG = events.find(e => {
+        if (e.type !== EventType.Checkin) return false
+        return (e as CheckinEvent).location.cc.toLocaleLowerCase() === 'si'
+    }) !== undefined
+    DEBUG && console.log('GET GIGHLIGHTS', events.map(c => (c as CheckinEvent)?.location))
     const cityCheckins: { [city: string]: number } = {}
     const stateCheckins: { [state: string]: number } = {}
     const countryCheckins: { [country: string]: number } = {}
@@ -264,6 +276,8 @@ export function getHighlightsFromEvents(events: Event[]): LocationHighlight[] {
     const states = Object.keys(stateCheckins)
     const countries = Object.keys(countryCheckins)
 
+    DEBUG && console.log('JUST ONE IS IT')
+
     const COUNTRY_CHECKIN_THRESHOLD = 6 // TODO: perhaps change to number of days?
     if (cities.length === 1) {
         const location = checkinEvents.find(e => cleanLocation(e.location.city) === cities[0])!.location
@@ -280,60 +294,76 @@ export function getHighlightsFromEvents(events: Event[]): LocationHighlight[] {
 
     /* MORE THAN SINGLE CITY/STATE/COUNTRY */
 
-    const sum = (a: number, v: number) => a + v
-    const citiesWeightSum = Object.values(cityCheckins).reduce(sum, 0)
-    const statesWeightSum = Object.values(stateCheckins).reduce(sum, 0)
-    const countriesWeightSum = Object.values(countryCheckins).reduce(sum, 0)
+    DEBUG && console.log('MORE THAN ONE IS IT')
 
-    cities.forEach(city => cityCheckins[city] = cityCheckins[city] / citiesWeightSum)
-    states.forEach(city => stateCheckins[city] = stateCheckins[city] / statesWeightSum)
-    countries.forEach(city => countryCheckins[city] = countryCheckins[city] / countriesWeightSum)
+    // const sum = (a: number, v: number) => a + v
+    // const citiesWeightSum = Object.values(cityCheckins).reduce(sum, 0)
+    // const statesWeightSum = Object.values(stateCheckins).reduce(sum, 0)
+    // const countriesWeightSum = Object.values(countryCheckins).reduce(sum, 0)
+
+    // cities.forEach(city => cityCheckins[city] = cityCheckins[city] / citiesWeightSum)
+    // states.forEach(city => stateCheckins[city] = stateCheckins[city] / statesWeightSum)
+    // countries.forEach(city => countryCheckins[city] = countryCheckins[city] / countriesWeightSum)
+
+    DEBUG && console.log('countryCheckins', countryCheckins)
 
     const highlightsWithCheckinWeights = (THRESHOLD: number, onlyCountry = false): LocationHighlight[] => {
-        const mainCities = cities.filter(city => cityCheckins[city] > THRESHOLD)
-        if (!onlyCountry && mainCities.length > 0) {
-            return mainCities
-                .map(city => checkinEvents.find(e => cleanLocation(e.location.city) === city)!.location)
-                .map(location => ({ type: LocationHighlightType.City, location }))
-        }
-        const mainStates = states.filter(state => stateCheckins[state] > THRESHOLD)
-        if (!onlyCountry && mainStates.length > 0) {
-            return mainStates
-                .map(state => checkinEvents.find(e => cleanLocation(e.location.state) === state)!.location)
-                .map(location => ({ type: LocationHighlightType.State, location }))
-        }
         const mainCountries = countries.filter(country => countryCheckins[country] > THRESHOLD)
-        if (mainCountries.length > 0) {
+        const mainStates = states.filter(state => stateCheckins[state] > THRESHOLD)
+        const mainCities = cities.filter(city => cityCheckins[city] > THRESHOLD)
+
+        const shouldPickCountries = onlyCountry || mainCountries.length > 1 || mainStates.length < 2
+        const shouldPickStates = !shouldPickCountries && mainStates.length > 1
+        const shouldPickCities = true
+
+        DEBUG && console.log('main', countries, states)
+        DEBUG && console.log('mainCities', mainCities, cityCheckins)
+        DEBUG && console.log('mainCountries', mainCountries)
+        if (shouldPickCountries) {
             return mainCountries
                 .map(country => checkinEvents.find(e => cleanLocation(e.location.country) === country)!.location)
                 .map(location => ({ type: LocationHighlightType.Country, location }))
         }
+
+        if (shouldPickStates) {
+            return mainStates
+                .map(state => checkinEvents.find(e => cleanLocation(e.location.state) === state)!.location)
+                .map(location => ({ type: LocationHighlightType.State, location }))
+        }
+
+        if (shouldPickCities) {
+            return mainCities
+                .map(city => checkinEvents.find(e => cleanLocation(e.location.city) === city)!.location)
+                .map(location => ({ type: LocationHighlightType.City, location }))
+        }
+
         return []
     }
 
-    const MAIN_WEIGHT_THRESHOLD = 0.65
+    const MAIN_WEIGHT_THRESHOLD = 15
     const mainHighlights = highlightsWithCheckinWeights(MAIN_WEIGHT_THRESHOLD)
+    DEBUG && console.log('mainHighlights', mainHighlights)
     if (mainHighlights.length > 0) {
         return mainHighlights
     }
 
-    const averageCityWeight = Object.values(cityCheckins).reduce(sum, 0) / Object.keys(cityCheckins).length
-    const averageStateWeight = Object.values(stateCheckins).reduce(sum, 0) / Object.keys(stateCheckins).length
-    const averageCountryWeight = Object.values(countryCheckins).reduce(sum, 0) / Object.keys(countryCheckins).length
+    // const averageCityWeight = Object.values(cityCheckins).reduce(sum, 0) / Object.keys(cityCheckins).length
+    // const averageStateWeight = Object.values(stateCheckins).reduce(sum, 0) / Object.keys(stateCheckins).length
+    // const averageCountryWeight = Object.values(countryCheckins).reduce(sum, 0) / Object.keys(countryCheckins).length
 
-    if (Object.keys(countryCheckins).length > 2) {
-        const weight = 1/(Object.keys(countryCheckins).length * 2)
-        const fewHighlights = highlightsWithCheckinWeights(weight, true)
-        if (fewHighlights.length > 0) {
-            return fewHighlights
-        }
-    }
+    // if (Object.keys(countryCheckins).length > 2) {
+    //     const weight = 1/(Object.keys(countryCheckins).length * 2)
+    //     const fewHighlights = highlightsWithCheckinWeights(weight, true)
+    //     if (fewHighlights.length > 0) {
+    //         return fewHighlights
+    //     }
+    // }
 
-    const maxAverageWeight = Math.max(averageCityWeight, averageCountryWeight, averageStateWeight)
-    const unknownHighlights = highlightsWithCheckinWeights(maxAverageWeight)
-    if (unknownHighlights.length > 0) {
-        return unknownHighlights
-    }
+    // const maxAverageWeight = Math.max(averageCityWeight, averageCountryWeight, averageStateWeight)
+    // const unknownHighlights = highlightsWithCheckinWeights(maxAverageWeight)
+    // if (unknownHighlights.length > 0) {
+    //     return unknownHighlights
+    // }
 
     return []
 }
@@ -402,6 +432,28 @@ function isGroupAtHomeCountry(group: Group, home?: Home): boolean {
     }
 }
 
+function isGroupAbroad(group: Group, home?: Home): boolean {
+    if (!home) { return false }
+
+    switch (group.type) {
+        case GroupType.Container:
+            const containerHighlights = (group as ContainerGroup).highlights
+            return containerHighlights.some(h => h.location.country !== home?.location.country)
+        case GroupType.Home:
+            return false
+        case GroupType.Plain:
+            return true
+        case GroupType.Trip:
+            const tripHighlights = (group as TripGroup).highlights
+            return tripHighlights.some(h => h.location.country !== home?.location.country)
+        case GroupType.Transport:
+            const hightlight = (group as TransportGroup).highlight
+            return hightlight.location.country !== home?.location.country
+        default:
+            return false 
+    }
+}
+
 function cleanUngroupedEvents() {
     // Investigate why would there by any
     return {
@@ -435,7 +487,7 @@ function groupGroups(timelineContext: Context) {
     }
 }
 
-function groupTrips(timelineContext: Context) {
+function groupTrips() {
     return {
         pattern: [
             any((group: Group, groups: Group[], context: GroupGroupsQueryContext) => {
@@ -448,22 +500,53 @@ function groupTrips(timelineContext: Context) {
     }
 }
 
+function groupPlains() {
+    return {
+        pattern: [
+            any((group: Group, groups: Group[], context: GroupGroupsQueryContext) => {
+                return group.type === GroupType.Plain
+            }),
+        ],
+        result: (groups: PlainGroup[], context: GroupGroupsQueryContext) => {
+            // TODO: this is not too pretty, perhaps refactor
+            let nyeFlag = false
+            const events = groups.flatMap(g => g.events)
+            events.reverse()
+            const filteredEvents = events.filter(e => {
+                if (e.type === EventType.Calendar && (e as CalendarEvent).dayType === CalendarDayType.NewYear) {
+                    if (nyeFlag) {
+                        return false
+                    } else {
+                        nyeFlag = true
+                        return true
+                    }
+                } else {
+                    nyeFlag = false
+                }
+                return true
+            })
+            filteredEvents.reverse()
+
+            return createPlainGroup(filteredEvents)
+        }
+    }
+}
+
 function filterGroupsBasedOnConfig(context: Context, config: TimelineConfig) {
     return (group: Group) => {
-        if (config.countryCodes && config.countryCodes.length > 0&& group.type === GroupType.Trip) {
-            const locations = getGroupHighlights(group).map(h => h.location.cc.toLowerCase())
-            if (!locations.some(cc => config.countryCodes?.includes(cc))) {
-                return false
-            }
+        if (group.type === GroupType.Plain) {
+            return true
         }
+        const locations = getGroupHighlights(group).map(h => h.location.cc.toLowerCase())
+        const compliesWithCountryCode = config.countryCodes ? locations.some(cc => config.countryCodes?.includes(cc)) : true
 
         if (config.tripsOnly && group.type === GroupType.Home) {
             return false
         } else if (config.foreignOnly) {
             const home = getHomeForDate(group.since, context.homes)
-            return !isGroupAtHomeCountry(group, home)
+            return compliesWithCountryCode && isGroupAbroad(group, home)
         }
-        return true
+        return compliesWithCountryCode
     }
 }
 
@@ -487,7 +570,8 @@ export function useTimeline(config: TimelineConfig = {}): Group[] {
     const context = { homes }
     const cleanedGroups = groups.filter(filterGroupWithoutHighlights).filter(filterGroupsBasedOnConfig(context, config))
     return arrayQueryReplace([
-        groupTrips(context)
+        groupTrips(),
+        groupPlains()
     ], cleanedGroups)
 }
 

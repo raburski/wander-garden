@@ -28,45 +28,14 @@ const PhaseLabel = styled('div')`
     }
 `
 
-const CalendarNewYearEventLabel = styled('div')`
+const CalendarEventLabel = styled('div')`
     display: flex;
     color: inherit;
     padding: 26px;
     padding-top: 12px;
-    font-size: 24px;
+    font-size: 16px;
     font-weight: bold;
     justify-content: center;
-    align-items: center;
-`
-
-const CalendarNewHomeEventContainer = styled('div')`
-    display: flex;
-    flex-direction: row;
-    color: inherit;
-    padding: 28px;
-    padding-left: 0px;
-    padding-top: 12px;
-`
-
-const CalendarNewHomeEventIcon = styled('div')`
-    font-size: 48px;
-    align-items: center;
-    margin-right: 26px;
-    margin-bottom: 2px;
-`
-
-const CalendarNewHomeEventLabel = styled('div')`
-    display: flex;
-    flex: 1;
-    font-size: 22px;
-    align-items: center;
-`
-
-const CalendarNewHomeEventDate = styled('div')`
-    display: flex;
-    font-size: 16px;
-    align-items: center;
-    margin-right: 26px;
     align-items: center;
 `
 
@@ -100,17 +69,12 @@ const TransportMode_EMOJI = {
 function CalendarEvent({ event }) {
     switch (event.dayType) {
         case CalendarDayType.NewYear:
-            return <CalendarNewYearEventLabel> -&nbsp;&nbsp;&nbsp;{moment(event.date).get('year') - 1}&nbsp;&nbsp;&nbsp;- </CalendarNewYearEventLabel>
+            return <CalendarEventLabel> 🥳&nbsp;&nbsp;&nbsp;{moment(event.date).get('year') - 1}&nbsp;&nbsp;&nbsp;🎉 </CalendarEventLabel>
         case CalendarDayType.NewHome:
             return (
-                <CalendarNewHomeEventContainer>
-                    <CalendarNewHomeEventLabel>
-                        <CalendarNewHomeEventIcon>🏡</CalendarNewHomeEventIcon> Moved from {countryFlagEmoji.get(event.from.location.cc).emoji} {event.from.location.city} to {countryFlagEmoji.get(event.to.location.cc).emoji} {event.to.location.city}
-                    </CalendarNewHomeEventLabel>
-                    <CalendarNewHomeEventDate>
-                        {moment(event.date).format('DD.MM.YYYY')}
-                    </CalendarNewHomeEventDate>
-                </CalendarNewHomeEventContainer>
+                <CalendarEventLabel>
+                    🏡&nbsp;&nbsp;&nbsp;{event.to.location.city}&nbsp;&nbsp;&nbsp;{countryFlagEmoji.get(event.to.location.cc).emoji}
+                </CalendarEventLabel>
             )
         default:
             return null
