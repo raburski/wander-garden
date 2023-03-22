@@ -3,6 +3,7 @@ import { styled } from 'goober'
 const Container = styled('div')`
     display: flex;
     flex-direction: row;
+    justify-content: center;
     padding: 14px;
 `
 

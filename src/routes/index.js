@@ -12,6 +12,7 @@ import AuthenticationFinish from './AuthenticationFinish'
 import WebsiteInfo from "./WebsiteInfo"
 import Map from './Map'
 import Extension from './Extension'
+import Trip from './Trip'
 
 export default function AllRoutes() {
     return (
@@ -23,6 +24,7 @@ export default function AllRoutes() {
         <Route path="phone" element={<Phone />}/>
         <Route path="phone-connect" element={<PhoneConnect />}/>
         <Route path="timeline" element={<Timeline />}/>
+        <Route path="timeline/:id" element={<Trip />}/>
         <Route path="badges" element={<Badges />}/>
         <Route path="data" element={<Data />}/>
         <Route path="context" element={<Context />}/>

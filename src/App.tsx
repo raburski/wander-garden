@@ -54,7 +54,7 @@ function App() {
                     <AppContainer>
                       <Router>
                         <SideBar />
-                        <RoutesContainer>
+                        <RoutesContainer id="routes-container">
                           <Routes />
                         </RoutesContainer>
                       </Router>

@@ -434,6 +434,19 @@ function groupGroups(timelineContext: Context) {
     }
 }
 
+function groupTrips(timelineContext: Context) {
+    return {
+        pattern: [
+            any((group: Group, groups: Group[], context: GroupGroupsQueryContext) => {
+                return group.type !== GroupType.Plain && group.type !== GroupType.Container
+            }),
+        ],
+        result: (groups: Group[], context: GroupGroupsQueryContext) => {
+            return createContainerGroup(groups)
+        }
+    }
+}
+
 function filterGroupsBasedOnConfig(context: Context, config: TimelineConfig) {
     return (group: Group) => {
         if (config.tripsOnly && group.type === GroupType.Home) {
@@ -444,6 +457,13 @@ function filterGroupsBasedOnConfig(context: Context, config: TimelineConfig) {
         }
         return true
     }
+}
+
+function filterGroupWithoutHighlights(group: Group) {
+    if (group.type === GroupType.Trip) {
+        return (group as TripGroup).highlights.length > 0
+    }
+    return true
 }
 
 export function createTimelineGroups(events: Event[] = [], context: Context = {homes: []}): Group[] {
@@ -457,9 +477,9 @@ export function useTimeline(config: TimelineConfig = {}): Group[] {
     const [groups] = useTimelineGroups()
     const [homes] = useHomes()
     const context = { homes }
-    const cleanedGroups = groups.filter(filterGroupsBasedOnConfig(context, config))
+    const cleanedGroups = groups.filter(filterGroupWithoutHighlights).filter(filterGroupsBasedOnConfig(context, config))
     return arrayQueryReplace([
-        groupGroups(context)
+        groupTrips(context)
     ], cleanedGroups)
 }
 
