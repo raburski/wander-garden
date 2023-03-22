@@ -20,6 +20,7 @@ import { useHomes } from "domain/homes"
 interface TimelineConfig {
     tripsOnly?: boolean
     foreignOnly?: boolean
+    countryCodes?: string[]
 }
 
 function firstEventsLocation(events: Event[]): Location | undefined {
@@ -449,6 +450,13 @@ function groupTrips(timelineContext: Context) {
 
 function filterGroupsBasedOnConfig(context: Context, config: TimelineConfig) {
     return (group: Group) => {
+        if (config.countryCodes && config.countryCodes.length > 0&& group.type === GroupType.Trip) {
+            const locations = getGroupHighlights(group).map(h => h.location.cc.toLowerCase())
+            if (!locations.some(cc => config.countryCodes?.includes(cc))) {
+                return false
+            }
+        }
+
         if (config.tripsOnly && group.type === GroupType.Home) {
             return false
         } else if (config.foreignOnly) {

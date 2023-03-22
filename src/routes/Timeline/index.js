@@ -100,13 +100,12 @@ function TimelineContent({ countryCodes }) {
     const [params] = useSearchParams()
     const selectedCountryCode = params.get('cc')?.toLowerCase()
 
-    const timelineConfig = { tripsOnly: segmentOptionSetting > 0, foreignOnly: segmentOptionSetting === 2 }
+    const timelineConfig = {
+        tripsOnly: segmentOptionSetting > 0,
+        foreignOnly: segmentOptionSetting === 2,
+        countryCodes: selectedCountryCode ? [selectedCountryCode] : undefined,
+    }
     const timeline = useTimeline(timelineConfig)
-    const filteredTimeline = selectedCountryCode ? timeline.filter(group => {
-        if (group.type === GroupType.Plain) { return true }
-        const locations = getGroupHighlights(group).map(h => h.location.cc)
-        return locations.some(cc => cc.toLowerCase() === selectedCountryCode)
-    }) : timeline
 
     return (
         <>
@@ -116,7 +115,7 @@ function TimelineContent({ countryCodes }) {
                 selectedSegmentIndex={segmentOptionSetting}
                 onSetSegmentIndex={setSegmentOptionSetting}
             />
-            <Timeline timeline={filteredTimeline} />
+            <Timeline timeline={timeline} />
         </>
     )
 }
