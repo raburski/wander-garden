@@ -7,7 +7,6 @@ const ORIGIN = {
     AGODA: 'agoda_extension'
 }
 
-const browser = chrome
 const STORE = {
     captureTabID: {},
     capturedStays: {},
@@ -19,7 +18,7 @@ function sendMessage(message) {
     const tabID = STORE.captureTabID[message.target]
     if (tabID) {
         console.log('SEND', message)
-        browser.tabs.sendMessage(tabID, message)
+        chrome.tabs.sendMessage(tabID, message)
     } else {
         console.log('Tab not found for', message.target)
     }
@@ -46,7 +45,7 @@ function handleGardenMessage(message, sender) {
             STORE.captureTabID[ORIGIN.GARDEN] = sender.tab.id
             const url = ORIGIN_URL[message.subject]
             STORE.capturedStays[message.subject] = []
-            browser.tabs.create({ url }, function(newTab) {
+            chrome.tabs.create({ url }, function(newTab) {
                 STORE.captureTabID[message.subject] = newTab.id
             })
             break
@@ -67,8 +66,8 @@ function handleExtensionMessage(message) {
             STORE.capturedStays[message.source].push(message.stay)
             break
         case 'capture_finished':
-            browser.tabs.remove(STORE.captureTabID[message.source])
-            browser.tabs.update(STORE.captureTabID[ORIGIN.GARDEN], { active: true })
+            chrome.tabs.remove(STORE.captureTabID[message.source])
+            chrome.tabs.update(STORE.captureTabID[ORIGIN.GARDEN], { active: true })
             STORE.captureTabID[message.source] = undefined
             const stays = !message.stays ? STORE.capturedStays[message.source] : message.stays
             sendMessage({
@@ -91,4 +90,4 @@ function onMessage(message, sender) {
     }
 }
 
-browser.runtime.onMessage.addListener(onMessage)
+chrome.runtime.onMessage.addListener(onMessage)

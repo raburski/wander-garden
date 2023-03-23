@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useMemo } from "react"
-import { jsonTransforms, useStatePersistedCallback, LocalStorageAdapter } from '../storage'
+import { jsonTransforms, LocalStorageAdapter, useSyncedStorage } from '../storage'
 
 type Settings = {[name: string]: any}
 type ProviderProps = {[name: string]: any}
@@ -9,11 +9,9 @@ export const SettingsContext = createContext<Settings>({})
 const Provider = SettingsContext.Provider
 
 const localStorageSettings = new LocalStorageAdapter<Settings>('settings', '{}', jsonTransforms)
-const initialLocalStorageSettingsValue = localStorageSettings.get()
 
 export function SettingsProvider({ children }: ProviderProps): JSX.Element {
-    const [settings, setSettingsState] = useState(initialLocalStorageSettingsValue)
-    const setSettings = useStatePersistedCallback(settings, setSettingsState, localStorageSettings.set.bind(localStorageSettings))
+    const [settings, setSettings] = useSyncedStorage(localStorageSettings)
 
     const value = useMemo(() => ({
         settings: [settings, setSettings]
