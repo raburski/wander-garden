@@ -1,7 +1,10 @@
 import { styled } from 'goober'
 import { Link, useResolvedPath, useMatch } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
-const StyledLink = styled(Link)`
+const MotionLink = motion(Link)
+
+const StyledLink = styled(MotionLink)`
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -32,6 +35,9 @@ const Separator = styled('div')`
     width: 10px;
 `
 
+const WHILE_HOVER = {scale:1.02}
+const WHILE_TAP = {scale:0.98}
+
 export default function PillLink({ icon, children, to, ...props }) {
     const resolved = useResolvedPath(to)
     const match = useMatch({ path: resolved.pathname + '/*' }) && typeof to === 'string'
@@ -41,6 +47,8 @@ export default function PillLink({ icon, children, to, ...props }) {
         <StyledLink
           style={match ? { backgroundColor: '#4fa177', color: 'white' } : {}}
           to={to}
+          whileHover={WHILE_HOVER}
+          whileTap={WHILE_TAP}
           {...props}
         >
             {PillIcon ? <LinkIcon><PillIcon /></LinkIcon> : null}

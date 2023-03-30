@@ -127,11 +127,11 @@ function TimelineContent({ countryCodes }) {
     )
 }
 
-export default function TimelinePage() {
+export default function TimelinePage(props) {
     const [countryCodes] = useVisitedCountryCodes()
 
     return (
-        <Page header="Timeline">
+        <Page header="Timeline" {...props}>
             {countryCodes.length === 0 ? <NoTimelineContent /> : <TimelineContent countryCodes={countryCodes}/>}
         </Page>
     )

@@ -1,6 +1,7 @@
 import { styled } from "goober"
+import { motion, AnimatePresence } from "framer-motion"
 
-const ModalContainer = styled('div')`
+const ModalContainer = styled(motion.div)`
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -13,7 +14,7 @@ const ModalContainer = styled('div')`
     background-color: rgba(0,0,0,0.5);
 `
 
-const ModalWindow = styled('div')`
+const ModalWindow = styled(motion.div)`
     align-self: center;
     display: flex;
     flex-direction: column;
@@ -33,15 +34,26 @@ function onWindowClick(e) {
 }
 
 export default function Modal({ isOpen, onClickAway, children }) {
-
-    if (!isOpen) {
-        return null
-    }
     return (
-        <ModalContainer onClick={onClickAway}>
-            <ModalWindow onClick={onWindowClick}>
-                {children}
-            </ModalWindow>
-        </ModalContainer>
+        <AnimatePresence>
+            {isOpen ? 
+                <ModalContainer 
+                    key="modal"
+                    onClick={onClickAway}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                >
+                    <ModalWindow
+                        onClick={onWindowClick}
+                        initial={{y: 200}}
+                        animate={{y: 0}}
+                        exit={{y: 2000}}
+                    >
+                        {children}
+                    </ModalWindow>
+                </ModalContainer>
+            : null}
+        </AnimatePresence>
     )
 }
