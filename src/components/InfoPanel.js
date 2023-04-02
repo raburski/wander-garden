@@ -11,11 +11,13 @@ const Container = styled('div')`
     margin-right: 42px;
     margin-left: 22px;
     white-space: pre-wrap;
+    color: ${props => props.theme.text};
 `
 
 const Title = styled('div')`
     font-weight: bold;
     font-size: 18px;
+    color: ${props => props.theme.text};
 `
 
 const Text = styled('div')``

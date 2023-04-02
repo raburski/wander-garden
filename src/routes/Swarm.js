@@ -43,6 +43,7 @@ const TextContainer = styled('div')`
     padding: 4px;
     margin-bottom: 12px;
     font-size: 14px;
+    color: ${props => props.theme.text};
 `
 
 function ButtonsPanel({ text, children, ...props }) {

@@ -22,10 +22,10 @@ const ModalWindow = styled(motion.div)`
     min-width: 200px;
     max-width: 90%;
     max-height: 90%;
-    background-color: white;
+    background-color: ${props => props.theme.background.default};
     border-radius: 6px;
     overflow: scroll;
-    box-shadow: 0px 2px 10px rgb(100,100,100);
+    box-shadow: 0px 2px 10px ${props => props.theme.shadow};
 `
 
 function onWindowClick(e) {

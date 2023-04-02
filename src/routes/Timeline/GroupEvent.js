@@ -15,7 +15,7 @@ import { EventType, TransportMode, GroupType, CalendarDayType } from 'domain/tim
 
 const PhaseLabel = styled('div')`
     display: flex;
-    color: inherit;
+    color: ${props => props.theme.text};
     cursor: pointer;
     padding: 2px;
     padding-left: 4px;
@@ -24,13 +24,13 @@ const PhaseLabel = styled('div')`
     font-size: 14px;
 
     &:hover {
-        background-color: ${colors.neutral.highlight};
+        background-color: ${props => props.theme.background.highlight};
     }
 `
 
 const CalendarEventLabel = styled('div')`
     display: flex;
-    color: inherit;
+    color: ${props => props.theme.text};
     padding: 26px;
     padding-top: 12px;
     font-size: 16px;
@@ -41,7 +41,7 @@ const CalendarEventLabel = styled('div')`
 
 const TransportLabel = styled('div')`
     display: flex;
-    color: inherit;
+    color: ${props => props.theme.text};
     cursor: pointer;
     padding-left: 4px;
     padding-right: 4px;
@@ -49,7 +49,7 @@ const TransportLabel = styled('div')`
     font-size: 20px;
 
     &:hover {
-        background-color: ${colors.neutral.highlight};
+        background-color: ${props => props.theme.background.highlight};
     }
 `
 

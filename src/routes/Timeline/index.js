@@ -22,7 +22,7 @@ import GroupEvent from "./GroupEvent"
 
 const PhaseLabel = styled('div')`
     display: flex;
-    color: inherit;
+    color: ${props => props.theme.text};
     cursor: pointer;
     padding: 2px;
     padding-left: 4px;
@@ -31,7 +31,7 @@ const PhaseLabel = styled('div')`
     font-size: 14px;
 
     &:hover {
-        background-color: ${colors.neutral.highlight};
+        background-color: ${props => props.theme.background.highlight};
     }
 `
 
@@ -40,7 +40,7 @@ const EventsContainer = styled('div')`
     padding: 12px;
     flex-wrap: wrap;
     align-items: center;
-    border-bottom: 1px solid ${colors.border.light};
+    border-bottom: 1px solid ${props => props.theme.border};
 `
 
 const PlainGroupContainer = styled('div')`

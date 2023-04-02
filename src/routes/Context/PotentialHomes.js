@@ -8,7 +8,7 @@ const HomeContainer = styled('div')`
     display: flex;
     flex-direction: row;
     align-items: center;
-    border-bottom: 1px solid #ebebeb;
+    border-bottom: 1px solid ${props => props.theme.border};
     padding: 10px;
     padding-left: 14px;
     margin-bottom: -1px;
@@ -16,6 +16,7 @@ const HomeContainer = styled('div')`
 
 const HomeName = styled('div')`
     font-weight: bold;
+    color: ${props => props.theme.text};
 `
 
 const HomeState = styled('div')`

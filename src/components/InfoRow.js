@@ -4,11 +4,13 @@ import { Row } from './Panel'
 const Title = styled('div')`
     font-size: 15px;
     margin-top: -1px;
+    color: ${props => props.theme.text};
 `
 
 const Subtitle = styled('div')`
     font-size: 10px;
-    color: gray;
+    // color: gray;
+    color: ${props => props.theme.text};
 `
 
 const TextContainer = styled('div')`
@@ -22,6 +24,7 @@ const Right = styled('div')`
     margin-right: 6px;
     margin-bottom: -4px;
     font-size: 12px;
+    color: ${props => props.theme.text};
 `
 
 const Stretch = styled('div')`
@@ -34,6 +37,7 @@ const IconContainer = styled('div')`
     flex: 0;
     align-items: center;
     justify-content: center;
+    color: ${props => props.theme.text};
 `
 
 

@@ -11,11 +11,13 @@ const CountryName = styled('div')`
     font-size: 14px;
     margin-left: 8px;
     margin-top: -1px;
+    color: ${props => props.theme.text};
 `
 
 const Right = styled('div')`
     margin-right: 6px;
     margin-bottom: -4px;
+    color: ${props => props.theme.text};
 `
 
 const Stretch = styled('div')`

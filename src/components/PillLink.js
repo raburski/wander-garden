@@ -14,15 +14,15 @@ const StyledLink = styled(MotionLink)`
     padding-right: 18px;
     border-radius: 26px;
     text-decoration: none;
-    color: black;
+    color: ${props => props.theme.text};
     font-family: Primary;
     font-size: 15px;
 
     &:hover {
-        background-color: #ebf2ee;
+        background-color: ${props => props.theme.primary.highlight};
     }
     &:active {
-        background-color: #d5ebe0;
+        background-color: ${props => props.theme.primary.active};
     }
 `
 

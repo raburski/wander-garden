@@ -28,6 +28,7 @@ const Title = styled('div')`
     font-size: 15px;
     font-weight: bold;
     margin-bottom: 2px;
+    color: ${props => props.theme.text};
 `
 
 const Subtitle = styled('div')`
@@ -35,6 +36,7 @@ const Subtitle = styled('div')`
     flex: 1;
     font-size: 11px;
     margin-bottom: 2px;
+    color: ${props => props.theme.text};
 `
 
 const ActionsContent = styled('div')`
@@ -62,19 +64,8 @@ const Range = styled('div')`
     margin-bottom: 4px;
 `
 
-export type GroupBarProps = {
-    countryCodes: string[],
-    title?: string,
-    subtitle?: string,
-    days?: string,
-    range?: string,
-    to?: any,
-    onClick?: () => void,
-    onMoreClick?: () => void
-}
-
-export default function GroupBar({ countryCodes = [], to, title, subtitle, onClick, days, range, onMoreClick }: GroupBarProps): JSX.Element {
-    const flags = countryCodes.map((code: string) => countryFlagEmoji.get(code)?.emoji).filter(Boolean).map((emoji, index) => {
+export default function GroupBar({ countryCodes = [], to, title, subtitle, onClick, days, range, onMoreClick }) {
+    const flags = countryCodes.map((code) => countryFlagEmoji.get(code)?.emoji).filter(Boolean).map((emoji, index) => {
         if (index == 0) {
             return <FirstFlag key={countryCodes[index]}>{emoji}</FirstFlag>
         } else {

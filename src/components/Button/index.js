@@ -1,7 +1,7 @@
 import { styled } from 'goober'
 import colors from '../../colors'
 
-const defaultStyle = `
+const ButtonContainer = styled('button')`
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -9,7 +9,7 @@ const defaultStyle = `
     align-items: center;
     align-self: flex-start;
 
-    border: 1px solid ${colors.border.normal};
+    border: 1px solid ${props => props.theme.border};
     border-radius: .5rem;
     font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
     font-size: .875rem;
@@ -19,29 +19,17 @@ const defaultStyle = `
     text-align: center;
     text-decoration: none #D1D5DB solid;
     text-decoration-thickness: auto;
-`
-
-const EnabledButton = styled('button')`
-    ${defaultStyle}
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    background-color: white;
-    color: black;
-    cursor: pointer;
+    box-shadow: 0 2px 0px 0 ${props => props.theme.shadow};
+    background-color: ${props => props.disabled ? props.theme.background.active : ( props.selected ? props.theme.background.highlight : props.theme.background.default)};
+    color: ${props => props.disbaled ? '#545454' : props.theme.text};
+    cursor: ${props => props.disabled ? 'default' : 'pointer'};
 
     &:hover {
-        background-color: ${colors.neutral.highlight};
+        background-color: ${props => props.theme.background.highlight};
     }
     &:active {
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) inset;
+        box-shadow: 0 1px 2px 0 ${props => props.theme.shadow} inset;
     }
-`
-
-const DisabledButton = styled('button')`
-    ${defaultStyle}
-    border: 1px solid ${colors.border.normal};
-    background-color: ${colors.border.normal};
-    color: #545454;
-    cursor: default;
 `
 
 const IconContainer = styled('div')`
@@ -57,19 +45,17 @@ const Separator = styled('div')`
 
 const selectedStyle = { backgroundColor: colors.neutral.highlight }
 
-export default function Button({ disabled = false, icon = undefined, selected = false, style = {}, children, onClick = () => {}, ...props }) {
-    const Component = disabled ? DisabledButton : EnabledButton
-    const componentStyles = selected ? { ...selectedStyle, ...style } : style
+export default function Button({ disabled = false, icon = undefined, selected = false, children, onClick = () => {}, ...props }) {
     const IconComponent = icon
     const noPropagateClick = (event) => {
         event.stopPropagation()
         onClick(event)
     }
     return (
-        <Component disabled={disabled} style={componentStyles} onClick={noPropagateClick} {...props}>
+        <ButtonContainer disabled={disabled} selected={selected} onClick={noPropagateClick} {...props}>
             {icon ? <IconContainer><IconComponent size={16} /></IconContainer> : null}
             {icon && children ? <Separator /> : null}
             {children}
-        </Component>
+        </ButtonContainer>
     )
 }

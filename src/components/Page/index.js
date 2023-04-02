@@ -24,6 +24,7 @@ const Header = styled('h1')`
     padding-bottom: 4px;
     margin-bottom: 18px;
     margin-top: -4px;
+    color: ${props => props.theme.text};
 `
 
 export default function Page({ children, header, showBackButton = false, ...props }) {

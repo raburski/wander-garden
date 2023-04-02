@@ -7,6 +7,7 @@ const Container = styled('div')`
     padding: 12px;
     padding-left: 16px;
     margin: 4px;
+    color: ${props => props.theme.text};
 `
 
 export default function NoneFound() {

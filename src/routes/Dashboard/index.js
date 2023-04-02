@@ -20,6 +20,7 @@ const Text = styled('p')`
     padding-left: 14px;
     margin-bottom: 2px;
     font-size: 14px;
+    color: ${props => props.theme.text}
 `
 
 function NoData() {
@@ -52,6 +53,7 @@ const CurrentContent = styled('div')`
     align-items: center;
     padding-right: 12px;
     padding-left: 8px;
+    color: ${props => props.theme.text};
 `
 
 function Current() {

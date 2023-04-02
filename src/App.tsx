@@ -13,12 +13,13 @@ import { ExtensionProvider } from "domain/extension"
 import { BookingStaysProvider } from 'domain/bookingcom'
 import { AirbnbStaysProvider } from 'domain/airbnb'
 import { AgodaStaysProvider } from 'domain/agoda'
+import { ThemeProvider, useThemeColors } from "domain/theme"
 import { SettingsProvider } from './settings'
 import mapboxgl from 'mapbox-gl'
  
 mapboxgl.accessToken = 'pk.eyJ1IjoicmFidXJza2kiLCJhIjoiR2ltZ1pkSSJ9.BKiZ33LQkwsLgyyrAw4EyQ';
 
-setupGoober(React.createElement)
+setupGoober(React.createElement, undefined, useThemeColors)
 if (/windows/i.test(navigator.userAgent)) {
   polyfillCountryFlagEmojis()
   document.body.classList.add('windows-flags')
@@ -43,31 +44,33 @@ const RoutesContainer = styled('div')`
 
 function App() {
   return (
-    <SettingsProvider>
-      <BookingStaysProvider>
-        <AirbnbStaysProvider>
-          <AgodaStaysProvider>
-            <SwarmProvider>
-              <HomesProvider>
-                <TimelineProvider>
-                  <ExtensionProvider>
-                    <AppContainer>
-                      <Router>
-                        <SideBar />
-                        <RoutesContainer id="routes-container">
-                          <Routes />
-                        </RoutesContainer>
-                      </Router>
-                      <Toaster />
-                    </AppContainer>
-                  </ExtensionProvider>
-                </TimelineProvider>
-              </HomesProvider>
-            </SwarmProvider>
-          </AgodaStaysProvider>
-        </AirbnbStaysProvider>
-      </BookingStaysProvider>
-    </SettingsProvider>
+    <ThemeProvider>
+      <SettingsProvider>
+        <BookingStaysProvider>
+          <AirbnbStaysProvider>
+            <AgodaStaysProvider>
+              <SwarmProvider>
+                <HomesProvider>
+                  <TimelineProvider>
+                    <ExtensionProvider>
+                      <AppContainer>
+                        <Router>
+                          <SideBar />
+                          <RoutesContainer id="routes-container">
+                            <Routes />
+                          </RoutesContainer>
+                        </Router>
+                        <Toaster />
+                      </AppContainer>
+                    </ExtensionProvider>
+                  </TimelineProvider>
+                </HomesProvider>
+              </SwarmProvider>
+            </AgodaStaysProvider>
+          </AirbnbStaysProvider>
+        </BookingStaysProvider>
+      </SettingsProvider>
+    </ThemeProvider>
   );
 }
 

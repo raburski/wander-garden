@@ -12,7 +12,7 @@ const BadgeContainerDefault = styled('div')`
     cursor: pointer;
 
     &:hover {
-        background-color: ${colors.neutral.highlight};
+        background-color: ${props => props.theme.background.highlight};
     }
 `
 
@@ -22,10 +22,10 @@ const BadgeContainerInactive = styled(BadgeContainerDefault)`
 `
 
 const BadgeContainerActive = styled(BadgeContainerDefault)`
-    background-color: ${colors.neutral.highlight};
+    background-color: ${props => props.theme.background.highlight};
 
     &:hover {
-        background-color: ${colors.neutral.dark};
+        background-color: ${props => props.theme.primary.highlight};
     }
 `
 
@@ -37,6 +37,7 @@ const BadgeIcon = styled('div')`
 const BadgeName = styled('div')`
     display: flex;
     font-size: 10px;
+    color: ${props => props.theme.text};
 `
 
 function BadgeContainer({ active, inactive, ...props }) {

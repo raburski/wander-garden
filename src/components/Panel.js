@@ -9,17 +9,18 @@ const Container = styled('div')`
     padding-left: 0px;
     margin-bottom: 12px;
     min-width: 400px;
+    color: ${props => props.theme.text};
 `
 const Content = styled('div')`
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background-color: ${props => props.theme.background.default};
     white-space: pre-wrap;
     
     border-radius: 8px;
     overflow: hidden;
-    border: 1px solid ${colors.border.normal};
-    box-shadow: 0px 2px 3px rgba(22, 22, 26, 0.05);
+    border: 1px solid ${props => props.theme.border};
+    box-shadow: 0px 2px 3px ${props => props.theme.shadow};
 `
 
 const Header = styled('div')`
@@ -29,6 +30,7 @@ const Header = styled('div')`
     font-size: 20px;
     padding: 8px;
     padding-left: 12px;
+    color: ${props => props.theme.text};
 `
 
 export default function Panel({ style, header, flex, children, spacing, margin, contentStyle = {}, ...props }) {
@@ -49,7 +51,7 @@ export const StaticRow = styled('div')`
     flex-direction: row;
     align-items: center;
 
-    border-bottom: 1px solid #ebebeb;
+    border-bottom: 1px solid ${props => props.theme.border};
     padding: 4px;
     padding-left: 10px;
     margin-bottom: -1px;
@@ -60,19 +62,19 @@ export const LinkRow = styled(Link)`
     flex-direction: row;
     align-items: center;
 
-    border-bottom: 1px solid #ebebeb;
+    border-bottom: 1px solid ${props => props.theme.border};
     border-top: 1px solid transparent;
     padding: 4px;
     padding-left: 10px;
     margin-bottom: -1px;
 
-    color: inherit;
+    color: ${props => props.theme.text};
     text-decoration: none;
     cursor: pointer;
 
     &:hover {
-        border-top: 1px solid #ebebeb;
-        background-color: ${colors.neutral.highlight};
+        border-top: 1px solid ${props => props.theme.border};
+        background-color: ${props => props.theme.background.highlight};
     }
 `
 
@@ -81,19 +83,19 @@ export const ClickRow = styled('div')`
     flex-direction: row;
     align-items: center;
 
-    border-bottom: 1px solid #ebebeb;
+    border-bottom: 1px solid ${props => props.theme.border};
     border-top: 1px solid transparent;
     padding: 4px;
     padding-left: 10px;
     margin-bottom: -1px;
 
-    color: inherit;
+    color: ${props => props.theme.text};
     text-decoration: none;
     cursor: pointer;
 
     &:hover {
-        border-top: 1px solid ${colors.neutral.light};
-        background-color: ${colors.neutral.light};
+        border-top: 1px solid ${props => props.theme.border};
+        background-color: ${props => props.theme.background.highlight};
     }
 `
 

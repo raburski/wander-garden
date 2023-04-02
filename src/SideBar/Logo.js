@@ -1,5 +1,6 @@
 import { styled } from 'goober'
 import { motion } from 'framer-motion'
+import { useThemeColors } from 'domain/theme'
 
 const Container = styled(motion.div)`
     display: flex;
@@ -18,13 +19,10 @@ const Name = styled('div')`
     font-weight: bolder;
     font-size: 24px;
     line-height: 24px;
-    color: black;
+    color: ${props => props.theme.text};
 `
 
-const LEAF_VARIANTS = {
-    rest: { fill: '#000000' },
-    hover: { fill: '#4fa177' },
-}
+
 
 const LOGO_VARIANTS = {
     rest: { scale: 1 },
@@ -33,9 +31,16 @@ const LOGO_VARIANTS = {
 }
 
 function Icon() {
+    const colors = useThemeColors()
+
+    const LEAF_VARIANTS = {
+        rest: { fill: colors.text },
+        hover: { fill: '#4fa177' },
+    }
+
     return  (
         <motion.svg version="1.0" xmlns="http://www.w3.org/2000/svg" variants={LOGO_VARIANTS} width={64} viewBox="0 0 693.000000 693.000000" preserveAspectRatio="xMidYMid meet">
-            <g transform="translate(0.000000,693.000000) scale(0.100000,-0.100000)" >
+            <g fill={colors.text} transform="translate(0.000000,693.000000) scale(0.100000,-0.100000)" >
                 <path d="M3355 6840 c-219 -34 -403 -175 -513 -395 -58 -116 -65 -154 -71
                 -374 l-6 -204 -110 -22 c-144 -30 -240 -65 -239 -87 2 -21 125 -208 137 -208
                 5 0 39 13 75 29 118 52 171 50 192 -5 21 -55 -20 -88 -145 -115 -33 -7 -62

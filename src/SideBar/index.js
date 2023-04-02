@@ -35,7 +35,7 @@ const TextSeparator = styled('div')`
     padding-left: 28px;
     margin-top: 18px;
     text-decoration: none;
-    color: black;
+    color: ${props => props.theme.text};
     font-family: "Courier Prime";
     font-size: 16px;
     font-weight: bold;
@@ -64,7 +64,7 @@ function MountainSeparator() {
 
 const StyledNotes = styled('div')`
   font-size: 11px;
-  color: ${colors.neutral.dark};
+  color: ${props => props.theme.text};
   align-self: center;
   text-align: center;
   margin-top: 22px;
