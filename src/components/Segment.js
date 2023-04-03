@@ -20,12 +20,15 @@ function getSegmentStyle(index, length) {
     }
 }
 
-export default function Segment({ selectedIndex, style, titles = [], onClick }) {
+export default function Segment({ selectedIndex, style, titles = [], icons = [], onClick }) {
+    const items = Array(Math.max(titles.length, icons.length)).fill(0)
     return (
         <SegmentContainer style={{style}}>
-            {titles.map((title, index) => {
-                const segmentStyle = getSegmentStyle(index, titles.length)
-                return <Button selected={index === selectedIndex} key={title} style={segmentStyle} onClick={() => onClick && onClick(index)}>{title}</Button>
+            {items.map((_, index) => {
+                const title = titles[index]
+                const icon = icons[index]
+                const segmentStyle = getSegmentStyle(index, items.length)
+                return <Button icon={icon} selected={index === selectedIndex} key={title} style={segmentStyle} onClick={() => onClick && onClick(index)}>{title}</Button>
             })}
         </SegmentContainer>
     )

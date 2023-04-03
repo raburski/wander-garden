@@ -27,6 +27,11 @@ const Header = styled('h1')`
     color: ${props => props.theme.text};
 `
 
-export default function Page({ children, header, showBackButton = false, ...props }) {
-    return <Container {...props}><Header>{showBackButton ? <BackButton /> : null}{header}</Header>{children}</Container>
+const Separator = styled('div')`
+    display: flex;
+    flex: 1;
+`
+
+export default function Page({ children, header, showBackButton = false, right = null, ...props }) {
+    return <Container {...props}><Header>{showBackButton ? <BackButton /> : null}{header}<Separator />{right}</Header>{children}</Container>
 }

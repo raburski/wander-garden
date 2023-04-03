@@ -44,8 +44,8 @@ const RoutesContainer = styled('div')`
 
 function App() {
   return (
-    <ThemeProvider>
-      <SettingsProvider>
+    <SettingsProvider>
+      <ThemeProvider>
         <BookingStaysProvider>
           <AirbnbStaysProvider>
             <AgodaStaysProvider>
@@ -69,8 +69,8 @@ function App() {
             </AgodaStaysProvider>
           </AirbnbStaysProvider>
         </BookingStaysProvider>
-      </SettingsProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </SettingsProvider>
   );
 }
 

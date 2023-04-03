@@ -1,6 +1,7 @@
 import { styled } from 'goober'
 import { motion } from 'framer-motion'
-import { useThemeColors } from 'domain/theme'
+import { useColorMode, useTheme, useThemeColors } from 'domain/theme'
+import { ColorTheme } from 'domain/theme/types'
 
 const Container = styled(motion.div)`
     display: flex;
@@ -22,20 +23,23 @@ const Name = styled('div')`
     color: ${props => props.theme.text};
 `
 
-
-
 const LOGO_VARIANTS = {
-    rest: { scale: 1 },
-    hover: { scale: 1.06 },
-    press: { scale: 1 }
+    [`${ColorTheme.Dark}_rest`]: { scale: 1 },
+    [`${ColorTheme.Dark}_hover`]: { scale: 1.06 },
+    [`${ColorTheme.Dark}_press`]: { scale: 1 },
+    [`${ColorTheme.Light}_rest`]: { scale: 1 },
+    [`${ColorTheme.Light}_hover`]: { scale: 1.06 },
+    [`${ColorTheme.Light}_press`]: { scale: 1 },
 }
 
 function Icon() {
     const colors = useThemeColors()
 
     const LEAF_VARIANTS = {
-        rest: { fill: colors.text },
-        hover: { fill: '#4fa177' },
+        [`${ColorTheme.Dark}_rest`]: { fill: colors.text },
+        [`${ColorTheme.Dark}_hover`]: { fill: '#4fa177' },
+        [`${ColorTheme.Light}_rest`]: { fill: colors.text },
+        [`${ColorTheme.Light}_hover`]: { fill: '#4fa177' },
     }
 
     return  (
@@ -108,8 +112,9 @@ function Icon() {
 }
 
 export default function Logo() {
+    const theme = useTheme()
     return (
-        <Container initial="rest" whileHover="hover" whileTap="press">
+        <Container animate={`${theme}_rest`} whileHover={`${theme}_hover`} whileTap={`${theme}_press`}>
             <Icon />
             <Name>Wander<br/>Garden</Name>
         </Container>
