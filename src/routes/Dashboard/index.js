@@ -11,7 +11,6 @@ import { Column, Row } from 'components/container'
 import countryFlagEmoji from "country-flag-emoji"
 import { formattedLocation } from 'domain/location'
 import { useVisitedCountryCodes } from 'domain/timeline'
-import ThemeChange from './ThemeChange'
 
 const Text = styled('p')`
     display: flex;
@@ -88,7 +87,7 @@ function AuthenticatedDashboard() {
 export default function Dashboard() {
     const [countries] = useVisitedCountryCodes()
     return (
-        <Page header="Dashboard" right={<ThemeChange />}>
+        <Page header="Dashboard">
             {countries.length ? <AuthenticatedDashboard /> : <Welcome />}
         </Page>
     )

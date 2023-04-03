@@ -45,7 +45,7 @@ const Separator = styled('div')`
 
 const selectedStyle = { backgroundColor: colors.neutral.highlight }
 
-export default function Button({ disabled = false, icon = undefined, selected = false, children, onClick = () => {}, ...props }) {
+export default function Button({ disabled = false, icon = undefined, selected = false, iconSize = 16, children, onClick = () => {}, ...props }) {
     const IconComponent = icon
     const noPropagateClick = (event) => {
         event.stopPropagation()
@@ -53,7 +53,7 @@ export default function Button({ disabled = false, icon = undefined, selected = 
     }
     return (
         <ButtonContainer disabled={disabled} selected={selected} onClick={noPropagateClick} {...props}>
-            {icon ? <IconContainer><IconComponent size={16} /></IconContainer> : null}
+            {icon ? <IconContainer><IconComponent size={iconSize} /></IconContainer> : null}
             {icon && children ? <Separator /> : null}
             {children}
         </ButtonContainer>

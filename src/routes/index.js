@@ -9,10 +9,11 @@ import Dashboard from './Dashboard'
 import Phone from './Phone'
 import PhoneConnect from './PhoneConnect'
 import AuthenticationFinish from './AuthenticationFinish'
-import WebsiteInfo from "./WebsiteInfo"
+import About from "./About"
 import Map from './Map'
 import Extension from './Extension'
 import Trip from './Trip'
+import Settings from "./Settings"
 
 export default function AllRoutes() {
     return (
@@ -29,7 +30,8 @@ export default function AllRoutes() {
         <Route path="data" element={<Data />}/>
         <Route path="context" element={<Context />}/>
         <Route path="map" element={<Map />}/>
-        <Route path="info" element={<WebsiteInfo />}/>
+        <Route path="info" element={<About />}/>
+        <Route path="settings" element={<Settings />}/>
         <Route path="/" element={<Dashboard />}/>
         <Route path="*" element={<Navigate to="/" />}/>
     </Routes>

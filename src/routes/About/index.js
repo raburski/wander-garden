@@ -3,9 +3,9 @@ import WhatIsWanderGarden from "./WhatIsWanderGarden"
 import Contact from './Contact'
 import WIPWarning from './WIPWarning'
 
-export default function WebsiteInfo() {
+export default function About() {
     return (
-        <Page header="Website Info">
+        <Page header="About">
             <WIPWarning />
             <WhatIsWanderGarden />
             <Contact />

@@ -2,11 +2,10 @@ import { styled } from 'goober'
 import { VscDashboard, VscPulse, VscVersions } from 'react-icons/vsc'
 import { TfiMapAlt } from 'react-icons/tfi'
 import { SiSwarm } from 'react-icons/si'
-import { SlPuzzle } from 'react-icons/sl'
+import { SlPuzzle, SlSettings } from 'react-icons/sl'
 import { BsAward } from 'react-icons/bs'
 import { RxFileText } from 'react-icons/rx'
 import Logo from './Logo'
-import colors from '../colors'
 import StylelessLink from 'components/StylelessLink'
 import PillLink from 'components/PillLink'
 
@@ -24,21 +23,11 @@ const Container = styled('div')`
 
 const Separator = styled('div')`
     height: 24px;
+    width: 24px;
 `
 
 const SpreadSeparator = styled('div')`
     flex: 1;
-`
-
-const TextSeparator = styled('div')`
-    height: 28px;
-    padding-left: 28px;
-    margin-top: 18px;
-    text-decoration: none;
-    color: ${props => props.theme.text};
-    font-family: "Courier Prime";
-    font-size: 16px;
-    font-weight: bold;
 `
 
 const MountainImg = styled('img')`
@@ -67,7 +56,7 @@ const StyledNotes = styled('div')`
   color: ${props => props.theme.text};
   align-self: center;
   text-align: center;
-  margin-top: 22px;
+
 `
 
 const StyledPillLink = styled(PillLink)`
@@ -95,11 +84,10 @@ export default function SideBar() {
             <StyledPillLink to="map" icon={TfiMapAlt}>Map</StyledPillLink>
             <StyledPillLink to="data" icon={RxFileText}>Data</StyledPillLink>
             <Separator />
-            <TextSeparator>Sources</TextSeparator>
             <StyledPillLink to="swarm" icon={SiSwarm}>Swarm</StyledPillLink>
             <StyledPillLink to="extension" icon={SlPuzzle}>Extension</StyledPillLink>
-            {/* <PillLink to="phone" icon={VscDeviceMobile}>Phone</PillLink> */}
-            {/* <PillLink to="netflix" icon={SiNetflix}>Netflix</PillLink> */}
+            <Separator />
+            <StyledPillLink to="settings" icon={SlSettings}>Settings</StyledPillLink>
             <SpreadSeparator />
             <SubNotes />
         </Container>

@@ -28,7 +28,7 @@ const StyledLink = styled(MotionLink)`
 
 const LinkIcon = styled('div')`
     margin-top: 7px;
-    font-size: 22px;
+    font-size: 20px;
 `
 
 const Separator = styled('div')`

@@ -1,4 +1,4 @@
-import WhatIsWanderGarden from '../../WebsiteInfo/WhatIsWanderGarden'
+import WhatIsWanderGarden from '../../About/WhatIsWanderGarden'
 import Extension from './Extension'
 import Swarm from './Swarm'
 import { Column, Row } from 'components/container'
