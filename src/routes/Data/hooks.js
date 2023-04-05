@@ -73,7 +73,7 @@ export function useTrash(index) {
                 case 0: clearSwarmData().then(() => refreshTimeline()); break
                 case 1: clearBookingData().then(() => refreshTimeline()); break
                 case 2: clearAirbnbData().then(() => refreshTimeline()); break
-                case 2: clearAgodaData().then(() => refreshTimeline()); break
+                case 3: clearAgodaData().then(() => refreshTimeline()); break
                 default: break
             }
         }

@@ -19,16 +19,16 @@ const ButtonContainer = styled('button')`
     text-align: center;
     text-decoration: none #D1D5DB solid;
     text-decoration-thickness: auto;
-    box-shadow: 0 2px 0px 0 ${props => props.theme.shadow};
-    background-color: ${props => props.disabled ? props.theme.background.active : ( props.selected ? props.theme.background.highlight : props.theme.background.default)};
+    box-shadow: 0 ${props => props.disabled ? '0px' : '2px'} 0px 0 ${props => props.theme.shadow};
+    background-color: ${props => props.disabled ? props.theme.background.highlight : ( props.selected ? props.theme.background.highlight : props.theme.background.default)};
     color: ${props => props.disbaled ? '#545454' : props.theme.text};
     cursor: ${props => props.disabled ? 'default' : 'pointer'};
 
     &:hover {
-        background-color: ${props => props.theme.background.highlight};
+        background-color: ${props => props.disabled ? props.theme.background.highlight : props.theme.background.highlight};
     }
     &:active {
-        box-shadow: 0 1px 2px 0 ${props => props.theme.shadow} inset;
+        box-shadow: 0 ${props => props.disabled ? '0px' : '1px'} 2px 0 ${props => props.theme.shadow} inset;
     }
 `
 
