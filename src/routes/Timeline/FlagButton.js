@@ -23,6 +23,6 @@ const Flag = styled(MotionLink)`
 export default function FlagButton({ selected = false, ...props }) {
     const colors = useThemeColors()
     const SELECTED = {scale: 1.25, backgroundColor: colors.background.default, borderColor: colors.border, boxShadow: `0px 1px 8px ${colors.shadow}`}
-    const NOT_SELECTED = { backgroundColor: colors.background.default }
+    const NOT_SELECTED = { backgroundColor: colors.background.default, borderColor: colors.background.default }
     return <Flag animate={selected ? SELECTED : NOT_SELECTED} whileHover={{backgroundColor: colors.background.active}} {...props}/>
 }
