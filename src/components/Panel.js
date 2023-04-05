@@ -83,11 +83,11 @@ export const ClickRow = styled('div')`
     flex-direction: row;
     align-items: center;
 
-    border-bottom: 1px solid ${props => props.theme.border};
-    border-top: 1px solid transparent;
+    border-bottom: 0px solid ${props => props.theme.border};
+    border-top: 1px solid ${props => props.theme.border};
     padding: 4px;
     padding-left: 10px;
-    margin-bottom: -1px;
+    margin-top: -1px;
 
     color: ${props => props.theme.text};
     text-decoration: none;

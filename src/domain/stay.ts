@@ -16,6 +16,12 @@ export interface Stay {
     accomodation?: Accomodation
 }
 
+export interface StayCaptureDiff {
+    new: Stay[]
+    modified: Stay[]
+    unchanged: Stay[]
+}
+
 export function isAccomodationType(accomodation?: Accomodation): boolean {
     return accomodation !== undefined
         && isOfType(accomodation.name, 'string')

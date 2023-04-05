@@ -1,5 +1,26 @@
 import { styled } from 'goober'
-import colors from '../../colors'
+
+function getButtonBackground(props) {
+    if (props.disabled) {
+        return props.theme.background.highlight
+    }
+    if (props.selected) {
+        return props.theme.background.highlight
+    }
+    return props.theme.background.default
+}
+
+function getButtonColor(props) {
+    if (props.disbaled) { return '#545454' } 
+    return props.theme.text
+}
+
+function getButtonHoverBackground(props) {
+    if (props.disabled) {
+        return props.theme.background.highlight
+    }
+    return props.primary ? props.theme.primary.highlight : props.theme.background.highlight
+}
 
 const ButtonContainer = styled('button')`
     display: flex;
@@ -9,7 +30,7 @@ const ButtonContainer = styled('button')`
     align-items: center;
     align-self: flex-start;
 
-    border: 1px solid ${props => props.theme.border};
+    border: ${props => props.flat ? '0px' : '1px'} solid ${props => props.theme.border};
     border-radius: .5rem;
     font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
     font-size: .875rem;
@@ -19,13 +40,13 @@ const ButtonContainer = styled('button')`
     text-align: center;
     text-decoration: none #D1D5DB solid;
     text-decoration-thickness: auto;
-    box-shadow: 0 ${props => props.disabled ? '0px' : '2px'} 0px 0 ${props => props.theme.shadow};
-    background-color: ${props => props.disabled ? props.theme.background.highlight : ( props.selected ? props.theme.background.highlight : props.theme.background.default)};
-    color: ${props => props.disbaled ? '#545454' : props.theme.text};
+    box-shadow: 0 ${props => props.disabled || props.flat ? '0px' : '2px'} 0px 0 ${props => props.theme.shadow};
+    background-color: ${getButtonBackground};
+    color: ${getButtonColor};
     cursor: ${props => props.disabled ? 'default' : 'pointer'};
 
     &:hover {
-        background-color: ${props => props.disabled ? props.theme.background.highlight : props.theme.background.highlight};
+        background-color: ${getButtonHoverBackground};
     }
     &:active {
         box-shadow: 0 ${props => props.disabled ? '0px' : '1px'} 2px 0 ${props => props.theme.shadow} inset;
@@ -42,8 +63,6 @@ const IconContainer = styled('div')`
 const Separator = styled('div')`
     width: .55rem;
 `
-
-const selectedStyle = { backgroundColor: colors.neutral.highlight }
 
 export default function Button({ disabled = false, icon = undefined, selected = false, iconSize = 16, children, onClick = () => {}, ...props }) {
     const IconComponent = icon

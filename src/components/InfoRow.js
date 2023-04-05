@@ -41,10 +41,10 @@ const IconContainer = styled('div')`
 `
 
 
-export default function InfoRow({ to, icon, title, subtitle, right }) {
+export default function InfoRow({ to, onClick, icon, title, subtitle, right }) {
     const IconComponent = icon
     return (
-        <Row to={to}>
+        <Row to={to} onClick={onClick}>
             {icon ? <IconContainer><IconComponent size={16} /></IconContainer> : null}
             <TextContainer>
                 <Title>{title}</Title>
