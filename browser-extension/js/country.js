@@ -210,9 +210,9 @@ const countryCodeToName = {
     "SE": "Sweden",
     "CH": "Switzerland",
     "SY": "Syrian Arab Republic",
-    "TW": "Taiwan, Province of China",
+    "TW": "Taiwan",
     "TJ": "Tajikistan",
-    "TZ": "Tanzania, United Republic of",
+    "TZ": "Tanzania",
     "TH": "Thailand",
     "TL": "Timor-Leste",
     "TG": "Togo",
@@ -247,6 +247,11 @@ const countryCodeToName = {
 function getCountryCode(countryName) {
     const loweredCountryName = countryName.toLowerCase()
     const allNames = Object.values(countryCodeToName)
+    const allMatchingNames = allNames.filter(name => name.toLowerCase().includes(loweredCountryName))
+    if (allMatchingNames.length === 1) {
+        const firstMatchingNameIndex = allNames.findIndex(name => name === allMatchingNames[0])
+        return Object.keys(countryCodeToName)[firstMatchingNameIndex]
+    }
     const nameIndex = allNames.findIndex(name => name.toLowerCase() === loweredCountryName)
     if (nameIndex > -1) {
         return Object.keys(countryCodeToName)[nameIndex]
