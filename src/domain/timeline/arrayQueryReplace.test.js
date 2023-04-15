@@ -125,6 +125,12 @@ describe('array match', function () {
         const result = arrayQueryReplace(queryEndingAny, array)
         assert.deepEqual(result, expectedResult)
     })
+    it('should replace with query when no any and its last one', function () {
+        const array = [2, 3, 3]
+        const expectedResult = ['any', 3, 3]
+        const result = arrayQueryReplace(queryEndingAny, array)
+        assert.deepEqual(result, expectedResult)
+    })
     it('should replace all patterns from query', function () {
         const array = [1, 2, 3, 1, 2, 3]
         const expectedResult = ['resultOne', 'resultOne']

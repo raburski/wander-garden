@@ -98,6 +98,9 @@ function match(pattern, array, currentIndex = 0, previousValues = [], context) {
                     return nextIndex
                 }
             }
+            if (!nextExpression) {
+                return currentIndex
+            }
             return false
         case EXPRESSION_TYPE.SOME:
             if (currentExpression.fn(currentValue, previousValues, context)) {
