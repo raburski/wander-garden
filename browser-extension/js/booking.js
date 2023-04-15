@@ -20,7 +20,11 @@ function stayFromReservation(reservation) {
         accomodation: {
             name: data.hotel.name,
             url: data.hotel.url,
-        }
+        },
+        price: data.price ? {
+            currency: data.price.currency_code.toUpperCase(),
+            amount: data.price.value,
+        } : undefined
     }
 }
 

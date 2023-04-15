@@ -31,6 +31,12 @@ init(ORIGIN.AIRBNB, function(captureStay, captureFinished) {
             const nameElement = accomodationElement.querySelectorAll("a[data-testid='reservation-destination-link'] span")[2]
             const accomodationName = nameElement.innerHTML
 
+            const matchMoneyRe = /([\d\.]+) ([^\d ]+ )?([A-Za-z][A-Za-z][A-Za-z])$/g
+            const priceElements = [...document.querySelectorAll("div[data-testid='reservation-title-subtitle'] p")]
+                .map(e => matchMoneyRe.exec(e.innerHTML.replace('&nbsp;', ' ')))
+                .filter(e => e)
+            const price = priceElements.length === 1 ? { amount: parseFloat(priceElements[0][1]), currency: priceElements[0][3] } : undefined
+
             const id = idRegex.exec(window.location.href)[1]
             const dataState = JSON.parse(document.getElementById('data-state').innerHTML)
             const reservations = dataState.bootstrapData.reduxData.reservations
@@ -53,8 +59,10 @@ init(ORIGIN.AIRBNB, function(captureStay, captureFinished) {
                 accomodation: {
                     name: accomodationName,
                     url: ensureFullURL(accomodationURL),
-                }
+                },
+                price,
             }
+
             captureStay(stay)
             setTimeout(() => window.location = nextURL, 200)
         } catch (e) {

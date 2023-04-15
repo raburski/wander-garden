@@ -19,3 +19,16 @@ export function isOfType(data: any, type: dataCheckFn | string, isOptional: bool
 export function isArrayOfType(array: any[], isItemOfType: (item: any) => boolean) {
     return isOfType(array, 'array') && array.findIndex(item => !isItemOfType(item)) < 0
 }
+
+export type Currency = string
+
+export interface Money {
+    amount: number
+    currency: Currency
+}
+
+export function isMoneyType(money?: Money): boolean {
+    return money !== undefined
+        && isOfType(money.amount, 'number')
+        && isOptionalOfType(money.currency, 'string')
+}

@@ -54,8 +54,12 @@ function StayActions({ stay }) {
     )
 }
 
+function formattedMoney(money) {
+    return `${money.amount} ${money.currency.toUpperCase()}`
+}
+
 function StayRow({ stay, icon }) {
-    const subtitle = `in ${formattedLocation(stay.location)}`
+    const subtitle = `${stay.price ? `for ${formattedMoney(stay.price)}` : ''} in ${formattedLocation(stay.location)}`
     return <InfoRow icon={icon} title={stay.accomodation.name} subtitle={subtitle} right={<StayActions stay={stay}/>}/>
 }
 

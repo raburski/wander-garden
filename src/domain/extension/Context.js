@@ -40,6 +40,7 @@ function staysEqual(s1, s2) {
         && s1.since === s2.since
         && s1.until === s2.until
         && equal(s1.accomodation, s2.accomodation)
+        && equal(s1.price, s2.price)
         && equal(s1.location, s2.location)
         // url can vary depedning on auth session
 }

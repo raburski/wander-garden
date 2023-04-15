@@ -11,6 +11,10 @@ function dataToStay(data) {
     const since = data.BookingItem.Dates.CheckInDateNonCulture
     const until = data.BookingItem.Dates.CheckOutDateNonCulture
     const cc = getCountryCode(data.BookingItem.Property.Address.Country)
+    const Costs = data.BookingItem.PaymentDetails.NonCancelledPaymentDetails.Costs
+    const currency = Costs[0].Amount.Currency
+    const allTheSameCurrency = Costs.length > 0 ? Costs.every(c => c.Amount.Currency === currency) : false
+    const amount = Costs.reduce((a, c) => a + c.Amount.AmountAsDouble, 0)
 
     return {
         id: `agoda:${data.BookingItem.BookingId}`,
@@ -28,7 +32,11 @@ function dataToStay(data) {
         accomodation: {
             name: data.BookingItem.Property.PropertyName,
             url: ensureFullURL(data.BookingItem.Property.PropertyUrl),
-        }
+        },
+        price: allTheSameCurrency ? {
+            amount,
+            currency,
+        } : undefined
     }
 }
 
