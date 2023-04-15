@@ -490,7 +490,7 @@ function groupGroups(timelineContext: Context) {
 function groupTrips() {
     return {
         pattern: [
-            any((group: Group, groups: Group[], context: GroupGroupsQueryContext) => {
+            some((group: Group, groups: Group[], context: GroupGroupsQueryContext) => {
                 return group.type !== GroupType.Plain && group.type !== GroupType.Container
             }),
         ],
@@ -503,7 +503,7 @@ function groupTrips() {
 function groupPlains() {
     return {
         pattern: [
-            any((group: Group, groups: Group[], context: GroupGroupsQueryContext) => {
+            some((group: Group, groups: Group[], context: GroupGroupsQueryContext) => {
                 return group.type === GroupType.Plain
             }),
         ],

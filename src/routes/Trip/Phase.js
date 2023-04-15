@@ -1,9 +1,8 @@
 import { getDaysAndRangeText } from 'date'
 import PhaseLine from './PhaseLine'
 import { PhaseType } from './useTrip'
-import { TbBrandBooking, TbBrandAirbnb, TbAdjustments, TbCloudUpload, TbCornerLeftUp } from 'react-icons/tb'
+import { TbAdjustments, TbCloudUpload, TbCornerLeftUp } from 'react-icons/tb'
 import Button from 'components/PillLink'
-import { styled } from 'goober'
 
 const UNKNOWN_EMOJI = '❔'
 
