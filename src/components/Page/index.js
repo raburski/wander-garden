@@ -9,7 +9,7 @@ const Container = styled('div')`
     padding-left: 24px;
     padding-right: 24px;
     padding-bottom: 16px;
-    max-width: 1040px;
+    max-width: 1200px;
 `
 
 const Header = styled('h1')`

@@ -5,36 +5,27 @@ import colors from "../../colors"
 import { Row } from "../../components/Panel"
 import { TbDotsVertical } from 'react-icons/tb'
 
+const Line = styled(Row)`
+    border: 0px solid;
+    padding-left: 26px;
+`
+
 const TitleContent = styled('div')`
     display: flex;
-    flex: 1;
     flex-direction: column;
     margin-right: 24px;
     margin-left: 12px;
 `
 
-const FirstFlag = styled('div')`
-    font-size: 28px;
-`
-
-const NextFlag = styled('div')`
-    font-size: 28px;
-    margin-left: -2px;
+const Emoji = styled('div')`
+    font-size: 12px;
 `
 
 const Title = styled('div')`
     display: flex;
     flex: 1;
-    font-size: 15px;
-    font-weight: bold;
-    margin-bottom: 2px;
-    color: ${props => props.theme.text};
-`
-
-const Subtitle = styled('div')`
-    display: flex;
-    flex: 1;
-    font-size: 11px;
+    font-size: 12px;
+    font-weight: regular;
     margin-bottom: 2px;
     color: ${props => props.theme.text};
 `
@@ -48,6 +39,7 @@ const ActionsContent = styled('div')`
 
 const RightContent = styled('div')`
     display: flex;
+    flex: 1;
     flex-direction: column;
     margin-right: 12px;
     align-items: flex-end;
@@ -64,24 +56,14 @@ const Range = styled('div')`
     margin-bottom: 4px;
 `
 
-const UNDEFINED_FLAG = '❓'
-
-export default function GroupBar({ countryCodes = [], to, title, subtitle, onClick, days, range, onMoreClick, ...props }) {
-    const flags = countryCodes.map((code) => code === undefined ? UNDEFINED_FLAG : countryFlagEmoji.get(code)?.emoji).filter(Boolean).map((emoji, index) => {
-        if (index == 0) {
-            return <FirstFlag key={countryCodes[index]}>{emoji}</FirstFlag>
-        } else {
-            return <NextFlag key={countryCodes[index]}>{emoji}</NextFlag>
-        }
-    })
-
+export default function PhaseLine({ emoji, to, title, subtitle, onClick, days, range, onMoreClick, children, ...props }) {
     return (
-        <Row onClick={onClick} to={to} {...props}>
-            {flags}
+        <Line onClick={onClick} to={to} {...props}>
+            {emoji ? <Emoji>{emoji}</Emoji> : null}
             <TitleContent>
                 <Title>{title}</Title>
-                {subtitle ? <Subtitle>{subtitle}</Subtitle> : null}
             </TitleContent>
+            {children}
             <RightContent>
                 <Days>{days}</Days>
                 <Range>{range}</Range>
@@ -91,6 +73,6 @@ export default function GroupBar({ countryCodes = [], to, title, subtitle, onCli
                     <PinButton icon={TbDotsVertical} onClick={onMoreClick}/>
                 </ActionsContent>
             : null }
-        </Row>
+        </Line>
     )
 }

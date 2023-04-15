@@ -79,12 +79,22 @@ export function isEqualApproximiteLocation(leftLocation: Location, rightLocation
     return locationDistance <= radius
 }
 
+export function isEqualLocationAddress(leftLocation: Location, rightLocation: Location) {
+    return cleanLocation(leftLocation.address) == cleanLocation(rightLocation.address)
+}
+
 export function isEqualLocationCity(leftLocation: Location, rightLocation: Location) {
     return cleanLocation(leftLocation.city) == cleanLocation(rightLocation.city)
 }
 
 export function isEqualLocationCountry(leftLocation: Location, rightLocation: Location) {
     return cleanLocation(leftLocation.country) == cleanLocation(rightLocation.country)
+}
+
+export function isEqualLocation(leftLocation: Location, rightLocation: Location) {
+    return isEqualLocationCity(leftLocation, rightLocation)
+        && isEqualLocationCountry(leftLocation, rightLocation)
+        && isEqualLocationAddress(leftLocation, rightLocation)
 }
 
 const STATE_AS_CITY: {[state: string]: string} = {

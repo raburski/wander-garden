@@ -9,14 +9,14 @@ const StyledLink = styled(MotionLink)`
     flex-direction: row;
     align-items: center;
     margin: 1px;
-    padding: 6px;
-    padding-left: 18px;
-    padding-right: 18px;
+    padding: ${props => props.small ? '2px' : '6px'};
+    padding-left: ${props => props.small ? '10px' : '18px'};
+    padding-right: ${props => props.small ? '10px' : '18px'};
     border-radius: 26px;
     text-decoration: none;
     color: ${props => props.theme.text};
     font-family: Primary;
-    font-size: 15px;
+    font-size: ${props => props.small ? '12px' : '15px'};
 
     &:hover {
         background-color: ${props => props.theme.primary.highlight};
@@ -27,8 +27,8 @@ const StyledLink = styled(MotionLink)`
 `
 
 const LinkIcon = styled('div')`
-    margin-top: 7px;
-    font-size: 20px;
+    margin-top: ${props => props.small ? '4px' : '7px'};
+    font-size: ${props => props.small ? '16px' : '20px'};
 `
 
 const Separator = styled('div')`
@@ -38,20 +38,21 @@ const Separator = styled('div')`
 const WHILE_HOVER = {scale:1.02}
 const WHILE_TAP = {scale:0.98}
 
-export default function PillLink({ icon, children, to, ...props }) {
+export default function PillLink({ icon, children, small, to, style, ...props }) {
     const resolved = useResolvedPath(to)
     const match = useMatch({ path: resolved.pathname + '/*' }) && typeof to === 'string'
     const PillIcon = icon
   
     return (
         <StyledLink
-          style={match ? { backgroundColor: '#4fa177', color: 'white' } : {}}
+          style={match ? { backgroundColor: '#4fa177', color: 'white', ...style } : style}
           to={to}
           whileHover={WHILE_HOVER}
           whileTap={WHILE_TAP}
+          small={small}
           {...props}
         >
-            {PillIcon ? <LinkIcon><PillIcon /></LinkIcon> : null}
+            {PillIcon ? <LinkIcon small={small}><PillIcon /></LinkIcon> : null}
             {children ? <Separator /> : null}
             {children}
         </StyledLink>

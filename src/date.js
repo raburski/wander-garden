@@ -7,9 +7,9 @@ export function seasonEmojiForDate(date) {
 }
 
 export function getDaysAndRangeText(_since, _until) {
-    const until = moment(_until)
-    const since = moment(_since)
-    const numberOfDays = until.diff(since, 'days') + 1
+    const until = moment(_until).startOf('day')
+    const since = moment(_since).startOf('day')
+    const numberOfDays = until.diff(since, 'days')
     const daysSuffix = numberOfDays === 1 ? 'day' : 'days'
     const days = `${numberOfDays} ${daysSuffix}`
     const season = seasonEmojiForDate(moment(_since).add(numberOfDays/2, 'days'))
