@@ -27,6 +27,13 @@ const querySome = {
     result: () => 'some'
 }
 
+const queryOnlySome = {
+    pattern: [
+        some(e => e == 1),
+    ],
+    result: () => 'some'
+}
+
 const queryAny = {
     pattern: [
         e => e == 2,
@@ -105,6 +112,12 @@ describe('array match', function () {
         const array = [3, 2, 1, 1, 2, 3, 2, 2]
         const expectedResult = [3, 'some', 3, 2, 2]
         const result = arrayQueryReplace(querySome, array)
+        assert.deepEqual(result, expectedResult)
+    })
+    it('should replace with query using some even if only statement', function () {
+        const array = [3, 2, 1, 2, 3, 2, 2]
+        const expectedResult = [3, 2, 'some', 2, 3, 2, 2]
+        const result = arrayQueryReplace(queryOnlySome, array)
         assert.deepEqual(result, expectedResult)
     })
     it('should replace with query using any', function () {

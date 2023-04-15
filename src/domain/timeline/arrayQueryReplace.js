@@ -2,8 +2,8 @@ export const EXPRESSION_TYPE = {
     START: 'start',
     END: 'end',
     EXACT: 'exact',
-    SOME: 'some',
-    ANY: 'any',
+    SOME: 'some', // at least one
+    ANY: 'any', // can be zero
 }
 
 function isExpression(e) {
@@ -104,14 +104,15 @@ function match(pattern, array, currentIndex = 0, previousValues = [], context) {
             return false
         case EXPRESSION_TYPE.SOME:
             if (currentExpression.fn(currentValue, previousValues, context)) {
-                const nextValue = array[1]
-                if (!nextValue) {
-                    return false
+                const matchingTheSamePatternAgain = match(pattern, array.slice(1), currentIndex + 1, [...previousValues, currentValue], context)
+                if (matchingTheSamePatternAgain) {
+                    return matchingTheSamePatternAgain
                 }
-                if (match(pattern.slice(1), array.slice(1), currentIndex + 1)) {
-                    return match(pattern.slice(2), array.slice(2), currentIndex + 2, [...previousValues, currentValue], context)
+                const matchesRestOfPatterns = match(pattern.slice(1), array.slice(1), currentIndex + 1, [...previousValues, currentValue], context)
+                if (matchesRestOfPatterns) {
+                    return matchesRestOfPatterns
+                    // return match(pattern.slice(2), array.slice(2), currentIndex + 2, [...previousValues, currentValue], context)
                 }
-                return match(pattern, array.slice(1), currentIndex + 1, [...previousValues, currentValue], context)
             }
             return false
         default:
