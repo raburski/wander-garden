@@ -76,7 +76,21 @@ function clickLoadMoreButtonUntilGone(callback) {
     }
 }
 
-init(ORIGIN.BOOKING, function(captureStay, captureFinished) {
+function registerNewStaysCallback(fn) {
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.target === ORIGIN.BOOKING) {
+            if (event.data.type === 'trip_captured') {
+                const stays = staysFromTrips(event.data.data)
+                fn(stays)
+                LOADING_TRIPS = false
+            } else if (event.data.type === 'request_started') {
+                LOADING_TRIPS = true
+            }
+        }
+    })
+}
+
+function initCapture(captureStay, captureFinished) {
     if (window.location.href.includes('password')) {
         // on a login page
         return
@@ -87,18 +101,33 @@ init(ORIGIN.BOOKING, function(captureStay, captureFinished) {
             captureFinished(ALL_STAYS)
         })
     }
-    
-    window.addEventListener('message', function(event) {
-        if (event.data && event.data.target === ORIGIN.BOOKING) {
-            if (event.data.type === 'trip_captured') {
-                const stays = staysFromTrips(event.data.data)
-                ALL_STAYS = [...ALL_STAYS, ...stays]
-                LOADING_TRIPS = false
-            } else if (event.data.type === 'request_started') {
-                LOADING_TRIPS = true
-            }
-        }
+
+    registerNewStaysCallback(function(stays) {
+        ALL_STAYS = [...ALL_STAYS, ...stays]
     })
 
     setTimeout(findViewMoreBookings, 300)
-})
+}
+
+function addLinkWidget(stay, widget) {
+    const link = document.querySelector(`a[href='${stay.url}'] div div`)
+    if (link) {
+        link.appendChild(widget)
+    } else {
+        setTimeout(function () {addLinkWidget(stay, widget)}, 500)
+    }
+}
+
+function initDefault() {
+    registerNewStaysCallback(function(stays) {
+        stays.forEach(stay => {
+            const widget = getDownloadStayWidget(stay)
+            widget.style.position = 'absolute'
+            widget.style.right = '22px'
+            widget.style.marginTop = '-44px'
+            addLinkWidget(stay, widget)
+        })
+    })
+}
+
+init(ORIGIN.BOOKING, initCapture, initDefault)

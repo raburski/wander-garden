@@ -23,7 +23,7 @@ function showLoadingIndicator() {
 
 function getDownloadStayWidget(stay) {
     const widget = document.createElement('button')
-    widget.id = 'wander_garden_download_widget'
+    widget.id = `wander_garden_download_widget-${stay.id}`
     widget.innerHTML = 'Download stay for the Garden'
     widget.style.padding = '8px'
     widget.style.paddingLeft = '14px'
@@ -31,7 +31,10 @@ function getDownloadStayWidget(stay) {
     widget.style.marginTop = '12px'
     widget.style.textAlign = 'center'
 
-    widget.onclick = stay ? function onWidgetClick() {
+    widget.onclick = stay ? function onWidgetClick(event) {
+        event.stopPropagation()
+        event.preventDefault()
+
         const fileName = `${stay.since.slice(0, 10)} - ${stay.accomodation?.name}.json`
         downloadString(JSON.stringify(stay), 'json', fileName)
     } : undefined

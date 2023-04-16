@@ -9,7 +9,11 @@ function injectScript(scriptName) {
     (document.head || document.documentElement).appendChild(s)
 }
 
-function ensureFullURL(url) {
+function ensureFullURL(_url) {
+    let url = _url
+    if (url[url.length - 1] === '&') {
+        url = url.slice(0,-1)
+    }
     if (url.startsWith('/')) {
         return `${window.location.protocol}//${window.location.hostname}${url}`
     } else {
