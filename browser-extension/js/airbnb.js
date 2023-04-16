@@ -3,8 +3,10 @@ function extractStayFromDocument() {
     const cityRegex = /( in )(.(?<! in ))+$/g
 
     const accomodationElement = document.querySelector("a[data-testid='reservation-destination-link']")
+    if (!accomodationElement) return undefined
     const accomodationURL = accomodationElement.getAttribute('href')
     const nameElement = accomodationElement.querySelectorAll("a[data-testid='reservation-destination-link'] span")[2]
+    if (!nameElement) return undefined
     const accomodationName = nameElement.innerHTML
 
     const matchMoneyRe = /([\d\.]+) ([^\d ]+ )?([A-Za-z][A-Za-z][A-Za-z])$/g
@@ -15,6 +17,8 @@ function extractStayFromDocument() {
 
     const id = idRegex.exec(window.location.href)[1]
     const dataState = JSON.parse(document.getElementById('data-state').innerHTML)
+    if (!id || !dataState) return undefined
+
     const reservations = dataState.bootstrapData.reduxData.reservations
     const reservationKeys = Object.keys(reservations)
     const metadata = reservations[reservationKeys[0]].metadata
@@ -75,12 +79,31 @@ function initCapture(captureStay, captureFinished) {
     }
 }
 
-function initDefault() {
+function addDownloadWidget() {
     if (window.location.href.includes('trips/v1/')) {
         const stay = extractStayFromDocument()
+        if (!stay) return
         const widget = getDownloadStayWidget(stay)
-        document.querySelector("div[data-testid='reservations-split-title-subtitle-kicker-row']").appendChild(widget)
+        if (!document.getElementById(widget.id)) {
+            document.querySelector("div[data-testid='reservations-split-title-subtitle-kicker-row']").appendChild(widget)
+        }
     }
+}
+
+function turnTripURLsIntoRedirects() {
+    document.querySelectorAll("div[data-section-id='PAST_TRIPS'] a").forEach(element => {
+        element.onclick = function(event) {
+            event.stopPropagation()
+            event.preventDefault()
+
+            window.location = element.getAttribute('href')
+        }
+    })
+}
+
+function initDefault() {
+    turnTripURLsIntoRedirects()
+    addDownloadWidget()
 }
 
 init(ORIGIN.AIRBNB, initCapture, initDefault)
