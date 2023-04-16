@@ -17,7 +17,21 @@ function ensureFullURL(url) {
     }
 }
 
-function init(origin, onInit) {
+function downloadString(text, fileType, fileName) {
+    var blob = new Blob([text], { type: fileType });
+  
+    var a = document.createElement('a');
+    a.download = fileName;
+    a.href = URL.createObjectURL(blob);
+    a.dataset.downloadurl = [fileType, a.download, a.href].join(':');
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
+}
+
+function init(origin, onInitCapture, onInitDefault) {
     function sendCaptureFinished(stays) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_finished', stays })
     }
@@ -31,16 +45,20 @@ function init(origin, onInit) {
             return
         }
         
-        if (message.type === 'init' && message.start_capture) {
-            console.log('Wander Garden capture initialised.')
-            if (document.readyState === "complete" || document.readyState === "loaded") {
-                showLoadingIndicator()
-            } else {
-                window.addEventListener("DOMContentLoaded", function() {
+        if (message.type === 'init') {
+            console.log('Wander Garden capture initialised. capture:', message.start_capture)
+            if (message.start_capture) {
+                if (document.readyState === "complete" || document.readyState === "loaded") {
                     showLoadingIndicator()
-                })
+                } else {
+                    window.addEventListener("DOMContentLoaded", function() {
+                        showLoadingIndicator()
+                    })
+                }
+                onInitCapture(sendCaptureStay, sendCaptureFinished)
+            } else {
+                onInitDefault()
             }
-            onInit(sendCaptureStay, sendCaptureFinished)
         }
     }
     

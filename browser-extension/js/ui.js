@@ -20,3 +20,21 @@ function showLoadingIndicator() {
     document.body.style.marginTop = '44px'
     document.body.prepend(indicatorElement)
 }
+
+function getDownloadStayWidget(stay) {
+    const widget = document.createElement('button')
+    widget.id = 'wander_garden_download_widget'
+    widget.innerHTML = 'Download stay for the Garden'
+    widget.style.padding = '8px'
+    widget.style.paddingLeft = '14px'
+    widget.style.paddingRight = '14px'
+    widget.style.marginTop = '12px'
+    widget.style.textAlign = 'center'
+
+    widget.onclick = stay ? function onWidgetClick() {
+        const fileName = `${stay.since.slice(0, 10)} - ${stay.accomodation?.name}.json`
+        downloadString(JSON.stringify(stay), 'json', fileName)
+    } : undefined
+
+    return widget
+}

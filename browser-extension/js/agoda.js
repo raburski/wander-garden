@@ -40,7 +40,7 @@ function dataToStay(data) {
     }
 }
 
-init(ORIGIN.AGODA, function(captureStay, captureFinished) {
+function initCapture(captureStay, captureFinished) {
     window.addEventListener("load", function() {
         if (window.location.href.includes('signin')) {
             // on a login page
@@ -84,4 +84,24 @@ init(ORIGIN.AGODA, function(captureStay, captureFinished) {
             injectExtractScript()
         }
     })
-})
+}
+
+function initDefault() {
+    if (window.location.href.includes('account/editbooking.html?bookingId=')) {
+        window.addEventListener('message', function(event) {
+            const message = event.data
+            if (message && message.target === ORIGIN.AGODA) {
+                try {
+                    const stay = dataToStay(message.data)
+                    const widget = getDownloadStayWidget(stay)
+                    document.getElementsByClassName('mmb-left-pane')[0].appendChild(widget)
+                } catch(e) {
+                    console.log('failed', e)
+                }
+            }
+        })
+        injectExtractScript()
+    }
+}
+
+init(ORIGIN.AGODA, initCapture, initDefault)

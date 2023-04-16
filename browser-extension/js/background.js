@@ -14,8 +14,8 @@ const STORE = {
 
 const manifest = chrome.runtime.getManifest()
 
-function sendMessage(message) {
-    const tabID = STORE.captureTabID[message.target]
+function sendMessage(message, toTabID) {
+    const tabID = STORE.captureTabID[message.target] || toTabID
     if (tabID) {
         console.log('SEND', message)
         chrome.tabs.sendMessage(tabID, message)
@@ -52,7 +52,7 @@ function handleGardenMessage(message, sender) {
     }
 }
 
-function handleExtensionMessage(message) {
+function handleExtensionMessage(message, sender) {
     switch (message.type) {
         case 'init':
             sendMessage({
@@ -60,7 +60,7 @@ function handleExtensionMessage(message) {
                 target: message.source, 
                 type: 'init',
                 start_capture: !!STORE.captureTabID[message.source]
-            })
+            }, sender.tab.id)
             break
         case 'capture_stay':
             STORE.capturedStays[message.source].push(message.stay)
