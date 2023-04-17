@@ -52,7 +52,7 @@ const PuzzleLogo = styled(SlPuzzle)`
 `
 
 function HowItWorks() {
-    return <InfoPanel title="How this works?" spacing image={<PuzzleLogo />}>{HOW_COPY}</InfoPanel>
+    return <InfoPanel header="How this works?" spacing image={<SquareImage size={120} src="/3d/puzzle.png"/>}>{HOW_COPY}</InfoPanel>
 }
 
 const Logo = styled('img')`
@@ -84,8 +84,8 @@ function Stays() {
 function ExtensionConnected({ capturing }) {
     return (
         <>
-            <ExtensionStatus isConnected/>
             <HowItWorks />
+            <ExtensionStatus isConnected/>
             <Stays />
             <ExtensionCapturingModal isOpen={capturing}/>
         </>
