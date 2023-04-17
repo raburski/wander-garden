@@ -8,7 +8,7 @@ import { Status, Origin, StayTypeToOrigin, StayType } from "./types"
 import equal from 'fast-deep-equal'
 import moment from "moment"
 
-const CURRENT_VERSION = '0.0.4'
+const CURRENT_VERSION = '0.0.5'
 
 export const ExtensionContext = createContext({})
 
