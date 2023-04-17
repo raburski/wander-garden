@@ -1,6 +1,7 @@
 let LOADING_TRIPS = true
 let CAPTURING = false
 let ALL_STAYS = []
+let FINISHED = false
 
 function stayFromReservation(reservation) {
     const data = reservation.reservation_data
@@ -90,7 +91,7 @@ function registerNewStaysCallback(fn) {
     })
 }
 
-function initCapture(captureStay, captureFinished) {
+function initCapture(captureStay, captureFinished, lastCapturedStayID) {
     if (window.location.href.includes('password')) {
         // on a login page
         return
@@ -98,12 +99,21 @@ function initCapture(captureStay, captureFinished) {
 
     function findViewMoreBookings() {
         clickLoadMoreButtonUntilGone(function() {
-            captureFinished(ALL_STAYS)
+            if (!FINISHED) {
+                captureFinished(ALL_STAYS)
+            }
         })
     }
 
     registerNewStaysCallback(function(stays) {
-        ALL_STAYS = [...ALL_STAYS, ...stays]
+        const lastCapturedStayIndex = stays.findIndex(stay => stay.id === lastCapturedStayID)
+        if (lastCapturedStayIndex >= 0) {
+            FINISHED = true
+            ALL_STAYS = [...ALL_STAYS, ...stays.slice(0, lastCapturedStayIndex)]
+            captureFinished(ALL_STAYS)
+        } else {
+            ALL_STAYS = [...ALL_STAYS, ...stays]
+        }
     })
 
     setTimeout(findViewMoreBookings, 300)

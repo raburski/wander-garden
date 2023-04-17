@@ -10,6 +10,7 @@ const ORIGIN = {
 const STORE = {
     captureTabID: {},
     capturedStays: {},
+    lastCapturedStayID: {},
 }
 
 const manifest = chrome.runtime.getManifest()
@@ -45,6 +46,7 @@ function handleGardenMessage(message, sender) {
             STORE.captureTabID[ORIGIN.GARDEN] = sender.tab.id
             const url = ORIGIN_URL[message.subject]
             STORE.capturedStays[message.subject] = []
+            STORE.lastCapturedStayID[message.subject] = message.lastCapturedStayID
             chrome.tabs.create({ url }, function(newTab) {
                 STORE.captureTabID[message.subject] = newTab.id
             })
@@ -59,7 +61,8 @@ function handleExtensionMessage(message, sender) {
                 source: ORIGIN.SERVICE,
                 target: message.source, 
                 type: 'init',
-                start_capture: !!STORE.captureTabID[message.source]
+                start_capture: !!STORE.captureTabID[message.source],
+                lastCapturedStayID: STORE.lastCapturedStayID[message.source],
             }, sender.tab.id)
             break
         case 'capture_stay':

@@ -10,6 +10,7 @@ const Container = styled('div')`
     padding-right: 24px;
     padding-bottom: 16px;
     max-width: 1200px;
+    min-width: 312px;
 `
 
 const Header = styled('h1')`

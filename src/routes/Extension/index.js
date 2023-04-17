@@ -1,7 +1,7 @@
 import Page from "components/Page"
 import InfoPanel from "components/InfoPanel"
 import SquareImage from 'components/SquareImage'
-import { useExtensionStatus, STATUS } from 'domain/extension'
+import { useExtensionStatus, Status, StayType, useCaptureStayType, StayName, StayLogoURL } from 'domain/extension'
 import OnlineDot from './OnlineDot'
 import Booking from './Booking'
 import Airbnb from './Airbnb'
@@ -11,6 +11,14 @@ import ExtensionCapturing from './Capturing'
 import WebStoreButton from "./WebStoreButton"
 import Agoda from "./Agoda"
 import ImportModal from "./ImportModal"
+import StartCaptureModal from "./StartCaptureModal"
+import Panel from "components/Panel"
+import { SlPuzzle } from 'react-icons/sl'
+import { styled } from "goober"
+import InfoRow from "components/InfoRow"
+import EmojiRow from "components/EmojiRow"
+import ContentRow from "components/ContentRow"
+import { useState } from "react"
 
 const COPY = `In order to enhance your dataset you can install garden browser extension. It will help you import your booking.com, airbnb and agoda bookings.
 
@@ -35,13 +43,55 @@ function ExtensionStatus({ isConnected }) {
     )
 }
 
+const HOW_COPY = `Extension will open new browser tab. It will automatically navigate through the website and will capture all your trips.
+You may also download stay files manually by visiting websites yourself.
+
+Select one of the sources below to start the process!
+
+IMPORTANT: You may need to log in to your account before automatic process starts.
+`
+
+const PuzzleLogo = styled(SlPuzzle)`
+    font-size: 32px;
+    padding: 5px;
+`
+
+function HowItWorks() {
+    return <InfoPanel title="How this works?" spacing image={<PuzzleLogo />}>{HOW_COPY}</InfoPanel>
+}
+
+const Logo = styled('img')`
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+`
+
+function Stays() {
+    const [selectedSource, setSelectedSource] = useState()
+
+    const createSelectStayType = (stayType) => function onStayTypeSelect() {
+        setSelectedSource(stayType)
+    }
+
+    return (
+        <Panel header="Stays">
+            <ContentRow image={<Logo src={StayLogoURL[StayType.Booking]}/>} title={StayName[StayType.Booking]} onClick={createSelectStayType(StayType.Booking)}/>
+            <ContentRow image={<Logo src={StayLogoURL[StayType.Airbnb]}/>} title={StayName[StayType.Airbnb]} onClick={createSelectStayType(StayType.Airbnb)}/>
+            <ContentRow image={<Logo src={StayLogoURL[StayType.Agoda]}/>} title={StayName[StayType.Agoda]} onClick={createSelectStayType(StayType.Agoda)}/>
+            <StartCaptureModal
+                stayType={selectedSource}
+                onCancel={() => setSelectedSource(undefined)}
+            />
+        </Panel>
+    )
+}
+
 function ExtensionConnected() {
     return (
         <>
             <ExtensionStatus isConnected/>
-            <Booking />
-            <Airbnb />
-            <Agoda />
+            <HowItWorks />
+            <Stays />
         </>
     )
 }
@@ -58,17 +108,17 @@ function ExtensionFailed() {
 function ExtensionContent() {
     const extensionStatus = useExtensionStatus()
     switch (extensionStatus) {
-        case STATUS.UNKNOWN: return <ExtensionNotConnected />
-        case STATUS.CONNECTED: return <ExtensionConnected />
-        case STATUS.CAPTURING: return <ExtensionCapturing />
-        case STATUS.FAILED: return <ExtensionFailed />
-        case STATUS.INCOMPATIBLE: return <ExtensionVersionNotMatching />
+        case Status.Unknown: return <ExtensionNotConnected />
+        case Status.Connected: return <ExtensionConnected />
+        case Status.Capturing: return <ExtensionCapturing />
+        case Status.Failed: return <ExtensionFailed />
+        case Status.Incompatible: return <ExtensionVersionNotMatching />
     }
 }
 
-export default function Extension() {
+export default function Hotels() {
     return (
-        <Page header="Browser extension">
+        <Page header="Extension">
             <ExtensionContent />
             <ImportModal />
         </Page>

@@ -44,7 +44,7 @@ function extractStayFromDocument() {
     }
 }
 
-function initCapture(captureStay, captureFinished) {
+function initCapture(captureStay, captureFinished, lastCapturedStayID) {
     if (window.location.href.includes('login')) {
         // on a login page
         return
@@ -70,8 +70,12 @@ function initCapture(captureStay, captureFinished) {
         const nextURL = atob(parts[1])
         try {
             const stay = extractStayFromDocument()
-            captureStay(stay)
-            setTimeout(() => window.location = nextURL, 200)
+            if (stay?.id === lastCapturedStayID) {
+                captureFinished()
+            } else {
+                captureStay(stay)
+                setTimeout(() => window.location = nextURL, 200)
+            }
         } catch (e) {
             console.log('airbnb capture failed', e)
             alert('Airbnb capture failed :(')

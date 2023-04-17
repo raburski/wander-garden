@@ -59,7 +59,7 @@ function init(origin, onInitCapture, onInitDefault) {
                         showLoadingIndicator()
                     })
                 }
-                onInitCapture(sendCaptureStay, sendCaptureFinished)
+                onInitCapture(sendCaptureStay, sendCaptureFinished, message.lastCapturedStayID)
             } else {
                 onInitDefault()
             }

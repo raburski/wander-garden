@@ -1,12 +1,11 @@
 import Panel from 'components/Panel'
-import Modal from 'components/Modal'
-import Page from 'components/Page'
 import { formattedLocation } from 'domain/location'
 import InfoRow from 'components/InfoRow'
 import { MdCheckBox, MdCheckBoxOutlineBlank, MdOutlineHourglassEmpty, MdHotel } from 'react-icons/md'
 import { useState } from 'react'
 import Button from 'components/Button'
 import { useCapturedStaysDiff, useClearCapturedStays, useImportCapturedStays } from 'domain/extension'
+import ModalPage, { ModalPageButtons } from 'components/ModalPage'
 import { styled } from 'goober'
 
 function StayRow({ stay, icon, onStayClick }) {
@@ -15,12 +14,14 @@ function StayRow({ stay, icon, onStayClick }) {
     return <InfoRow onClick={onClick} icon={icon} title={stay.accomodation.name} subtitle={subtitle} />
 }
 
-const Buttons = styled('div')`
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    padding-top: 12px;
+const NothingContainer = styled('div')`
+    padding: 8px;
+    font-size: 16px;
 `
+
+function NothingToImport() {
+    return <NothingContainer>Nothing new to import found...</NothingContainer>
+}
 
 export default function ImportModal() {
     const [importing, setImporting] = useState(false)
@@ -48,20 +49,19 @@ export default function ImportModal() {
     }
 
     return (
-        <Modal isOpen={!!staysDiff}>
-            <Page header="Import stays" >
-                {newStays.length > 0 ? <Panel header="New">
-                    {newStays.map(stay => <StayRow onStayClick={onStayClick} stay={stay} icon={unchecked[stay.id] ? MdCheckBoxOutlineBlank : MdCheckBox}/>)}
-                </Panel> : null}
-                {modifiedStays.length > 0 ? <Panel header="Modified">
-                    {modifiedStays.map(stay => <StayRow onStayClick={onStayClick} stay={stay} icon={unchecked[stay.id] ? MdCheckBoxOutlineBlank : MdCheckBox}/>)}
-                </Panel> : null}
-                {unchangedStays.length > 0 ? <Panel header="Unchanged"><InfoRow icon={MdHotel} title={`${unchangedStays.length} stays`} /></Panel> : null}
-                <Buttons>
-                    <Button flat onClick={clearCapturedStays}>Cancel</Button>
-                    <Button icon={importing ? MdOutlineHourglassEmpty : null} disabled={isNothingToImport || importing} onClick={importSelected}>Import selected</Button>
-                </Buttons>
-            </Page>
-        </Modal>
+        <ModalPage isOpen={!!staysDiff} header="Import stays">
+            {isNothingToImport ? <NothingToImport /> : null}
+            {newStays.length > 0 ? <Panel header="New">
+                {newStays.map(stay => <StayRow onStayClick={onStayClick} stay={stay} icon={unchecked[stay.id] ? MdCheckBoxOutlineBlank : MdCheckBox}/>)}
+            </Panel> : null}
+            {modifiedStays.length > 0 ? <Panel header="Modified">
+                {modifiedStays.map(stay => <StayRow onStayClick={onStayClick} stay={stay} icon={unchecked[stay.id] ? MdCheckBoxOutlineBlank : MdCheckBox}/>)}
+            </Panel> : null}
+            {unchangedStays.length > 0 ? <Panel header="Unchanged"><InfoRow icon={MdHotel} title={`${unchangedStays.length} stays`} /></Panel> : null}
+            <ModalPageButtons>
+                <Button flat onClick={clearCapturedStays}>Cancel</Button>
+                <Button icon={importing ? MdOutlineHourglassEmpty : null} disabled={isNothingToImport || importing} onClick={importSelected}>Import selected</Button>
+            </ModalPageButtons>
+        </ModalPage>
     )
 }

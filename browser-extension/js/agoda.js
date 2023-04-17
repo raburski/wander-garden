@@ -40,7 +40,7 @@ function dataToStay(data) {
     }
 }
 
-function initCapture(captureStay, captureFinished) {
+function initCapture(captureStay, captureFinished, lastCapturedStayID) {
     window.addEventListener("load", function() {
         if (window.location.href.includes('signin')) {
             // on a login page
@@ -77,8 +77,13 @@ function initCapture(captureStay, captureFinished) {
             window.addEventListener('message', function(event) {
                 const message = event.data
                 if (message && message.target === ORIGIN.AGODA) {
-                    captureStay(dataToStay(message.data))
-                    setTimeout(() => window.location = nextURL, 300)
+                    const stay = dataToStay(message.data)
+                    if (stay?.id === lastCapturedStayID) {
+                        captureFinished()
+                    } else {
+                        captureStay(stay)
+                        setTimeout(() => window.location = nextURL, 300)
+                    }
                 }
             })
             injectExtractScript()

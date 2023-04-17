@@ -4,32 +4,17 @@ import { useAirbnbStays } from 'domain/airbnb'
 import { useAgodaStays } from "domain/agoda"
 import { useRefreshHomes } from "domain/homes"
 import { useRefreshTimeline } from "domain/timeline"
+import { Status, Origin, StayTypeToOrigin, StayType } from "./types"
 import equal from 'fast-deep-equal'
+import moment from "moment"
 
 const CURRENT_VERSION = '0.0.4'
-
-export const STATUS = {
-    UNKNOWN: 'UNKNOWN',
-    CONNECTED: 'CONNECTED',
-    FAILED: 'FAILED',
-    INCOMPATIBLE: 'INCOMPATIBLE',
-    CAPTURING: 'CAPTURING',
-}
-
-const ORIGIN = {
-    GARDEN: 'wander_garden',
-    EXTENSION: 'wander_garden_extension',
-    SERVICE: 'wander_garden_service',
-    BOOKING: 'booking.com_extension',
-    AIRBNB: 'airbnb_extension',
-    AGODA: 'agoda_extension',
-}
 
 export const ExtensionContext = createContext({})
 
 function sendExtensionMessage(msg) {
     window.postMessage({
-        source: ORIGIN.GARDEN,
+        source: Origin.Garden,
         ...msg,
     }, '*')
 }
@@ -65,6 +50,12 @@ function getStaysCaptureDiff(capturedStays, localStays) {
     }
 }
 
+function getLatestStay(stays) {
+    const orderedStays = [...stays]
+    orderedStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
+    return orderedStays[0]
+}
+
 export function ExtensionProvider({ children }) {
     const [version, setVersion] = useState()
     const [capturedStays, setCapturedStays] = useState()
@@ -77,30 +68,43 @@ export function ExtensionProvider({ children }) {
     const refreshHomes = useRefreshHomes()
     const refreshTimeline = useRefreshTimeline()
 
+    const getStays = (ofType) => {
+        switch (ofType) {
+            case StayType.Agoda:
+                return agodaStays
+            case StayType.Booking:
+                return bookingStays
+            case StayType.Airbnb:
+                return airbnbStays
+            default:
+                return undefined
+        }
+    }
+
     useEffect(() => {
         async function eventListener(event) {
             const message = event.data
             if (!message) { return }
-            if (message.source === ORIGIN.SERVICE || message.source === ORIGIN.EXTENSION) {
+            if (message.source === Origin.Service || message.source === Origin.Extension) {
                 if (message.type === 'init') {
                     setVersion(message.version)
                 } else if (message.type === 'init_failed') {
                     setFailed(true)
                 } else if (message.type === 'capture_finished') {
                     setCapturing(false)
-                    if (message.subject === ORIGIN.BOOKING) {
+                    if (message.subject === Origin.Booking) {
                         setCapturedStays({ 
-                            subject: ORIGIN.BOOKING,
+                            subject: Origin.Booking,
                             diff: getStaysCaptureDiff(message.stays, bookingStays)
                         })
-                    } else if (message.subject === ORIGIN.AIRBNB) {
+                    } else if (message.subject === Origin.Airbnb) {
                         setCapturedStays({
-                            subject: ORIGIN.AIRBNB,
+                            subject: Origin.Airbnb,
                             diff: getStaysCaptureDiff(message.stays, airbnbStays)
                         })
-                    } else if (message.subject === ORIGIN.AGODA) {
+                    } else if (message.subject === Origin.Agoda) {
                         setCapturedStays({
-                            subject: ORIGIN.AGODA,
+                            subject: Origin.Agoda,
                             diff: getStaysCaptureDiff(message.stays, agodaStays)
                         })
                     }
@@ -113,9 +117,11 @@ export function ExtensionProvider({ children }) {
         return () => window.removeEventListener('message', eventListener)
     }, [failed, refreshHomes, refreshTimeline, setFailed, setCapturing, setVersion, setBookingStays, setAirbnbStays])
 
-    const startCapture = (subject) => {
+    const startCapture = (stayType, captureNewOnly) => {
+        const subject = StayTypeToOrigin[stayType]
+        const lastCapturedStayID = captureNewOnly ? getLatestStay(getStays(stayType))?.id : undefined
         setCapturing(true)
-        sendExtensionMessage({ type: 'start_capture', subject, target: ORIGIN.EXTENSION })
+        sendExtensionMessage({ type: 'start_capture', subject, target: Origin.Extension, lastCapturedStayID })
     }
 
     async function refresh() {
@@ -129,18 +135,18 @@ export function ExtensionProvider({ children }) {
             ...capturedStays.diff.modified.filter(stay => ids.includes(stay.id)),
         ]
         switch (capturedStays.subject) {
-            case ORIGIN.BOOKING:
+            case Origin.Booking:
                 setBookingStays([ ...bookingStays.filter(stay => !ids.includes(stay.id)), ...newStays ]); break
-            case ORIGIN.AIRBNB:
+            case Origin.Airbnb:
                 setAirbnbStays([ ...airbnbStays.filter(stay => !ids.includes(stay.id)), ...newStays ]); break
-            case ORIGIN.AGODA:
+            case Origin.Agoda:
                 setAgodaStays([ ...agodaStays.filter(stay => !ids.includes(stay.id)), ...newStays ]); break
         }
         await refresh()
         setCapturedStays(undefined)
     }
 
-    const value = useMemo(() => ({
+    const value = {
         isConnected: !!version,
         version,
         failed,
@@ -149,7 +155,7 @@ export function ExtensionProvider({ children }) {
         capturedStays,
         importCapturedStays,
         clearCapturedStays: () => setCapturedStays(undefined)
-    }), [version, failed, capturing, capturedStays])
+    }
 
     return (
         <ExtensionContext.Provider value={value}>
@@ -161,15 +167,15 @@ export function ExtensionProvider({ children }) {
 export function useExtensionStatus() {
     const context = useContext(ExtensionContext)
     if (context.failed) {
-        return STATUS.FAILED
+        return Status.Failed
     } else if (context.version && context.version !== CURRENT_VERSION) {
-        return STATUS.INCOMPATIBLE
+        return Status.Incompatible
     } else if (context.capturing) {
-        return STATUS.CAPTURING
+        return Status.Capturing
     } else if (context.isConnected) {
-        return STATUS.CONNECTED
+        return Status.Connected
     } else {
-        return STATUS.UNKNOWN
+        return Status.Unknown
     }
 }
 
@@ -178,25 +184,30 @@ export function useCapturedStaysDiff() {
     return context.capturedStays?.diff
 }
 
-export function useCaptureBooking() {
+export function useCaptureStayType() {
+    const context = useContext(ExtensionContext)
+    return function captureStayType(stayType, captureNewOnly) {
+        context.startCapture(stayType, captureNewOnly)
+    }
+}
+
+export function useCapture(stayType) {
     const context = useContext(ExtensionContext)
     return function captureBooking() {
-        context.startCapture(ORIGIN.BOOKING)
+        context.startCapture(stayType)
     }
+}
+
+export function useCaptureBooking() {
+    return useCapture(StayType.Booking)
 }
 
 export function useCaptureAirbnb() {
-    const context = useContext(ExtensionContext)
-    return function captureAirbnb() {
-        context.startCapture(ORIGIN.AIRBNB)
-    }
+    return useCapture(StayType.Airbnb)
 }
 
 export function useCaptureAgoda() {
-    const context = useContext(ExtensionContext)
-    return function captureAgoda() {
-        context.startCapture(ORIGIN.AGODA)
-    }
+    return useCapture(StayType.Agoda)
 }
 
 export function useClearCapturedStays() {
