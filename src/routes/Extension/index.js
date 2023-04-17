@@ -5,7 +5,7 @@ import { useExtensionStatus, Status, StayType, StayName, StayLogoURL } from 'dom
 import OnlineDot from './OnlineDot'
 import ExtensionVersionNotMatching from './VersionMismatch'
 import ExtensionTroubleshoot from './Troubleshoot'
-import ExtensionCapturing from './Capturing'
+import ExtensionCapturingModal from './CapturingModal'
 import WebStoreButton from "./WebStoreButton"
 import ImportModal from "./ImportModal"
 import StartCaptureModal from "./StartCaptureModal"
@@ -81,12 +81,13 @@ function Stays() {
     )
 }
 
-function ExtensionConnected() {
+function ExtensionConnected({ capturing }) {
     return (
         <>
             <ExtensionStatus isConnected/>
             <HowItWorks />
             <Stays />
+            <ExtensionCapturingModal isOpen={capturing}/>
         </>
     )
 }
@@ -105,7 +106,8 @@ function ExtensionContent() {
     switch (extensionStatus) {
         case Status.Unknown: return <ExtensionNotConnected />
         case Status.Connected: return <ExtensionConnected />
-        case Status.Capturing: return <ExtensionCapturing />
+        case Status.Capturing: 
+            return <ExtensionConnected capturing={extensionStatus === Status.Capturing} />
         case Status.Failed: return <ExtensionFailed />
         case Status.Incompatible: return <ExtensionVersionNotMatching />
     }

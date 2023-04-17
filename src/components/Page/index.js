@@ -19,6 +19,7 @@ const Header = styled('h1')`
     align-items: flex-end;
     border-bottom: 3px solid #4fa177;
     font-size: 38px;
+    line-height: 37px;
     font-weight: 800;
     font-family: Header;
     padding-left: 2px;

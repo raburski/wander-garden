@@ -44,6 +44,7 @@ export default function StartCaptureModal({ onStartCapture, stayType, onCancel, 
 
     const createStartCapture = (stayType) => function onStartCapture() {
         captureStayType(stayType, setCaptureNewOnly)
+        onCancel()
     }
 
     const onCaptureSettingChange = (index) => setCaptureNewOnly(index === 0 ? false : true)

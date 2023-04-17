@@ -9,10 +9,10 @@ export const ModalPageButtons = styled('div')`
     padding-top: 12px;
 `
 
-export default function ModalPage({ isOpen,onClickAway, header, children }) {
+export default function ModalPage({ isOpen,onClickAway, header, children, pageStyle }) {
     return (
         <Modal isOpen={isOpen} onClickAway={onClickAway}>
-            <Page header={header}>
+            <Page header={header} style={pageStyle}>
                 {children}
             </Page>
         </Modal>
