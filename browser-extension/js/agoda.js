@@ -79,6 +79,7 @@ function initCapture(captureStay, captureFinished, lastCapturedStayID) {
                 if (message && message.target === ORIGIN.AGODA) {
                     const stay = dataToStay(message.data)
                     if (stay?.id === lastCapturedStayID) {
+                        localStorage.removeItem('garden-index')
                         captureFinished()
                     } else {
                         captureStay(stay)
