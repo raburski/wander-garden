@@ -1,22 +1,17 @@
 import Page from "components/Page"
 import InfoPanel from "components/InfoPanel"
 import SquareImage from 'components/SquareImage'
-import { useExtensionStatus, Status, StayType, useCaptureStayType, StayName, StayLogoURL } from 'domain/extension'
+import { useExtensionStatus, Status, StayType, StayName, StayLogoURL } from 'domain/extension'
 import OnlineDot from './OnlineDot'
-import Booking from './Booking'
-import Airbnb from './Airbnb'
 import ExtensionVersionNotMatching from './VersionMismatch'
 import ExtensionTroubleshoot from './Troubleshoot'
 import ExtensionCapturing from './Capturing'
 import WebStoreButton from "./WebStoreButton"
-import Agoda from "./Agoda"
 import ImportModal from "./ImportModal"
 import StartCaptureModal from "./StartCaptureModal"
 import Panel from "components/Panel"
 import { SlPuzzle } from 'react-icons/sl'
 import { styled } from "goober"
-import InfoRow from "components/InfoRow"
-import EmojiRow from "components/EmojiRow"
 import ContentRow from "components/ContentRow"
 import { useState } from "react"
 
@@ -52,8 +47,8 @@ IMPORTANT: You may need to log in to your account before automatic process start
 `
 
 const PuzzleLogo = styled(SlPuzzle)`
-    font-size: 32px;
-    padding: 5px;
+    font-size: 30px;
+    padding: 2px;
 `
 
 function HowItWorks() {
