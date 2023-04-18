@@ -36,6 +36,7 @@ export default function ImportModal() {
     const allIDs = [...newStays.map(s => s.id), ...modifiedStays.map(s => s.id)]
 
     const isNothingToImport = allIDs.length === 0
+    const isEmptyImport = isNothingToImport && unchangedStays.length === 0
 
     const onStayClick = (stayID) => {
         setUnchecked({ ...unchecked, [stayID]: !unchecked[stayID] })
@@ -50,7 +51,7 @@ export default function ImportModal() {
 
     return (
         <ModalPage isOpen={!!staysDiff} header="Import stays">
-            {isNothingToImport ? <NothingToImport /> : null}
+            {isEmptyImport ? <NothingToImport /> : null}
             {newStays.length > 0 ? <Panel header="New">
                 {newStays.map(stay => <StayRow onStayClick={onStayClick} stay={stay} icon={unchecked[stay.id] ? MdCheckBoxOutlineBlank : MdCheckBox}/>)}
             </Panel> : null}

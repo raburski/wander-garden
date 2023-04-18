@@ -1,12 +1,14 @@
 import { downloadString, uploadFile } from 'files'
 import { useCheckins, useClearData as useClearSwarmData, isSwarmData } from 'domain/swarm'
-import { useBookingStays, useClearData as useClearBookingData, isBookingData } from 'domain/bookingcom'
-import { useAirbnbStays, useClearData as useClearAirbnbData, isAirbnbData } from 'domain/airbnb'
+import { useBookingStays, useClearData as useClearBookingData } from 'domain/bookingcom'
+import { useAirbnbStays, useClearData as useClearAirbnbData } from 'domain/airbnb'
 import toast from 'react-hot-toast'
-import { isAgodaData, useAgodaStays, useClearData as useClearAgodaData } from "domain/agoda"
+import { useAgodaStays, useClearData as useClearAgodaData } from "domain/agoda"
 import { TITLES } from './consts'
 
 import { useRefreshTimeline } from 'domain/timeline'
+import { isStayData, isStayType } from 'domain/stay'
+import { useStartFileImport } from 'domain/extension'
 
 export function useDownload(index) {
     const [swarm] = useCheckins()
@@ -22,40 +24,36 @@ export function useDownload(index) {
     }
 }
 
-function createFileUpload(verifyData, setData, onFinish) {
-    return async function upload() {
-        try {
-            const files = await uploadFile()
-            const items = JSON.parse(files)
-            if (!verifyData(items)) {
-                alert('Data does not seem to be in a correct format...')
-                return
-            }
-            if (items.length > 0 && window.confirm(`${items.length} items found. Are you sure you want to REPLACE currently stored ones?`)) {
-                await setData(items)
-                toast.success('Data imported!')
-            }
-        } catch {
-            alert('Data import failed...')
-        } finally {
-            await onFinish()
+async function uploadSwarmCheckins(items, setCheckins, onFinish) {
+    try {
+        if (items.length > 0 && window.confirm(`${items.length} items found. Are you sure you want to REPLACE currently stored checkins?`)) {
+            await setCheckins(items)
+            toast.success('Data imported!')
         }
+    } catch (e) {
+        alert(e.name)
+    } finally {
+        await onFinish()
     }
 }
 
-export function useUpload(index) {
+export function useUpload() {
     const refreshTimeline = useRefreshTimeline()
+    const startFileImport = useStartFileImport()
 
     const [_, setCheckins] = useCheckins()
-    const [__, setBookings] = useBookingStays()
-    const [___, setAirbnb] = useAirbnbStays()
-    const [____, setAgoda] = useAgodaStays()
 
-    switch (index) {
-        case 0: return createFileUpload(isSwarmData, setCheckins, refreshTimeline)
-        case 1: return createFileUpload(isBookingData, setBookings, refreshTimeline)
-        case 2: return createFileUpload(isAirbnbData, setAirbnb, refreshTimeline)
-        case 2: return createFileUpload(isAgodaData, setAgoda, refreshTimeline)
+    return async function onUploadFile() {
+        const files = await uploadFile()
+        const items = JSON.parse(files)
+
+        if (isSwarmData(items)) {
+            await uploadSwarmCheckins(items, setCheckins, refreshTimeline)
+        } else if (isStayType(items) || isStayData(items)) {
+            startFileImport(items)
+        } else {
+            alert('Data does not seem to be in any recognised format!')
+        }
     }
 }
 
@@ -70,7 +68,11 @@ export function useTrash(index) {
     return () => {
         if (window.confirm(`Are you sure you want to delete all ${TITLES[index]} data?`) && window.confirm(`Are you REALLY sure you want to CLEAN IT?`)) {
             switch (index) {
-                case 0: clearSwarmData().then(() => refreshTimeline()); break
+                case 0: clearSwarmData().then(() => {
+                    console.log('clear swarm refresh?')
+                    refreshTimeline()
+                    console.log('refreshed!')
+                }); break
                 case 1: clearBookingData().then(() => refreshTimeline()); break
                 case 2: clearAirbnbData().then(() => refreshTimeline()); break
                 case 3: clearAgodaData().then(() => refreshTimeline()); break

@@ -7,7 +7,6 @@ import ExtensionVersionNotMatching from './VersionMismatch'
 import ExtensionTroubleshoot from './Troubleshoot'
 import ExtensionCapturingModal from './CapturingModal'
 import WebStoreButton from "./WebStoreButton"
-import ImportModal from "./ImportModal"
 import StartCaptureModal from "./StartCaptureModal"
 import Panel from "components/Panel"
 import { SlPuzzle } from 'react-icons/sl'
@@ -117,7 +116,6 @@ export default function Hotels() {
     return (
         <Page header="Extension">
             <ExtensionContent />
-            <ImportModal />
         </Page>
     )
 }

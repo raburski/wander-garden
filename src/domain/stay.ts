@@ -1,6 +1,6 @@
 import type { Location } from 'domain/location'
 import { isLocationType } from "domain/location"
-import { isOptionalOfType, isOfType, isMoneyType, Money } from "type"
+import { isOptionalOfType, isOfType, isMoneyType, Money, isArrayOfType } from "type"
 
 export interface Accomodation {
     name: string
@@ -38,4 +38,8 @@ export function isStayType(stay?: Stay): boolean {
         && isOfType(stay.location, isLocationType)
         && isOptionalOfType(stay.accomodation, isAccomodationType)
         && isOptionalOfType(stay.price, isMoneyType)
+}
+
+export function isStayData(data: any[]) {
+    return isArrayOfType(data, isStayType)
 }

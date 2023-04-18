@@ -7,6 +7,8 @@ import { useRefreshTimeline } from "domain/timeline"
 import { Status, Origin, StayTypeToOrigin, StayType } from "./types"
 import equal from 'fast-deep-equal'
 import moment from "moment"
+import { isStayData, isStayType } from "domain/stay"
+import ImportModal from "./ImportModal"
 
 const CURRENT_VERSION = '0.0.5'
 
@@ -54,6 +56,18 @@ function getLatestStay(stays) {
     const orderedStays = [...stays]
     orderedStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
     return orderedStays[0]
+}
+
+function detectStayType(stay) {
+    if (!stay) return undefined 
+
+    const idPart = stay.id.split(':')[0]
+    switch (idPart) {
+        case "airbnb": return StayType.Airbnb
+        case "booking": return StayType.Booking
+        case "agoda": return StayType.Agoda
+        default: return undefined
+    }
 }
 
 export function ExtensionProvider({ children }) {
@@ -146,12 +160,37 @@ export function ExtensionProvider({ children }) {
         setCapturedStays(undefined)
     }
 
+    function startFileImport(stayOrStays) {
+        if (!stayOrStays) return
+
+        const stays = Array.isArray(stayOrStays) ? stayOrStays : [stayOrStays]
+        if (stays.length === 0) return
+        
+        const stayTypes = stays.map(detectStayType)
+        const stayType = stayTypes[0]
+        const allStayTypesEqual = stayTypes.reduce((a, t) => a && t === stayType, true)
+        if (!allStayTypesEqual) {
+            throw Error('All stays should have the same origin.')
+        }
+
+        if (!isStayData(stays)) {
+            throw Error('All stays should have valid type.')
+        }
+
+        const localStays = getStays(stayType)
+        setCapturedStays({ 
+            subject: StayTypeToOrigin[stayType],
+            diff: getStaysCaptureDiff(stays, localStays)
+        })
+    }
+
     const value = {
         isConnected: !!version,
         version,
         failed,
         capturing,
         startCapture,
+        startFileImport,
         capturedStays,
         importCapturedStays,
         clearCapturedStays: () => setCapturedStays(undefined)
@@ -160,6 +199,7 @@ export function ExtensionProvider({ children }) {
     return (
         <ExtensionContext.Provider value={value}>
             {children}
+            <ImportModal />
         </ExtensionContext.Provider>
     )
 }
@@ -182,6 +222,11 @@ export function useExtensionStatus() {
 export function useCapturedStaysDiff() {
     const context = useContext(ExtensionContext)
     return context.capturedStays?.diff
+}
+
+export function useStartFileImport() {
+    const context = useContext(ExtensionContext)
+    return context.startFileImport
 }
 
 export function useCaptureStayType() {
