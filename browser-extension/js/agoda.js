@@ -50,23 +50,23 @@ function initCapture(captureStay, captureFinished, lastCapturedStayID) {
         const params = new URLSearchParams(window.location.search)
         const page = params.get('garden-page') || 'root'
         if (page === 'root') {
-            const index = parseInt(localStorage.getItem('garden-index')) || 0
+            const index = parseInt(sessionStorage.getItem('garden-index')) || 0
             const allCards = [...document.querySelectorAll("div[data-element-name='blp-booking-item-card']")]
             const nextButton = document.querySelector("button[aria-label='Next']")
 
             if (index > allCards.length - 1) {
                 if (!nextButton || nextButton.disabled) {
-                    localStorage.removeItem('garden-index')
+                    sessionStorage.removeItem('garden-index')
                     captureFinished()
                 } else {
-                    localStorage.setItem('garden-index', 0)
+                    sessionStorage.setItem('garden-index', 0)
                     nextButton.click()
                     setTimeout(() => {
                         window.location.reload()
                     }, 300)
                 }
             } else {
-                localStorage.setItem('garden-index', index + 1)
+                sessionStorage.setItem('garden-index', index + 1)
                 const urlBase = window.location.href.split('#')[0]
                 const nextURL = `${urlBase}&garden-page=root`
                 const currentURL = `${allCards[index].getAttribute('data-url')}&garden-page=detail&garden-url=${btoa(nextURL)}#littleTest`
@@ -79,7 +79,7 @@ function initCapture(captureStay, captureFinished, lastCapturedStayID) {
                 if (message && message.target === ORIGIN.AGODA) {
                     const stay = dataToStay(message.data)
                     if (stay?.id === lastCapturedStayID) {
-                        localStorage.removeItem('garden-index')
+                        sessionStorage.removeItem('garden-index')
                         captureFinished()
                     } else {
                         captureStay(stay)
