@@ -87,9 +87,9 @@ export default function Swarm() {
             <ButtonsPanel header="Connected account" text={isAuthenticated ? ACCOUNT_COPY_AUTHED : ACCOUNT_COPY_DEFAULT}>
                 {isAuthenticated ? <Button onClick={onLogout} icon={IoLogoFoursquare}>Disconnect</Button> : <AuthenticateButton />}
             </ButtonsPanel>
-            <ButtonsPanel header="Developer tools">
+            {/* <ButtonsPanel header="Developer tools">
                 <Button onClick={onDownloadCategories}>Download categories.json</Button>
-            </ButtonsPanel>
+            </ButtonsPanel> */}
         </Page>
     )
 }
