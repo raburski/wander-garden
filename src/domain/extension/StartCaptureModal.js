@@ -69,7 +69,7 @@ function WorkingExtensionRequired({ onCancel }) {
 }
 
 function CaptureSetting({ onChange, selectedIndex }) {
-    return <SettingContainer>Capture mode: <Segment titles={SETTING_TITLES} selectedIndex={selectedIndex} onClick={onChange}/></SettingContainer>
+    return <SettingContainer>Mode: <Segment titles={SETTING_TITLES} selectedIndex={selectedIndex} onClick={onChange}/></SettingContainer>
 }
 
 export default function StartCaptureModal({ onStartCapture, stayType, onCancel, ...props }) {
@@ -95,7 +95,7 @@ export default function StartCaptureModal({ onStartCapture, stayType, onCancel, 
                     </SettingsPanel>
                     <ModalPageButtons>
                         <Button flat onClick={onCancel}>Cancel</Button>
-                        <Button icon={FiExternalLink} onClick={stayType ? createStartCapture(stayType) : undefined}>Start capture</Button>
+                        <Button icon={FiExternalLink} onClick={stayType ? createStartCapture(stayType) : undefined}>Start</Button>
                     </ModalPageButtons>
                 </>
             }

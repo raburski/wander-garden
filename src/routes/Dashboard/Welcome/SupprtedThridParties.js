@@ -1,14 +1,9 @@
-import { useNavigate } from "react-router-dom"
 import Panel from 'components/Panel'
 import SquareImage from 'components/SquareImage'
-import Button from 'components/Button'
-import { SlPuzzle } from 'react-icons/sl'
-import { Column, Row } from 'components/container'
+import { Row } from 'components/container'
 import Separator from "components/Separator"
 
-export default function ExtensionPanel() {
-    const navigate = useNavigate()
-    const onGoToExtension = () => navigate('/extension')
+export default function SupportedThirdParties() {
     return (
         <Panel 
             header="Supports"

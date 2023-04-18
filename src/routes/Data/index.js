@@ -4,15 +4,15 @@ import { SiSwarm } from 'react-icons/si'
 import { TbBrandBooking, TbBrandAirbnb, TbDownload, TbCloudUpload, TbTrash, TbRefresh } from 'react-icons/tb'
 import { FiExternalLink, FiMapPin } from 'react-icons/fi'
 import { MdHotel } from 'react-icons/md'
-import { downloadString, uploadFile } from 'files'
 import moment from 'moment'
 import { getDaysAndRangeText } from 'date'
 import Page from 'components/Page'
 import Panel from '../../components/Panel'
 import { formattedLocation } from 'domain/location'
-import { useCheckins, useClearData as useClearSwarmData, isSwarmData } from 'domain/swarm'
-import { useBookingStays, useClearData as useClearBookingData, isBookingData } from 'domain/bookingcom'
-import { useAirbnbStays, useClearData as useClearAirbnbData, isAirbnbData } from 'domain/airbnb'
+import { useCheckins } from 'domain/swarm'
+import { useBookingStays } from 'domain/bookingcom'
+import { useAirbnbStays } from 'domain/airbnb'
+import { useAgodaStays } from "domain/agoda"
 import Segment from 'components/Segment'
 import NoneFound from 'components/NoneFound'
 import InfoRow from 'components/InfoRow'
@@ -21,10 +21,36 @@ import Button from "components/Button"
 import Separator from 'components/HalfSeparator'
 import useDebouncedInput from 'hooks/useDebouncedInput'
 import TextField from 'components/TextField'
-import toast from 'react-hot-toast'
-import { isAgodaData, useAgodaStays, useClearData as useClearAgodaData } from "domain/agoda"
 import { useDownload, useRefresh, useTrash, useUpload } from "./hooks"
 import { TITLES } from './consts'
+import SquareImage from "components/SquareImage"
+import { StayLogoURL, StayType, useShowCaptureStartModal } from "domain/extension"
+
+const NoStaysContainer = styled('div')`
+    display: flex;
+    flex: 1;
+    align-self: stretch;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 38px;
+`
+
+const NoStayLabel = styled('div')`
+    margin: 26px;
+`
+
+function NoStaysFound({ stayType }) {
+    const startStayCapture = useShowCaptureStartModal()
+    const onButtonClick = () => startStayCapture(stayType)
+    return (
+        <NoStaysContainer>
+            <SquareImage size={100} src={StayLogoURL[stayType]}/>
+            <NoStayLabel>You don't seem to have any stays here...</NoStayLabel>
+            <Button onClick={onButtonClick} style={{alignSelf: 'center'}}>Capture your first ones!</Button>
+        </NoStaysContainer>
+    )
+}
 
 function CheckinRow({ checkin }) {
     const subtitle = `in ${formattedLocation(checkin.venue.location)}`
@@ -97,21 +123,21 @@ function BookingComList({ search }) {
     const [stays] = useBookingStays()
     const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : [...stays]
     filteredStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
-    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={TbBrandBooking} stay={stay} key={stay.id} />) : <NoneFound />
+    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={TbBrandBooking} stay={stay} key={stay.id} />) : <NoStaysFound stayType={StayType.Booking}/>
 }
 
 function AirbnbList({ search }) {
     const [stays] = useAirbnbStays()
     const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : [...stays]
     filteredStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
-    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={TbBrandAirbnb} stay={stay} key={stay.id} />) : <NoneFound />
+    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={TbBrandAirbnb} stay={stay} key={stay.id} />) : <NoStaysFound stayType={StayType.Airbnb}/>
 }
 
 function AgodaList({ search }) {
     const [stays] = useAgodaStays()
     const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : [...stays]
     filteredStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
-    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={MdHotel} stay={stay} key={stay.id} />) : <NoneFound />
+    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={MdHotel} stay={stay} key={stay.id} />) : <NoStaysFound stayType={StayType.Agoda}/>
 }
 
 const HeaderContainer = styled('div')`
