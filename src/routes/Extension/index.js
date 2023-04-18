@@ -73,12 +73,11 @@ function Stays() {
     )
 }
 
-function ExtensionConnected({ capturing }) {
+function ExtensionConnected() {
     return (
         <>
             <HowItWorks />
             <ExtensionStatus isConnected/>
-            <Stays />
         </>
     )
 }
@@ -108,6 +107,7 @@ export default function Hotels() {
     return (
         <Page header="Extension">
             <ExtensionContent />
+            <Stays />
         </Page>
     )
 }

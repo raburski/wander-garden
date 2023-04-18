@@ -44,33 +44,34 @@ const RoutesContainer = styled('div')`
 
 function App() {
   return (
-    <SettingsProvider>
-      <ThemeProvider>
-        <BookingStaysProvider>
-          <AirbnbStaysProvider>
-            <AgodaStaysProvider>
-              <SwarmProvider>
-                <HomesProvider>
-                  <TimelineProvider>
-                    <ExtensionProvider>
-                      <AppContainer>
-                        <Router>
-                          <SideBar />
-                          <RoutesContainer id="routes-container">
-                            <Routes />
-                          </RoutesContainer>
-                        </Router>
-                        <Toaster />
-                      </AppContainer>
-                    </ExtensionProvider>
-                  </TimelineProvider>
-                </HomesProvider>
-              </SwarmProvider>
-            </AgodaStaysProvider>
-          </AirbnbStaysProvider>
-        </BookingStaysProvider>
-      </ThemeProvider>
-    </SettingsProvider>
+    <Router>
+      <SettingsProvider>
+        <ThemeProvider>
+          <BookingStaysProvider>
+            <AirbnbStaysProvider>
+              <AgodaStaysProvider>
+                <SwarmProvider>
+                  <HomesProvider>
+                    <TimelineProvider>
+                      <ExtensionProvider>
+                        <AppContainer>
+                          
+                            <SideBar />
+                            <RoutesContainer id="routes-container">
+                              <Routes />
+                            </RoutesContainer>
+                          <Toaster />
+                        </AppContainer>
+                      </ExtensionProvider>
+                    </TimelineProvider>
+                  </HomesProvider>
+                </SwarmProvider>
+              </AgodaStaysProvider>
+            </AirbnbStaysProvider>
+          </BookingStaysProvider>
+        </ThemeProvider>
+      </SettingsProvider>
+    </Router>
   );
 }
 

@@ -7,6 +7,7 @@ export const ModalPageButtons = styled('div')`
     justify-content: space-between;
     margin-bottom: 12px;
     padding-top: 12px;
+    align-self: stretch;
 `
 
 export default function ModalPage({ isOpen,onClickAway, header, children, pageStyle }) {
