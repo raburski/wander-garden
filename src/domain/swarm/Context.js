@@ -51,35 +51,11 @@ export function useIsAuthenticated() {
     return !!token
 }
 
-export function useFetchCheckins() {
-    const [checkins, setCheckins] = useCheckins()
-    const [_, setLastUpdated] = useLastUpdated()
-    const [token, setToken] = useToken()
-    const latestCheckinIDs = [checkins[0], checkins[1], checkins[2]].filter(Boolean).map(c => c.id)
-
-    return async function fetchCheckinsHook() {
-        try {
-            const fetchedCheckins = await fetchCheckins(token, latestCheckinIDs)
-            const newCheckins = [
-                ...fetchedCheckins,
-                ...checkins,
-            ]
-            await setCheckins(newCheckins)
-            await setLastUpdated(moment())
-
-        } catch (e) {
-            if (e === UnauthorizedError) {
-                await setToken(null)
-            }
-            throw e
-        }
-    }
-}
-
 export function useClearData() {
     const [_, setCheckins] = useCheckins()
     const [__, setLastUpdated] = useLastUpdated()
     return async function clearData() {
+        await checkinsStorage.clearAll()
         await setCheckins([])
         await setLastUpdated(null)
     }
