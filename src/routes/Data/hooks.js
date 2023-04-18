@@ -18,10 +18,10 @@ export function useDownload(index) {
     const [agoda] = useAgodaStays()
 
     switch (index) {
-        case 0: return swarm.length > 0 ? () => downloadString(JSON.stringify(swarm), 'json', 'swarm.json') : undefined
-        case 1: return booking.length > 0 ? () => downloadString(JSON.stringify(booking), 'json', 'booking.json') : undefined
-        case 2: return airbnb.length > 0 ? () => downloadString(JSON.stringify(airbnb), 'json', 'airbnb.json') : undefined
-        case 3: return agoda.length > 0 ? () => downloadString(JSON.stringify(agoda), 'json', 'agoda.json') : undefined
+        case 0: return booking.length > 0 ? () => downloadString(JSON.stringify(booking), 'json', 'booking.json') : undefined
+        case 1: return airbnb.length > 0 ? () => downloadString(JSON.stringify(airbnb), 'json', 'airbnb.json') : undefined
+        case 2: return agoda.length > 0 ? () => downloadString(JSON.stringify(agoda), 'json', 'agoda.json') : undefined
+        case 3: return swarm.length > 0 ? () => downloadString(JSON.stringify(swarm), 'json', 'swarm.json') : undefined
     }
 }
 
@@ -69,14 +69,14 @@ export function useTrash(index) {
     return () => {
         if (window.confirm(`Are you sure you want to delete all ${TITLES[index]} data?`) && window.confirm(`Are you REALLY sure you want to CLEAN IT?`)) {
             switch (index) {
-                case 0: clearSwarmData().then(() => {
+                case 0: clearBookingData().then(() => refreshTimeline()); break
+                case 1: clearAirbnbData().then(() => refreshTimeline()); break
+                case 2: clearAgodaData().then(() => refreshTimeline()); break
+                case 3: clearSwarmData().then(() => {
                     console.log('clear swarm refresh?')
                     refreshTimeline()
                     console.log('refreshed!')
                 }); break
-                case 1: clearBookingData().then(() => refreshTimeline()); break
-                case 2: clearAirbnbData().then(() => refreshTimeline()); break
-                case 3: clearAgodaData().then(() => refreshTimeline()); break
                 default: break
             }
         }
@@ -87,10 +87,10 @@ export function useRefresh(index) {
     const showCaptureStartModal = useShowCaptureStartModal()
     const [fetchSwarm] = useToastedFetchSwarm()
     switch (index) {
-        case 0: return fetchSwarm
-        case 1: return () => showCaptureStartModal(StayType.Booking)
-        case 2: return () => showCaptureStartModal(StayType.Airbnb)
-        case 3: return () => showCaptureStartModal(StayType.Agoda)
+        case 0: return () => showCaptureStartModal(StayType.Booking)
+        case 1: return () => showCaptureStartModal(StayType.Airbnb)
+        case 2: return () => showCaptureStartModal(StayType.Agoda)
+        case 3: return fetchSwarm
         default: return undefined
     }
 }

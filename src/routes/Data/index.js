@@ -193,10 +193,10 @@ export default function Data() {
                 onTrashClick={onDownloadClick ? onTrashClick : undefined}
                 onChangeSearch={onChangeSearch}/>
             <Panel style={{maxHeight: '84%', marginTop: 22}} contentStyle={{ overflow: 'scroll' }}>
-                {selectedIndex === 0 ? <SwarmCheckinsList search={search}/> : null}
-                {selectedIndex === 1 ? <BookingComList search={search}/> : null}
-                {selectedIndex === 2 ? <AirbnbList search={search}/> : null}
-                {selectedIndex === 3 ? <AgodaList search={search}/> : null}
+                {selectedIndex === 0 ? <BookingComList search={search}/> : null}
+                {selectedIndex === 1 ? <AirbnbList search={search}/> : null}
+                {selectedIndex === 2 ? <AgodaList search={search}/> : null}
+                {selectedIndex === 3 ? <SwarmCheckinsList search={search}/> : null}
             </Panel>
         </Page>
     )
