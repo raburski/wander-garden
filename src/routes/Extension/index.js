@@ -1,18 +1,15 @@
 import Page from "components/Page"
 import InfoPanel from "components/InfoPanel"
 import SquareImage from 'components/SquareImage'
-import { useExtensionStatus, Status, StayType, StayName, StayLogoURL } from 'domain/extension'
+import { useExtensionStatus, Status, StayType, StayName, StayLogoURL, useShowCaptureStartModal } from 'domain/extension'
 import OnlineDot from './OnlineDot'
 import ExtensionVersionNotMatching from './VersionMismatch'
 import ExtensionTroubleshoot from './Troubleshoot'
-import ExtensionCapturingModal from './CapturingModal'
 import WebStoreButton from "./WebStoreButton"
-import StartCaptureModal from "./StartCaptureModal"
 import Panel from "components/Panel"
 import { SlPuzzle } from 'react-icons/sl'
 import { styled } from "goober"
 import ContentRow from "components/ContentRow"
-import { useState } from "react"
 
 const COPY = `In order to enhance your dataset you can install garden browser extension. It will help you import your booking.com, airbnb and agoda bookings.
 
@@ -61,10 +58,10 @@ const Logo = styled('img')`
 `
 
 function Stays() {
-    const [selectedSource, setSelectedSource] = useState()
+    const showCaptureStartModal = useShowCaptureStartModal()
 
     const createSelectStayType = (stayType) => function onStayTypeSelect() {
-        setSelectedSource(stayType)
+        showCaptureStartModal(stayType)
     }
 
     return (
@@ -72,10 +69,6 @@ function Stays() {
             <ContentRow image={<Logo src={StayLogoURL[StayType.Booking]}/>} title={StayName[StayType.Booking]} onClick={createSelectStayType(StayType.Booking)}/>
             <ContentRow image={<Logo src={StayLogoURL[StayType.Airbnb]}/>} title={StayName[StayType.Airbnb]} onClick={createSelectStayType(StayType.Airbnb)}/>
             <ContentRow image={<Logo src={StayLogoURL[StayType.Agoda]}/>} title={StayName[StayType.Agoda]} onClick={createSelectStayType(StayType.Agoda)}/>
-            <StartCaptureModal
-                stayType={selectedSource}
-                onCancel={() => setSelectedSource(undefined)}
-            />
         </Panel>
     )
 }
@@ -86,7 +79,6 @@ function ExtensionConnected({ capturing }) {
             <HowItWorks />
             <ExtensionStatus isConnected/>
             <Stays />
-            <ExtensionCapturingModal isOpen={capturing}/>
         </>
     )
 }
@@ -106,7 +98,7 @@ function ExtensionContent() {
         case Status.Unknown: return <ExtensionNotConnected />
         case Status.Connected: return <ExtensionConnected />
         case Status.Capturing: 
-            return <ExtensionConnected capturing={extensionStatus === Status.Capturing} />
+            return <ExtensionConnected />
         case Status.Failed: return <ExtensionFailed />
         case Status.Incompatible: return <ExtensionVersionNotMatching />
     }

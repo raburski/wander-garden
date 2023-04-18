@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { styled } from 'goober'
 import { SiSwarm } from 'react-icons/si'
-import { TbBrandBooking, TbBrandAirbnb, TbDownload, TbCloudUpload, TbTrash } from 'react-icons/tb'
+import { TbBrandBooking, TbBrandAirbnb, TbDownload, TbCloudUpload, TbTrash, TbRefresh } from 'react-icons/tb'
 import { FiExternalLink, FiMapPin } from 'react-icons/fi'
 import { MdHotel } from 'react-icons/md'
 import { downloadString, uploadFile } from 'files'
@@ -23,7 +23,7 @@ import useDebouncedInput from 'hooks/useDebouncedInput'
 import TextField from 'components/TextField'
 import toast from 'react-hot-toast'
 import { isAgodaData, useAgodaStays, useClearData as useClearAgodaData } from "domain/agoda"
-import { useDownload, useTrash, useUpload } from "./hooks"
+import { useDownload, useRefresh, useTrash, useUpload } from "./hooks"
 import { TITLES } from './consts'
 
 function CheckinRow({ checkin }) {
@@ -128,7 +128,7 @@ const ActionsContainer = styled('div')`
 `
 
 
-function Header({ selectedIndex, setSelectedIndex, onDownloadClick, onUploadClick, onTrashClick, onChangeSearch }) {
+function Header({ selectedIndex, setSelectedIndex, onRefreshClick, onDownloadClick, onUploadClick, onTrashClick, onChangeSearch }) {
     return (
         <HeaderContainer>
             <Segment titles={TITLES} selectedIndex={selectedIndex} onClick={setSelectedIndex}/>
@@ -138,6 +138,8 @@ function Header({ selectedIndex, setSelectedIndex, onDownloadClick, onUploadClic
                 <Button icon={TbDownload} onClick={onDownloadClick} disabled={!onDownloadClick}/>
                 <Separator />
                 <Button icon={TbCloudUpload} onClick={onUploadClick}/>
+                <Separator />
+                <Button icon={TbRefresh} onClick={onRefreshClick}/>
                 <Separator />
                 <TextField placeholder="Search" onChange={onChangeSearch}/>
             </ActionsContainer>
@@ -151,6 +153,7 @@ export default function Data() {
     const onDownloadClick = useDownload(selectedIndex)
     const onUploadClick = useUpload(selectedIndex)
     const onTrashClick = useTrash(selectedIndex)
+    const onRefreshClick = useRefresh(selectedIndex)
     const [search, onChangeSearch] = useDebouncedInput()
 
     return (
@@ -158,6 +161,7 @@ export default function Data() {
             <Header 
                 selectedIndex={selectedIndex}
                 setSelectedIndex={setSelectedIndex}
+                onRefreshClick={onRefreshClick}
                 onDownloadClick={onDownloadClick}
                 onUploadClick={onUploadClick}
                 onTrashClick={onDownloadClick ? onTrashClick : undefined}

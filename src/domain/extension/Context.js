@@ -9,6 +9,8 @@ import equal from 'fast-deep-equal'
 import moment from "moment"
 import { isStayData, isStayType } from "domain/stay"
 import ImportModal from "./ImportModal"
+import CapturingModal from "./CapturingModal"
+import StartCaptureModal from "./StartCaptureModal"
 
 const CURRENT_VERSION = '0.0.5'
 
@@ -75,6 +77,7 @@ export function ExtensionProvider({ children }) {
     const [capturedStays, setCapturedStays] = useState()
     const [failed, setFailed] = useState(false)
     const [capturing, setCapturing] = useState(false)
+    const [selectedCaptureStayType, setSelectedCaptureStayType] = useState()
     const [bookingStays, setBookingStays] = useBookingStays()
     const [airbnbStays, setAirbnbStays] = useAirbnbStays()
     const [agodaStays, setAgodaStays] = useAgodaStays()
@@ -165,7 +168,7 @@ export function ExtensionProvider({ children }) {
 
         const stays = Array.isArray(stayOrStays) ? stayOrStays : [stayOrStays]
         if (stays.length === 0) return
-        
+
         const stayTypes = stays.map(detectStayType)
         const stayType = stayTypes[0]
         const allStayTypesEqual = stayTypes.reduce((a, t) => a && t === stayType, true)
@@ -191,6 +194,7 @@ export function ExtensionProvider({ children }) {
         capturing,
         startCapture,
         startFileImport,
+        showCaptureStartModal: (stayType) => setSelectedCaptureStayType(stayType),
         capturedStays,
         importCapturedStays,
         clearCapturedStays: () => setCapturedStays(undefined)
@@ -200,6 +204,11 @@ export function ExtensionProvider({ children }) {
         <ExtensionContext.Provider value={value}>
             {children}
             <ImportModal />
+            <StartCaptureModal
+                stayType={selectedCaptureStayType}
+                onCancel={() => setSelectedCaptureStayType(undefined)}
+            />
+            <CapturingModal isOpen={capturing}/>
         </ExtensionContext.Provider>
     )
 }
@@ -227,6 +236,11 @@ export function useCapturedStaysDiff() {
 export function useStartFileImport() {
     const context = useContext(ExtensionContext)
     return context.startFileImport
+}
+
+export function useShowCaptureStartModal() {
+    const context = useContext(ExtensionContext)
+    return context.showCaptureStartModal
 }
 
 export function useCaptureStayType() {

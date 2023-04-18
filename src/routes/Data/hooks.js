@@ -8,7 +8,8 @@ import { TITLES } from './consts'
 
 import { useRefreshTimeline } from 'domain/timeline'
 import { isStayData, isStayType } from 'domain/stay'
-import { useStartFileImport } from 'domain/extension'
+import { StayType, useShowCaptureStartModal, useStartFileImport } from 'domain/extension'
+import { useToastedFetchSwarm } from 'domain/swarm/hooks'
 
 export function useDownload(index) {
     const [swarm] = useCheckins()
@@ -79,5 +80,17 @@ export function useTrash(index) {
                 default: break
             }
         }
+    }
+}
+
+export function useRefresh(index) {
+    const showCaptureStartModal = useShowCaptureStartModal()
+    const [fetchSwarm] = useToastedFetchSwarm()
+    switch (index) {
+        case 0: return fetchSwarm
+        case 1: return () => showCaptureStartModal(StayType.Booking)
+        case 2: return () => showCaptureStartModal(StayType.Airbnb)
+        case 3: return () => showCaptureStartModal(StayType.Agoda)
+        default: return undefined
     }
 }
