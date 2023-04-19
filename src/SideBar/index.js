@@ -1,5 +1,6 @@
 import { styled } from 'goober'
 import { VscDashboard, VscPulse, VscVersions } from 'react-icons/vsc'
+import { FaDiscord, FaTwitter } from 'react-icons/fa'
 import { TfiMapAlt } from 'react-icons/tfi'
 import { SiSwarm } from 'react-icons/si'
 import { SlPuzzle, SlSettings } from 'react-icons/sl'
@@ -63,9 +64,26 @@ const StyledPillLink = styled(PillLink)`
     margin-left: 12px;
 `
 
+const SubButtons = styled('div')`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 8px;
+`
+
+
+const DISCORD_URL = 'https://discord.gg/BhyXtRH6'
+const TWITTER_LINK = 'https://twitter.com/wandergarden_'
 function SubNotes() {
+    const openDiscord = () => window.open(DISCORD_URL, '_blank')
+    const openTwitter = () => window.open(TWITTER_LINK, '_blank')
     return (
         <StyledNotes>
+            
+            <SubButtons>
+                <PillLink small icon={FaDiscord} onClick={openDiscord}/>
+                <PillLink small icon={FaTwitter} onClick={openTwitter}/>
+            </SubButtons>
             <StylelessLink to="/info">What is Wander Garden?</StylelessLink>
             <MountainSeparator />
         </StyledNotes>
