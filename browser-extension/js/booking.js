@@ -120,7 +120,7 @@ function initCapture(captureStay, captureFinished, lastCapturedStayID) {
 }
 
 function addLinkWidget(stay, widget) {
-    const link = document.querySelector(`a[href='${stay.url}'] div div`)
+    const link = document.querySelector(`a[href^='${stay.url}'] div div`)
     if (link) {
         link.appendChild(widget)
     } else {
