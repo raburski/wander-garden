@@ -64,7 +64,7 @@ const Separator = styled('div')`
     width: .55rem;
 `
 
-export default function Button({ disabled = false, icon = undefined, selected = false, iconSize = 16, children, onClick = () => {}, ...props }) {
+export default function Button({ disabled = false, icon = undefined, selected = false, iconSize = 16, children, onClick = () => {}, flat = false, ...props }) {
     const IconComponent = icon
     const noPropagateClick = (event) => {
         event.stopPropagation()
