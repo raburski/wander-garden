@@ -16,9 +16,8 @@ const Content = styled('div')`
     flex-direction: column;
     background-color: ${props => props.theme.background.default};
     white-space: pre-wrap;
-    
+    overflow: hidden;
     border-radius: 8px;
-
     border: 1px solid ${props => props.theme.border};
     box-shadow: 0px 2px 3px ${props => props.theme.shadow};
 `

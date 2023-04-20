@@ -17,6 +17,7 @@ function StayRow({ stay, icon, onStayClick }) {
 const NothingContainer = styled('div')`
     padding: 8px;
     font-size: 16px;
+    color: ${props => props.theme.text};
 `
 
 function NothingToImport() {
