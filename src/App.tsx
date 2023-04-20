@@ -32,12 +32,14 @@ const AppContainer = styled('div')`
   flex: 1;
   align-self: stretch;
   height: 100vh;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
 `
 
 const RoutesContainer = styled('div')`
   height: 100vh;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
   display: flex;
   flex: 1;
 `

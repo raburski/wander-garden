@@ -18,7 +18,7 @@ const Content = styled('div')`
     white-space: pre-wrap;
     
     border-radius: 8px;
-    overflow: hidden;
+
     border: 1px solid ${props => props.theme.border};
     box-shadow: 0px 2px 3px ${props => props.theme.shadow};
 `

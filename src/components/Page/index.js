@@ -8,7 +8,6 @@ const Container = styled('div')`
     padding-top: 32px;
     padding-left: 24px;
     padding-right: 24px;
-    padding-bottom: 16px;
     max-width: 1200px;
     min-width: 312px;
 `

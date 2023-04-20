@@ -24,7 +24,8 @@ const ModalWindow = styled(motion.div)`
     max-height: 90%;
     background-color: ${props => props.theme.background.default};
     border-radius: 6px;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
     box-shadow: 0px 2px 10px ${props => props.theme.shadow};
 `
 
