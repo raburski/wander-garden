@@ -6,7 +6,6 @@ import Page from '../../components/Page'
 import Panel from '../../components/Panel'
 import GroupEvent from 'routes/Timeline/GroupEvent'
 import { styled } from 'goober'
-import { useStays } from 'domain/stays'
 import moment from 'moment'
 import useTrip, { PhaseType, StayPhase } from './useTrip'
 import GroupBar from 'routes/Timeline/GroupBar'
@@ -16,6 +15,7 @@ import Phase from './Phase'
 import { useEffect, useRef } from 'react';
 import Separator from 'components/Separator';
 import { Column, Row } from 'components/container';
+import useMapsStyles from './useMapStyles';
 
 const EventsContainer = styled('div')`
     display: flex;
@@ -105,6 +105,8 @@ function getBoundsZoomLevel(bounds, mapDim) {
 
 function MyMapComponent({ stays }) {
     const ref = useRef()
+    const mapRef = useRef()
+    const mapStyles = useMapsStyles()
   
     useEffect(() => {
         const google = window.google
@@ -122,7 +124,9 @@ function MyMapComponent({ stays }) {
         const map = new google.maps.Map(ref.current, {
             center,
             zoom,
-            controlSize: 26
+            controlSize: 26,
+            backgroundColor: 'none',
+            styles: mapStyles,
         })
 
         // create markers
@@ -134,9 +138,14 @@ function MyMapComponent({ stays }) {
 
         stayMarkers.forEach(marker => marker.setMap(map))
 
+        mapRef.current = map
     })
+
+    useEffect(() => {
+        mapRef.current.setOptions({ styles: mapStyles })
+    }, [mapStyles])
   
-    return <div ref={ref} id="map" style={{display: 'flex', flex: 1, alignSelf: 'stretch'}}/>;
+    return <div ref={ref} id="map" style={{display: 'flex', flex: 1, alignSelf: 'stretch', backgroundColor: 'transparent'}}/>;
 }
 
 function Map({ trip, style = {} }) {
