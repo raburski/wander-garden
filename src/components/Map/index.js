@@ -89,7 +89,7 @@ function MyMapComponent({ markers, bouncingMarkerIndex }) {
 
 export default function GoogleMaps(props) {
     return (
-        <GoogleMapsWrapper apiKey="">
+        <GoogleMapsWrapper apiKey={process.env.GOOGLE_MAPS_API_KEY}>
             <MyMapComponent {...props}/>
         </GoogleMapsWrapper>
     )
