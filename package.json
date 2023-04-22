@@ -34,7 +34,7 @@
   },
   "scripts": {
     "start": "BROWSER=none react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build --env GOOGLE_MAPS_API_KEY=$GOOGLE_MAPS_API_KEY",
     "test": "react-scripts test --watchAll=false",
     "watchtest": "react-scripts test --watchAll=true",
     "eject": "react-scripts eject",
