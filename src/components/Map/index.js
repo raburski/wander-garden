@@ -1,5 +1,5 @@
 import { Wrapper as GoogleMapsWrapper } from "@googlemaps/react-wrapper"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, forwardRef, useImperativeHandle } from "react"
 import useMapsStyles from "./useMapStyles";
 
 function getBoundsZoomLevel(bounds, mapDim) {
@@ -30,7 +30,7 @@ function getBoundsZoomLevel(bounds, mapDim) {
     return Math.min(latZoom, lngZoom, ZOOM_MAX);
 }
 
-function MyMapComponent({ markers, bouncingMarkerIndex }) {
+const MapComponent = forwardRef(function MyMapComponent({ markers, bouncingMarkerIndex }, outerRef) {
     const ref = useRef()
     const mapRef = useRef()
     const currentMarkerIndex = useRef(undefined)
@@ -83,14 +83,19 @@ function MyMapComponent({ markers, bouncingMarkerIndex }) {
         currentMarkerIndex.current = bouncingMarkerIndex
 
     }, [bouncingMarkerIndex])
+
+    useImperativeHandle(outerRef, () => ({
+        getMap: () => mapRef.current
+    }), [])
+
   
     return <div ref={ref} id="map" style={{display: 'flex', flex: 1, alignSelf: 'stretch', backgroundColor: 'transparent'}}/>;
-}
+})
 
-export default function GoogleMaps(props) {
+export default function GoogleMaps({ mapRef, ...props }) {
     return (
         <GoogleMapsWrapper apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
-            <MyMapComponent {...props}/>
+            <MapComponent ref={mapRef} {...props}/>
         </GoogleMapsWrapper>
     )
 }

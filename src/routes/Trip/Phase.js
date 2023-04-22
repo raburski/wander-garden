@@ -7,9 +7,9 @@ import Button from 'components/PillLink'
 const UNKNOWN_EMOJI = '❔'
 
 function UnknownPhaseLine({ phase }) {
-    const [days] = getDaysAndRangeText(phase.since, phase.until)
+    const [days, range] = getDaysAndRangeText(phase.since, phase.until)
     return (
-        <PhaseLine emoji={UNKNOWN_EMOJI} title={`Where did you stay for ${days}?`}>
+        <PhaseLine emoji={UNKNOWN_EMOJI} title={`Where did you stay for ${days}?`} range={range}>
             <Button small icon={TbCornerLeftUp}>extend previous</Button>
             <Button small icon={TbCloudUpload}>import from file</Button>
             <Button small icon={TbAdjustments}>other options</Button>
@@ -25,11 +25,12 @@ const STAY_EMOJI = '🛌'
 
 function presentHotelDetail() {}
 
-export default function Phase({ phase }) {
-    const [days, range] = getDaysAndRangeText(phase.since, phase.until)
+export default function Phase({ phase, ...props }) {
     // TODO: support unknown types
     if (phase.type === PhaseType.Unknown) {
-        return <UnknownPhaseLine phase={phase}/>
+        return <UnknownPhaseLine phase={phase} />
     }
-    return <PhaseLine emoji={STAY_EMOJI} title={getPhaseTitle(phase)} range={range} onClick={presentHotelDetail}/>
+
+    const [days, range] = getDaysAndRangeText(phase.since, phase.until)
+    return <PhaseLine emoji={STAY_EMOJI} title={getPhaseTitle(phase)} range={range} onClick={presentHotelDetail} {...props}/>
 }
