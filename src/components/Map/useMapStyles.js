@@ -188,7 +188,7 @@ const DARK_MODE_STYLES = [{
   "stylers": [{
     "color": "#000000"
   }, {
-    "lightness": 10
+    "lightness": 9
   }]
 }]
 

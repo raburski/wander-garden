@@ -26,15 +26,19 @@ export function useDownload(index) {
 }
 
 async function uploadSwarmCheckins(items, setCheckins, onFinish) {
-    try {
-        if (items.length > 0 && window.confirm(`${items.length} items found. Are you sure you want to REPLACE currently stored checkins?`)) {
-            await setCheckins(items)
-            toast.success('Data imported!')
-        }
-    } catch (e) {
-        alert(e.name)
-    } finally {
+    async function process() {
+        await setCheckins(items)
         await onFinish()
+    }
+    if (items.length > 0 && window.confirm(`${items.length} items found. Are you sure you want to REPLACE currently stored checkins?`)) {
+        toast.promise(
+            process(),
+            {
+                loading: 'Processing checkin data...',
+                success: 'Data imported!',
+                error: 'Data import failed...',
+            }
+        )
     }
 }
 
