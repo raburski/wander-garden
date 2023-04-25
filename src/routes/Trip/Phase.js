@@ -10,9 +10,9 @@ function UnknownPhaseLine({ phase }) {
     const [days, range] = getDaysAndRangeText(phase.since, phase.until)
     return (
         <PhaseLine emoji={UNKNOWN_EMOJI} title={`Where did you stay for ${days}?`} range={range}>
-            <Button small icon={TbCornerLeftUp}>extend previous</Button>
+            {/* <Button small icon={TbCornerLeftUp}>extend previous</Button>
             <Button small icon={TbCloudUpload}>import from file</Button>
-            <Button small icon={TbAdjustments}>other options</Button>
+            <Button small icon={TbAdjustments}>other options</Button> */}
         </PhaseLine>
     )
 }
@@ -23,14 +23,13 @@ function getPhaseTitle(phase) {
 
 const STAY_EMOJI = '🛌'
 
-function presentHotelDetail() {}
-
-export default function Phase({ phase, ...props }) {
+export default function Phase({ phase, onStayClick, ...props }) {
     // TODO: support unknown types
     if (phase.type === PhaseType.Unknown) {
         return <UnknownPhaseLine phase={phase} />
     }
 
     const [days, range] = getDaysAndRangeText(phase.since, phase.until)
-    return <PhaseLine emoji={STAY_EMOJI} title={getPhaseTitle(phase)} range={range} onClick={presentHotelDetail} {...props}/>
+    const onClick = () => onStayClick(phase.stay)
+    return <PhaseLine emoji={STAY_EMOJI} title={getPhaseTitle(phase)} range={range} onClick={onClick} {...props}/>
 }

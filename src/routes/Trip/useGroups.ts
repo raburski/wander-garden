@@ -1,4 +1,4 @@
-import { isEqualLocation, isEqualLocationCity, Location } from "domain/location"
+import { isEqualLocation, isEqualLocationCity, isEqualLocationCountry, Location } from "domain/location"
 import arrayQueryReplace, { any } from "domain/timeline/arrayQueryReplace"
 import useTrip, { Phase, PhaseType, StayPhase } from "./useTrip"
 
@@ -72,6 +72,47 @@ function groupPhasesByCity() {
     }
 }
 
+type GroupPhasesByCountryContext = { phaseType: PhaseType, location: Location }
+function groupPhasesByCountry() {
+    return {
+        pattern: [
+            (phase: Phase, phases: Phase[], context: GroupPhasesByCountryContext) => {
+                context.phaseType = phase.type
+                context.location = (phase as StayPhase)?.stay?.location
+                return true
+            },
+            any((phase: Phase, phases: Phase[], context: GroupPhasesByCountryContext) => {
+                if (phase.type !== context.phaseType) {
+                    return false
+                }
+                if (phase.type === PhaseType.Stay) {
+                    return isEqualLocationCountry((phase as StayPhase).stay.location, context.location)
+                }
+                return false
+            }),
+        ],
+        result: (phases: Phase[], context: GroupPhasesByCountryContext) => {
+            if (context.phaseType === PhaseType.Stay) {
+                return {
+                    type: GroupType.Country,
+                    phases,
+                    location: context.location,
+                    since: phases[0].since,
+                    until: phases[phases.length - 1].until
+
+                }
+            }
+            return {
+                type: GroupType.Unknown,
+                phases,
+                guessedLocations: [],
+                since: phases[0].since,
+                until: phases[phases.length - 1].until
+            }
+        }
+    }
+}
+
 function enhanceWithGuessedLocations(groups: Group[]) {
     // TODO: make it waaaay better with checkins data
     for (let i = 0; i < groups.length; i++) {
@@ -91,6 +132,6 @@ function enhanceWithGuessedLocations(groups: Group[]) {
 export default function useGroups(since: string, until: string): Group[] {
     const trip = useTrip(since, until)
 
-    const groups = arrayQueryReplace(groupPhasesByCity(), trip?.phases || [])
+    const groups = arrayQueryReplace(groupPhasesByCountry(), trip?.phases || [])
     return enhanceWithGuessedLocations(groups)
 }

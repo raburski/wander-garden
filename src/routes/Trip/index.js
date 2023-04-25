@@ -11,7 +11,7 @@ import GroupBar from 'routes/Timeline/GroupBar'
 import { getDaysAndRangeText } from 'date'
 import useGroups, { GroupType } from './useGroups'
 import Phase from './Phase'
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Separator from 'components/Separator';
 import { Column, Row } from 'components/container';
 import Map from 'components/Map'
@@ -51,7 +51,7 @@ function getGroupTitle(group) {
     }
 }
 
-function Group({ group, onPhaseHighlight }) {
+function Group({ group, onPhaseHighlight, onStayClick, onGroupClick }) {
     const [days] = getDaysAndRangeText(group.since, group.until)
     // TODO: support unknown type
     // if (group.type === GroupType.Unknown) {
@@ -59,29 +59,35 @@ function Group({ group, onPhaseHighlight }) {
     // }
     return (
         <GroupContainer>
-            <GroupHeader countryCodes={[group?.location?.cc]} title={getGroupTitle(group)} days={days}/>
-            {group.phases.map(phase => <Phase phase={phase} onMouseEnter={() => onPhaseHighlight(phase)}/>)}
+            <GroupHeader countryCodes={[group?.location?.cc]} title={getGroupTitle(group)} days={days} onClick={onGroupClick}/>
+            {group.phases.map(phase => 
+                <Phase
+                    phase={phase}
+                    onMouseEnter={() => onPhaseHighlight(phase)}
+                    onStayClick={onStayClick}
+                />
+            )}
         </GroupContainer>
     )
 }
 
 
-function GroupsPanel({ groups, onPhaseHighlight, ...props }) {
+function GroupsPanel({ groups, onPhaseHighlight, onStayClick, onGroupClick, ...props }) {
     return (
         <Panel flex {...props}>
-            {groups.map(group => <Group group={group} onPhaseHighlight={onPhaseHighlight}/>)}
+            {groups.map(group => <Group group={group} onPhaseHighlight={onPhaseHighlight} onStayClick={onStayClick} onGroupClick={() => onGroupClick(group)}/>)}
         </Panel>
     )
 }
 
-function TripMap({ trip, style = {}, highlightedPhase }) {
+function TripMap({ trip, style = {}, mapRef, highlightedPhase }) {
     const stays = trip ? trip.phases.map(phase => phase.type === PhaseType.Stay ? phase.stay : undefined).filter(Boolean) : []
     const markers = stays.map(stay => ({ position: stay.location }))
     const highlightedStayIndex = highlightedPhase ? stays.findIndex(stay => highlightedPhase.stay === stay) : undefined
 
     return (
         <Panel style={{flex: 1, alignSelf: 'stretch', flexShrink: 2, ...style }} contentStyle={{ flex: 1, display: 'flexbox', alignSelf: 'stretch'}}>
-            <Map markers={markers} bouncingMarkerIndex={highlightedStayIndex}/>
+            <Map mapRef={mapRef} markers={markers} bouncingMarkerIndex={highlightedStayIndex}/>
         </Panel>
     )
 }
@@ -91,6 +97,7 @@ export default function Trip() {
     const { id } = useParams()
     const [highlightedPhase, setHighlightedPhase] = useState()
     const group = useTimelineGroup(id)
+    const mapRef = useRef()
 
     const trip = useTrip(group?.since, group?.until)
     const groups = useGroups(group?.since, group?.until)
@@ -100,18 +107,41 @@ export default function Trip() {
     const header = `Trip to ${titleFromLocationHighlights(group.highlights)}`
     const leftToRightPhases = [...group.phases].reverse()
 
+    const onStayClick = (stay) => {
+        const map = mapRef.current.getMap()
+        const ZOOM_TO = 13
+        if (map.getZoom() === ZOOM_TO) {
+            map.panTo(stay.location)
+        } else {
+            map.panTo(stay.location)
+            map.setZoom(ZOOM_TO, true)
+        }
+    }
+
+    const onGroupClick = (group) => {
+        const map = mapRef.current
+        if (group.type === GroupType.Country || group.type === GroupType.City) {
+            map.fitBoundsToPositions(group.phases.map(phase => phase.stay.location))
+        }
+    }
+
     return (
         <Page header={header} showBackButton>
-            
             <Row style={{flex:1, height: '86vh', alignItems: 'stretch', marginTop: -18}}>
                 <Column style={{flex:0.7, overflowY: 'scroll', overflowX: 'hidden', minWidth: 400}}>
-                    <Panel style={{paddingTop: 18}}>
+                    {/* <Panel style={{paddingTop: 18}}>
                         <EventsContainer>{leftToRightPhases.map(event => <GroupEvent key={event.id} event={event}/>)}</EventsContainer>
-                    </Panel>
-                    <GroupsPanel header={`${moment(group?.since).format('DD/MM/YYYY')} - ${moment(group?.until).format('DD/MM/YYYY')}`} groups={groups} onPhaseHighlight={setHighlightedPhase}/>
+                    </Panel> */}
+                    <GroupsPanel style={{paddingTop: 18}}
+                        //header={`${moment(group?.since).format('DD/MM/YYYY')} - ${moment(group?.until).format('DD/MM/YYYY')}`}
+                        groups={groups}
+                        onPhaseHighlight={setHighlightedPhase}
+                        onStayClick={onStayClick}
+                        onGroupClick={onGroupClick}
+                    />
                 </Column>
                 <Separator />
-                <TripMap style={{paddingTop: 18}} trip={trip} highlightedPhase={highlightedPhase}/>
+                <TripMap style={{paddingTop: 18}} mapRef={mapRef} trip={trip} highlightedPhase={highlightedPhase} />
             </Row>
         </Page>
     )

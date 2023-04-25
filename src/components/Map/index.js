@@ -30,24 +30,30 @@ function getBoundsZoomLevel(bounds, mapDim) {
     return Math.min(latZoom, lngZoom, ZOOM_MAX);
 }
 
+
+
 const MapComponent = forwardRef(function MyMapComponent({ markers, bouncingMarkerIndex }, outerRef) {
     const ref = useRef()
     const mapRef = useRef()
     const currentMarkerIndex = useRef(undefined)
     const markersRef = useRef()
     const styles = useMapsStyles()
-  
-    useEffect(() => {
-        const google = window.google
 
-        // Calculate initial zoom and center
+    function getZoomAndBounds(forPositions) {
         const MIN_ZOOM = 13
         const MAP_PADDING = 32
         const mapDimensions = { width: ref.current.offsetWidth - MAP_PADDING * 2, height: ref.current.offsetHeight - MAP_PADDING * 2 }
-        const bounds = new google.maps.LatLngBounds()
-        markers.forEach(marker => bounds.extend(marker.position))
+        
+        const bounds = new window.google.maps.LatLngBounds()
+        forPositions.forEach(position => bounds.extend(position))
         const center = bounds.getCenter()
         const zoom = Math.min(MIN_ZOOM, getBoundsZoomLevel(bounds, mapDimensions))
+        return { center, zoom }
+    }
+  
+    useEffect(() => {
+        const google = window.google
+        const { center, zoom } = getZoomAndBounds(markers.map(m => m.position))
 
         const map = new google.maps.Map(ref.current, {
             center,
@@ -85,7 +91,12 @@ const MapComponent = forwardRef(function MyMapComponent({ markers, bouncingMarke
     }, [bouncingMarkerIndex])
 
     useImperativeHandle(outerRef, () => ({
-        getMap: () => mapRef.current
+        getMap: () => mapRef.current,
+        fitBoundsToPositions: (positions) => {
+            const { zoom, center } = getZoomAndBounds(positions)
+            mapRef.current.panTo(center)
+            mapRef.current.setZoom(zoom, true)
+        }
     }), [])
 
   
