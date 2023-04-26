@@ -6,8 +6,8 @@ const StyledPillLink = styled(PillLink)`
     margin-bottom: -3px;
     margin-left: -6px;
     margin-right: 4px;
-    margin-top: -8px;
-    padding: 4px;
+    margin-top: -10px;
+    padding: 0px;
     padding-left: 12px;
     padding-right: 12px;
 `

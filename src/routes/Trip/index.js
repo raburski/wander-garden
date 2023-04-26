@@ -80,14 +80,14 @@ function GroupsPanel({ groups, onPhaseHighlight, onStayClick, onGroupClick, ...p
     )
 }
 
-function TripMap({ trip, style = {}, mapRef, highlightedPhase }) {
+function TripMap({ trip, style = {}, mapRef, highlightedPhase, onResetView }) {
     const stays = trip ? trip.phases.map(phase => phase.type === PhaseType.Stay ? phase.stay : undefined).filter(Boolean) : []
     const markers = stays.map(stay => ({ position: stay.location }))
     const highlightedStayIndex = highlightedPhase ? stays.findIndex(stay => highlightedPhase.stay === stay) : undefined
 
     return (
         <Panel style={{flex: 1, alignSelf: 'stretch', flexShrink: 2, ...style }} contentStyle={{ flex: 1, display: 'flexbox', alignSelf: 'stretch'}}>
-            <Map mapRef={mapRef} markers={markers} bouncingMarkerIndex={highlightedStayIndex}/>
+            <Map mapRef={mapRef} markers={markers} bouncingMarkerIndex={highlightedStayIndex} onResetView={onResetView}/>
         </Panel>
     )
 }
@@ -125,6 +125,12 @@ export default function Trip() {
         }
     }
 
+    const onResetView = () => {
+        const map = mapRef.current
+        const positions = groups.flatMap(g => g?.phases?.map(p => p.stay?.location)).filter(Boolean)
+        map.fitBoundsToPositions(positions)
+    }
+
     return (
         <Page header={header} showBackButton>
             <Row style={{flex:1, height: '86vh', alignItems: 'stretch', marginTop: -18}}>
@@ -141,7 +147,7 @@ export default function Trip() {
                     />
                 </Column>
                 <Separator />
-                <TripMap style={{paddingTop: 18}} mapRef={mapRef} trip={trip} highlightedPhase={highlightedPhase} />
+                <TripMap style={{paddingTop: 18}} mapRef={mapRef} trip={trip} highlightedPhase={highlightedPhase} onResetView={onResetView} />
             </Row>
         </Page>
     )

@@ -1,6 +1,16 @@
 import { Wrapper as GoogleMapsWrapper } from "@googlemaps/react-wrapper"
+import Button from "components/Button";
+import { styled } from "goober";
 import { useEffect, useRef, forwardRef, useImperativeHandle } from "react"
-import useMapsStyles from "./useMapStyles";
+import { MdOutlineGridView } from "react-icons/md"
+import useMapsStyles from "./useMapStyles"
+
+const ResetViewButton = styled(Button)`
+    position: absolute;
+    bottom: 34px;
+    margin-left: 8px;
+    font-size: 33px;
+`
 
 function getBoundsZoomLevel(bounds, mapDim) {
     var WORLD_DIM = { height: 256, width: 256 };
@@ -103,10 +113,11 @@ const MapComponent = forwardRef(function MyMapComponent({ markers, bouncingMarke
     return <div ref={ref} id="map" style={{display: 'flex', flex: 1, alignSelf: 'stretch', backgroundColor: 'transparent'}}/>;
 })
 
-export default function GoogleMaps({ mapRef, ...props }) {
+export default function GoogleMaps({ mapRef, onResetView, ...props }) {
     return (
         <GoogleMapsWrapper apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
             <MapComponent ref={mapRef} {...props}/>
+            {onResetView ? <ResetViewButton icon={MdOutlineGridView} iconSize={22} onClick={onResetView} /> : null}
         </GoogleMapsWrapper>
     )
 }
