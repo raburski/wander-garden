@@ -50,7 +50,8 @@ export const StaticRow = styled('div')`
     flex-direction: row;
     align-items: center;
 
-    border-bottom: 1px solid ${props => props.theme.border};
+    border-bottom: 0px solid ${props => props.theme.border};
+    border-top: 1px solid ${props => props.theme.border};
     padding: 4px;
     padding-left: 10px;
     margin-bottom: -1px;
