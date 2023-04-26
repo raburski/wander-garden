@@ -5,6 +5,11 @@ import { useEffect, useRef, forwardRef, useImperativeHandle } from "react"
 import { MdOutlineGridView } from "react-icons/md"
 import useMapsStyles from "./useMapStyles"
 
+export const Icon = {
+    Stay: 'stay',
+    Checkin: 'checkin',
+}
+
 const ResetViewButton = styled(Button)`
     position: absolute;
     bottom: 34px;
@@ -42,7 +47,7 @@ function getBoundsZoomLevel(bounds, mapDim) {
 
 
 
-const MapComponent = forwardRef(function MyMapComponent({ markers, bouncingMarkerIndex }, outerRef) {
+const MapComponent = forwardRef(function MyMapComponent({ markers, initPositions, bouncingMarkerIndex }, outerRef) {
     const ref = useRef()
     const mapRef = useRef()
     const currentMarkerIndex = useRef(undefined)
@@ -63,7 +68,7 @@ const MapComponent = forwardRef(function MyMapComponent({ markers, bouncingMarke
   
     useEffect(() => {
         const google = window.google
-        const { center, zoom } = getZoomAndBounds(markers.map(m => m.position))
+        const { center, zoom } = getZoomAndBounds(initPositions)
 
         const map = new google.maps.Map(ref.current, {
             center,
@@ -73,9 +78,11 @@ const MapComponent = forwardRef(function MyMapComponent({ markers, bouncingMarke
             styles,
         })
 
-        // create markers
         const _markers = markers.map(marker => {
-            return new google.maps.Marker(marker)
+            return new google.maps.Marker({
+                position: marker.position,
+                icon: marker.icon === Icon.Checkin ? '/checkinpin.png' : null
+            })
         })
 
         _markers.forEach(marker => marker.setMap(map))

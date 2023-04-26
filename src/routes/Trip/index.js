@@ -14,7 +14,8 @@ import Phase from './Phase'
 import { useRef, useState } from 'react';
 import Separator from 'components/Separator';
 import { Column, Row } from 'components/container';
-import Map from 'components/Map'
+import Map, { Icon } from 'components/Map'
+import { detectStayType } from 'domain/extension'
 
 const EventsContainer = styled('div')`
     display: flex;
@@ -80,14 +81,18 @@ function GroupsPanel({ groups, onPhaseHighlight, onStayClick, onGroupClick, ...p
     )
 }
 
-function TripMap({ trip, style = {}, mapRef, highlightedPhase, onResetView }) {
+function TripMap({ trip, checkins = [], style = {}, mapRef, highlightedPhase, onResetView }) {
     const stays = trip ? trip.phases.map(phase => phase.type === PhaseType.Stay ? phase.stay : undefined).filter(Boolean) : []
-    const markers = stays.map(stay => ({ position: stay.location }))
+    const markers = [
+        ...stays.map(stay => ({ position: stay.location, icon: Icon.Stay })),
+        ...checkins.map(checkin => ({ position: checkin?.venue?.location, icon: Icon.Checkin }))
+    ]
+    const initPositions = stays.length > 0 ? stays.map(s => s.location) : checkins.map(c => c?.venue?.location)
     const highlightedStayIndex = highlightedPhase ? stays.findIndex(stay => highlightedPhase.stay === stay) : undefined
 
     return (
         <Panel style={{flex: 1, alignSelf: 'stretch', flexShrink: 2, ...style }} contentStyle={{ flex: 1, display: 'flexbox', alignSelf: 'stretch'}}>
-            <Map mapRef={mapRef} markers={markers} bouncingMarkerIndex={highlightedStayIndex} onResetView={onResetView}/>
+            <Map mapRef={mapRef} initPositions={initPositions} markers={markers} bouncingMarkerIndex={highlightedStayIndex} onResetView={onResetView}/>
         </Panel>
     )
 }
@@ -98,6 +103,8 @@ export default function Trip() {
     const [highlightedPhase, setHighlightedPhase] = useState()
     const group = useTimelineGroup(id)
     const mapRef = useRef()
+
+    const checkins = group ? group.events.map(e => e?.checkin).filter(c => detectStayType(c) === undefined ? c : undefined).filter(Boolean) : []
 
     const trip = useTrip(group?.since, group?.until)
     const groups = useGroups(group?.since, group?.until)
@@ -147,7 +154,7 @@ export default function Trip() {
                     />
                 </Column>
                 <Separator />
-                <TripMap style={{paddingTop: 18}} mapRef={mapRef} trip={trip} highlightedPhase={highlightedPhase} onResetView={onResetView} />
+                <TripMap style={{paddingTop: 18}} mapRef={mapRef} trip={trip} checkins={checkins} highlightedPhase={highlightedPhase} onResetView={onResetView} />
             </Row>
         </Page>
     )

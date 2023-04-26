@@ -60,7 +60,7 @@ function getLatestStay(stays) {
     return orderedStays[0]
 }
 
-function detectStayType(stay) {
+export function detectStayType(stay) {
     if (!stay) return undefined 
 
     const idPart = stay.id.split(':')[0]
