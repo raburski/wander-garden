@@ -84,8 +84,8 @@ function GroupsPanel({ groups, onPhaseHighlight, onStayClick, onGroupClick, ...p
 function TripMap({ trip, checkins = [], style = {}, mapRef, highlightedPhase }) {
     const stays = trip ? trip.phases.map(phase => phase.type === PhaseType.Stay ? phase.stay : undefined).filter(Boolean) : []
     const markers = [
-        ...stays.map(stay => ({ position: stay.location, icon: Icon.Stay })),
-        ...checkins.map(checkin => ({ position: checkin?.venue?.location, icon: Icon.Checkin }))
+        ...stays.map(stay => ({ position: stay.location, icon: Icon.Default })),
+        ...checkins.map(checkin => ({ position: checkin?.venue?.location, icon: Icon.OrangeDot }))
     ]
     const initPositions = stays.length > 0 ? stays.map(s => s.location) : checkins.map(c => c?.venue?.location)
     const highlightedStayIndex = highlightedPhase ? stays.findIndex(stay => highlightedPhase.stay === stay) : undefined
