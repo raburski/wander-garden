@@ -6,8 +6,24 @@ import { MdOutlineGridView } from "react-icons/md"
 import useMapsStyles from "./useMapStyles"
 
 export const Icon = {
-    Stay: 'stay',
-    Checkin: 'checkin',
+    Default: 'default',
+    OrangeDot: 'orangeDot',
+}
+
+const ORANGE_DOT_ICON = {
+    url: '/checkinpin@2x.png',
+    size: { width: 16, height: 16 },
+    scaledSize: { width: 8, height: 8 },
+}
+
+function getMarkerIcon(icon) {
+    switch (icon) {
+        case Icon.OrangeDot:
+            return ORANGE_DOT_ICON
+        case Icon.Default:
+        default:
+            return null
+    }
 }
 
 const ResetViewButton = styled(Button)`
@@ -81,7 +97,7 @@ const MapComponent = forwardRef(function MyMapComponent({ markers, initPositions
         const _markers = markers.map(marker => {
             return new google.maps.Marker({
                 position: marker.position,
-                icon: marker.icon === Icon.Checkin ? '/checkinpin.png' : null
+                icon: getMarkerIcon(marker.icon),
             })
         })
 
