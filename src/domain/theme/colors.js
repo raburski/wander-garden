@@ -26,7 +26,12 @@ const colors = {
     }
 }
 
+const breakpoints = {
+    medium: 1024
+}
+
 export const LIGHT = {
+    breakpoints,
     background: {
         default: colors.neutral.white,
         highlight: colors.neutral.lightest,
@@ -52,6 +57,7 @@ export const LIGHT = {
 }
 
 export const DARK = {
+    breakpoints,
     background: {
         default: colors.neutral.dark,
         highlight: colors.neutral.default,

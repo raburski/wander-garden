@@ -8,6 +8,11 @@ const Container = styled(motion.div)`
     flex-direction: row;
     justify-content: center;
     padding: 14px;
+
+    @media only screen and (max-width: ${props => props.theme.breakpoints.medium}px) {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
 `
 
 const Name = styled('div')`
@@ -21,6 +26,10 @@ const Name = styled('div')`
     font-size: 24px;
     line-height: 24px;
     color: ${props => props.theme.text};
+
+    @media only screen and (max-width: ${props => props.theme.breakpoints.medium}px) {
+        display: none;
+    }
 `
 
 const LOGO_VARIANTS = {

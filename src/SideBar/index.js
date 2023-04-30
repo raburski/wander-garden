@@ -1,4 +1,4 @@
-import { styled } from 'goober'
+import { styled, css } from 'goober'
 import { VscDashboard, VscPulse, VscVersions } from 'react-icons/vsc'
 import { FaDiscord, FaTwitter } from 'react-icons/fa'
 import { TfiMapAlt } from 'react-icons/tfi'
@@ -10,6 +10,11 @@ import Logo from './Logo'
 import StylelessLink from 'components/StylelessLink'
 import PillLink from 'components/PillLink'
 
+const hideOnMediumBreakpointClassName = css`
+@media only screen and (max-width: 1024px) {
+    display: none;
+}`
+
 const Container = styled('div')`
     display: flex;
     flex: 0;
@@ -19,6 +24,10 @@ const Container = styled('div')`
 
     @media (pointer:none), (pointer:coarse) {
         display: none;
+    }
+
+    @media only screen and (max-width: ${props => props.theme.breakpoints.medium}px) {
+        flex-basis: 0px;
     }
 `
 
@@ -37,6 +46,10 @@ const MountainImg = styled('img')`
     margin-left: -8px;
     margin-bottom: -8px;
     opacity: 0.8;
+
+    @media only screen and (max-width: ${props => props.theme.breakpoints.medium}px) {
+        display: none;
+    }
 `
 
 function MountainSeparator() {
@@ -62,10 +75,16 @@ const StyledNotes = styled('div')`
 
 const StyledPillLink = styled(PillLink)`
     margin-left: 12px;
+    @media only screen and (max-width: ${props => props.theme.breakpoints.medium}px) {
+        font-size: 0px;
+        margin-left: 2px;
+        padding-left: 20px;
+    }
 `
 
 const SubButtons = styled('div')`
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     justify-content: center;
     margin: 8px;
@@ -79,7 +98,6 @@ function SubNotes() {
     const openTwitter = () => window.open(TWITTER_LINK, '_blank')
     return (
         <StyledNotes>
-            
             <SubButtons>
                 <PillLink small icon={FaDiscord} onClick={openDiscord}/>
                 <PillLink small icon={FaTwitter} onClick={openTwitter}/>
@@ -95,17 +113,17 @@ export default function SideBar() {
         <Container>
             <StylelessLink to="dashboard"><Logo /></StylelessLink>
             <Separator />
-            <StyledPillLink to="/" icon={VscDashboard}>Dashboard</StyledPillLink>
-            <StyledPillLink to="timeline" icon={VscVersions}>Timeline</StyledPillLink>
-            <StyledPillLink to="badges" icon={BsAward}>Badges</StyledPillLink>
-            <StyledPillLink to="context" icon={VscPulse}>Context</StyledPillLink>
-            <StyledPillLink to="map" icon={TfiMapAlt}>Map</StyledPillLink>
-            <StyledPillLink to="data" icon={RxFileText}>Data</StyledPillLink>
+            <StyledPillLink to="/" separatorClassName={hideOnMediumBreakpointClassName} icon={VscDashboard}>Dashboard</StyledPillLink>
+            <StyledPillLink to="timeline" separatorClassName={hideOnMediumBreakpointClassName} icon={VscVersions}>Timeline</StyledPillLink>
+            <StyledPillLink to="badges" separatorClassName={hideOnMediumBreakpointClassName} icon={BsAward}>Badges</StyledPillLink>
+            <StyledPillLink to="context" separatorClassName={hideOnMediumBreakpointClassName} icon={VscPulse}>Context</StyledPillLink>
+            <StyledPillLink to="map" separatorClassName={hideOnMediumBreakpointClassName} icon={TfiMapAlt}>Map</StyledPillLink>
+            <StyledPillLink to="data" separatorClassName={hideOnMediumBreakpointClassName} icon={RxFileText}>Data</StyledPillLink>
             <Separator />
-            <StyledPillLink to="swarm" icon={SiSwarm}>Swarm</StyledPillLink>
-            <StyledPillLink to="extension" icon={SlPuzzle}>Extension</StyledPillLink>
+            <StyledPillLink to="swarm" separatorClassName={hideOnMediumBreakpointClassName} icon={SiSwarm}>Swarm</StyledPillLink>
+            <StyledPillLink to="extension" separatorClassName={hideOnMediumBreakpointClassName} icon={SlPuzzle}>Extension</StyledPillLink>
             <Separator />
-            <StyledPillLink to="settings" icon={SlSettings}>Settings</StyledPillLink>
+            <StyledPillLink to="settings" separatorClassName={hideOnMediumBreakpointClassName} icon={SlSettings}>Settings</StyledPillLink>
             <SpreadSeparator />
             <SubNotes />
         </Container>

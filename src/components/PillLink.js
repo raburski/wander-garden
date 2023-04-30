@@ -38,7 +38,7 @@ const Separator = styled('div')`
 const WHILE_HOVER = {scale:1.02}
 const WHILE_TAP = {scale:0.98}
 
-export default function PillLink({ icon, children, small, to, style, ...props }) {
+export default function PillLink({ icon, children, separatorClassName, small, to, style, ...props }) {
     const resolved = useResolvedPath(to)
     const match = useMatch({ path: resolved.pathname + '/*' }) && typeof to === 'string'
     const PillIcon = icon
@@ -53,7 +53,7 @@ export default function PillLink({ icon, children, small, to, style, ...props })
           {...props}
         >
             {PillIcon ? <LinkIcon small={small}><PillIcon /></LinkIcon> : null}
-            {children ? <Separator /> : null}
+            {children ? <Separator className={separatorClassName}/> : null}
             {children}
         </StyledLink>
     )
