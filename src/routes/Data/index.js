@@ -61,6 +61,7 @@ const StayActionsContainer = styled('div')`
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-bottom: 4px;
 `
 
 function StayActions({ stay }) {

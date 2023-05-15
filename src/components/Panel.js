@@ -54,7 +54,7 @@ export const StaticRow = styled('div')`
     border-top: 1px solid ${props => props.theme.border};
     padding: 4px;
     padding-left: 10px;
-    margin-bottom: -1px;
+    margin-top: -1px;
 `
 
 export const LinkRow = styled(Link)`
