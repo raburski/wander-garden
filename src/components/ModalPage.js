@@ -5,7 +5,7 @@ import { styled } from 'goober'
 export const ModalPageButtons = styled('div')`
     display: flex;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 22px;
     padding-top: 12px;
     align-self: stretch;
 `
@@ -13,7 +13,7 @@ export const ModalPageButtons = styled('div')`
 export default function ModalPage({ isOpen,onClickAway, header, children, pageStyle }) {
     return (
         <Modal isOpen={isOpen} onClickAway={onClickAway}>
-            <Page header={header} style={pageStyle}>
+            <Page header={header} style={pageStyle} isModal>
                 {children}
             </Page>
         </Modal>

@@ -9,7 +9,6 @@ const Title = styled('div')`
 
 const Subtitle = styled('div')`
     font-size: 10px;
-    // color: gray;
     color: ${props => props.theme.text};
 `
 
