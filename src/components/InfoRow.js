@@ -10,6 +10,10 @@ const Title = styled('div')`
 const Subtitle = styled('div')`
     font-size: 10px;
     color: ${props => props.theme.text};
+
+    @media only screen and (min-width: ${props => props.theme.breakpoints.large}px) {
+        padding-top: 2px;
+    }
 `
 
 const TextContainer = styled('div')`

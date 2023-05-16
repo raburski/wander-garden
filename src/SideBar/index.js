@@ -22,11 +22,14 @@ const Container = styled('div')`
     padding: 12px;
     flex-basis: 192px;
 
-    @media (pointer:none), (pointer:coarse) {
-        display: none;
+    @media only screen and (min-width: ${props => props.theme.breakpoints.large}px) {
+        flex-basis: 222px;
+        padding-left: 24px;
+        padding-right: 24px;
+        padding-top: 24px;
     }
 
-    @media only screen and (max-width: ${props => props.theme.breakpoints.medium}px) {
+    @media only screen and (max-width: ${props => props.theme.breakpoints.large}px) {
         flex-basis: 0px;
     }
 `

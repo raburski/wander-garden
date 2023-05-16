@@ -12,6 +12,10 @@ const CountryName = styled('div')`
     margin-left: 8px;
     margin-top: -1px;
     color: ${props => props.theme.text};
+
+    @media only screen and (min-width: ${props => props.theme.breakpoints.large}px) {
+        margin-left: 12px;
+    }
 `
 
 const Right = styled('div')`

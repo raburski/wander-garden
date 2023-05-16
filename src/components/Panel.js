@@ -1,6 +1,5 @@
 import { styled } from 'goober'
 import { Link } from 'react-router-dom'
-import colors from '../colors'
 
 const Container = styled('div')`
     display: flex;
@@ -55,6 +54,11 @@ export const StaticRow = styled('div')`
     padding: 4px;
     padding-left: 10px;
     margin-top: -1px;
+
+    @media only screen and (min-width: ${props => props.theme.breakpoints.large}px) {
+        padding: 6px;
+        padding-left: 12px;
+    }
 `
 
 export const LinkRow = styled(Link)`
@@ -76,6 +80,11 @@ export const LinkRow = styled(Link)`
     &:hover {
         background-color: ${props => props.theme.background.highlight};
     }
+
+    @media only screen and (min-width: ${props => props.theme.breakpoints.large}px) {
+        padding: 6px;
+        padding-left: 12px;
+    }
 `
 
 export const ClickRow = styled('div')`
@@ -95,6 +104,11 @@ export const ClickRow = styled('div')`
 
     &:hover {
         background-color: ${props => props.theme.background.highlight};
+    }
+
+    @media only screen and (min-width: ${props => props.theme.breakpoints.large}px) {
+        padding: 6px;
+        padding-left: 12px;
     }
 `
 

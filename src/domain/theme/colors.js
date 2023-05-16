@@ -27,7 +27,8 @@ const colors = {
 }
 
 const breakpoints = {
-    medium: 1024
+    medium: 1024,
+    large: 1513,
 }
 
 export const LIGHT = {

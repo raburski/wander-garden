@@ -42,6 +42,7 @@ const RoutesContainer = styled('div')`
   overflow-x: hidden;
   display: flex;
   flex: 1;
+  justify-content: center;
 `
 
 function App() {
