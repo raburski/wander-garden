@@ -29,6 +29,6 @@ const Stretch = styled('div')`
     flex: 1;
 `
 
-export default function EmojiRow({ emoji, value, to, right }) {
-    return <Row to={to}><FlagIcon>{emoji}</FlagIcon> <CountryName>{value}</CountryName><Stretch/>{right ? <Right>{right}</Right> : null}</Row>
+export default function EmojiRow({ emoji, value, to, right, emojiStyle }) {
+    return <Row to={to}><FlagIcon style={emojiStyle}>{emoji}</FlagIcon> <CountryName>{value}</CountryName><Stretch/>{right ? <Right>{right}</Right> : null}</Row>
 }

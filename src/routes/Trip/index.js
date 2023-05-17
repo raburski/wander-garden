@@ -16,6 +16,7 @@ import Separator from 'components/Separator';
 import { Column, Row } from 'components/container';
 import Map, { Icon } from 'components/Map'
 import { detectStayType } from 'domain/extension'
+import Info from './Info'
 
 const EventsContainer = styled('div')`
     display: flex;
@@ -144,8 +145,8 @@ export default function Trip() {
                     {/* <Panel style={{paddingTop: 18}}>
                         <EventsContainer>{leftToRightPhases.map(event => <GroupEvent key={event.id} event={event}/>)}</EventsContainer>
                     </Panel> */}
-                    <GroupsPanel style={{paddingTop: 18}}
-                        //header={`${moment(group?.since).format('DD/MM/YYYY')} - ${moment(group?.until).format('DD/MM/YYYY')}`}
+                    <Info style={{paddingTop: 18}} trip={trip} />
+                    <GroupsPanel
                         groups={groups}
                         onPhaseHighlight={setHighlightedPhase}
                         onStayClick={onStayClick}

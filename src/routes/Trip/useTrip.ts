@@ -2,6 +2,7 @@ import { isEqualLocation, isEqualLocationCity } from "domain/location"
 import { Stay } from "domain/stay"
 import { useStays } from "domain/stays"
 import moment, { Moment } from "moment"
+import { Money } from "type"
 
 export enum PhaseType {
     Stay = 'stay',
@@ -64,6 +65,23 @@ function getPhases(since: string, until: string, _stays: Stay[]) {
 
 
     return phases
+}
+
+export function addTripPrices(trip: Trip): Money[] {
+    return trip.phases.reduce((acc, phase) => {
+        if (phase.type === PhaseType.Stay) {
+            const stayPrice = (phase as StayPhase).stay.price
+            if (!stayPrice) return acc
+
+            const currentPrice = acc.find(m => m.currency.toUpperCase() === stayPrice!.currency.toUpperCase())
+            if (currentPrice) {
+                currentPrice.amount = currentPrice.amount + stayPrice!.amount
+            } else {
+                acc.push({ amount: stayPrice.amount, currency: stayPrice.currency.toUpperCase() })
+            }
+        }
+        return acc
+    }, [] as Money[])
 }
 
 export default function useTrip(since: string, until: string): Trip | undefined {
