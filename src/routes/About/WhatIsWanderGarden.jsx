@@ -1,5 +1,5 @@
 import InfoPanel from '../../components/InfoPanel'
-import SquareImage from '../../components/SquareImage'
+import { ResponsiveSquareImage } from '../../components/SquareImage'
 
 const COPY = `Wander Garden is a simple web-app that helps you make sense of your travel history. We connect to various data sources and present them in a cohesive form.
 
@@ -12,7 +12,7 @@ export default function WhatIsWanderGarden() {
         <InfoPanel
             spacing
             header="What is Wander Garden?"
-            image={<SquareImage size={260} src="/3d/backpackgarden.png"/>}
+            image={<ResponsiveSquareImage size={280} mediumSize={240} smallSize={120} src="/3d/backpackgarden.png"/>}
         >
             {COPY}
         </InfoPanel>

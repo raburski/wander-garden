@@ -1,12 +1,26 @@
 import { styled } from "goober"
 
-const Image = styled('img')`
+const SquareImage = styled('img')`
     display: flex;
-    width: 150px;
-    height: 150px;
+    width: ${props => props.size || 150}px;
+    height: ${props => props.size || 150}px;
 `
 
-export default function SquareImage({ size, style = {}, ...props }) {
-    const _style = size ? { width: size, height: size, ...style } : style
-    return <Image style={_style} {...props}/>
-}
+export default SquareImage
+
+export const ResponsiveSquareImage = styled(SquareImage)`
+    @media only screen and (max-width: ${props => props.theme.breakpoints.large}px) {
+        width: ${props => props.mediumSize || 60}px;
+        height: ${props => props.mediumSize || 60}px;
+    }
+
+    @media only screen and (max-width: ${props => props.theme.breakpoints.medium}px) {
+        width: ${props => props.smallSize || 40}px;
+        height: ${props => props.smallSize || 40}px;
+    }
+
+    @media only screen and (max-width: ${props => props.theme.breakpoints.small}px) {
+        width: 20px;
+        height: 20px;
+    }
+`

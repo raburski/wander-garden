@@ -12,7 +12,7 @@ export default function SupportedThirdParties() {
             spacing
             flex
         >
-            <Row>
+            <Row style={{flexDirection: 'row'}}>
                 <SquareImage size={64} src="/logo/swarm.svg"/>
                 <Separator />
                 <SquareImage size={64} src="/logo/agoda.svg"/>

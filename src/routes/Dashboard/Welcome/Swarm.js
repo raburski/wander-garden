@@ -15,7 +15,6 @@ export default function Swarm() {
         <InfoPanel 
             header="Swarm"
             spacing
-            margin
             flex
             image={<SquareImage src="/3d/beegarden1.png"/>}
             containerStyle={{alignItems: 'center'}}
