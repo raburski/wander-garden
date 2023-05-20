@@ -42,11 +42,6 @@ Select one of the sources below to start the process!
 IMPORTANT: You may need to log in to your account before automatic process starts.
 `
 
-const PuzzleLogo = styled(SlPuzzle)`
-    font-size: 30px;
-    padding: 2px;
-`
-
 function HowItWorks() {
     return <InfoPanel header="How this works?" spacing image={<SquareImage size={120} src="/3d/puzzle.png"/>}>{HOW_COPY}</InfoPanel>
 }

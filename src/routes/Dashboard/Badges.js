@@ -17,7 +17,7 @@ export default function Badges() {
     if (verifiedBadges.length <= 0) { return null }
     
     return (
-        <Panel header="Collected badges" contentStyle={contentStyle} margin>
+        <Panel header="Collected badges" contentStyle={contentStyle}>
             {verifiedBadges.map(badge => <Badge name={badge.name} emoji={badge.emoji} key={badge.name} onClick={() => setSelectedBadge(badge)}/>)}
             <BadgeDetailsModal
                 selectedBadge={selectedBadge}

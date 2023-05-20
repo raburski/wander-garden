@@ -12,6 +12,11 @@ const Container = styled('div')`
     margin-left: 22px;
     white-space: pre-wrap;
     color: ${props => props.theme.text};
+
+    @media only screen and (max-width: ${props => props.theme.breakpoints.small}px) {
+        margin-right: 0px;
+        margin-left: 0px;
+    }
 `
 
 const Title = styled('div')`
@@ -21,15 +26,27 @@ const Title = styled('div')`
 `
 
 const Text = styled('div')``
+const ImageContainer = styled('div')`
+    @media only screen and (max-width: ${props => props.theme.breakpoints.small}px) {
+        display: none;
+    }
+`
 
-export default function InfoPanel({ image, title, text, children, containerStyle, contentStyle = {}, ...props }) {
-    const _contentStyle = { flexDirection: 'row', ...contentStyle }
+const DynamicSeparator = styled(Separator)`
+    @media only screen and (max-width: ${props => props.theme.breakpoints.small}px) {
+        display: none;
+    }
+`
+
+const CONTENT_STYLE = { flexDirection: 'row' }
+
+export default function InfoPanel({ image, title, text, children, containerStyle, ...props }) {
     return (
-        <Panel contentStyle={_contentStyle} {...props}>
-            {image}
+        <Panel contentStyle={CONTENT_STYLE} {...props}>
+            <ImageContainer>{image}</ImageContainer>
             <Container style={containerStyle}>
                 <Title>{title}</Title>
-                {title && (text || children) ? <Separator /> : null}
+                {title && (text || children) ? <DynamicSeparator /> : null}
                 <Text>{text}</Text>
                 {children}
             </Container>

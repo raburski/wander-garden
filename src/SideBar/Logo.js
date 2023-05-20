@@ -13,6 +13,10 @@ const Container = styled(motion.div)`
         padding-left: 0px;
         padding-right: 0px;
     }
+
+    @media only screen and (max-width: ${props => props.theme.breakpoints.small}px) {
+        margin-bottom: -22px;
+    }
 `
 
 const Name = styled('div')`

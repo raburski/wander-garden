@@ -7,7 +7,7 @@ const Container = styled('div')`
     padding-bottom: 12px;
     padding-left: 0px;
     margin-bottom: 12px;
-    min-width: 400px;
+
     color: ${props => props.theme.text};
 `
 const Content = styled('div')`

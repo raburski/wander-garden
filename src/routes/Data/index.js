@@ -145,6 +145,7 @@ const HeaderContainer = styled('div')`
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
 `
 
 const ActionsContainer = styled('div')`
@@ -152,13 +153,14 @@ const ActionsContainer = styled('div')`
     flex: 1;
     flex-direction: row-reverse;
     align-items: flex-end;
+    margin-bottom: 22px;
 `
-
 
 function Header({ selectedIndex, setSelectedIndex, onRefreshClick, onDownloadClick, onUploadClick, onTrashClick, onChangeSearch }) {
     return (
         <HeaderContainer>
-            <Segment titles={TITLES} selectedIndex={selectedIndex} onClick={setSelectedIndex}/>
+            <Segment titles={TITLES} selectedIndex={selectedIndex} onClick={setSelectedIndex} style={{marginBottom: 22}}/>
+            <Separator />
             <ActionsContainer>
                 <Button icon={TbTrash} onClick={onTrashClick} disabled={!onTrashClick}/>
                 <Separator />
@@ -193,7 +195,7 @@ export default function Data() {
                 onUploadClick={onUploadClick}
                 onTrashClick={onDownloadClick ? onTrashClick : undefined}
                 onChangeSearch={onChangeSearch}/>
-            <Panel style={{maxHeight: '84%', marginTop: 22}} contentStyle={{ overflow: 'scroll' }}>
+            <Panel style={{maxHeight: '84%'}} contentStyle={{ overflow: 'scroll' }}>
                 {selectedIndex === 0 ? <BookingComList search={search}/> : null}
                 {selectedIndex === 1 ? <AirbnbList search={search}/> : null}
                 {selectedIndex === 2 ? <AgodaList search={search}/> : null}

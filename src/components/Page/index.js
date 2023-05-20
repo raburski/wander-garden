@@ -1,7 +1,6 @@
 import { styled } from "goober"
 import BackButton from "./BackButton"
 import Header from "./Header"
-import Separator from './Separator'
 
 const NON_MODAL_PAGE_STYLE_DEFAULT = `
     padding-left: 0px;
@@ -10,6 +9,14 @@ const NON_MODAL_PAGE_STYLE_DEFAULT = `
 
 const NON_MODAL_PAGE_STYLE_LARGE = `
     padding-top: 48px;
+`
+
+const Separator = styled('div')`
+    display: flex;
+    flex: 1;
+    @media only screen and (max-width: ${props => props.theme.breakpoints.small}px) {
+        display: none;
+    }
 `
 
 const Container = styled('div')`
@@ -30,6 +37,11 @@ const Container = styled('div')`
         padding-left: 32px;
         padding-right: 48px;
         ${props => props.isModal ? '' : NON_MODAL_PAGE_STYLE_LARGE}
+    }
+
+    @media only screen and (max-width: ${props => props.theme.breakpoints.small}px) {
+        padding-top: 22px;
+        padding-left: 12px;
     }
 `
 

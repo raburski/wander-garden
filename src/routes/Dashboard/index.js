@@ -11,6 +11,7 @@ import { Column, Row } from 'components/container'
 import countryFlagEmoji from "country-flag-emoji"
 import { formattedLocation } from 'domain/location'
 import { useVisitedCountryCodes } from 'domain/timeline'
+import Separator from 'components/Separator'
 
 const Text = styled('p')`
     display: flex;
@@ -33,7 +34,7 @@ function Countries() {
     }
     const header = `You have visited ${countryCodes.length} countries`
     return (
-        <Panel header={header} margin>
+        <Panel header={header}>
             {countryCodes.length == 0 ? <NoData /> : countryCodes.map(cc => <CountryRow code={cc} key={cc} to={`/timeline?cc=${cc.toLowerCase()}`}/>)}
         </Panel>
     )
@@ -63,7 +64,7 @@ function Current() {
     
     const header = `Currently staying in ${currentCountry.name}`
     return (
-        <Panel header={header} margin>
+        <Panel header={header}>
             <CurrentContent><BigFlag>{currentCountry.emoji}</BigFlag> {formattedLocation(latestCheckin.venue.location)}</CurrentContent>
         </Panel>
     )
@@ -73,12 +74,15 @@ function AuthenticatedDashboard() {
     const isAuthenticated = useIsAuthenticated()
     return (
         <Row>
-            <Column>
+            <Column style={{flex: 1}}>
                 <Current />
                 {isAuthenticated ? <Swarm /> : null}
                 <Badges />
             </Column>
-            <Countries />
+            <Separator />
+            <Column style={{flex: 1}}>
+                <Countries />
+            </Column>
         </Row>
     )
 }

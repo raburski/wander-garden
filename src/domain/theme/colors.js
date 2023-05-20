@@ -27,6 +27,7 @@ const colors = {
 }
 
 const breakpoints = {
+    small: 574,
     medium: 1024,
     large: 1513,
 }

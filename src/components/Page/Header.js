@@ -14,4 +14,8 @@ export default styled('h1')`
     margin-bottom: 18px;
     margin-top: -4px;
     color: ${props => props.theme.text};
+
+    @media only screen and (max-width: ${props => props.theme.breakpoints.small}px) {
+        justify-content: center;
+    }
 `
