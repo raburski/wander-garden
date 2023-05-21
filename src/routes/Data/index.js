@@ -195,7 +195,7 @@ export default function Data() {
                 onUploadClick={onUploadClick}
                 onTrashClick={onDownloadClick ? onTrashClick : undefined}
                 onChangeSearch={onChangeSearch}/>
-            <Panel style={{maxHeight: '84%'}} contentStyle={{ overflow: 'scroll' }}>
+            <Panel contentStyle={{ overflow: 'scroll' }}>
                 {selectedIndex === 0 ? <BookingComList search={search}/> : null}
                 {selectedIndex === 1 ? <AirbnbList search={search}/> : null}
                 {selectedIndex === 2 ? <AgodaList search={search}/> : null}

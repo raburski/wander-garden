@@ -27,6 +27,7 @@ const Title = styled('div')`
 
 const Text = styled('div')``
 const ImageContainer = styled('div')`
+    display: flex;
     @media only screen and (max-width: ${props => props.theme.breakpoints.small}px) {
         display: none;
     }
@@ -40,10 +41,10 @@ const DynamicSeparator = styled(Separator)`
 
 const CONTENT_STYLE = { flexDirection: 'row' }
 
-export default function InfoPanel({ image, title, text, children, containerStyle, ...props }) {
+export default function InfoPanel({ image, title, text, children, containerStyle, imageStyle, ...props }) {
     return (
         <Panel contentStyle={CONTENT_STYLE} {...props}>
-            <ImageContainer>{image}</ImageContainer>
+            <ImageContainer style={imageStyle}>{image}</ImageContainer>
             <Container style={containerStyle}>
                 <Title>{title}</Title>
                 {title && (text || children) ? <DynamicSeparator /> : null}

@@ -7,7 +7,6 @@ import ExtensionVersionNotMatching from './VersionMismatch'
 import ExtensionTroubleshoot from './Troubleshoot'
 import WebStoreButton from "./WebStoreButton"
 import Panel from "components/Panel"
-import { SlPuzzle } from 'react-icons/sl'
 import { styled } from "goober"
 import ContentRow from "components/ContentRow"
 
