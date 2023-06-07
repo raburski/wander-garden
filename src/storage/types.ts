@@ -7,7 +7,7 @@ export interface StorageAdapter<Type> {
     initialValue: Type
 
     get(): Promise<Type>
-    set(data: Type): Promise<any>
+    set(data: Type, keysToReplace: string[]): Promise<any>
     clearAll(): Promise<any>
 }
 

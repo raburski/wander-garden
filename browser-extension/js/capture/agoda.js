@@ -40,56 +40,54 @@ function dataToStay(data) {
     }
 }
 
-function initCapture(captureStay, captureFinished, lastCapturedStayID) {
-    window.addEventListener("load", function() {
-        if (window.location.href.includes('signin')) {
-            // on a login page
-            return
+function initCapture({ captureStay, captureFinished, lastCapturedStayID }) {
+    if (window.location.href.includes('signin')) {
+        // on a login page
+        return
+    }
+
+    const params = new URLSearchParams(window.location.search)
+    const page = params.get('garden-page') || 'root'
+    if (page === 'root') {
+        const index = parseInt(sessionStorage.getItem('garden-index')) || 0
+        const allCards = [...document.querySelectorAll("div[data-element-name='blp-booking-item-card']")]
+        const nextButton = document.querySelector("button[aria-label='Next']")
+
+        if (index > allCards.length - 1) {
+            if (!nextButton || nextButton.disabled) {
+                sessionStorage.removeItem('garden-index')
+                captureFinished()
+            } else {
+                sessionStorage.setItem('garden-index', 0)
+                nextButton.click()
+                setTimeout(() => {
+                    window.location.reload()
+                }, 300)
+            }
+        } else {
+            sessionStorage.setItem('garden-index', index + 1)
+            const urlBase = window.location.href.split('#')[0]
+            const nextURL = `${urlBase}&garden-page=root`
+            const currentURL = `${allCards[index].getAttribute('data-url')}&garden-page=detail&garden-url=${btoa(nextURL)}#littleTest`
+            setTimeout(() => window.location = currentURL, 300)
         }
-
-        const params = new URLSearchParams(window.location.search)
-        const page = params.get('garden-page') || 'root'
-        if (page === 'root') {
-            const index = parseInt(sessionStorage.getItem('garden-index')) || 0
-            const allCards = [...document.querySelectorAll("div[data-element-name='blp-booking-item-card']")]
-            const nextButton = document.querySelector("button[aria-label='Next']")
-
-            if (index > allCards.length - 1) {
-                if (!nextButton || nextButton.disabled) {
+    } else {
+        const nextURL = atob(params.get('garden-url'))
+        window.addEventListener('message', function(event) {
+            const message = event.data
+            if (message && message.target === ORIGIN.AGODA) {
+                const stay = dataToStay(message.data)
+                if (stay?.id === lastCapturedStayID) {
                     sessionStorage.removeItem('garden-index')
                     captureFinished()
                 } else {
-                    sessionStorage.setItem('garden-index', 0)
-                    nextButton.click()
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 300)
+                    captureStay(stay)
+                    setTimeout(() => window.location = nextURL, 300)
                 }
-            } else {
-                sessionStorage.setItem('garden-index', index + 1)
-                const urlBase = window.location.href.split('#')[0]
-                const nextURL = `${urlBase}&garden-page=root`
-                const currentURL = `${allCards[index].getAttribute('data-url')}&garden-page=detail&garden-url=${btoa(nextURL)}#littleTest`
-                setTimeout(() => window.location = currentURL, 300)
             }
-        } else {
-            const nextURL = atob(params.get('garden-url'))
-            window.addEventListener('message', function(event) {
-                const message = event.data
-                if (message && message.target === ORIGIN.AGODA) {
-                    const stay = dataToStay(message.data)
-                    if (stay?.id === lastCapturedStayID) {
-                        sessionStorage.removeItem('garden-index')
-                        captureFinished()
-                    } else {
-                        captureStay(stay)
-                        setTimeout(() => window.location = nextURL, 300)
-                    }
-                }
-            })
-            injectExtractScript()
-        }
-    })
+        })
+        injectExtractScript()
+    }
 }
 
 function initDefault() {

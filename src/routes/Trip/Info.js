@@ -16,7 +16,7 @@ export default function Info({ trip, style }) {
     return (
         <Panel style={style}>
             <EmojiRow emojiStyle={emojiStyle} emoji="📅" value={`${dateRange[0]}, ${dateRange[1]}`}/>
-            {totalPrices.length > 0 ? <EmojiRow emojiStyle={emojiStyle} emoji="💵" value={totalPrices.map(price => `${price.amount.toFixed(2)} ${price.currency}`).join(', ')}/> : null}
+            {totalPrices.length > 0 ? <EmojiRow emojiStyle={emojiStyle} emoji="💵" value={totalPrices.map(price => `${parseFloat(price.amount).toFixed(2)} ${price.currency}`).join(', ')}/> : null}
         </Panel>
     )
 }

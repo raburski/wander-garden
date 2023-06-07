@@ -1,5 +1,16 @@
 const browser = chrome
 
+function deepMerge(target, source) {
+  Object.keys(source).forEach(key => {
+    if (source[key] instanceof Object && key in target) {
+      deepMerge(target[key], source[key]);
+    } else {
+      target[key] = source[key];
+    }
+  });
+  return target;
+}
+
 function injectScript(scriptName) {
     var s = document.createElement('script')
     s.src = chrome.runtime.getURL(scriptName)
@@ -35,7 +46,16 @@ function downloadString(text, fileType, fileName) {
     setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
 }
 
+function onWindowLoad(callback) {
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        callback()
+    } else {
+        window.addEventListener("load", callback)
+    }
+}
+
 function init(origin, onInitCapture, onInitDefault) {
+    console.log('on core init')
     function sendCaptureFinished(stays) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_finished', stays })
     }
@@ -44,7 +64,21 @@ function init(origin, onInitCapture, onInitDefault) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_stay', stay })
     }
 
+    function sendCaptureStayPartial(stay) {
+        browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_stay_partial', stay })
+    }
+
+    let ON_STAY_CAPTURED = undefined
+    function registerOnStayCaptured(callback) {
+        ON_STAY_CAPTURED = callback
+    }
+
     function onExtensionMessage(message) {
+        console.log('onExtensionMessage', message)
+        if (message.type === 'stay_captured' && ON_STAY_CAPTURED) {
+            return ON_STAY_CAPTURED(message)
+        }
+
         if (message.target !== origin || message.source !== ORIGIN.SERVICE) {
             return
         }
@@ -59,7 +93,14 @@ function init(origin, onInitCapture, onInitDefault) {
                         showLoadingIndicator()
                     })
                 }
-                onInitCapture(sendCaptureStay, sendCaptureFinished, message.lastCapturedStayID)
+
+                onInitCapture({
+                    captureStay: sendCaptureStay,
+                    captureStayPartial: sendCaptureStayPartial,
+                    captureFinished: sendCaptureFinished,
+                    onStayCaptured: registerOnStayCaptured,
+                    lastCapturedStayID: message.lastCapturedStayID
+                })
             } else {
                 onInitDefault()
             }
@@ -68,10 +109,12 @@ function init(origin, onInitCapture, onInitDefault) {
     
     browser.runtime.onMessage.addListener(onExtensionMessage)
     
-    browser.runtime.sendMessage({
-        source: origin,
-        target: ORIGIN.SERVICE, 
-        type: 'init',
+    onWindowLoad(function() {
+        browser.runtime.sendMessage({
+            source: origin,
+            target: ORIGIN.SERVICE, 
+            type: 'init',
+        })
     })
 }
 

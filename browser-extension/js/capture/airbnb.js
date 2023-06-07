@@ -44,7 +44,7 @@ function extractStayFromDocument() {
     }
 }
 
-function initCapture(captureStay, captureFinished, lastCapturedStayID) {
+function initCapture({ captureStay, captureFinished, lastCapturedStayID }) {
     if (window.location.href.includes('login')) {
         // on a login page
         return

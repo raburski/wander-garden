@@ -88,17 +88,17 @@ export default class IndexedDBStorageAdapter<Type extends ObjectWithID> implemen
     get(): Promise<Type[]> {
       return this.store.getAll()
     }
-    async set(data: Type[]) {
+    async set(data: Type[], keysToReplace: string[] = []) {
       const allDataKeys = data.map(item => item.id)
       const allStoreKeys = await this.store.getAllKeys()
 
-      const keysToAdd = allDataKeys.filter(key => !allStoreKeys.includes(key))
-      const keysToRemove = allStoreKeys.filter(key => !allDataKeys.includes(key))
+      const keysToAdd = [...allDataKeys.filter(key => !allStoreKeys.includes(key)), ...keysToReplace]
+      const keysToRemove = [...allStoreKeys.filter(key => !allDataKeys.includes(key)), ...keysToReplace]
 
-      const added = keysToAdd.map(key => this.store.put(data.find(item => item.id === key)!))
       const deleted = keysToRemove.map(key => this.store.delete(key))
+      const added = keysToAdd.map(key => this.store.put(data.find(item => item.id === key)!))
 
-      await Promise.all([...added, ...deleted])
+      await Promise.all([...deleted, ...added])
     }
     clearAll() {
       return this.store.clear()

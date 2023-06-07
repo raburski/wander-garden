@@ -11,12 +11,13 @@ const STORE = {
     captureTabID: {},
     capturedStays: {},
     lastCapturedStayID: {},
+    currentStayPartial: {},
 }
 
 const manifest = chrome.runtime.getManifest()
 
 function sendMessage(message, toTabID) {
-    const tabID = STORE.captureTabID[message.target] || toTabID
+    const tabID = toTabID || STORE.captureTabID[message.target]
     if (tabID) {
         console.log('SEND', message)
         chrome.tabs.sendMessage(tabID, message)
@@ -54,6 +55,12 @@ function handleGardenMessage(message, sender) {
     }
 }
 
+function staysWithNoDuplicates(stays) {
+    return stays.filter((stay, index) => {
+        return stays.findIndex(s => s.id === stay.id) === index
+    })
+}
+
 function handleExtensionMessage(message, sender) {
     switch (message.type) {
         case 'init':
@@ -66,19 +73,32 @@ function handleExtensionMessage(message, sender) {
             }, sender.tab.id)
             break
         case 'capture_stay':
-            STORE.capturedStays[message.source].push(message.stay)
+            const stay = message.stay || STORE.currentStayPartial
+            STORE.capturedStays[message.source].push(stay)
+            STORE.currentStayPartial = {}
+            sendMessage({
+                source: ORIGIN.SERVICE,
+                target: message.source,
+                subject: message.source,
+                type: 'stay_captured',
+                stay,
+            })
+            break
+        case 'capture_stay_partial':
+            STORE.currentStayPartial = deepMerge(STORE.currentStayPartial, message.stay)
             break
         case 'capture_finished':
             chrome.tabs.remove(STORE.captureTabID[message.source])
             chrome.tabs.update(STORE.captureTabID[ORIGIN.GARDEN], { active: true })
             STORE.captureTabID[message.source] = undefined
-            const stays = !message.stays ? STORE.capturedStays[message.source] : message.stays
+            const stays = message.stays || STORE.capturedStays[message.source]
+            const finalStays = staysWithNoDuplicates(stays)
             sendMessage({
                 source: ORIGIN.SERVICE,
                 target: ORIGIN.GARDEN,
                 subject: message.source,
                 type: 'capture_finished',
-                stays,
+                stays: finalStays,
             })
             break
     }

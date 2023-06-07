@@ -54,10 +54,10 @@ export default function ImportModal() {
         <ModalPage isOpen={!!staysDiff} header="Import stays">
             {isEmptyImport ? <NothingToImport /> : null}
             {newStays.length > 0 ? <Panel header="New">
-                {newStays.map(stay => <StayRow onStayClick={onStayClick} stay={stay} icon={unchecked[stay.id] ? MdCheckBoxOutlineBlank : MdCheckBox}/>)}
+                {newStays.map(stay => <StayRow key={stay.id} onStayClick={onStayClick} stay={stay} icon={unchecked[stay.id] ? MdCheckBoxOutlineBlank : MdCheckBox}/>)}
             </Panel> : null}
             {modifiedStays.length > 0 ? <Panel header="Modified">
-                {modifiedStays.map(stay => <StayRow onStayClick={onStayClick} stay={stay} icon={unchecked[stay.id] ? MdCheckBoxOutlineBlank : MdCheckBox}/>)}
+                {modifiedStays.map(stay => <StayRow key={stay.id} onStayClick={onStayClick} stay={stay} icon={unchecked[stay.id] ? MdCheckBoxOutlineBlank : MdCheckBox}/>)}
             </Panel> : null}
             {unchangedStays.length > 0 ? <Panel header="Unchanged"><InfoRow icon={MdHotel} title={`${unchangedStays.length} stays`} /></Panel> : null}
             <ModalPageButtons>

@@ -25,6 +25,7 @@ import { useDownload, useRefresh, useTrash, useUpload } from "./hooks"
 import { TITLES } from './consts'
 import SquareImage from "components/SquareImage"
 import { StayLogoURL, StayType, useShowCaptureStartModal } from "domain/extension"
+import { downloadString } from "files"
 
 const NoStaysContainer = styled('div')`
     display: flex;
@@ -69,6 +70,10 @@ function StayActions({ stay }) {
     const year = moment(stay.since).format('YYYY')
     const onExternalClick = () => window.open(stay.url)
     const onMapClick = () => window.open(`https://maps.google.com/?q=${stay.location.lat},${stay.location.lng}`)
+    const onDownloadClick = () => {
+        const since = moment(stay.since).format('DD-MM-YYYY')
+        downloadString(JSON.stringify(stay), 'json', `${since}, ${stay.accomodation.name}, ${stay.location.city}.json`)
+    }
 
     return (
         <StayActionsContainer>
@@ -77,6 +82,8 @@ function StayActions({ stay }) {
             <PinButton icon={FiMapPin} onClick={onMapClick}/>
             <Separator />
             <PinButton icon={FiExternalLink} onClick={onExternalClick}/>
+            <Separator />
+            <PinButton icon={TbDownload} onClick={onDownloadClick}/>
         </StayActionsContainer>
     )
 }

@@ -12,7 +12,7 @@ import ImportModal from "./ImportModal"
 import CapturingModal from "./CapturingModal"
 import StartCaptureModal from "./StartCaptureModal"
 
-const CURRENT_VERSION = '0.0.5'
+const CURRENT_VERSION = '0.0.6'
 
 export const ExtensionContext = createContext({})
 
@@ -147,17 +147,18 @@ export function ExtensionProvider({ children }) {
     }
 
     async function importCapturedStays(ids) {
+        const modifiedIds = capturedStays.diff.modified.map(stay => stay.id)
         const newStays = [
             ...capturedStays.diff.new.filter(stay => ids.includes(stay.id)),
             ...capturedStays.diff.modified.filter(stay => ids.includes(stay.id)),
         ]
         switch (capturedStays.subject) {
             case Origin.Booking:
-                setBookingStays([ ...bookingStays.filter(stay => !ids.includes(stay.id)), ...newStays ]); break
+                await setBookingStays([ ...bookingStays.filter(stay => !ids.includes(stay.id)), ...newStays ], modifiedIds); break
             case Origin.Airbnb:
-                setAirbnbStays([ ...airbnbStays.filter(stay => !ids.includes(stay.id)), ...newStays ]); break
+                await setAirbnbStays([ ...airbnbStays.filter(stay => !ids.includes(stay.id)), ...newStays ], modifiedIds); break
             case Origin.Agoda:
-                setAgodaStays([ ...agodaStays.filter(stay => !ids.includes(stay.id)), ...newStays ]); break
+                await setAgodaStays([ ...agodaStays.filter(stay => !ids.includes(stay.id)), ...newStays ], modifiedIds); break
         }
         await refresh()
         setCapturedStays(undefined)

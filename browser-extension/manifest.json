@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Wander Garden",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "Companion extension for wander.garden website.",
     "icons": {
       "16": "icon/16.png",
@@ -15,7 +15,7 @@
             "*://*.booking.com/*"
         ],
         "run_at": "document_start",
-        "js":["js/consts.js", "js/ui.js", "js/capture.js", "js/country.js", "js/booking.js"]
+        "js":["js/consts.js", "js/ui.js", "js/core.js", "js/country.js", "js/capture/booking.js"]
       },
       {
         "matches":[
@@ -25,14 +25,14 @@
             "*://*.airbnb.pl/*",
             "*://*.airbnb.hu/*"
         ],
-        "js":["js/consts.js", "js/ui.js", "js/capture.js", "js/country.js", "js/airbnb.js"]
+        "js":["js/consts.js", "js/ui.js", "js/core.js", "js/country.js", "js/capture/airbnb.js"]
       },
       {
         "matches":[
             "*://*.agoda.com/*"
         ],
         "run_at": "document_start",
-        "js":["js/consts.js", "js/ui.js", "js/capture.js", "js/country.js", "js/agoda.js"]
+        "js":["js/consts.js", "js/ui.js", "js/core.js", "js/country.js", "js/capture/agoda.js"]
       },
       {
           "matches":[
@@ -46,7 +46,7 @@
       "service_worker": "js/background.js"
     },
     "web_accessible_resources": [{
-      "resources": ["injectXML.js", "injectWindowExtract.js"],
+      "resources": ["injectWindowExtract.js"],
       "matches": ["*://*.booking.com/*", "*://*.agoda.com/*"]
     }]
 }

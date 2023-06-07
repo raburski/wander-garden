@@ -1,12 +1,12 @@
 import { useCallback, useState, useEffect } from "react"
 import { StorageAdapter } from "storage"
 
-type setAsyncFunction<Type> = (state: Type) => Promise<any>
+type setAsyncFunction<Type> = (state: Type, keysToReplace: string[]) => Promise<any>
 type setSyncFunction<Type> = (state: Type) => void
 
 export function useStatePersistedCallback<Type>(currentState: Type, setState: setSyncFunction<Type>, persistState: setAsyncFunction<Type>) {
-    return useCallback(async function setStateCallback(newState: Type) {
-        await persistState(newState)
+    return useCallback(async function setStateCallback(newState: Type, keysToReplace: string[] = []) {
+        await persistState(newState, keysToReplace)
         setState(newState)
     }, [currentState])
 }
