@@ -12,6 +12,7 @@ import PillLink from 'components/PillLink'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Button from 'components/Button'
+import { isDEV } from 'environment'
 
 const hideOnMediumBreakpointClassName = css`
 @media only screen and (min-width: 574px) and (max-width: 1024px) {
@@ -148,7 +149,7 @@ function SideMenu({ onLinkClick, ...props }) {
             <StyledPillLink onClick={onLinkClick} to="/" separatorClassName={hideOnMediumBreakpointClassName} icon={VscDashboard}>Dashboard</StyledPillLink>
             <StyledPillLink onClick={onLinkClick} to="timeline" separatorClassName={hideOnMediumBreakpointClassName} icon={VscVersions}>Timeline</StyledPillLink>
             <StyledPillLink onClick={onLinkClick} to="badges" separatorClassName={hideOnMediumBreakpointClassName} icon={BsAward}>Badges</StyledPillLink>
-            <StyledPillLink onClick={onLinkClick} to="context" separatorClassName={hideOnMediumBreakpointClassName} icon={VscPulse}>Context</StyledPillLink>
+            {isDEV() ? <StyledPillLink onClick={onLinkClick} to="context" separatorClassName={hideOnMediumBreakpointClassName} icon={VscPulse}>Context</StyledPillLink> : null}
             <StyledPillLink onClick={onLinkClick} to="map" separatorClassName={hideOnMediumBreakpointClassName} icon={TfiMapAlt}>Map</StyledPillLink>
             <StyledPillLink onClick={onLinkClick} to="data" separatorClassName={hideOnMediumBreakpointClassName} icon={RxFileText}>Data</StyledPillLink>
             <Separator />
