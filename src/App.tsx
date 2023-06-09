@@ -10,9 +10,6 @@ import { SwarmProvider } from 'domain/swarm'
 import { HomesProvider } from "domain/homes"
 import { TimelineProvider } from "domain/timeline"
 import { StaysProvider } from "domain/stays"
-import { BookingStaysProvider } from 'domain/bookingcom'
-import { AirbnbStaysProvider } from 'domain/airbnb'
-import { AgodaStaysProvider } from 'domain/agoda'
 import { ThemeProvider, useThemeColors } from "domain/theme"
 import { SettingsProvider } from './settings'
 import mapboxgl from 'mapbox-gl'
@@ -50,28 +47,21 @@ function App() {
     <Router>
       <SettingsProvider>
         <ThemeProvider>
-          <BookingStaysProvider>
-            <AirbnbStaysProvider>
-              <AgodaStaysProvider>
-                <SwarmProvider>
-                  <HomesProvider>
-                    <TimelineProvider>
-                      <StaysProvider>
-                        <AppContainer>
-                          
-                            <SideBar />
-                            <RoutesContainer id="routes-container">
-                              <Routes />
-                            </RoutesContainer>
-                          <Toaster />
-                        </AppContainer>
-                      </StaysProvider>
-                    </TimelineProvider>
-                  </HomesProvider>
-                </SwarmProvider>
-              </AgodaStaysProvider>
-            </AirbnbStaysProvider>
-          </BookingStaysProvider>
+          <SwarmProvider>
+            <HomesProvider>
+              <TimelineProvider>
+                <StaysProvider>
+                  <AppContainer>
+                      <SideBar />
+                      <RoutesContainer id="routes-container">
+                        <Routes />
+                      </RoutesContainer>
+                    <Toaster />
+                  </AppContainer>
+                </StaysProvider>
+              </TimelineProvider>
+            </HomesProvider>
+          </SwarmProvider>
         </ThemeProvider>
       </SettingsProvider>
     </Router>

@@ -1,5 +1,5 @@
 import { useCallback, useState, useEffect } from "react"
-import { StorageAdapter } from "storage"
+import { StorageAdapter, StorageSet } from "storage"
 
 type setAsyncFunction<Type> = (state: Type, keysToReplace: string[]) => Promise<any>
 type setSyncFunction<Type> = (state: Type) => void
@@ -11,7 +11,7 @@ export function useStatePersistedCallback<Type>(currentState: Type, setState: se
     }, [currentState])
 }
 
-export function useSyncedStorage<T>(storage: StorageAdapter<T>) {
+export function useSyncedStorage<T>(storage: StorageAdapter<T>): [T, StorageSet<T>] {
     const [data, setDataState] = useState(storage.initialValue)
     useEffect(() => {
         storage.get().then(setDataState)

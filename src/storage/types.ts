@@ -3,6 +3,8 @@ export interface Transforms<Type> {
     set: (value: Type) => string
 }
 
+export type StorageSet<T> = (data: T, keysToReplace?: string[]) => Promise<any>
+
 export interface StorageAdapter<Type> {
     initialValue: Type
 

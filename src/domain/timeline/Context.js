@@ -6,9 +6,7 @@ import { onlyNonTransportation } from "domain/swarm/categories"
 import { createTimelineGroups } from "./groups"
 import moment from 'moment'
 import { checkinsStorage } from "domain/swarm"
-import { bookingStaysStorage } from "domain/bookingcom"
-import { agodaStaysStorage } from "domain/agoda"
-import { airbnbStaysStorage } from "domain/airbnb"
+import { getAllStays } from "domain/stays"
 import { homesStorage } from "domain/homes"
 
 export const TimelineContext = createContext({})
@@ -26,11 +24,7 @@ export function TimelineProvider({ children }) {
     async function refresh() {
         const homes = await homesStorage.get()
         const checkins = await checkinsStorage.get()
-        const allStays = await Promise.all([
-            bookingStaysStorage.get(),
-            agodaStaysStorage.get(),
-            airbnbStaysStorage.get(),
-        ]).then(v => v.flat())
+        const allStays = await getAllStays()
 
         checkins.sort((a, b) => b.createdAt - a.createdAt)
         allStays.sort((a, b) => moment(b.since).diff(moment(a.since)))

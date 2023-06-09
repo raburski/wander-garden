@@ -1,6 +1,5 @@
 import { isEqualLocation, isEqualLocationCity } from "domain/location"
-import { Stay } from "domain/stay"
-import { useAllStays } from "domain/stays"
+import { Stay, useAllStays } from "domain/stays"
 import moment, { Moment } from "moment"
 import { Money } from "type"
 
@@ -85,7 +84,7 @@ export function addTripPrices(trip: Trip): Money[] {
 }
 
 export default function useTrip(since: string, until: string): Trip | undefined {
-    const [stays] = useAllStays()
+    const stays = useAllStays()
     if (!since || !until) return undefined
 
 

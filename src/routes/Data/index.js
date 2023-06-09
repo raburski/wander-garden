@@ -138,7 +138,7 @@ function getStayTypeIcon(type) {
 }
 
 function StaysList({ search, type }) {
-    const [stays] = useStays(type)
+    const stays = useStays(type)
     const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : [...stays]
     filteredStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
     return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={getStayTypeIcon(type)} stay={stay} key={stay.id} />) : <NoStaysFound stayType={type}/>

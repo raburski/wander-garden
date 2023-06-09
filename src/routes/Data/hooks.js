@@ -3,8 +3,7 @@ import { useCheckins, useClearData as useClearSwarmData, isSwarmData } from 'dom
 import toast from 'react-hot-toast'
 import { TITLES } from './consts'
 import { useRefreshTimeline } from 'domain/timeline'
-import { isStayData, isStayType } from 'domain/stay'
-import { StayType, useClearStayData, useShowCaptureStartModal, useStartFileImport, useStays } from 'domain/stays'
+import { isStayData, isStayType, StayType, useClearStays, useShowCaptureStartModal, useStartFileImport, useStays } from 'domain/stays'
 import { useToastedFetchSwarm } from 'domain/swarm/hooks'
 
 function getStayTypeForIndex(index) {
@@ -20,7 +19,7 @@ export function useDownload(index) {
     const stayType = getStayTypeForIndex(index) 
 
     const [swarm] = useCheckins()
-    const [stays] = useStays(stayType)
+    const stays = useStays(stayType)
 
     if (stays) {
         return stays.length > 0 ? () => downloadString(JSON.stringify(stays), 'json', `${stayType}.json`) : undefined
@@ -69,7 +68,7 @@ export function useUpload() {
 export function useTrash(index) {
     const stayType = getStayTypeForIndex(index)
     const refreshTimeline = useRefreshTimeline()
-    const clearStayData = useClearStayData(stayType)
+    const clearStayData = useClearStays(stayType)
     const clearSwarmData = useClearSwarmData()
 
     return () => {
