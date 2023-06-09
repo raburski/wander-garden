@@ -4,7 +4,7 @@ import InfoRow from 'components/InfoRow'
 import { MdCheckBox, MdCheckBoxOutlineBlank, MdOutlineHourglassEmpty, MdHotel } from 'react-icons/md'
 import { useState } from 'react'
 import Button from 'components/Button'
-import { useCapturedStaysDiff, useClearCapturedStays, useImportCapturedStays } from 'domain/extension'
+import { useCapturedStaysDiff, useClearCapturedStays, useImportCapturedStays } from 'domain/stays'
 import ModalPage, { ModalPageButtons } from 'components/ModalPage'
 import { styled } from 'goober'
 

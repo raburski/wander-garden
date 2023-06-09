@@ -10,9 +10,6 @@ import Page from 'components/Page'
 import Panel from '../../components/Panel'
 import { formattedLocation } from 'domain/location'
 import { useCheckins } from 'domain/swarm'
-import { useBookingStays } from 'domain/bookingcom'
-import { useAirbnbStays } from 'domain/airbnb'
-import { useAgodaStays } from "domain/agoda"
 import Segment from 'components/Segment'
 import NoneFound from 'components/NoneFound'
 import InfoRow from 'components/InfoRow'
@@ -24,7 +21,7 @@ import TextField from 'components/TextField'
 import { useDownload, useRefresh, useTrash, useUpload } from "./hooks"
 import { TITLES } from './consts'
 import SquareImage from "components/SquareImage"
-import { StayLogoURL, StayType, useShowCaptureStartModal } from "domain/extension"
+import { StayLogoURL, StayType, useShowCaptureStartModal, useStays } from "domain/stays"
 import { downloadString } from "files"
 
 const NoStaysContainer = styled('div')`
@@ -127,25 +124,24 @@ function isStayMatchingPhrase(phrase) {
     }
 }
 
-function BookingComList({ search }) {
-    const [stays] = useBookingStays()
-    const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : [...stays]
-    filteredStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
-    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={TbBrandBooking} stay={stay} key={stay.id} />) : <NoStaysFound stayType={StayType.Booking}/>
+function getStayTypeIcon(type) {
+    switch (type) {
+        case StayType.Agoda:
+            return MdHotel
+        case StayType.Booking:
+            return TbBrandBooking
+        case StayType.Airbnb:
+            return TbBrandAirbnb
+        default:
+            return null
+    }
 }
 
-function AirbnbList({ search }) {
-    const [stays] = useAirbnbStays()
+function StaysList({ search, type }) {
+    const [stays] = useStays(type)
     const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : [...stays]
     filteredStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
-    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={TbBrandAirbnb} stay={stay} key={stay.id} />) : <NoStaysFound stayType={StayType.Airbnb}/>
-}
-
-function AgodaList({ search }) {
-    const [stays] = useAgodaStays()
-    const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : [...stays]
-    filteredStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
-    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={MdHotel} stay={stay} key={stay.id} />) : <NoStaysFound stayType={StayType.Agoda}/>
+    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={getStayTypeIcon(type)} stay={stay} key={stay.id} />) : <NoStaysFound stayType={type}/>
 }
 
 const HeaderContainer = styled('div')`
@@ -203,9 +199,9 @@ export default function Data() {
                 onTrashClick={onDownloadClick ? onTrashClick : undefined}
                 onChangeSearch={onChangeSearch}/>
             <Panel contentStyle={{ overflow: 'scroll' }}>
-                {selectedIndex === 0 ? <BookingComList search={search}/> : null}
-                {selectedIndex === 1 ? <AirbnbList search={search}/> : null}
-                {selectedIndex === 2 ? <AgodaList search={search}/> : null}
+                {selectedIndex === 0 ? <StaysList type={StayType.Booking} search={search}/> : null}
+                {selectedIndex === 1 ? <StaysList type={StayType.Airbnb} search={search}/> : null}
+                {selectedIndex === 2 ? <StaysList type={StayType.Agoda} search={search}/> : null}
                 {selectedIndex === 3 ? <SwarmCheckinsList search={search}/> : null}
             </Panel>
         </Page>

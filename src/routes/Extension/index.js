@@ -1,7 +1,7 @@
 import Page from "components/Page"
 import InfoPanel from "components/InfoPanel"
 import SquareImage from 'components/SquareImage'
-import { useExtensionStatus, Status, StayType, StayName, StayLogoURL, useShowCaptureStartModal } from 'domain/extension'
+import { useExtensionStatus, Status, StayType, StayName, StayLogoURL, useShowCaptureStartModal } from 'domain/stays'
 import OnlineDot from './OnlineDot'
 import ExtensionVersionNotMatching from './VersionMismatch'
 import ExtensionTroubleshoot from './Troubleshoot'
@@ -63,6 +63,7 @@ function Stays() {
             <ContentRow image={<Logo src={StayLogoURL[StayType.Booking]}/>} title={StayName[StayType.Booking]} onClick={createSelectStayType(StayType.Booking)}/>
             <ContentRow image={<Logo src={StayLogoURL[StayType.Airbnb]}/>} title={StayName[StayType.Airbnb]} onClick={createSelectStayType(StayType.Airbnb)}/>
             <ContentRow image={<Logo src={StayLogoURL[StayType.Agoda]}/>} title={StayName[StayType.Agoda]} onClick={createSelectStayType(StayType.Agoda)}/>
+            <ContentRow image={<Logo src={StayLogoURL[StayType.Travala]}/>} title={StayName[StayType.Travala]} onClick={createSelectStayType(StayType.Travala)}/>
         </Panel>
     )
 }

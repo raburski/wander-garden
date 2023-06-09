@@ -15,7 +15,7 @@ import { useRef, useState } from 'react';
 import Separator from 'components/Separator';
 import { Column, Row } from 'components/container';
 import Map, { Icon } from 'components/Map'
-import { detectStayType } from 'domain/extension'
+import { detectStayType } from 'domain/stays'
 import Info from './Info'
 
 const EventsContainer = styled('div')`

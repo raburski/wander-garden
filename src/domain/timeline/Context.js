@@ -1,15 +1,10 @@
-import { createContext, useState, useContext, useMemo } from "react"
-import { zipsonTransforms, LocalStorageAdapter, IndexedDBStorageAdapter, usePersistedEffect, jsonTransforms, useSyncedStorage } from 'storage'
-import { useCheckins } from "domain/swarm"
-import { useHomes } from 'domain/homes'
-import { useBookingStays } from 'domain/bookingcom'
-import { useAirbnbStays } from 'domain/airbnb'
+import { createContext, useContext, useMemo } from "react"
+import { LocalStorageAdapter, IndexedDBStorageAdapter, jsonTransforms, useSyncedStorage } from 'storage'
 import { createTimelineEvents } from "./events"
 import { onlyUnique } from "array"
 import { onlyNonTransportation } from "domain/swarm/categories"
 import { createTimelineGroups } from "./groups"
 import moment from 'moment'
-import { useAgodaStays } from "domain/agoda"
 import { checkinsStorage } from "domain/swarm"
 import { bookingStaysStorage } from "domain/bookingcom"
 import { agodaStaysStorage } from "domain/agoda"

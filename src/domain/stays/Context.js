@@ -72,7 +72,7 @@ export function detectStayType(stay) {
     }
 }
 
-export function ExtensionProvider({ children }) {
+export function StaysProvider({ children }) {
     const [version, setVersion] = useState()
     const [capturedStays, setCapturedStays] = useState()
     const [failed, setFailed] = useState(false)

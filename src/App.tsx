@@ -9,7 +9,7 @@ import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill"
 import { SwarmProvider } from 'domain/swarm'
 import { HomesProvider } from "domain/homes"
 import { TimelineProvider } from "domain/timeline"
-import { ExtensionProvider } from "domain/extension"
+import { StaysProvider } from "domain/stays"
 import { BookingStaysProvider } from 'domain/bookingcom'
 import { AirbnbStaysProvider } from 'domain/airbnb'
 import { AgodaStaysProvider } from 'domain/agoda'
@@ -56,7 +56,7 @@ function App() {
                 <SwarmProvider>
                   <HomesProvider>
                     <TimelineProvider>
-                      <ExtensionProvider>
+                      <StaysProvider>
                         <AppContainer>
                           
                             <SideBar />
@@ -65,7 +65,7 @@ function App() {
                             </RoutesContainer>
                           <Toaster />
                         </AppContainer>
-                      </ExtensionProvider>
+                      </StaysProvider>
                     </TimelineProvider>
                   </HomesProvider>
                 </SwarmProvider>
