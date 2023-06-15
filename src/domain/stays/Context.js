@@ -11,7 +11,7 @@ import CapturingModal from "./CapturingModal"
 import StartCaptureModal from "./StartCaptureModal"
 import { detectStayType, staysEqual } from "./stays"
 
-const CURRENT_VERSION = '0.0.6'
+const CURRENT_VERSION = '0.0.7'
 
 export const agodaStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'agoda')
 export const airbnbStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'airbnb')

@@ -10,6 +10,7 @@ export function getAllStays() {
         getStays(StayType.Booking),
         getStays(StayType.Airbnb),
         getStays(StayType.Agoda),
+        getStays(StayType.Travala),
     ]).then(v => v.flat())
 }
 
@@ -21,6 +22,7 @@ export function detectStayType(stay: Stay) {
         case "airbnb": return StayType.Airbnb
         case "booking": return StayType.Booking
         case "agoda": return StayType.Agoda
+        case "travala": return StayType.Travala
         default: return undefined
     }
 }
@@ -40,6 +42,7 @@ export function useAllStays() {
     const booking = useStays(StayType.Booking)
     const airbnb = useStays(StayType.Airbnb)
     const agoda = useStays(StayType.Agoda)
-    const allStays = [...booking, ...airbnb, ...agoda]
+    const travala = useStays(StayType.Travala)
+    const allStays = [...booking, ...airbnb, ...agoda, ...travala]
     return allStays
 }

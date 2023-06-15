@@ -54,7 +54,7 @@ function onWindowLoad(callback) {
     }
 }
 
-function init(origin, onInitCapture, onInitDefault, onCapturedNetwork) {
+function init(origin, onInitCapture, onInitDefault) {
     console.log('on core init')
     function sendCaptureFinished(stays) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_finished', stays })
@@ -108,7 +108,9 @@ function init(origin, onInitCapture, onInitDefault, onCapturedNetwork) {
                     lastCapturedStayID: message.lastCapturedStayID
                 })
             } else {
-                onInitDefault()
+                if (onInitDefault) {
+                    onInitDefault()
+                }
             }
         }
     }

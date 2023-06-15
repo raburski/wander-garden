@@ -260,35 +260,36 @@ function getCountryCode(countryName) {
 }
 
 function convertCurrencySymbol(symbol) {
-    const currencyMap = {
-      '$': 'USD',
-      '€': 'EUR',
-      '£': 'GBP',
-      '¥': 'JPY',
-      '₹': 'INR',
-      '₽': 'RUB',
-      '₩': 'KRW',
-      '฿': 'THB',
-      '₺': 'TRY',
-      '₴': 'UAH',
-      '₪': 'ILS',
-      '₡': 'CRC',
-      '₮': 'MNT',
-      '₱': 'PHP',
-      '₦': 'NGN',
-      '₲': 'PYG',
-      '₫': 'VND',
-      '₵': 'GHS',
-      '₸': 'KZT',
-      '₭': 'LAK'
-      // Add more currency symbols and codes as needed
-    };
-  
-    const code = currencyMap[symbol];
-    if (code) {
-      return code;
-    } else {
-      throw new Error(`Currency symbol "${symbol}" not found.`);
-    }
+  if (symbol && typeof symbol === 'string' && symbol.length === 3) return symbol.toUpperCase()
+  const currencyMap = {
+    '$': 'USD',
+    '€': 'EUR',
+    '£': 'GBP',
+    '¥': 'JPY',
+    '₹': 'INR',
+    '₽': 'RUB',
+    '₩': 'KRW',
+    '฿': 'THB',
+    '₺': 'TRY',
+    '₴': 'UAH',
+    '₪': 'ILS',
+    '₡': 'CRC',
+    '₮': 'MNT',
+    '₱': 'PHP',
+    '₦': 'NGN',
+    '₲': 'PYG',
+    '₫': 'VND',
+    '₵': 'GHS',
+    '₸': 'KZT',
+    '₭': 'LAK'
+    // Add more currency symbols and codes as needed
+  };
+
+  const code = currencyMap[symbol];
+  if (code) {
+    return code;
+  } else {
+    throw new Error(`Currency symbol "${symbol}" not found.`);
   }
+}
   

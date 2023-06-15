@@ -33,11 +33,11 @@ function convertGPSCoordinates(gpsCoordinates) {
 }
 
 function clickLoadMoreButtonUntilGone(callback, lastTime = false) {
-    const button = document.querySelector("#mytrips-mfe > button")
+    const button = document.querySelector(".mtr-timeline > span > button")
     const text = button ? button.innerText : ''
     if (button && text.length > 6) { // View more bookings
         button.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
-        setTimeout(function() { clickLoadMoreButtonUntilGone(callback, lastTime) }, 300)
+        setTimeout(function() { clickLoadMoreButtonUntilGone(callback, false) }, 300)
     } else if (button) { // Loading indicator
         setTimeout(function() { clickLoadMoreButtonUntilGone(callback, lastTime) }, 300)
     } else { // button gone
@@ -79,7 +79,7 @@ function initMyTrips(onStayCaptured, captureFinished, lastCapturedStayID) {
     }
 
     function startOpeningStays() {
-        tripLinks = document.querySelectorAll("#mytrips-mfe > div > div > a")
+        tripLinks = document.querySelectorAll(".mtr-timeline > div > div > a")
         if (tripLinks.length === 0) {
             console.log('[WARNING] Wander Garden: no trip urls detected')
         }
@@ -121,6 +121,14 @@ function getAddressComponents(string) {
     }
 }
 
+function priceFromComponents(components) {
+    const isNumberFirst = !isNaN(components[0])
+    const currency = isNumberFirst ? convertCurrencySymbol(components[1]) : convertCurrencySymbol(components[0])
+    const amount = isNumberFirst ? parseFloat(components[0]) : parseFloat(components[1])
+
+    return { amount, currency }
+}
+
 function extractStayFromDocument() {
     const gpsRegex = /GPS coordinates: ([^\n]+)/gi
     const addressRegex = /Address:\n(.+?)\n\n/gis
@@ -130,7 +138,7 @@ function extractStayFromDocument() {
     const hotelAddressText = document.querySelector('.hotel-details__address').textContent.trim()
     const priceResult = document.querySelector('span.room-price').textContent
     const roomPrice = priceResult.replace('&nbsp;', ' ').replace(' ', ' ').trim().split(' ')
-    const price = { amount: parseFloat(roomPrice[1]), currency: convertCurrencySymbol(roomPrice[0]) }
+    const price = priceFromComponents(roomPrice)
 
     const gpsResults = gpsRegex.exec(hotelAddressText)
     const addressResults = addressRegex.exec(hotelAddressText)
@@ -180,13 +188,12 @@ function initSummary(captureStay) {
 }
 
 function initCapture({ captureStayPartial, captureStay, captureFinished, lastCapturedStayID, onStayCaptured }) {
-    console.log('onINIT capture')
     if (window.location.href.includes('password')) {
         // on a login page
         return
     } else if (window.location.href.includes('mybooking_archivedsummary')) {
         initSummary(captureStay)
-    } else if (window.location.href.includes('mytrips')) {
+    } else if (window.location.href.includes('mytrips') || window.location.href.includes('myreservations')) {
         initMyTrips(onStayCaptured, captureFinished, lastCapturedStayID)
     }
 }
