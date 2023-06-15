@@ -16,6 +16,7 @@ const CURRENT_VERSION = '0.0.6'
 export const agodaStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'agoda')
 export const airbnbStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'airbnb')
 export const bookingStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'booking')
+export const travalaStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'travala')
 
 export function getStays(type) {
     switch (type) {
@@ -25,6 +26,8 @@ export function getStays(type) {
             return bookingStaysStorage.get()
         case StayType.Airbnb:
             return airbnbStaysStorage.get()
+        case StayType.Travala:
+            return travalaStaysStorage.get()
         default:
             throw new Error('No stays of this type!')
     }
@@ -76,6 +79,7 @@ export function StaysProvider({ children }) {
     const bookingStays = useSyncedStorage(bookingStaysStorage)
     const airbnbStays = useSyncedStorage(airbnbStaysStorage)
     const agodaStays = useSyncedStorage(agodaStaysStorage)
+    const travalaStays = useSyncedStorage(travalaStaysStorage)
 
     function setStays(type, stays, keysToReplace = []) {
         switch (type) {
@@ -85,6 +89,8 @@ export function StaysProvider({ children }) {
                 return bookingStays[1](stays, keysToReplace)
             case StayType.Airbnb:
                 return airbnbStays[1](stays, keysToReplace)
+            case StayType.Travala:
+                return travalaStays[1](stays, keysToReplace)
             default:
                 throw new Error('No stays of this type!')
         }
@@ -186,6 +192,7 @@ export function StaysProvider({ children }) {
             [StayType.Booking]: bookingStays,
             [StayType.Agoda]: agodaStays,
             [StayType.Airbnb]: airbnbStays,
+            [StayType.Travala]: travalaStays,
         }
     }
 
@@ -244,18 +251,6 @@ export function useCapture(stayType) {
     return function captureBooking() {
         context.startCapture(stayType)
     }
-}
-
-export function useCaptureBooking() {
-    return useCapture(StayType.Booking)
-}
-
-export function useCaptureAirbnb() {
-    return useCapture(StayType.Airbnb)
-}
-
-export function useCaptureAgoda() {
-    return useCapture(StayType.Agoda)
 }
 
 export function useClearCapturedStays() {

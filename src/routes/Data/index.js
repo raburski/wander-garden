@@ -132,6 +132,8 @@ function getStayTypeIcon(type) {
             return TbBrandBooking
         case StayType.Airbnb:
             return TbBrandAirbnb
+        case StayType.Travala:
+            return MdHotel
         default:
             return null
     }
@@ -202,7 +204,8 @@ export default function Data() {
                 {selectedIndex === 0 ? <StaysList type={StayType.Booking} search={search}/> : null}
                 {selectedIndex === 1 ? <StaysList type={StayType.Airbnb} search={search}/> : null}
                 {selectedIndex === 2 ? <StaysList type={StayType.Agoda} search={search}/> : null}
-                {selectedIndex === 3 ? <SwarmCheckinsList search={search}/> : null}
+                {selectedIndex === 3 ? <StaysList type={StayType.Travala} search={search}/> : null}
+                {selectedIndex === 4 ? <SwarmCheckinsList search={search}/> : null}
             </Panel>
         </Page>
     )

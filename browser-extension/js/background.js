@@ -4,7 +4,8 @@ const ORIGIN = {
     SERVICE: 'wander_garden_service',
     BOOKING: 'booking.com_extension',
     AIRBNB: 'airbnb_extension',
-    AGODA: 'agoda_extension'
+    AGODA: 'agoda_extension',
+    TRAVALA: 'travala_extension',
 }
 
 const STORE = {
@@ -30,6 +31,7 @@ const ORIGIN_URL = {
     [ORIGIN.BOOKING]: 'https://secure.booking.com/myreservations.en-gb.html',
     [ORIGIN.AIRBNB]: 'https://www.airbnb.com/trips/v1',
     [ORIGIN.AGODA]: 'https://www.agoda.com/en-gb/account/bookings.html?sort=CheckinDate&state=Past&page=1',
+    [ORIGIN.TRAVALA]: 'https://www.travala.com/my-bookings'
 }
 
 function handleGardenMessage(message, sender) {

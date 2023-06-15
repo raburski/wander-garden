@@ -54,7 +54,7 @@ function onWindowLoad(callback) {
     }
 }
 
-function init(origin, onInitCapture, onInitDefault) {
+function init(origin, onInitCapture, onInitDefault, onCapturedNetwork) {
     console.log('on core init')
     function sendCaptureFinished(stays) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_finished', stays })
@@ -66,6 +66,11 @@ function init(origin, onInitCapture, onInitDefault) {
 
     function sendCaptureStayPartial(stay) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_stay_partial', stay })
+    }
+
+    let ON_NETWORK_CAPTURED = undefined
+    function registerOnNetworkCaptured(callback) {
+        ON_NETWORK_CAPTURED = callback
     }
 
     let ON_STAY_CAPTURED = undefined
@@ -99,6 +104,7 @@ function init(origin, onInitCapture, onInitDefault) {
                     captureStayPartial: sendCaptureStayPartial,
                     captureFinished: sendCaptureFinished,
                     onStayCaptured: registerOnStayCaptured,
+                    onNetworkCaptured: registerOnNetworkCaptured,
                     lastCapturedStayID: message.lastCapturedStayID
                 })
             } else {
@@ -110,6 +116,14 @@ function init(origin, onInitCapture, onInitDefault) {
     browser.runtime.onMessage.addListener(onExtensionMessage)
     
     onWindowLoad(function() {
+        function onWindowMessage(message) {
+            if (message.data && message.data.type === "response_captured" && ON_NETWORK_CAPTURED) {
+                ON_NETWORK_CAPTURED(message.data.url, message.data.body)
+            }
+        }
+        
+        window.addEventListener("message", onWindowMessage)
+
         browser.runtime.sendMessage({
             source: origin,
             target: ORIGIN.SERVICE, 

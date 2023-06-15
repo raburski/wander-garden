@@ -35,6 +35,21 @@
         "js":["js/consts.js", "js/ui.js", "js/core.js", "js/country.js", "js/capture/agoda.js"]
       },
       {
+        "matches":[
+            "*://*.travala.com/*"
+        ],
+        "run_at": "document_start",
+        "world": "MAIN",
+        "js":["injectXMLExtract.js"]
+      },
+      {
+        "matches":[
+            "*://*.travala.com/*"
+        ],
+        "run_at": "document_start",
+        "js":["js/consts.js", "js/ui.js", "js/core.js", "js/country.js", "js/capture/travala.js"]
+      },
+      {
           "matches":[
               "*://*.wander.garden/*",
               "*://127.0.0.1/*"
@@ -46,7 +61,7 @@
       "service_worker": "js/background.js"
     },
     "web_accessible_resources": [{
-      "resources": ["injectWindowExtract.js"],
-      "matches": ["*://*.booking.com/*", "*://*.agoda.com/*"]
+      "resources": ["injectXMLExtract.js"],
+      "matches": ["*://*.travala.com/*"]
     }]
 }

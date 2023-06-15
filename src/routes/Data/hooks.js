@@ -11,6 +11,7 @@ function getStayTypeForIndex(index) {
         case 0: return StayType.Booking
         case 1: return StayType.Airbnb
         case 2: return StayType.Agoda
+        case 3: return StayType.Travala
         default: return undefined
     }
 }

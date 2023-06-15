@@ -191,23 +191,4 @@ function initCapture({ captureStayPartial, captureStay, captureFinished, lastCap
     }
 }
 
-// function addLinkWidget(stay, widget) {
-//     const link = document.querySelector(`a[href^='${stay.url}'] div div`)
-//     if (link) {
-//         link.appendChild(widget)
-//     } else {
-//         setTimeout(function () {addLinkWidget(stay, widget)}, 500)
-//     }
-// }
-
-function initDefault() {
-    console.log('init defaults')
-
-    // const widget = getDownloadStayWidget(stay)
-    // widget.style.position = 'absolute'
-    // widget.style.right = '22px'
-    // widget.style.marginTop = '-44px'
-    // addLinkWidget(stay, widget)
-}
-
-init(ORIGIN.BOOKING, initCapture, initDefault)
+init(ORIGIN.BOOKING, initCapture)
