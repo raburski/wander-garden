@@ -3,7 +3,7 @@ import { styled } from 'goober'
 import { SiSwarm } from 'react-icons/si'
 import { TbBrandBooking, TbBrandAirbnb, TbDownload, TbCloudUpload, TbTrash, TbRefresh } from 'react-icons/tb'
 import { FiExternalLink, FiMapPin } from 'react-icons/fi'
-import { MdHotel } from 'react-icons/md'
+import { MdHotel, MdOutlineUploadFile } from 'react-icons/md'
 import moment from 'moment'
 import { getDaysAndRangeText } from 'date'
 import Page from 'components/Page'
@@ -21,7 +21,7 @@ import TextField from 'components/TextField'
 import { useDownload, useRefresh, useTrash, useUpload } from "./hooks"
 import { TITLES } from './consts'
 import SquareImage from "components/SquareImage"
-import { StayLogoURL, StayType, useShowCaptureStartModal, useStays } from "domain/stays"
+import { StayLogoURL, StayOrigin, StayType, useShowCaptureStartModal, useStays } from "domain/stays"
 import { downloadString } from "files"
 
 const NoStaysContainer = styled('div')`
@@ -90,8 +90,9 @@ function formattedMoney(money) {
 }
 
 function StayRow({ stay, icon }) {
-    const subtitle = `${stay.price ? `for ${formattedMoney(stay.price)}` : ''} in ${formattedLocation(stay.location)}`
-    return <InfoRow icon={icon} title={stay.accomodation.name} subtitle={subtitle} right={<StayActions stay={stay}/>}/>
+    const _icon = stay.origin === StayOrigin.File ? MdOutlineUploadFile : icon
+    const subtitle = `${stay.price ? `for ${formattedMoney(stay.price)}` : ''} in ${formattedLocation(stay.location)}` 
+    return <InfoRow icon={_icon} title={stay.accomodation.name} subtitle={subtitle} right={<StayActions stay={stay}/>}/>
 }
 
 function isCheckingMatchingPhrase(phrase) {

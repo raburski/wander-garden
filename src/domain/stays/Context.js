@@ -1,7 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react"
 import { useRefreshHomes } from "domain/homes"
 import { useRefreshTimeline } from "domain/timeline"
-import { Status, Origin, StayTypeToOrigin, StayType, OriginToStayType } from "./types"
+import { Status, Origin, StayTypeToOrigin, StayType, OriginToStayType, StayOrigin } from "./types"
 import { IndexedDBStorageAdapter, StorageSet, useSyncedStorage } from "storage"
 import equal from 'fast-deep-equal'
 import moment from "moment"
@@ -115,7 +115,8 @@ export function StaysProvider({ children }) {
                     const stays = await getStays(stayType)
                     setCapturedStays({ 
                         subject,
-                        diff: getStaysCaptureDiff(message.stays, stays)
+                        diff: getStaysCaptureDiff(message.stays, stays),
+                        origin: StayOrigin.Captured,
                     })
                 }
             }
@@ -144,7 +145,7 @@ export function StaysProvider({ children }) {
         const newStays = [
             ...capturedStays.diff.new.filter(stay => ids.includes(stay.id)),
             ...capturedStays.diff.modified.filter(stay => ids.includes(stay.id)),
-        ]
+        ].map(stay => ({ ...stay, origin: capturedStays.origin }))
         const stayType = OriginToStayType[capturedStays.subject]
         const currentStays = await getStays(stayType)
         const finalStays = [ ...currentStays.filter(stay => !ids.includes(stay.id)), ...newStays ]
@@ -173,7 +174,8 @@ export function StaysProvider({ children }) {
         const localStays = await getStays(stayType)
         setCapturedStays({ 
             subject: StayTypeToOrigin[stayType],
-            diff: getStaysCaptureDiff(stays, localStays)
+            diff: getStaysCaptureDiff(stays, localStays),
+            origin: StayOrigin.File,
         })
     }
 

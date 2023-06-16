@@ -7,6 +7,11 @@ export interface Accomodation {
     url?: string
 }
 
+export enum StayOrigin {
+    File = 'file',
+    Captured = 'captured'
+}
+
 export interface Stay {
     id: string
     url: string
@@ -15,6 +20,7 @@ export interface Stay {
     location: Location
     accomodation?: Accomodation
     price?: Money
+    origin?: StayOrigin
 }
 
 export interface StayCaptureDiff {
