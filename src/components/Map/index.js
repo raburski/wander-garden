@@ -13,6 +13,7 @@ export const Icon = {
 const ORANGE_DOT_ICON = {
     url: '/checkinpin@2x.png',
     size: { width: 16, height: 16 },
+    anchor: { x: 6, y: 6 },
     scaledSize: { width: 8, height: 8 },
 }
 
