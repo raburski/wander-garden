@@ -63,7 +63,7 @@ function Stays() {
             <ContentRow image={<Logo src={StayLogoURL[StayType.Booking]}/>} title={StayName[StayType.Booking]} onClick={createSelectStayType(StayType.Booking)}/>
             <ContentRow image={<Logo src={StayLogoURL[StayType.Airbnb]}/>} title={StayName[StayType.Airbnb]} onClick={createSelectStayType(StayType.Airbnb)}/>
             <ContentRow image={<Logo src={StayLogoURL[StayType.Agoda]}/>} title={StayName[StayType.Agoda]} onClick={createSelectStayType(StayType.Agoda)}/>
-            <ContentRow image={<Logo src={StayLogoURL[StayType.Travala]}/>} title={StayName[StayType.Travala]} onClick={createSelectStayType(StayType.Travala)}/>
+            <ContentRow image={<Logo src={StayLogoURL[StayType.Travala]}/>} title={`[WIP] ${StayName[StayType.Travala]}`} onClick={createSelectStayType(StayType.Travala)}/>
         </Panel>
     )
 }

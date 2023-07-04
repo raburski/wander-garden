@@ -1,4 +1,6 @@
 import { styled } from 'goober'
+import useDebouncedState from 'hooks/useDebouncedState'
+import { motion } from "framer-motion"
 
 function getButtonBackground(props) {
     if (props.disabled) {
@@ -23,6 +25,7 @@ function getButtonHoverBackground(props) {
 }
 
 const ButtonContainer = styled('button')`
+    position: relative;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -64,14 +67,59 @@ const Separator = styled('div')`
     width: .55rem;
 `
 
-export default function Button({ disabled = false, icon = undefined, selected = false, iconSize = 16, children, onClick = () => {}, flat = false, ...props }) {
+const Tooltip = styled(motion.div)`
+    position: absolute;
+    z-index: 10;
+    padding: 2px;
+    padding-left: 6px;
+    padding-right: 6px;
+    background-color: white;
+    border-radius: 4px;
+    border: 1px solid ${props => props.theme.border};
+    box-shadow: 0 3px 5px 2px ${props => props.theme.shadow};
+    font-size: 11px;
+    pointer-events: none;
+`
+
+const TOOLTIP_POSITION = {
+    LEFT: 'left',
+    RIGHT: 'right',
+    BOTTOM: 'bottom',
+    TOP: 'top',
+}
+
+function getTooltipStyles(position, offset) {
+    switch (position) {
+        case TOOLTIP_POSITION.TOP:
+            return [{ top: - offset/1.5, opacity: 0 }, { top: - offset, opacity: 1 }]
+        case TOOLTIP_POSITION.BOTTOM:
+            return [{ top: offset/1.5, opacity: 0 }, { top: offset, opacity: 1 }]
+        case TOOLTIP_POSITION.LEFT:
+            return [{ left: - offset/1.5, opacity: 0 }, { left: - offset, opacity: 1 }]
+        case TOOLTIP_POSITION.RIGHT:
+            return [{ right: - offset/1.5, opacity: 0 }, { right: - offset, opacity: 1 }]
+        default:
+            return [{}, {}]
+    }
+}
+
+const TOOLTIP_TRANSITION = { duration: 0.1 }
+
+export default function Button({ disabled = false, icon = undefined, selected = false, iconSize = 16, children, onClick = () => {}, flat = false, tooltip = null, tooltipOffset = 32, tooltipPosition = TOOLTIP_POSITION.TOP, ...props }) {
+    const [isHover, setHover] = useDebouncedState(false, 400)
     const IconComponent = icon
     const noPropagateClick = (event) => {
         event.stopPropagation()
         onClick(event)
     }
+    const tooltipText = tooltip && tooltip.replace(/ /g, '\u00a0')
+    const [tooltipInitial, tooltipAnimate] = getTooltipStyles(tooltipPosition, tooltipOffset)
+    const onMouseOver = () => setHover(true)
+    const onMouseLeave = () => setHover(false, true)
+
     return (
-        <ButtonContainer disabled={disabled} selected={selected} onClick={noPropagateClick} {...props}>
+        <ButtonContainer disabled={disabled} selected={selected} onClick={noPropagateClick} onMouseOver={onMouseOver} onMouseLeave={onMouseLeave} {...props}>
+            {tooltip ? <Tooltip transition={TOOLTIP_TRANSITION} initial={tooltipInitial} animate={isHover ? tooltipAnimate : tooltipInitial}>{tooltipText}</Tooltip> : null}
             {icon ? <IconContainer><IconComponent size={iconSize} /></IconContainer> : null}
             {icon && children ? <Separator /> : null}
             {children}

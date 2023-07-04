@@ -76,11 +76,11 @@ function StayActions({ stay }) {
         <StayActionsContainer>
             {range} {year}
             <Separator />
-            <PinButton icon={FiMapPin} onClick={onMapClick}/>
+            <PinButton icon={FiMapPin} onClick={onMapClick} tooltip="Show on map" tooltipPosition="left" tooltipOffset={93}/>
             <Separator />
-            <PinButton icon={FiExternalLink} onClick={onExternalClick}/>
+            <PinButton icon={FiExternalLink} onClick={onExternalClick} tooltip="Open booking" tooltipPosition="left" tooltipOffset={96}/>
             <Separator />
-            <PinButton icon={TbDownload} onClick={onDownloadClick}/>
+            <PinButton icon={TbDownload} onClick={onDownloadClick} tooltip="Download stay" tooltipPosition="left" tooltipOffset={100}/>
         </StayActionsContainer>
     )
 }
@@ -168,13 +168,13 @@ function Header({ selectedIndex, setSelectedIndex, onRefreshClick, onDownloadCli
             <Segment titles={TITLES} selectedIndex={selectedIndex} onClick={setSelectedIndex} style={{marginBottom: 22}}/>
             <Separator />
             <ActionsContainer>
-                <Button icon={TbTrash} onClick={onTrashClick} disabled={!onTrashClick}/>
+                <Button icon={TbTrash} onClick={onTrashClick} disabled={!onTrashClick} tooltip="Remove all" />
                 <Separator />
-                <Button icon={TbDownload} onClick={onDownloadClick} disabled={!onDownloadClick}/>
+                <Button icon={TbDownload} onClick={onDownloadClick} disabled={!onDownloadClick} tooltip="Download all" />
                 <Separator />
-                <Button icon={TbCloudUpload} onClick={onUploadClick}/>
+                <Button icon={TbCloudUpload} onClick={onUploadClick} tooltip="Upload from file" />
                 <Separator />
-                <Button icon={TbRefresh} onClick={onRefreshClick}/>
+                <Button icon={TbRefresh} onClick={onRefreshClick} tooltip="Capture"/>
                 <Separator />
                 <TextField placeholder="Search" onChange={onChangeSearch}/>
             </ActionsContainer>
