@@ -64,7 +64,7 @@ function getBoundsZoomLevel(bounds, mapDim) {
 
 
 
-const MapComponent = forwardRef(function MyMapComponent({ markers, initPositions, bouncingMarkerIndex }, outerRef) {
+const MapComponent = forwardRef(function MyMapComponent({ markers, initPositions, bouncingMarkerIndex, onMarkerClick }, outerRef) {
     const ref = useRef()
     const mapRef = useRef()
     const currentMarkerIndex = useRef(undefined)
@@ -96,10 +96,16 @@ const MapComponent = forwardRef(function MyMapComponent({ markers, initPositions
         })
 
         const _markers = markers.map(marker => {
-            return new google.maps.Marker({
+            const mapMarker = new google.maps.Marker({
                 position: marker.position,
                 icon: getMarkerIcon(marker.icon),
             })
+            if (onMarkerClick) {
+                mapMarker.addListener("click", () => {
+                    onMarkerClick(marker, mapMarker, map, google)
+                })
+            }
+            return mapMarker
         })
 
         _markers.forEach(marker => marker.setMap(map))
