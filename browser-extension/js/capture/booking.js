@@ -121,14 +121,6 @@ function getAddressComponents(string) {
     }
 }
 
-function priceFromComponents(components) {
-    const isNumberFirst = !isNaN(components[0])
-    const currency = isNumberFirst ? convertCurrencySymbol(components[1]) : convertCurrencySymbol(components[0])
-    const amount = isNumberFirst ? parseFloat(components[0]) : parseFloat(components[1])
-
-    return { amount, currency }
-}
-
 function extractStayFromDocument() {
     const gpsRegex = /GPS coordinates: ([^\n]+)/gi
     const addressRegex = /Address:\n(.+?)\n\n/gis
@@ -137,8 +129,9 @@ function extractStayFromDocument() {
     const hotelName = document.querySelector('.hotel-details__address h2').textContent.trim()
     const hotelAddressText = document.querySelector('.hotel-details__address').textContent.trim()
     const priceResult = document.querySelector('span.room-price').textContent
-    const roomPrice = priceResult.replace('&nbsp;', ' ').replace(' ', ' ').trim().split(' ')
-    const price = priceFromComponents(roomPrice)
+    const roomPrice = parseHTMLSpecialSymbols(priceResult)
+    const price = priceFromString(roomPrice)
+    if (!price) return undefined
 
     const gpsResults = gpsRegex.exec(hotelAddressText)
     const addressResults = addressRegex.exec(hotelAddressText)
@@ -184,7 +177,11 @@ function extractStayFromDocument() {
 
 function initSummary(captureStay) {
     const stay = extractStayFromDocument()
-    captureStay(stay)
+    if (stay) {
+        captureStay(stay)
+    } else {
+        // TODO: report error?
+    }
 }
 
 function initCapture({ captureStayPartial, captureStay, captureFinished, lastCapturedStayID, onStayCaptured }) {

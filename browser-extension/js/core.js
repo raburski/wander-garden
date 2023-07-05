@@ -32,6 +32,62 @@ function ensureFullURL(_url) {
     }
 }
 
+function parseHTMLSpecialSymbols(safe) {
+    return safe
+         .replace(/&amp;/g, "&")
+         .replace(/&lt;/g, "<")
+         .replace(/&gt;/g, ">")
+         .replace(/&quot;/g, "\"")
+         .replace(/&#039;/g, "'")
+         .replace(/&nbsp;/g, " ")
+         .replace(/ /g, ' ')
+}
+
+function getPriceCurrency(string) {
+    const threeSymbolCurrencyRegex = /(^| )([A-Za-z]{3})( |$)/gi
+    const threeSymbolMatch = string.match(threeSymbolCurrencyRegex)
+    if (threeSymbolMatch) {
+        const threeSymbol = threeSymbolMatch[0]
+        return threeSymbol.trim().toUpperCase()
+    }
+
+    const oneLetterSymbols = Object.keys(currencyMap)
+    const symbolMatch = oneLetterSymbols.map(symbol => string.includes(symbol) ? symbol : undefined).filter(Boolean)
+    if (symbolMatch.length === 1) {
+        return convertCurrencySymbol(symbolMatch[0])
+    }
+
+    return undefined
+}
+
+function priceFromString(string) {
+    const amountRegex = /([0-9][0-9,\. ]*[0-9])/gi
+    const amountMatch = string.match(amountRegex)
+    if (!amountMatch) return undefined
+    const amountString = amountMatch[0]
+    if (!amountString) return undefined
+
+    const remainingString = string.replace(amountString, '').trim()
+    const currency = getPriceCurrency(remainingString)
+    if (!currency) return undefined
+
+    const cleanAmountString = amountString.trim().replace(/ /g, '')
+    const numericRegex = /^([\d,]+)([\.,]\d{2})?$/gi
+    const numericMatch = numericRegex.exec(cleanAmountString)
+    if (numericMatch) {
+        const integer = parseInt(numericMatch[1].replace(/,/g, ''))
+        if (numericMatch[2]) {
+            const real = parseInt(numericMatch[2].replace(/[\.,]/g, ''))
+            const amount = integer + real / 100
+            return { amount, currency }
+        } else {
+            return { amount: integer, currency }
+        }
+    }
+    
+    return undefined
+}
+
 function downloadString(text, fileType, fileName) {
     var blob = new Blob([text], { type: fileType });
   

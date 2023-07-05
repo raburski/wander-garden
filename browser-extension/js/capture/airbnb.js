@@ -7,13 +7,15 @@ function extractStayFromDocument() {
     const accomodationURL = accomodationElement.getAttribute('href')
     const nameElement = accomodationElement.querySelectorAll("a[data-testid='reservation-destination-link'] span")[2]
     if (!nameElement) return undefined
-    const accomodationName = nameElement.innerHTML
+    const accomodationName = parseHTMLSpecialSymbols(nameElement.innerHTML)
 
-    const matchMoneyRe = /([\d\.]+) ([^\d ]+ )?([A-Za-z][A-Za-z][A-Za-z])$/g
     const priceElements = [...document.querySelectorAll("div[data-testid='reservation-title-subtitle'] p")]
-        .map(e => matchMoneyRe.exec(e.innerHTML.replace('&nbsp;', ' ')))
+        .map(e => priceFromString(parseHTMLSpecialSymbols(e.innerHTML)))
         .filter(e => e)
-    const price = priceElements.length === 1 ? { amount: parseFloat(priceElements[0][1]), currency: priceElements[0][3] } : undefined
+    const price = priceElements.length === 1 ? priceElements[0] : undefined
+    if (!price) {
+        return undefined
+    }
 
     const id = idRegex.exec(window.location.href)[1]
     const dataState = JSON.parse(document.getElementById('data-state').innerHTML)
@@ -24,6 +26,11 @@ function extractStayFromDocument() {
     const metadata = reservations[reservationKeys[0]].metadata
     const city = cityRegex.exec(metadata.title)[0].substring(4)
     const cc = metadata.country
+
+    if (!city || !cc || !accomodationName) {
+        return undefined
+    }
+
     return {
         id: `airbnb:${id}`,
         url: window.location.href,
@@ -44,6 +51,24 @@ function extractStayFromDocument() {
     }
 }
 
+const AIRBNB_EXPERIENCE = 'EXPERIENCE_RESERVATION'
+function openDetailPage(index, captureFinished) {
+    const allCards = [...document.querySelectorAll("div[data-section-id='PAST_TRIPS'] div[data-testid='reservation-card'] > a")]
+    if (index > allCards.length - 1) {
+        captureFinished()
+    } else {
+        const urlBase = window.location.href.split('#')[0]
+        const nextURL = `${urlBase}#root&${index+1}`
+        const currentURL = `${allCards[index].getAttribute('href')}#detail&${btoa(nextURL)}`
+
+        console.log('NEXT URL: ', currentURL)
+        if (currentURL.toUpperCase().includes(AIRBNB_EXPERIENCE)) {
+            return openDetailPage(index + 1, captureFinished)
+        }
+        setTimeout(() => window.location = currentURL, 200)
+    }
+}
+
 function initCapture({ captureStay, captureFinished, lastCapturedStayID }) {
     if (window.location.href.includes('login')) {
         // on a login page
@@ -56,25 +81,20 @@ function initCapture({ captureStay, captureFinished, lastCapturedStayID }) {
     if (page === 'root') {
         // on the trips page
         const index = parseInt(parts[1])
-        const allCards = [...document.querySelectorAll("div[data-section-id='PAST_TRIPS'] div[data-testid='reservation-card'] > a")]
-        if (index > allCards.length - 1) {
-            captureFinished()
-        } else {
-            const urlBase = window.location.href.split('#')[0]
-            const nextURL = `${urlBase}#root&${index+1}`
-            const currentURL = `${allCards[index].getAttribute('href')}#detail&${btoa(nextURL)}`
-            setTimeout(() => window.location = currentURL, 200)
-        }
+        openDetailPage(index, captureFinished)
     } else if (page === 'detail') {
         // on the trip detail page
         const nextURL = atob(parts[1])
         try {
             const stay = extractStayFromDocument()
-            if (stay?.id === lastCapturedStayID) {
+            if (stay && stay?.id === lastCapturedStayID) {
                 captureFinished()
-            } else {
+            } else if (stay) {
                 captureStay(stay)
                 setTimeout(() => window.location = nextURL, 200)
+            } else {
+                // TODO: report failed data scrape
+                setTimeout(() => window.location = nextURL, 2200)
             }
         } catch (e) {
             console.log('airbnb capture failed', e)
