@@ -12,13 +12,11 @@ import ContentRow from "components/ContentRow"
 
 const COPY = `In order to enhance your dataset you can install garden browser extension. It will help you import your booking.com, airbnb and agoda bookings.
 
-Once installed please refresh this page.
-
 `
 
 function ExtensionNotConnected() {
     return (
-        <InfoPanel spacing style={{alignSelf:'flex-start'}} image={<SquareImage size={200} src="/3d/puzzle.png"/>}>
+        <InfoPanel spacing style={{alignSelf:'flex-start'}} image={<SquareImage size={200} src="/3d/puzzle.png"/>} title="Browser extension">
             {COPY}
             <WebStoreButton />
         </InfoPanel>
