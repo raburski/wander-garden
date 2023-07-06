@@ -73,7 +73,7 @@ const Tooltip = styled(motion.div)`
     padding: 2px;
     padding-left: 6px;
     padding-right: 6px;
-    background-color: white;
+    background-color: ${props => props.theme.background.default};
     border-radius: 4px;
     border: 1px solid ${props => props.theme.border};
     box-shadow: 0 3px 5px 2px ${props => props.theme.shadow};

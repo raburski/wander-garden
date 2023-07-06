@@ -21,6 +21,10 @@ function extractStayFromDocument() {
     const dataState = JSON.parse(document.getElementById('data-state').innerHTML)
     if (!id || !dataState) return undefined
 
+    const guestsElemenet = document.querySelector("[data-testid=avatar-list-row] > div > div p")
+    const guestsArray = guestsElemenet?.innerHTML?.split(' ').map(parseInt).filter(Boolean)
+    const totalGuests = guestsArray?.length === 1 ? guestsArray[0] : undefined
+
     const reservations = dataState.bootstrapData.reduxData.reservations
     const reservationKeys = Object.keys(reservations)
     const metadata = reservations[reservationKeys[0]].metadata
@@ -47,6 +51,7 @@ function extractStayFromDocument() {
             name: accomodationName,
             url: ensureFullURL(accomodationURL),
         },
+        totalGuests,
         price,
     }
 }

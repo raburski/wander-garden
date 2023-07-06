@@ -15,12 +15,14 @@ function dataToStay(data) {
     const currency = Costs[0].Amount.Currency
     const allTheSameCurrency = Costs.length > 0 ? Costs.every(c => c.Amount.Currency === currency) : false
     const amount = Costs.reduce((a, c) => a + c.Amount.AmountAsDouble, 0)
+    const totalGuests = data.BookingItem.Guests.SecondaryGuests.length + 1
 
     return {
         id: `agoda:${data.BookingItem.BookingId}`,
         url: window.location.href,
         since: `${since}T00:00:00+00:00`,
         until: `${until}T00:00:00+00:00`,
+        totalGuests,
         location: {
             address: [data.BookingItem.Property.Address.Address1, data.BookingItem.Property.Address.Address2].filter(Boolean).join(', '),
             city: data.BookingItem.Property.Address.City,
@@ -40,6 +42,52 @@ function dataToStay(data) {
     }
 }
 
+async function openCompletedBookingsPage() {
+    const completedTabButton = document.getElementById('mmb-booking-phase-tabs-tab-2')
+    if (completedTabButton.getAttribute('aria-selected') === 'false') {
+        completedTabButton.click()
+    }
+    
+    const pageNumber = parseInt(sessionStorage.getItem('garden-page')) || 1
+    if (pageNumber > 1) {
+        await sleep(300)
+        await waitForElement(".paginator")
+        const pageButton = document.querySelector(`.paginator span[data-name='${pageNumber}']`).closest('button')
+        pageButton.click()
+        await sleep(300)
+    }
+}
+
+async function openBookingsCards(captureFinished) {
+    await waitForElement("div[data-element-name='mmb-booking-card']")
+    const cardIndex = parseInt(sessionStorage.getItem('garden-index')) || 0
+    const allCards = [...document.querySelectorAll("div[data-element-name='mmb-booking-card']")]
+    const nextButton = document.querySelector("button[data-element-name='next-button']")
+
+    if (cardIndex > allCards.length - 1) {
+        if (nextButton.getAttribute('aria-disabled') === 'true') {
+            sessionStorage.removeItem('garden-index')
+            sessionStorage.removeItem('garden-page')
+            captureFinished()
+        } else {
+            const pageNumber = parseInt(sessionStorage.getItem('garden-page')) || 1
+            sessionStorage.removeItem('garden-index')
+            sessionStorage.setItem('garden-page', pageNumber + 1)
+            await sleep(300)
+            await openBookingsCards(captureFinished)
+        }
+    } else {
+        sessionStorage.setItem('garden-index', cardIndex + 1)
+        const manageButton = allCards[cardIndex].querySelector("[data-element-name='blp-booking-item-button-edit']")
+        manageButton.click()
+    }
+}
+
+async function captureBookingsPage(captureFinished) {
+    await openCompletedBookingsPage()
+    await openBookingsCards(captureFinished)
+}
+
 function initCapture({ captureStay, captureFinished, lastCapturedStayID }) {
     if (window.location.href.includes('signin')) {
         // on a login page
@@ -47,32 +95,10 @@ function initCapture({ captureStay, captureFinished, lastCapturedStayID }) {
     }
 
     const params = new URLSearchParams(window.location.search)
-    const page = params.get('garden-page') || 'root'
-    if (page === 'root') {
-        const index = parseInt(sessionStorage.getItem('garden-index')) || 0
-        const allCards = [...document.querySelectorAll("div[data-element-name='blp-booking-item-card']")]
-        const nextButton = document.querySelector("button[aria-label='Next']")
+    if (window.location.href.includes('account/bookings')) {
+        captureBookingsPage(captureFinished)
 
-        if (index > allCards.length - 1) {
-            if (!nextButton || nextButton.disabled) {
-                sessionStorage.removeItem('garden-index')
-                captureFinished()
-            } else {
-                sessionStorage.setItem('garden-index', 0)
-                nextButton.click()
-                setTimeout(() => {
-                    window.location.reload()
-                }, 300)
-            }
-        } else {
-            sessionStorage.setItem('garden-index', index + 1)
-            const urlBase = window.location.href.split('#')[0]
-            const nextURL = `${urlBase}&garden-page=root`
-            const currentURL = `${allCards[index].getAttribute('data-url')}&garden-page=detail&garden-url=${btoa(nextURL)}#littleTest`
-            setTimeout(() => window.location = currentURL, 300)
-        }
-    } else {
-        const nextURL = atob(params.get('garden-url'))
+    } else if (window.location.href.includes('editbooking')) {
         window.addEventListener('message', function(event) {
             const message = event.data
             if (message && message.target === ORIGIN.AGODA) {
@@ -82,7 +108,7 @@ function initCapture({ captureStay, captureFinished, lastCapturedStayID }) {
                     captureFinished()
                 } else {
                     captureStay(stay)
-                    setTimeout(() => window.location = nextURL, 300)
+                    history.back()
                 }
             }
         })

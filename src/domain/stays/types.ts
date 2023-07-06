@@ -20,6 +20,7 @@ export interface Stay {
     location: Location
     accomodation?: Accomodation
     price?: Money
+    totalGuests?: number
     origin?: StayOrigin
 }
 
@@ -44,6 +45,7 @@ export function isStayType(stay?: Stay): boolean {
         && isOfType(stay.location, isLocationType)
         && isOptionalOfType(stay.accomodation, isAccomodationType)
         && isOptionalOfType(stay.price, isMoneyType)
+        && isOptionalOfType(stay.totalGuests, 'number')
 }
 
 export function isStayData(data: any[]) {

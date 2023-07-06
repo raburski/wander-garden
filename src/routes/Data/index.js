@@ -91,7 +91,10 @@ function formattedMoney(money) {
 
 function StayRow({ stay, icon }) {
     const _icon = stay.origin === StayOrigin.File ? MdOutlineUploadFile : icon
-    const subtitle = `${stay.price ? `for ${formattedMoney(stay.price)}` : ''} in ${formattedLocation(stay.location)}` 
+    const guestsSubtitle = (stay.totalGuests && stay.totalGuests > 1) ? `for ${stay.totalGuests} people ` : ''
+    const priceSubtitle = stay.price ? `for ${formattedMoney(stay.price)}` : ''
+    const locationSubtitle = stay.location ? ` in ${formattedLocation(stay.location)}` : ''
+    const subtitle = `${guestsSubtitle}${priceSubtitle}${locationSubtitle}`
     return <InfoRow icon={_icon} title={stay.accomodation.name} subtitle={subtitle} right={<StayActions stay={stay}/>}/>
 }
 

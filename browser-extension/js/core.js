@@ -88,6 +88,29 @@ function priceFromString(string) {
     return undefined
 }
 
+const WAIT_STEP = 200
+function waitForElement(selector, timeout = 10000) {
+    let lapsed = 0
+
+    return new Promise((resolve, reject) => {
+        const timer = setInterval(() => {
+            const elements = document.querySelectorAll(selector)
+            if (elements.length > 0) {
+                resolve()
+            } else if (lapsed > timeout) {
+                clearInterval(timer)
+                reject()
+            }
+        })
+    })
+}
+
+function sleep(time) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, time)
+    })
+}
+
 function downloadString(text, fileType, fileName) {
     var blob = new Blob([text], { type: fileType });
   
