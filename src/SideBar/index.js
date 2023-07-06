@@ -3,7 +3,8 @@ import { VscDashboard, VscPulse, VscVersions } from 'react-icons/vsc'
 import { FaDiscord, FaTwitter } from 'react-icons/fa'
 import { TfiMapAlt, TfiMenu } from 'react-icons/tfi'
 import { SiSwarm } from 'react-icons/si'
-import { SlPuzzle, SlSettings } from 'react-icons/sl'
+import { SlSettings } from 'react-icons/sl'
+import { MdHotel } from 'react-icons/md'
 import { BsAward } from 'react-icons/bs'
 import { RxFileText } from 'react-icons/rx'
 import Logo from './Logo'
@@ -154,7 +155,7 @@ function SideMenu({ onLinkClick, ...props }) {
             <StyledPillLink onClick={onLinkClick} to="data" separatorClassName={hideOnMediumBreakpointClassName} icon={RxFileText}>Data</StyledPillLink>
             <Separator />
             <StyledPillLink onClick={onLinkClick} to="swarm" separatorClassName={hideOnMediumBreakpointClassName} icon={SiSwarm}>Swarm</StyledPillLink>
-            <StyledPillLink onClick={onLinkClick} to="extension" separatorClassName={hideOnMediumBreakpointClassName} icon={SlPuzzle}>Extension</StyledPillLink>
+            <StyledPillLink onClick={onLinkClick} to="stays" separatorClassName={hideOnMediumBreakpointClassName} icon={MdHotel}>Stays</StyledPillLink>
             <Separator />
             <StyledPillLink onClick={onLinkClick} to="settings" separatorClassName={hideOnMediumBreakpointClassName} icon={SlSettings}>Settings</StyledPillLink>
             <SpreadSeparator />

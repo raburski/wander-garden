@@ -98,7 +98,7 @@ function ExtensionContent() {
 
 export default function Hotels() {
     return (
-        <Page header="Extension">
+        <Page header="Stays">
             <ExtensionContent />
             <Stays />
         </Page>

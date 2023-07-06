@@ -1,8 +1,8 @@
 export default function getStyles(countryCodes, theme) {
     const countryStyles = countryCodes.map(cc => `
-    #worldmap #${cc.toLowerCase()} { fill: ${theme.map.active.default}; }
+    #worldmap #${cc.toLowerCase()} { fill: ${theme.map.active.default}; cursor: pointer; }
     #worldmap #${cc.toLowerCase()}:hover { fill: ${theme.map.active.highlight}; }
-    #worldmap #${cc.toLowerCase()} path { fill: ${theme.map.active.default}; }
+    #worldmap #${cc.toLowerCase()} path { fill: ${theme.map.active.default}; cursor: pointer; }
     #worldmap #${cc.toLowerCase()} path:hover { fill: ${theme.map.active.highlight}; }
     `).join('')
 
@@ -46,9 +46,9 @@ export default function getStyles(countryCodes, theme) {
       fill-rule: evenodd;
     }
     
-    .landxx:hover {
-     fill: ${theme.map.normal.highlight};
-    }
+    // .landxx:hover {
+    //  fill: ${theme.map.normal.highlight};
+    // }
     /*
      * Styles for coastlines of islands and continents with no borders on them
      * (all of them should also belong to the class "landxx" - to allow for all land to be modified at once by refining "landxx" style's definition further down)
