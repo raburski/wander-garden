@@ -16,3 +16,9 @@ export function getDaysAndRangeText(_since, _until) {
     const range = `${since.format('DD.MM')} - ${until.format('DD.MM')} ${season}`
     return [days, range]
 }
+
+export function getFormattedDate(string) {
+    const date = moment(string)
+    const season = seasonEmojiForDate(date)
+    return `${date.format('DD.MM.YYYY')} ${season}`
+}

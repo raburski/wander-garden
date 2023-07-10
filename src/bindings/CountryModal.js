@@ -31,7 +31,6 @@ function useCountryStatistics(countryCode) {
     const reversedFirstPhases = [...firstGroup.phases].reverse()
     const firstPhase = reversedFirstPhases.find(p => p?.location?.cc.toLowerCase() === cc)
 
-    console.log('countryGroups', countryGroups)
     return {
         // TODO: this show FIRST checkin in given hotel instead of last day in it
         lastVisit: {
