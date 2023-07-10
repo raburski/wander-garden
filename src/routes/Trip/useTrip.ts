@@ -87,9 +87,6 @@ export default function useTrip(since: string, until: string): Trip | undefined 
     const stays = useAllStays()
     if (!since || !until) return undefined
 
-
-
-    console.log('???', stays.length, since, until)
     stays.sort((a, b) => moment(b.since).diff(moment(a.since)))
     const knownStays = stays.filter(stay => 
         moment(stay.since).isSameOrAfter(since, 'day')

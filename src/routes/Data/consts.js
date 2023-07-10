@@ -1,1 +1,1 @@
-export const TITLES = ['Booking.com', 'Airbnb', 'Agoda', 'Travala', 'Swarm']
+export const TITLES = ['Booking.com', 'Airbnb', 'Agoda', 'Travala', 'Custom', 'Swarm']

@@ -18,6 +18,8 @@ import Map, { Icon } from 'components/Map'
 import { detectStayType } from 'domain/stays'
 import Info from './Info'
 import { venueEmoji } from 'domain/swarm/categories'
+import TripMap from './Map'
+import CustomStayModal from 'domain/stays/CustomStayModal'
 
 const EventsContainer = styled('div')`
     display: flex;
@@ -37,10 +39,6 @@ const GroupHeader = styled(GroupBar)`
     border: 0px solid;
 `
 
-function getPhaseTitle(phase) {
-    return phase?.stay?.accomodation?.name
-}
-
 function getGroupTitle(group) {
     switch (group.type) {
         case GroupType.City:
@@ -54,20 +52,16 @@ function getGroupTitle(group) {
     }
 }
 
-function Group({ group, onPhaseHighlight, onStayClick, onGroupClick }) {
+function Group({ group, onPhaseHighlight, onPhaseClick, onGroupClick }) {
     const [days] = getDaysAndRangeText(group.since, group.until)
-    // TODO: support unknown type
-    // if (group.type === GroupType.Unknown) {
-    //     return null
-    // }
     return (
         <GroupContainer>
-            <GroupHeader countryCodes={[group?.location?.cc]} title={getGroupTitle(group)} days={days} onClick={onGroupClick}/>
+            {group.type !== GroupType.Unknown ? <GroupHeader countryCodes={[group?.location?.cc]} title={getGroupTitle(group)} days={days} onClick={onGroupClick}/> : null}
             {group.phases.map(phase => 
                 <Phase
                     phase={phase}
                     onMouseEnter={() => onPhaseHighlight(phase)}
-                    onStayClick={onStayClick}
+                    onClick={() => onPhaseClick(phase)}
                 />
             )}
         </GroupContainer>
@@ -75,77 +69,18 @@ function Group({ group, onPhaseHighlight, onStayClick, onGroupClick }) {
 }
 
 
-function GroupsPanel({ groups, onPhaseHighlight, onStayClick, onGroupClick, ...props }) {
+function GroupsPanel({ groups, onPhaseHighlight, onPhaseClick, onGroupClick, ...props }) {
     return (
         <Panel flex {...props}>
-            {groups.map(group => <Group group={group} onPhaseHighlight={onPhaseHighlight} onStayClick={onStayClick} onGroupClick={() => onGroupClick(group)}/>)}
+            {groups.map(group => <Group group={group} onPhaseHighlight={onPhaseHighlight} onPhaseClick={onPhaseClick} onGroupClick={() => onGroupClick(group)}/>)}
         </Panel>
     )
 }
-
-function getInfoWindowProperties({ stay, checkin }) {
-    if (stay) {
-        const [_, range] = getDaysAndRangeText(stay?.since, stay?.until)
-        return {
-            ariaLabel: stay?.accomodation?.name,
-            content: `<b>${stay?.accomodation?.name}</b> <a href="${stay?.url}" target="_blank">[🔗]</a></br>${range}`
-        }
-    } else if (checkin) {
-        const date = moment.unix(checkin.createdAt).format('DD/MM/YYYY HH:mm')
-        const emoji = checkin?.venue ? venueEmoji(checkin?.venue) : ''
-        return {
-            ariaLabel: checkin?.venue?.name,
-            content: `<b>${emoji} ${checkin?.venue?.name}</b></br>${date}`
-        }
-    } else {
-        return {}
-    }
-}
-
-function TripMap({ trip, checkins = [], style = {}, mapRef, highlightedPhase }) {
-    const infoWindow = useRef()
-    const stays = trip ? trip.phases.map(phase => phase.type === PhaseType.Stay ? phase.stay : undefined).filter(Boolean) : []
-    const markers = [
-        ...stays.map(stay => ({ stay, position: stay.location, icon: Icon.Default })),
-        ...checkins.map(checkin => ({ checkin, position: checkin?.venue?.location, icon: Icon.OrangeDot }))
-    ]
-    const initPositions = stays.length > 0 ? stays.map(s => s.location) : checkins.map(c => c?.venue?.location)
-    const highlightedStayIndex = highlightedPhase ? stays.findIndex(stay => highlightedPhase.stay === stay) : undefined
-
-    const onResetView = () => {
-        const map = mapRef.current
-        map.fitBoundsToPositions(initPositions)
-    }
-
-    const onMarkerClick = (markerData, marker, map, google) => {
-        if (infoWindow.current) {
-            infoWindow.current.close()
-        }
-        infoWindow.current = new google.maps.InfoWindow(getInfoWindowProperties(markerData))
-        infoWindow.current.open({
-            anchor: marker,
-            map,
-        })
-    }
-
-    return (
-        <Panel style={{flex: 1, alignSelf: 'stretch', flexShrink: 2, ...style }} contentStyle={{ flex: 1, display: 'flexbox', alignSelf: 'stretch'}}>
-            <Map
-                mapRef={mapRef}
-                initPositions={initPositions}
-                markers={markers}
-                onMarkerClick={onMarkerClick}
-                bouncingMarkerIndex={highlightedStayIndex}
-                onResetView={onResetView}
-            />
-        </Panel>
-    )
-}
-
 
 export default function Trip() {
     const { id } = useParams()
     const [highlightedPhase, setHighlightedPhase] = useState()
+    const [customStayModaPhase, setCustomStayModalPhase] = useState()
     const group = useTimelineGroup(id)
     const mapRef = useRef()
 
@@ -159,14 +94,19 @@ export default function Trip() {
     const header = `Trip to ${titleFromLocationHighlights(group.highlights)}`
     const leftToRightPhases = [...group.phases].reverse()
 
-    const onStayClick = (stay) => {
-        const map = mapRef.current.getMap()
-        const ZOOM_TO = 13
-        if (map.getZoom() === ZOOM_TO) {
-            map.panTo(stay.location)
-        } else {
-            map.panTo(stay.location)
-            map.setZoom(ZOOM_TO, true)
+    const onPhaseClick = (phase) => {
+        if (phase.type === PhaseType.Unknown) {
+            setCustomStayModalPhase(phase)
+        } else if (phase.type === PhaseType.Stay) {
+            const stay = phase.stay
+            const map = mapRef.current.getMap()
+            const ZOOM_TO = 13
+            if (map.getZoom() === ZOOM_TO) {
+                map.panTo(stay.location)
+            } else {
+                map.panTo(stay.location)
+                map.setZoom(ZOOM_TO, true)
+            }
         }
     }
 
@@ -176,6 +116,8 @@ export default function Trip() {
             map.fitBoundsToPositions(group.phases.map(phase => phase.stay.location))
         }
     }
+
+    const closeCustomStayModal = () => setCustomStayModalPhase(undefined)
 
     return (
         <Page header={header} showBackButton>
@@ -188,13 +130,14 @@ export default function Trip() {
                     <GroupsPanel
                         groups={groups}
                         onPhaseHighlight={setHighlightedPhase}
-                        onStayClick={onStayClick}
+                        onPhaseClick={onPhaseClick}
                         onGroupClick={onGroupClick}
                     />
                 </Column>
                 <Separator />
                 <TripMap style={{paddingTop: 18}} mapRef={mapRef} trip={trip} checkins={checkins} highlightedPhase={highlightedPhase} />
             </Row>
+            <CustomStayModal phase={customStayModaPhase} onClickAway={closeCustomStayModal}/>
         </Page>
     )
 }

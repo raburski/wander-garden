@@ -10,7 +10,7 @@ export const ModalPageButtons = styled('div')`
     align-self: stretch;
 `
 
-export default function ModalPage({ isOpen,onClickAway, header, children, pageStyle }) {
+export default function ModalPage({ isOpen, onClickAway, header, children, pageStyle }) {
     return (
         <Modal isOpen={isOpen} onClickAway={onClickAway}>
             <Page header={header} style={pageStyle} isModal>

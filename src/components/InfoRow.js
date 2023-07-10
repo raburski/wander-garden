@@ -21,6 +21,7 @@ const TextContainer = styled('div')`
     flex-direction: column;
     margin-left: 8px;
     padding: 4px;
+    margin-right: 8px;
 `
 
 const Right = styled('div')`
@@ -44,10 +45,10 @@ const IconContainer = styled('div')`
 `
 
 
-export default function InfoRow({ to, onClick, icon, title, subtitle, right }) {
+export default function InfoRow({ to, onClick, icon, title, subtitle, right, selected }) {
     const IconComponent = icon
     return (
-        <Row to={to} onClick={onClick}>
+        <Row to={to} onClick={onClick} selected={selected}>
             {icon ? <IconContainer><IconComponent size={16} /></IconContainer> : null}
             <TextContainer>
                 <Title>{title}</Title>

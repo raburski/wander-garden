@@ -44,6 +44,21 @@ export default function Panel({ style, header, flex, children, spacing, margin, 
     )
 }
 
+Panel.Left = styled('div')`
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+`
+
+Panel.Right = styled('div')`
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+    padding: 14px;
+    border-left: 1px solid ${props => props.theme.border};
+`
+
+
 export const StaticRow = styled('div')`
     display: flex;
     flex-direction: row;
@@ -54,6 +69,7 @@ export const StaticRow = styled('div')`
     padding: 4px;
     padding-left: 10px;
     margin-top: -1px;
+    background-color: ${props => props.selected ? props.theme.background.highlight : 'transparent' };
 
     @media only screen and (min-width: ${props => props.theme.breakpoints.large}px) {
         padding: 6px;
@@ -76,6 +92,7 @@ export const LinkRow = styled(Link)`
     color: ${props => props.theme.text};
     text-decoration: none;
     cursor: pointer;
+    background-color: ${props => props.selected ? props.theme.background.highlight : 'transparent' };
 
     &:hover {
         background-color: ${props => props.theme.background.highlight};
@@ -101,6 +118,7 @@ export const ClickRow = styled('div')`
     color: ${props => props.theme.text};
     text-decoration: none;
     cursor: pointer;
+    background-color: ${props => props.selected ? props.theme.background.highlight : 'transparent' };
 
     &:hover {
         background-color: ${props => props.theme.background.highlight};

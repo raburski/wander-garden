@@ -3,7 +3,6 @@ import { useRefreshHomes } from "domain/homes"
 import { useRefreshTimeline } from "domain/timeline"
 import { Status, Origin, StayTypeToOrigin, StayType, OriginToStayType, StayOrigin } from "./types"
 import { IndexedDBStorageAdapter, StorageSet, useSyncedStorage } from "storage"
-import equal from 'fast-deep-equal'
 import moment from "moment"
 import { isStayData, isStayType } from "domain/stays"
 import ImportModal from "./ImportModal"
@@ -17,6 +16,7 @@ export const agodaStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden'
 export const airbnbStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'airbnb')
 export const bookingStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'booking')
 export const travalaStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'travala')
+export const customStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'custom')
 
 export function getStays(type) {
     switch (type) {
@@ -28,6 +28,8 @@ export function getStays(type) {
             return airbnbStaysStorage.get()
         case StayType.Travala:
             return travalaStaysStorage.get()
+        case StayType.Custom:
+            return customStaysStorage.get()
         default:
             throw new Error('No stays of this type!')
     }
@@ -80,6 +82,7 @@ export function StaysProvider({ children }) {
     const airbnbStays = useSyncedStorage(airbnbStaysStorage)
     const agodaStays = useSyncedStorage(agodaStaysStorage)
     const travalaStays = useSyncedStorage(travalaStaysStorage)
+    const customStays = useSyncedStorage(customStaysStorage)
 
     function setStays(type, stays, keysToReplace = []) {
         switch (type) {
@@ -91,6 +94,8 @@ export function StaysProvider({ children }) {
                 return airbnbStays[1](stays, keysToReplace)
             case StayType.Travala:
                 return travalaStays[1](stays, keysToReplace)
+            case StayType.Custom:
+                return customStays[1](stays, keysToReplace)
             default:
                 throw new Error('No stays of this type!')
         }
@@ -195,6 +200,7 @@ export function StaysProvider({ children }) {
             [StayType.Agoda]: agodaStays,
             [StayType.Airbnb]: airbnbStays,
             [StayType.Travala]: travalaStays,
+            [StayType.Custom]: customStays,
         }
     }
 

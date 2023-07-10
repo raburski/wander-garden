@@ -45,7 +45,7 @@ function NoStaysFound({ stayType }) {
         <NoStaysContainer>
             <SquareImage size={100} src={StayLogoURL[stayType]}/>
             <NoStayLabel>You don't seem to have any stays here...</NoStayLabel>
-            <Button onClick={onButtonClick} style={{alignSelf: 'center'}}>Capture your first ones!</Button>
+            {stayType !== StayType.Custom ? <Button onClick={onButtonClick} style={{alignSelf: 'center'}}>Capture your first ones!</Button> : null}
         </NoStaysContainer>
     )
 }
@@ -209,7 +209,8 @@ export default function Data() {
                 {selectedIndex === 1 ? <StaysList type={StayType.Airbnb} search={search}/> : null}
                 {selectedIndex === 2 ? <StaysList type={StayType.Agoda} search={search}/> : null}
                 {selectedIndex === 3 ? <StaysList type={StayType.Travala} search={search}/> : null}
-                {selectedIndex === 4 ? <SwarmCheckinsList search={search}/> : null}
+                {selectedIndex === 4 ? <StaysList type={StayType.Custom} search={search}/> : null}
+                {selectedIndex === 5 ? <SwarmCheckinsList search={search}/> : null}
             </Panel>
         </Page>
     )

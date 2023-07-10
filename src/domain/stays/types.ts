@@ -8,13 +8,25 @@ export interface Accomodation {
 }
 
 export enum StayOrigin {
-    File = 'file',
-    Captured = 'captured'
+    File = 'FILE',
+    Captured = 'CAPTURED',
+    UserInput = 'USER_INPUT',
+}
+
+export enum StayPlaceType {
+    Accomodation = 'ACCOMODATION',
+    Friends = 'FRIENDS',
+    Couchsurfing = 'COUCHSURFING',
+    Sailboat = 'SAILBOAT',
+    Cruiseship = 'CRUISESHIP',
+    Campervan = 'CAMPERVAN',
+    Camping = 'CAMPING',
+    Car = 'CAR',
 }
 
 export interface Stay {
     id: string
-    url: string
+    url?: string
     since: string
     until: string
     location: Location
@@ -22,7 +34,10 @@ export interface Stay {
     price?: Money
     totalGuests?: number
     origin?: StayOrigin
+    placeType?: StayPlaceType
 }
+
+export interface ImportedStay extends Stay {}
 
 export interface StayCaptureDiff {
     new: Stay[]
@@ -39,7 +54,7 @@ export function isAccomodationType(accomodation?: Accomodation): boolean {
 export function isStayType(stay?: Stay): boolean {
     return stay !== undefined
         && isOfType(stay.id, 'string')
-        && isOfType(stay.url, 'string')
+        && isOptionalOfType(stay.url, 'string')
         && isOfType(stay.since, 'string')
         && isOfType(stay.until, 'string')
         && isOfType(stay.location, isLocationType)
@@ -75,6 +90,7 @@ export enum StayType {
     Airbnb = 'airbnb',
     Agoda = 'agoda',
     Travala = 'travala',
+    Custom = 'custom',
 }
 
 export const OriginToStayType = {
@@ -96,6 +112,7 @@ export const StayLogoURL = {
     [StayType.Airbnb]: "/logo/airbnb.svg",
     [StayType.Booking]: "/logo/bookingcom.svg",
     [StayType.Travala]: "/logo/travala.svg",
+    [StayType.Custom]: "/logo/backpack.svg",
 }
 
 export const StayName = {
@@ -103,4 +120,5 @@ export const StayName = {
     [StayType.Airbnb]: "Airbnb",
     [StayType.Booking]: "Booking.com",
     [StayType.Travala]: "Travala",
+    [StayType.Custom]: "Custom",
 }
