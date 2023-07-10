@@ -21,6 +21,8 @@ const CountryName = styled('div')`
 const Right = styled('div')`
     margin-right: 6px;
     margin-bottom: -4px;
+    margin-top: -4px;
+    font-size: 14px;
     color: ${props => props.theme.text};
 `
 
@@ -29,6 +31,6 @@ const Stretch = styled('div')`
     flex: 1;
 `
 
-export default function EmojiRow({ emoji, value, to, right, emojiStyle }) {
-    return <Row to={to}><FlagIcon style={emojiStyle}>{emoji}</FlagIcon> <CountryName>{value}</CountryName><Stretch/>{right ? <Right>{right}</Right> : null}</Row>
+export default function EmojiRow({ emoji, value, to, right, emojiStyle, ...props }) {
+    return <Row to={to} {...props}><FlagIcon style={emojiStyle}>{emoji}</FlagIcon> <CountryName>{value}</CountryName><Stretch/>{right ? <Right>{right}</Right> : null}</Row>
 }

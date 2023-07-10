@@ -12,6 +12,8 @@ import countryFlagEmoji from "country-flag-emoji"
 import { formattedLocation } from 'domain/location'
 import { useVisitedCountryCodes } from 'domain/timeline'
 import Separator from 'components/Separator'
+import CountryModal from 'bindings/CountryModal'
+import { useState } from 'react'
 
 const Text = styled('p')`
     display: flex;
@@ -28,14 +30,19 @@ function NoData() {
 }
 
 function Countries() {
+    const [openedCountry, setOpenedCountry] = useState()
+    const onCountryClick = (cc) => setOpenedCountry(cc)
+    const onClickAway = (cc) => setOpenedCountry(undefined)
     const [countryCodes] = useVisitedCountryCodes()
+
     if (countryCodes.length <= 0) {
         return null
     }
     const header = `You have visited ${countryCodes.length} countries`
     return (
         <Panel header={header}>
-            {countryCodes.length == 0 ? <NoData /> : countryCodes.map(cc => <CountryRow code={cc} key={cc} to={`/timeline?cc=${cc.toLowerCase()}`}/>)}
+            {countryCodes.length == 0 ? <NoData /> : countryCodes.map(cc => <CountryRow code={cc} key={cc} onClick={() => onCountryClick(cc)} />)}
+            <CountryModal countryCode={openedCountry} onClickAway={onClickAway}/>
         </Panel>
     )
 }

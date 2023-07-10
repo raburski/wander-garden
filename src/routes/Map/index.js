@@ -5,7 +5,7 @@ import { useVisitedCountryCodes } from 'domain/timeline'
 import MapSVG from './map.jsx'
 import { useThemeColors } from 'domain/theme'
 import getStyles from './styles'
-import CountryModal from './CountryModal'
+import CountryModal from 'bindings/CountryModal'
 
 function Map({ onCountryClick }) {
     const listeners = useRef([])

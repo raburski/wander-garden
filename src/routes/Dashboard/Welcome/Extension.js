@@ -10,7 +10,7 @@ const COPY = `Install browser extension and capture travel data from 3rd party w
 
 export default function ExtensionPanel() {
     const navigate = useNavigate()
-    const onGoToExtension = () => navigate('/extension')
+    const onGoToExtension = () => navigate('/stays')
     return (
         <InfoPanel 
             header="Extension"

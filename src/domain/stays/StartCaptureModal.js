@@ -53,7 +53,7 @@ Working browser extension required.
 function WorkingExtensionRequired({ onCancel }) {
     const navigate = useNavigate()
     const onGoToExtension = () => {
-        navigate('/extension')
+        navigate('/stays')
         onCancel()
     }
     return (
