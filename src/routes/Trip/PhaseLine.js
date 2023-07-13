@@ -56,10 +56,11 @@ const Range = styled('div')`
     margin-bottom: 4px;
 `
 
-export default function PhaseLine({ emoji, to, title, subtitle, onClick, days, range, onMoreClick, children, ...props }) {
+export default function PhaseLine({ emoji, icon, to, title, subtitle, onClick, days, range, onMoreClick, children, ...props }) {
+    const Icon = icon
     return (
         <Line onClick={onClick} to={to} {...props}>
-            {emoji ? <Emoji>{emoji}</Emoji> : null}
+            {icon ? <Icon /> : null}
             <TitleContent>
                 <Title>{title}</Title>
             </TitleContent>

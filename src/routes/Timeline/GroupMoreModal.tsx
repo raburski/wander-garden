@@ -33,7 +33,7 @@ export default function GroupMoreModal({ group, onClickAway }: GroupMoreModalPro
     const locationTitle = titleFromLocationHighlights(group.highlights)
     const title = useTitle(group.id)
     const saveTitle = useSetTitle(group.id)
-    const onSaveTitle = (event: Event) => event.target && saveTitle((event.target as HTMLTextAreaElement).value)
+    const onSaveTitle: any = (event: Event) => event.target && saveTitle((event.target as HTMLTextAreaElement).value)
 
     const checkinsLength = group.events.filter(e => e.type === EventType.Checkin).length
 

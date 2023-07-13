@@ -1,4 +1,4 @@
-import { isEqualLocation, isEqualLocationCity } from "domain/location"
+import { isEqualLocation, isEqualLocationCity, Location } from "domain/location"
 import { Stay, useAllStays } from "domain/stays"
 import moment, { Moment } from "moment"
 import { Money } from "type"
@@ -21,6 +21,7 @@ export interface StayPhase extends Phase {
 
 export interface UnknownPhase extends Phase {
     type: PhaseType.Unknown
+    guessedLocations: Location[]
 }
 
 export interface Trip {
@@ -39,12 +40,14 @@ function getPhases(since: string, until: string, _stays: Stay[]) {
     const untilMoment = moment(until)
     let currentMoment = sinceMoment
 
+    console.log('sortedStays', [...sortedStays])
+
     while (currentMoment.isBefore(untilMoment, 'day')) {
         const currentStayIndex = sortedStays.findIndex(stay => isDateBetween(currentMoment, moment(stay.since), moment(stay.until)))
         if (sortedStays.length === 0) {
-            phases.push({ type: PhaseType.Unknown, since: currentMoment.format(), until: untilMoment.format() })
+            phases.push({ type: PhaseType.Unknown, since: currentMoment.format(), until: untilMoment.format(), guessedLocations: [] } as UnknownPhase)
             currentMoment = untilMoment
-        } else if (currentStayIndex === 0) {
+        } else if (currentStayIndex === 0) { // first remaining stay
             const currentStay: Stay = sortedStays.shift()!
             const lastStay: Stay | undefined = phases.length > 0 ? (phases[phases.length - 1] as StayPhase).stay : undefined
             if (currentStay?.location && lastStay?.location && isEqualLocation(currentStay?.location, lastStay?.location)) {
@@ -57,7 +60,7 @@ function getPhases(since: string, until: string, _stays: Stay[]) {
             sortedStays = sortedStays.slice(currentStayIndex)
         } else if (currentStayIndex < 0) {
             const nextStay = sortedStays[0]
-            phases.push({ type: PhaseType.Unknown, since: currentMoment.format(), until: nextStay.since })
+            phases.push({ type: PhaseType.Unknown, since: currentMoment.format(), until: nextStay.since, guessedLocations: [] } as UnknownPhase)
             currentMoment = moment(nextStay.since)
         }
     }
@@ -83,6 +86,22 @@ export function addTripPrices(trip: Trip): Money[] {
     }, [] as Money[])
 }
 
+function enhanceWithGuessedLocations(phases: Phase[]) {
+    // TODO: make it waaaay better with checkins data
+    for (let i = 0; i < phases.length; i++) {
+        if (phases[i].type === PhaseType.Unknown && i > 0) {
+            const currentGroup = phases[i] as UnknownPhase
+            const previousGroup = phases[i - 1] as StayPhase
+            const nextGroup = phases[i + 1] as StayPhase | undefined
+            currentGroup.guessedLocations.push(previousGroup.stay.location)
+            if (nextGroup && !isEqualLocationCity(previousGroup.stay.location, nextGroup.stay.location)) {
+                currentGroup.guessedLocations.push(nextGroup.stay.location)
+            }
+        }
+    }
+    return phases
+}
+
 export default function useTrip(since: string, until: string): Trip | undefined {
     const stays = useAllStays()
     if (!since || !until) return undefined
@@ -92,7 +111,10 @@ export default function useTrip(since: string, until: string): Trip | undefined 
         moment(stay.since).isSameOrAfter(since, 'day')
         && moment(stay.since).isBefore(until, 'day')
     )
+
+    const phases = getPhases(since, until, knownStays)
+
     return {
-        phases: getPhases(since, until, knownStays)
+        phases: enhanceWithGuessedLocations(phases)
     }
 }

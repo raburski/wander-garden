@@ -8,4 +8,3 @@ const Pin = styled(Button)`
 `
 
 export default Pin
-

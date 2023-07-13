@@ -3,6 +3,13 @@ import { isOptionalOfType, isOfType } from "type"
 
 var a: {[cyrylic: string]: string} = {"Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z","Х":"H","Ъ":"'","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh","щ":"sch","з":"z","х":"h","ъ":"'","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O","Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o","л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"'","Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"i","т":"t","ь":"'","б":"b","ю":"yu"}
 
+export enum LocationAccuracy {
+    GPS = 'GPS',
+    Address = 'ADDRESS',
+    City = 'CITY',
+    Country = 'COUNTRY',
+}
+
 export interface Location {
     address?: string
     city?: string
@@ -10,8 +17,9 @@ export interface Location {
     country: string
     cc: string
     postalCode?: string
-    lat: number
-    lng: number
+    lat?: number
+    lng?: number
+    accuracy?: LocationAccuracy // DEFAULT: GPS
 }
 
 export interface Home {
@@ -75,6 +83,7 @@ export function cleanLocation(location: string = "") {
 }
 
 export function isEqualApproximiteLocation(leftLocation: Location, rightLocation: Location, radius: number = 15) {
+    if (!leftLocation.lat || !leftLocation.lng || !rightLocation.lat || !rightLocation.lng) return false // TODO: Check if breaks things
     const locationDistance = distance(leftLocation.lat, leftLocation.lng, rightLocation.lat, rightLocation.lng)
     return locationDistance <= radius
 }
@@ -95,6 +104,7 @@ export function isEqualLocation(leftLocation: Location, rightLocation: Location)
     return isEqualLocationCity(leftLocation, rightLocation)
         && isEqualLocationCountry(leftLocation, rightLocation)
         && isEqualLocationAddress(leftLocation, rightLocation)
+        && leftLocation.accuracy === rightLocation.accuracy
 }
 
 const STATE_AS_CITY: {[state: string]: string} = {
@@ -129,8 +139,24 @@ export function isTheSameArea(leftLocation: Location, rightLocation: Location) {
 }
 
 export function formattedLocation(location: Location) {
+    if (location.accuracy === LocationAccuracy.Country) {
+        return location.country
+    }
     const parts = [location.city, location.state === location.city ? null : location.state, location.country].filter(Boolean)
     return parts.join(', ')
+}
+
+export function formattedAccuracyLocation(location: Location) {
+    switch (location.accuracy || LocationAccuracy.GPS) {
+        case LocationAccuracy.Address:
+            return location.address
+        case LocationAccuracy.City:
+            return location.city
+        case LocationAccuracy.Country:
+            return location.country
+        case LocationAccuracy.GPS:
+            return `${location.lat}, ${location.lng}`
+    }
 }
 
 export function distance(lat1: number, lon1: number, lat2: number, lon2: number) {

@@ -1,6 +1,7 @@
 import { getDaysAndRangeText } from 'date'
 import PhaseLine from './PhaseLine'
 import { PhaseType } from './useTrip'
+import { getStayIcon } from 'domain/stays'
 
 const UNKNOWN_EMOJI = '❓'
 
@@ -24,5 +25,5 @@ export default function Phase({ phase, onClick }) {
     }
 
     const [days, range] = getDaysAndRangeText(phase.since, phase.until)
-    return <PhaseLine emoji={STAY_EMOJI} title={getPhaseTitle(phase)} range={range} onClick={onClick}/>
+    return <PhaseLine icon={getStayIcon(phase.stay, phase.stay.type)} emoji={STAY_EMOJI} title={getPhaseTitle(phase)} range={range} onClick={onClick}/>
 }

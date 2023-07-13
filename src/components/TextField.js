@@ -1,8 +1,7 @@
-import React, { FunctionComponent, InputHTMLAttributes } from 'react'
 import { styled } from 'goober'
-import colors from 'colors'
+import { forwardRef } from 'react'
 
-const Input = styled('input')`
+const Input = styled('input', forwardRef)`
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -30,6 +29,4 @@ const Input = styled('input')`
     }
 `
 
-export default function TextField({ ...props }) {
-    return <Input type="text" {...props} />
-}
+export default Input

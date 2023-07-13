@@ -20,6 +20,7 @@ import Info from './Info'
 import { venueEmoji } from 'domain/swarm/categories'
 import TripMap from './Map'
 import CustomStayModal from 'domain/stays/CustomStayModal'
+import { LocationAccuracy } from 'domain/location'
 
 const EventsContainer = styled('div')`
     display: flex;
@@ -98,14 +99,16 @@ export default function Trip() {
         if (phase.type === PhaseType.Unknown) {
             setCustomStayModalPhase(phase)
         } else if (phase.type === PhaseType.Stay) {
-            const stay = phase.stay
-            const map = mapRef.current.getMap()
-            const ZOOM_TO = 13
-            if (map.getZoom() === ZOOM_TO) {
-                map.panTo(stay.location)
-            } else {
-                map.panTo(stay.location)
-                map.setZoom(ZOOM_TO, true)
+            const location = phase.stay.location
+            if (!location.accuracy || location.accuracy === LocationAccuracy.GPS) {
+                const map = mapRef.current.getMap()
+                const ZOOM_TO = 13
+                if (map.getZoom() === ZOOM_TO) {
+                    map.panTo(location)
+                } else {
+                    map.panTo(location)
+                    map.setZoom(ZOOM_TO, true)
+                }
             }
         }
     }

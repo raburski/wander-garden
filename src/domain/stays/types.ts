@@ -1,6 +1,10 @@
 import type { Location } from 'domain/location'
 import { isLocationType } from "domain/location"
 import { isOptionalOfType, isOfType, isMoneyType, Money, isArrayOfType } from "type"
+import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit } from 'react-icons/md'
+import { FaCouch, FaUserFriends, FaCaravan, FaCar, FaShip } from 'react-icons/fa'
+import { FiExternalLink } from 'react-icons/fi'
+import { TbTent, TbCloudUpload, TbDots } from 'react-icons/tb'
 
 export interface Accomodation {
     name: string
@@ -33,8 +37,8 @@ export interface Stay {
     accomodation?: Accomodation
     price?: Money
     totalGuests?: number
-    origin?: StayOrigin
-    placeType?: StayPlaceType
+    origin?: StayOrigin // DEFAULT: Captured
+    placeType?: StayPlaceType // DEFAULT: Accomodation
 }
 
 export interface ImportedStay extends Stay {}
@@ -121,4 +125,26 @@ export const StayName = {
     [StayType.Booking]: "Booking.com",
     [StayType.Travala]: "Travala",
     [StayType.Custom]: "Custom",
+}
+
+export const PlaceTypeToIcon = {
+    [StayPlaceType.Accomodation]: MdHotel,
+    [StayPlaceType.Campervan]: FaCaravan,
+    [StayPlaceType.Camping]: TbTent,
+    [StayPlaceType.Car]: FaCar,
+    [StayPlaceType.Couchsurfing]: FaCouch,
+    [StayPlaceType.Cruiseship]: FaShip,
+    [StayPlaceType.Friends]: FaUserFriends,
+    [StayPlaceType.Sailboat]: MdSailing,
+}
+
+export const PlaceTypeToTitle = {
+    [StayPlaceType.Accomodation]: 'Accomodation',
+    [StayPlaceType.Campervan]: 'Campervan',
+    [StayPlaceType.Camping]: 'Camping',
+    [StayPlaceType.Car]: 'Car',
+    [StayPlaceType.Couchsurfing]: 'Couchsurfing',
+    [StayPlaceType.Cruiseship]: 'Cruise Ship',
+    [StayPlaceType.Friends]: 'Friends',
+    [StayPlaceType.Sailboat]: 'Sailboat',
 }

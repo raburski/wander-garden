@@ -5,6 +5,7 @@ import Map, { Icon } from 'components/Map'
 import { venueEmoji } from 'domain/swarm/categories'
 import { getDaysAndRangeText } from 'date'
 import moment from 'moment'
+import { LocationAccuracy } from 'domain/location'
 
 function getInfoWindowProperties({ stay, checkin }) {
     if (stay) {
@@ -27,7 +28,8 @@ function getInfoWindowProperties({ stay, checkin }) {
 
 export default function TripMap({ trip, checkins = [], style = {}, mapRef, highlightedPhase }) {
     const infoWindow = useRef()
-    const stays = trip ? trip.phases.map(phase => phase.type === PhaseType.Stay ? phase.stay : undefined).filter(Boolean) : []
+    const stays = trip ? trip.phases.map(phase => 
+        phase.type === PhaseType.Stay && (!phase.stay.location.accuracy || phase.stay.location.accuracy === LocationAccuracy.GPS) ? phase.stay : undefined).filter(Boolean) : []
     const markers = [
         ...stays.map(stay => ({ stay, position: stay.location, icon: Icon.Default })),
         ...checkins.map(checkin => ({ checkin, position: checkin?.venue?.location, icon: Icon.OrangeDot }))

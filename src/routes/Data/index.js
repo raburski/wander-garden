@@ -8,7 +8,7 @@ import moment from 'moment'
 import { getDaysAndRangeText } from 'date'
 import Page from 'components/Page'
 import Panel from 'components/Panel'
-import { formattedLocation } from 'domain/location'
+import { LocationAccuracy, formattedLocation } from 'domain/location'
 import { useCheckins } from 'domain/swarm'
 import Segment from 'components/Segment'
 import NoneFound from 'components/NoneFound'
@@ -21,7 +21,7 @@ import TextField from 'components/TextField'
 import { useDownload, useRefresh, useTrash, useUpload } from "./hooks"
 import { TITLES } from './consts'
 import SquareImage from "components/SquareImage"
-import { StayLogoURL, StayOrigin, StayType, useShowCaptureStartModal, useStays } from "domain/stays"
+import { PlaceTypeToIcon, StayLogoURL, StayOrigin, StayType, getStayIcon, useShowCaptureStartModal, useStays } from "domain/stays"
 import { downloadString } from "files"
 
 const NoStaysContainer = styled('div')`
@@ -62,11 +62,26 @@ const StayActionsContainer = styled('div')`
     margin-bottom: 4px;
 `
 
+function getMapsQuery(location) {
+    switch (location.accuracy) {
+        case LocationAccuracy.Address:
+            return `${location.address},${location.city},${location.country}`
+        case LocationAccuracy.City:
+            return `${location.city},${location.country}`
+        case LocationAccuracy.Country:
+            return location.country
+        case LocationAccuracy.GPS:
+            return `${location.lat},${location.lng}`
+        default:
+            return `${location.lat},${location.lng}`
+    }
+}
+
 function StayActions({ stay }) {
     const [_, range] = getDaysAndRangeText(stay.since, stay.until)
     const year = moment(stay.since).format('YYYY')
     const onExternalClick = () => window.open(stay.url)
-    const onMapClick = () => window.open(`https://maps.google.com/?q=${stay.location.lat},${stay.location.lng}`)
+    const onMapClick = () => window.open(`https://maps.google.com/?q=${getMapsQuery(stay.location)}`)
     const onDownloadClick = () => {
         const since = moment(stay.since).format('DD-MM-YYYY')
         downloadString(JSON.stringify(stay), 'json', `${since}, ${stay.accomodation.name}, ${stay.location.city}.json`)
@@ -77,8 +92,8 @@ function StayActions({ stay }) {
             {range} {year}
             <Separator />
             <PinButton icon={FiMapPin} onClick={onMapClick} tooltip="Show on map" tooltipPosition="left" tooltipOffset={93}/>
-            <Separator />
-            <PinButton icon={FiExternalLink} onClick={onExternalClick} tooltip="Open booking" tooltipPosition="left" tooltipOffset={96}/>
+            {stay.url ? <Separator /> : null}
+            {stay.url ? <PinButton icon={FiExternalLink} onClick={onExternalClick} tooltip="Open booking" tooltipPosition="left" tooltipOffset={96}/> : null}
             <Separator />
             <PinButton icon={TbDownload} onClick={onDownloadClick} tooltip="Download stay" tooltipPosition="left" tooltipOffset={100}/>
         </StayActionsContainer>
@@ -90,12 +105,11 @@ function formattedMoney(money) {
 }
 
 function StayRow({ stay, icon }) {
-    const _icon = stay.origin === StayOrigin.File ? MdOutlineUploadFile : icon
     const guestsSubtitle = (stay.totalGuests && stay.totalGuests > 1) ? `for ${stay.totalGuests} people ` : ''
-    const priceSubtitle = stay.price ? `for ${formattedMoney(stay.price)}` : ''
-    const locationSubtitle = stay.location ? ` in ${formattedLocation(stay.location)}` : ''
+    const priceSubtitle = stay.price ? `for ${formattedMoney(stay.price)} ` : ''
+    const locationSubtitle = stay.location ? `in ${formattedLocation(stay.location)}` : ''
     const subtitle = `${guestsSubtitle}${priceSubtitle}${locationSubtitle}`
-    return <InfoRow icon={_icon} title={stay.accomodation.name} subtitle={subtitle} right={<StayActions stay={stay}/>}/>
+    return <InfoRow icon={icon} title={stay.accomodation.name} subtitle={subtitle} right={<StayActions stay={stay}/>}/>
 }
 
 function isCheckingMatchingPhrase(phrase) {
@@ -128,26 +142,11 @@ function isStayMatchingPhrase(phrase) {
     }
 }
 
-function getStayTypeIcon(type) {
-    switch (type) {
-        case StayType.Agoda:
-            return MdHotel
-        case StayType.Booking:
-            return TbBrandBooking
-        case StayType.Airbnb:
-            return TbBrandAirbnb
-        case StayType.Travala:
-            return MdHotel
-        default:
-            return null
-    }
-}
-
 function StaysList({ search, type }) {
     const stays = useStays(type)
     const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : [...stays]
     filteredStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
-    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={getStayTypeIcon(type)} stay={stay} key={stay.id} />) : <NoStaysFound stayType={type}/>
+    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={getStayIcon(stay, type)} stay={stay} key={stay.id} />) : <NoStaysFound stayType={type}/>
 }
 
 const HeaderContainer = styled('div')`

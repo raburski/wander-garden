@@ -56,6 +56,8 @@ export function getCheckinLocation(checkin: Checkin): Location {
 export function getDistanceBetweenCheckins(checkin1: Checkin, checkin2: Checkin) {
     const location1 = getCheckinLocation(checkin1)
     const location2 = getCheckinLocation(checkin2)
+    // TODO: return undefined and handle CONSEQUENCES
+    if (!location1.lat || !location1.lng || !location2.lat || !location2.lng) return 0
     return distance(location1.lat, location1.lng, location2.lat, location2.lng)
 }
 

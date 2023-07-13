@@ -1,6 +1,6 @@
 import { isEqualLocation, isEqualLocationCity, isEqualLocationCountry, Location } from "domain/location"
 import arrayQueryReplace, { any } from "domain/timeline/arrayQueryReplace"
-import useTrip, { Phase, PhaseType, StayPhase } from "./useTrip"
+import useTrip, { Phase, PhaseType, StayPhase, UnknownPhase } from "./useTrip"
 
 export enum GroupType {
     Unknown = 'unknown',
@@ -105,7 +105,7 @@ function groupPhasesByCountry() {
             return {
                 type: GroupType.Unknown,
                 phases,
-                guessedLocations: [],
+                guessedLocations: phases.flatMap(p => (p as UnknownPhase).guessedLocations),
                 since: phases[0].since,
                 until: phases[phases.length - 1].until
             }
@@ -113,25 +113,8 @@ function groupPhasesByCountry() {
     }
 }
 
-function enhanceWithGuessedLocations(groups: Group[]) {
-    // TODO: make it waaaay better with checkins data
-    for (let i = 0; i < groups.length; i++) {
-        if (groups[i].type === GroupType.Unknown && i > 0) {
-            const currentGroup = groups[i] as UnknownGroup
-            const previousGroup = groups[i - 1] as CityGroup
-            const nextGroup = groups[i + 1] as CityGroup | undefined
-            currentGroup.guessedLocations.push(previousGroup.location)
-            if (nextGroup && !isEqualLocationCity(previousGroup.location, nextGroup.location)) {
-                currentGroup.guessedLocations.push(nextGroup.location)
-            }
-        }
-    }
-    return groups
-}
-
 export default function useGroups(since: string, until: string): Group[] {
     const trip = useTrip(since, until)
 
-    const groups = arrayQueryReplace(groupPhasesByCountry(), trip?.phases || [])
-    return enhanceWithGuessedLocations(groups)
+    return arrayQueryReplace(groupPhasesByCountry(), trip?.phases || [])
 }

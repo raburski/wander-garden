@@ -70,6 +70,10 @@ function getLatestStay(stays) {
     return orderedStays[0]
 }
 
+function createIDForCustomStay(stay) {
+    return `custom:${stay.location.cc}:${stay.since}-${stay.until}`
+}
+
 
 export function StaysProvider({ children }) {
     const [version, setVersion] = useState()
@@ -159,6 +163,24 @@ export function StaysProvider({ children }) {
         setCapturedStays(undefined)
     }
 
+    async function addCustomStays(stays = []) {
+        const staysToAdd = stays
+            .map(stay => ({
+                ...stay,
+                id: createIDForCustomStay(stay),
+                origin: StayOrigin.UserInput,
+            }))
+            .filter(isStayType)
+        
+        if (staysToAdd.length !== stays.length) {
+            return console.log('Custom stay data corrupted!')
+        }
+        const currentStays = customStays[0]
+        const finalStays = [...currentStays, ...staysToAdd]
+        await setStays(StayType.Custom, finalStays)
+        await refresh()
+    }
+
     async function startFileImport(stayOrStays) {
         if (!stayOrStays) return
 
@@ -195,6 +217,7 @@ export function StaysProvider({ children }) {
         capturedStays,
         importCapturedStays,
         clearCapturedStays: () => setCapturedStays(undefined),
+        addCustomStays,
         stays: {
             [StayType.Booking]: bookingStays,
             [StayType.Agoda]: agodaStays,
@@ -269,6 +292,11 @@ export function useClearCapturedStays() {
 export function useImportCapturedStays() {
     const context = useContext(ExtensionContext)
     return context.importCapturedStays
+}
+
+export function useAddCustomStays() {
+    const context = useContext(ExtensionContext)
+    return context.addCustomStays
 }
 
 export function useStays(type) {
