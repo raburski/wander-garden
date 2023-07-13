@@ -3,8 +3,9 @@ import Modal from 'components/Modal'
 import Page from 'components/Page'
 import Button from 'components/Button'
 import ModalPage, { ModalPageButtons } from 'components/ModalPage'
-import { FiExternalLink } from 'react-icons/fi'
+import { FiExternalLink, FiChevronRight, FiChevronDown } from 'react-icons/fi'
 import { SlPuzzle } from 'react-icons/sl'
+import { MdChevronRight } from 'react-icons/md'
 import { Status, StayLogoURL, useCaptureStayType, useExtensionStatus } from 'domain/stays'
 import { styled } from 'goober'
 import { useState } from 'react'
@@ -12,6 +13,7 @@ import { useSetting } from 'settings'
 import Segment from 'components/Segment'
 import { useNavigate } from 'react-router'
 import SquareImage from 'components/SquareImage'
+import PinButton from 'components/PinButton'
 
 const Logo = styled('img')`
     width: 112px;
@@ -29,10 +31,28 @@ const SettingContainer = styled('div')`
     align-items: center;
 `
 
-const SettingsPanel = styled(Panel)`
-    margin-top: 32px;
-    margin-bottom: 32px;
+const SettingsPanelStyled = styled(Panel)`
+    margin-top: 42px;
 `
+
+const SettingsHeader = styled('span')`
+    display: flex;
+    flex: 1;
+`
+
+function SettingsPanel({ children, header, ...props }) {
+    const [visible, setVisible] = useState(false)
+    const onChevronClick = () => {
+        setVisible(!visible)
+    }
+
+    const pinIcon = visible ? FiChevronDown : FiChevronRight 
+    return (
+        <SettingsPanelStyled header={<><SettingsHeader>{header}</SettingsHeader> <PinButton icon={pinIcon} onClick={onChevronClick}/></>} {...props}>
+            {visible ? children : null}
+        </SettingsPanelStyled>
+    )
+}
 
 const ExtensionRequiredContainer = styled('div')`
     display: flex;
@@ -43,7 +63,7 @@ const ExtensionRequiredContainer = styled('div')`
 `
 
 const CAPTURE_SETTING_NAME = 'stay_capture_new_only'
-const SETTING_TITLES = ['All', 'New only']
+const SETTING_TITLES = ['All stays', 'Only new stays']
 
 const EXTENSION_REQ_COPY = `
 Working browser extension required.
@@ -69,8 +89,23 @@ function WorkingExtensionRequired({ onCancel }) {
 }
 
 function CaptureSetting({ onChange, selectedIndex }) {
-    return <SettingContainer>Mode: <Segment titles={SETTING_TITLES} selectedIndex={selectedIndex} onClick={onChange}/></SettingContainer>
+    return <SettingContainer>Capture: <Segment titles={SETTING_TITLES} selectedIndex={selectedIndex} onClick={onChange} style={{marginLeft: 12}}/></SettingContainer>
 }
+
+const StartButton = styled(Button)`
+    margin-top: 32px;
+    font-size: 18px;
+    align-self: center;
+    padding: .85rem 1.0rem;
+`
+
+const LoginCopy = styled('div')`
+    margin-top: 42px;
+    font-weight: bold;
+    text-align: center;
+`
+
+const LOGIN_COPY = `You may need to log in!`
 
 export default function StartCaptureModal({ onStartCapture, stayType, onCancel, ...props }) {
     const extensionStatus = useExtensionStatus()
@@ -85,18 +120,16 @@ export default function StartCaptureModal({ onStartCapture, stayType, onCancel, 
     const onCaptureSettingChange = (index) => setCaptureNewOnly(index === 0 ? false : true)
 
     return (
-        <ModalPage header="Capture stays" isOpen={stayType} onClickAway={onCancel} {...props}>
+        <ModalPage header="Capture stays" isOpen={stayType} onClickAway={onCancel} pageStyle={{minWidth:342}} {...props}>
             {extensionStatus !== Status.Connected ? 
                 <WorkingExtensionRequired onCancel={onCancel}/>
             :   <>
                     <Logo src={StayLogoURL[stayType]}/>
+                    <LoginCopy>{LOGIN_COPY}</LoginCopy>
+                    <StartButton icon={FiExternalLink} onClick={stayType ? createStartCapture(stayType) : undefined}>Start</StartButton>
                     <SettingsPanel header="Settings" spacing>
                         <CaptureSetting onChange={onCaptureSettingChange} selectedIndex={captureNewOnly ? 1 : 0}/>
                     </SettingsPanel>
-                    <ModalPageButtons>
-                        <Button flat onClick={onCancel}>Cancel</Button>
-                        <Button icon={FiExternalLink} onClick={stayType ? createStartCapture(stayType) : undefined}>Start</Button>
-                    </ModalPageButtons>
                 </>
             }
         </ModalPage>

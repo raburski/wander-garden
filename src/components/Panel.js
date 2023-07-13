@@ -37,9 +37,9 @@ export default function Panel({ style, header, flex, children, spacing, margin, 
     return (
         <Container style={_containerStyle} {...props}>
             {header ? <Header>{header}</Header> : null}
-            <Content style={_contentStyle}>
+            {children ? <Content style={_contentStyle}>
                 {children}
-            </Content>
+            </Content> : null}
         </Container>
     )
 }
