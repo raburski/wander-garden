@@ -40,8 +40,6 @@ function getPhases(since: string, until: string, _stays: Stay[]) {
     const untilMoment = moment(until)
     let currentMoment = sinceMoment
 
-    console.log('sortedStays', [...sortedStays])
-
     while (currentMoment.isBefore(untilMoment, 'day')) {
         const currentStayIndex = sortedStays.findIndex(stay => isDateBetween(currentMoment, moment(stay.since), moment(stay.until)))
         if (sortedStays.length === 0) {

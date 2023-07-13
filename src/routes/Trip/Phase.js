@@ -18,12 +18,12 @@ function getPhaseTitle(phase) {
 
 const STAY_EMOJI = '🛌'
 
-export default function Phase({ phase, onClick }) {
+export default function Phase({ phase, onClick, onMouseEnter, ...props }) {
     // TODO: support unknown types
     if (phase.type === PhaseType.Unknown) {
         return <UnknownPhaseLine phase={phase} onClick={onClick}/>
     }
 
     const [days, range] = getDaysAndRangeText(phase.since, phase.until)
-    return <PhaseLine icon={getStayIcon(phase.stay, phase.stay.type)} emoji={STAY_EMOJI} title={getPhaseTitle(phase)} range={range} onClick={onClick}/>
+    return <PhaseLine icon={getStayIcon(phase.stay, phase.stay.type)} emoji={STAY_EMOJI} title={getPhaseTitle(phase)} range={range} onClick={onClick} onMouseEnter={onMouseEnter}/>
 }

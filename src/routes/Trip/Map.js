@@ -35,7 +35,7 @@ export default function TripMap({ trip, checkins = [], style = {}, mapRef, highl
         ...checkins.map(checkin => ({ checkin, position: checkin?.venue?.location, icon: Icon.OrangeDot }))
     ]
     const initPositions = stays.length > 0 ? stays.map(s => s.location) : checkins.map(c => c?.venue?.location)
-    const highlightedStayIndex = highlightedPhase ? stays.findIndex(stay => highlightedPhase.stay === stay) : undefined
+    const highlightedStayIndex = highlightedPhase ? stays.findIndex(stay => highlightedPhase.stay.id === stay.id) : undefined
 
     const onResetView = () => {
         const map = mapRef.current
