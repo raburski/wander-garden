@@ -118,7 +118,7 @@ export default function Button({ disabled = false, icon = undefined, selected = 
     const onMouseLeave = () => setHover(false, true)
 
     return (
-        <ButtonContainer disabled={disabled} selected={selected} onClick={noPropagateClick} onMouseOver={onMouseOver} onMouseLeave={onMouseLeave} {...props}>
+        <ButtonContainer disabled={disabled} selected={selected} onClick={noPropagateClick} onPointerEnter={onMouseOver} onPointerLeave={onMouseLeave} {...props}>
             {tooltip ? <Tooltip transition={TOOLTIP_TRANSITION} initial={tooltipInitial} animate={isHover ? tooltipAnimate : tooltipInitial}>{tooltipText}</Tooltip> : null}
             {icon ? <IconContainer><IconComponent size={iconSize} /></IconContainer> : null}
             {icon && children ? <Separator /> : null}

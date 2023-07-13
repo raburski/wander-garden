@@ -176,7 +176,7 @@ function Header({ selectedIndex, setSelectedIndex, onRefreshClick, onDownloadCli
                 <Separator />
                 <Button icon={TbCloudUpload} onClick={onUploadClick} tooltip="Upload from file" />
                 <Separator />
-                <Button icon={TbRefresh} onClick={onRefreshClick} tooltip="Capture"/>
+                <Button icon={TbRefresh} onClick={onRefreshClick} disabled={!onRefreshClick} tooltip="Capture"/>
                 <Separator />
                 <TextField placeholder="Search" onChange={onChangeSearch}/>
             </ActionsContainer>

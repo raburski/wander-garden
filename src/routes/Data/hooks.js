@@ -12,6 +12,7 @@ function getStayTypeForIndex(index) {
         case 1: return StayType.Airbnb
         case 2: return StayType.Agoda
         case 3: return StayType.Travala
+        case 4: return StayType.Custom
         default: return undefined
     }
 }
@@ -91,7 +92,9 @@ export function useRefresh(index) {
     const showCaptureStartModal = useShowCaptureStartModal()
     const [fetchSwarm] = useToastedFetchSwarm()
     const stayType = getStayTypeForIndex(index) 
-    if (stayType) {
+    if (stayType === StayType.Custom) {
+        return undefined
+    } else if (stayType) {
         return () => showCaptureStartModal(stayType)
     } else {
         return fetchSwarm

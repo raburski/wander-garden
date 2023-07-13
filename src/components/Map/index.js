@@ -119,7 +119,7 @@ const MapComponent = forwardRef(function MyMapComponent({ markers, initPositions
 
     useEffect(() => {
         const markers = markersRef.current
-        if (!markers || markers.length < bouncingMarkerIndex) return
+        if (!markers || markers.length < bouncingMarkerIndex || bouncingMarkerIndex < 0) return
         if (bouncingMarkerIndex === undefined) return
         if (currentMarkerIndex.current !== undefined) {
             markers[currentMarkerIndex.current].setAnimation(null)
