@@ -1,9 +1,9 @@
 import ModalPage from "components/ModalPage"
-import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit } from 'react-icons/md'
-import { FaCouch, FaUserFriends, FaCaravan, FaCar, FaShip } from 'react-icons/fa'
+import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, MdAddTask, MdAddCircleOutline } from 'react-icons/md'
+import { FaCouch, FaUserFriends, FaCaravan, FaCar, FaShip, FaDiscord } from 'react-icons/fa'
 import { FiExternalLink } from 'react-icons/fi'
 import { TbTent, TbCloudUpload, TbDots } from 'react-icons/tb'
-import { PlaceTypeToIcon, PlaceTypeToTitle } from "./types"
+import { PlaceTypeToIcon, PlaceTypeToTitle, StayPlaceType } from "./types"
 import InfoRow from "components/InfoRow"
 import Panel from "components/Panel"
 import { useState } from "react"
@@ -20,37 +20,20 @@ import PinButton from 'components/PinButton'
 import { PhaseType } from "routes/Trip/useTrip"
 import { LocationAccuracy, formattedAccuracyLocation } from "domain/location"
 import { useAddCustomStays } from "./Context"
-
+import { openDiscord } from "SideBar"
+import MenuRow from "components/MenuRow"
 
 const ICONS = Object.values(PlaceTypeToIcon)
 
-const PREFERRED_COPY_1 = `Automatic import not working?
-
-`
-
-const PREFERRED_COPY_2 = `
-Your friend shared file with this stay?
-
-`
-
-const PREFERRED_COPY_3 = `
-Otherwise...
-
-⬅  Select type of the stay on the left panel.
-
-`
-
-function AccomodationInfoPanel() {
-    const onContact = () => window.open('http://raburski.com')
-    const uploadFile = useUpload()
+function AccomodationInfoPanel({ onAddCustomStay, onUploadFile, onContactUs, onExtendStay, previousPhase }) {
+    
     return (
-        <>
-            {PREFERRED_COPY_1}
-            <Button icon={FiExternalLink} onClick={onContact}>Contact us</Button>
-            {PREFERRED_COPY_2}
-            <Button icon={TbCloudUpload} onClick={uploadFile}>Import from file</Button>
-            {PREFERRED_COPY_3}
-        </>
+        <Panel>
+            <MenuRow icon={FaDiscord} onClick={onContactUs} title="Automatic import not working?" subtitle="Contact us on discord"/>
+            <MenuRow icon={TbCloudUpload} onClick={onUploadFile} title="Your friend shared file with this stay?" subtitle="Import stay file"/>
+            {previousPhase && onExtendStay ? <MenuRow icon={MdAddTask} onClick={onExtendStay} title="Stayed longer?" subtitle={`Extend stay in ${previousPhase.stay.accomodation.name}`} /> : null}
+            <MenuRow icon={MdAddCircleOutline} onClick={onAddCustomStay} title="Something else?" subtitle="Add custom stay"/>
+        </Panel>
     )
 }
 
@@ -298,15 +281,11 @@ function getDateRanges(dates) {
     return dateRanges
 }
 
-export default function CustomStayModal({ onClickAway, phase, ...props }) {
-    const [placeType, setPlaceType] = useState()
+function CustomStayPanel({ phase, previousPhase, initialPlaceTyle, onFinished }) {
+    const [placeType, setPlaceType] = useState(initialPlaceTyle)
     const addCustomStays = useAddCustomStays()
-    const cancel = () => {
-        setPlaceType(undefined)
-        onClickAway()
-    }
-
     const locations = phase ? getPresetLocations(phase) : []
+
     async function submitForm(state) {
         if (!state.name || !state.location || !state.days) return
 
@@ -321,28 +300,63 @@ export default function CustomStayModal({ onClickAway, phase, ...props }) {
             placeType,
         }))
         await addCustomStays(stays)
-        cancel()
+        await onFinished()
     }
 
     return (
-        <ModalPage header="Add custom stay" isOpen={!!phase} pageStyle={{ width: 520, minHeight: 420 }} onClickAway={cancel} {...props}>
-            <Panel contentStyle={{flexDirection: 'row', flex: 1}} style={{flex: 1}}>
-                <Panel.Left>
-                    {Object.keys(PlaceTypeToIcon).map(type =>
-                        <InfoRow
-                            selected={placeType === type}
-                            icon={PlaceTypeToIcon[type]}
-                            title={PlaceTypeToTitle[type]}
-                            onClick={() => setPlaceType(type)}
-                        />
-                    )}
-                </Panel.Left>
-                <Panel.Right>
-                        {placeType && phase ? 
-                            <CustomStayForm placeType={placeType} since={phase.since} until={phase.until} locations={locations} onSubmit={submitForm}/> :
-                            <AccomodationInfoPanel />}
-                </Panel.Right>
-            </Panel>
+        <Panel contentStyle={{flexDirection: 'row', flex: 1}} style={{flex: 1}}>
+            <Panel.Left>
+                {Object.keys(PlaceTypeToIcon).map(type =>
+                    <InfoRow
+                        selected={placeType === type}
+                        icon={PlaceTypeToIcon[type]}
+                        title={PlaceTypeToTitle[type]}
+                        onClick={() => setPlaceType(type)}
+                    />
+                )}
+            </Panel.Left>
+            <Panel.Right>
+                    {placeType && phase ? 
+                        <CustomStayForm placeType={placeType} previousPhase={previousPhase} since={phase.since} until={phase.until} locations={locations} onSubmit={submitForm}/> :
+                        null}
+            </Panel.Right>
+        </Panel>
+    )
+}
+
+export default function CustomStayModal({ onClickAway, phase, previousPhase, ...props }) {
+    const [addStayConfirmed, setAddStayConfirmed] = useState(false)
+    const uploadFile = useUpload()
+
+    const cancel = () => {
+        setAddStayConfirmed(false)
+        onClickAway()
+    }
+
+    const onAddCustomStay = () => setAddStayConfirmed(true)
+    const onExtendStay = () => setAddStayConfirmed(StayPlaceType.Extension)
+    const onContactUs = () => { openDiscord(); cancel() }
+    const onUploadFile = () => { uploadFile(); cancel() }
+
+    if (!phase) return null
+
+    return (
+        <ModalPage header="Add custom stay" isOpen={!!phase} pageStyle={{ width: 520, minHeight: 352 }} onClickAway={cancel} {...props}>
+            {addStayConfirmed ? 
+                <CustomStayPanel
+                    initialPlaceTyle={addStayConfirmed === StayPlaceType.Extension ? StayPlaceType.Extension : undefined}
+                    phase={phase}
+                    previousPhase={previousPhase}
+                    onFinished={cancel}
+                />
+                : <AccomodationInfoPanel
+                    previousPhase={previousPhase}
+                    onAddCustomStay={onAddCustomStay}
+                    onExtendStay={onExtendStay}
+                    onContactUs={onContactUs}
+                    onUploadFile={onUploadFile}
+                />
+            }
         </ModalPage>
     )
 }

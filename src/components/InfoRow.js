@@ -10,6 +10,7 @@ const Title = styled('div')`
 const Subtitle = styled('div')`
     font-size: 10px;
     color: ${props => props.theme.text};
+    padding-top: 1px;
 
     @media only screen and (min-width: ${props => props.theme.breakpoints.large}px) {
         padding-top: 2px;
@@ -45,11 +46,11 @@ const IconContainer = styled('div')`
 `
 
 
-export default function InfoRow({ to, onClick, icon, title, subtitle, right, selected }) {
+export default function InfoRow({ to, onClick, icon, title, subtitle, right, selected, iconSize = 16, ...props }) {
     const IconComponent = icon
     return (
-        <Row to={to} onClick={onClick} selected={selected}>
-            {icon ? <IconContainer><IconComponent size={16} /></IconContainer> : null}
+        <Row to={to} onClick={onClick} selected={selected} {...props}>
+            {icon ? <IconContainer><IconComponent size={iconSize} /></IconContainer> : null}
             <TextContainer>
                 <Title>{title}</Title>
                 <Subtitle>{subtitle}</Subtitle>

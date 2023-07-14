@@ -81,7 +81,7 @@ function GroupsPanel({ groups, onPhaseHighlight, onPhaseClick, onGroupClick, ...
 export default function Trip() {
     const { id } = useParams()
     const [highlightedPhase, setHighlightedPhase] = useState()
-    const [customStayModaPhase, setCustomStayModalPhase] = useState()
+    const [customStayModal, setCustomStayModal] = useState()
     const group = useTimelineGroup(id)
     const mapRef = useRef()
 
@@ -97,7 +97,12 @@ export default function Trip() {
 
     const onPhaseClick = (phase) => {
         if (phase.type === PhaseType.Unknown) {
-            setCustomStayModalPhase(phase)
+            const phaseIndex = trip.phases.findIndex(p => p.since === phase.since)
+            const previousPhase = phaseIndex > 0 ? trip.phases[phaseIndex - 1] : undefined
+            setCustomStayModal({
+                phase,
+                previousPhase,
+            })
         } else if (phase.type === PhaseType.Stay) {
             const location = phase.stay.location
             if (!location.accuracy || location.accuracy === LocationAccuracy.GPS) {
@@ -120,7 +125,7 @@ export default function Trip() {
         }
     }
 
-    const closeCustomStayModal = () => setCustomStayModalPhase(undefined)
+    const closeCustomStayModal = () => setCustomStayModal(undefined)
 
     return (
         <Page header={header} showBackButton>
@@ -140,7 +145,7 @@ export default function Trip() {
                 <Separator />
                 <TripMap style={{paddingTop: 18}} mapRef={mapRef} trip={trip} checkins={checkins} highlightedPhase={highlightedPhase} />
             </Row>
-            <CustomStayModal phase={customStayModaPhase} onClickAway={closeCustomStayModal}/>
+            <CustomStayModal {...customStayModal} onClickAway={closeCustomStayModal}/>
         </Page>
     )
 }

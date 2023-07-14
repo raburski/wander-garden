@@ -112,9 +112,10 @@ const SubButtons = styled('div')`
 
 const DISCORD_URL = 'https://discord.gg/BhyXtRH6'
 const TWITTER_LINK = 'https://twitter.com/wandergarden_'
+export const openDiscord = () => window.open(DISCORD_URL, '_blank')
+export const openTwitter = () => window.open(TWITTER_LINK, '_blank')
+
 function SubNotes({ onLinkClick }) {
-    const openDiscord = () => window.open(DISCORD_URL, '_blank')
-    const openTwitter = () => window.open(TWITTER_LINK, '_blank')
     return (
         <StyledNotes>
             <SubButtons>

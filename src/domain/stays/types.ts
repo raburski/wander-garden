@@ -1,7 +1,7 @@
 import type { Location } from 'domain/location'
 import { isLocationType } from "domain/location"
 import { isOptionalOfType, isOfType, isMoneyType, Money, isArrayOfType } from "type"
-import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit } from 'react-icons/md'
+import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, MdAddTask } from 'react-icons/md'
 import { FaCouch, FaUserFriends, FaCaravan, FaCar, FaShip } from 'react-icons/fa'
 import { FiExternalLink } from 'react-icons/fi'
 import { TbTent, TbCloudUpload, TbDots } from 'react-icons/tb'
@@ -18,6 +18,7 @@ export enum StayOrigin {
 }
 
 export enum StayPlaceType {
+    Extension = 'EXTENSION',
     Accomodation = 'ACCOMODATION',
     Friends = 'FRIENDS',
     Couchsurfing = 'COUCHSURFING',
@@ -128,6 +129,7 @@ export const StayName = {
 }
 
 export const PlaceTypeToIcon = {
+    [StayPlaceType.Extension]: MdAddTask,
     [StayPlaceType.Accomodation]: MdHotel,
     [StayPlaceType.Campervan]: FaCaravan,
     [StayPlaceType.Camping]: TbTent,
@@ -139,6 +141,7 @@ export const PlaceTypeToIcon = {
 }
 
 export const PlaceTypeToTitle = {
+    [StayPlaceType.Extension]: 'Stay extension',
     [StayPlaceType.Accomodation]: 'Accomodation',
     [StayPlaceType.Campervan]: 'Campervan',
     [StayPlaceType.Camping]: 'Camping',
