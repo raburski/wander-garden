@@ -169,6 +169,7 @@ const LocationForm = forwardRef(function ({ presets = [], onChange, name }, ref)
 const DaysForm = forwardRef(function ({ since, until, onChange, name }, ref) {
     const [isEdittingDays, setEdittingDays] = useState(false)
     const days = getDaysFromRange(since, until)
+    const formattedDays = days.map(day => moment(day).format('DD/MM/YYYY'))
     const [_, range] = getDaysAndRangeText(since, until)
     const [selectedDays, setSelectedDays] = useState(days)
 
@@ -178,22 +179,29 @@ const DaysForm = forwardRef(function ({ since, until, onChange, name }, ref) {
     }), [selectedDays])
 
     const onListChange = ({ target }) => {
-        const value = target.value
-        setSelectedDays(value)
-        onChange({ target: { value, name }})
+        const values = target.value
+        const actualValues = values.map(day => days[formattedDays.indexOf(day)])
+        setSelectedDays(actualValues)
+        onChange({ target: { value: actualValues, name }})
     }
 
-
+    const onEditClick = () => {
+        if (isEdittingDays) {
+            setSelectedDays(days)
+            onChange({ target: { value: days, name }})
+        }
+        setEdittingDays(!isEdittingDays)
+    }
 
     return (
         <>
-        <MenuRow
-            icon={MdNightsStay}
-            title="Stayed nights between"
-            right={<>{isEdittingDays ? null : range}{days.length === 1 ? null : <TextInlineButton icon={MdEdit} onClick={() => setEdittingDays(true)} tooltip="Select dates"/>}</>}
-         />
+            <MenuRow
+                icon={MdNightsStay}
+                title="Stayed nights between"
+                right={<>{isEdittingDays ? null : range}{days.length === 1 ? null : <TextInlineButton icon={MdEdit} onClick={onEditClick} tooltip="Select dates"/>}</>}
+            />
             {isEdittingDays ? 
-                <ListPicker items={days} onChange={onListChange} style={{marginLeft: 12, marginRight: 12, paddingBottom: 0}}/>
+                <ListPicker items={formattedDays} onChange={onListChange} style={{marginLeft: 12, marginRight: 12, paddingBottom: 0}}/>
                 : null
             }
         </>
