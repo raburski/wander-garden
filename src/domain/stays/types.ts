@@ -141,7 +141,6 @@ export const PlaceTypeToIcon = {
 }
 
 export const PlaceTypeToTitle = {
-    [StayPlaceType.Extension]: 'Stay extension',
     [StayPlaceType.Accomodation]: 'Accomodation',
     [StayPlaceType.Campervan]: 'Campervan',
     [StayPlaceType.Camping]: 'Camping',

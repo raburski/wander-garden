@@ -1,7 +1,7 @@
-import ModalPage from "components/ModalPage"
-import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, MdAddTask, MdAddCircleOutline } from 'react-icons/md'
+import ModalPage, { ModalPageButtons } from "components/ModalPage"
+import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, MdAddTask, MdAddCircleOutline, MdNightsStay } from 'react-icons/md'
 import { FaCouch, FaUserFriends, FaCaravan, FaCar, FaShip, FaDiscord } from 'react-icons/fa'
-import { FiExternalLink } from 'react-icons/fi'
+import { FiChevronRight, FiExternalLink } from 'react-icons/fi'
 import { TbTent, TbCloudUpload, TbDots } from 'react-icons/tb'
 import { PlaceTypeToIcon, PlaceTypeToTitle, StayPlaceType } from "./types"
 import InfoRow from "components/InfoRow"
@@ -22,18 +22,24 @@ import { LocationAccuracy, formattedAccuracyLocation } from "domain/location"
 import { useAddCustomStays } from "./Context"
 import { openDiscord } from "SideBar"
 import MenuRow from "components/MenuRow"
+import { AnimatePresence } from 'framer-motion'
+import Modal from "components/Modal"
+import Page from "components/Page"
+import Phase from "routes/Trip/Phase"
+import { getStayIcon } from "./stays"
 
 const ICONS = Object.values(PlaceTypeToIcon)
 
-function AccomodationInfoPanel({ onAddCustomStay, onUploadFile, onContactUs, onExtendStay, previousPhase }) {
-    
+function WhatToDoOptionsPage({ onAddCustomStay, onUploadFile, onContactUs, onExtendStay, previousPhase, ...props }) {
     return (
-        <Panel>
-            <MenuRow icon={FaDiscord} onClick={onContactUs} title="Automatic import not working?" subtitle="Contact us on discord"/>
-            <MenuRow icon={TbCloudUpload} onClick={onUploadFile} title="Your friend shared file with this stay?" subtitle="Import stay file"/>
-            {previousPhase && onExtendStay ? <MenuRow icon={MdAddTask} onClick={onExtendStay} title="Stayed longer?" subtitle={`Extend stay in ${previousPhase.stay.accomodation.name}`} /> : null}
-            <MenuRow icon={MdAddCircleOutline} onClick={onAddCustomStay} title="Something else?" subtitle="Add custom stay"/>
-        </Panel>
+        <Page header="What do we do?" {...props}>
+            <Panel >
+                <MenuRow icon={FaDiscord} onClick={onContactUs} title="Automatic import not working?" subtitle="Let us know on discord" rightIcon={FiExternalLink}/>
+                <MenuRow icon={TbCloudUpload} onClick={onUploadFile} title="Your friend shared file with this stay?" subtitle="Import stay file"/>
+                {previousPhase && onExtendStay ? <MenuRow icon={MdAddTask} onClick={onExtendStay} title="Stayed longer?" subtitle={`Extend your stay in ${previousPhase.stay.accomodation.name}`} rightIcon={FiChevronRight}/> : null}
+                <MenuRow icon={MdAddCircleOutline} onClick={onAddCustomStay} title="Something else?" subtitle="Add custom stay" rightIcon={FiChevronRight}/>
+            </Panel>
+        </Page>
     )
 }
 
@@ -44,7 +50,7 @@ function getDaysFromRange(since, until) {
     return Array.from({length: numberOfDays}, (_, i) => moment(since).add(i, 'days').format())
 }
 
-const ListPicker = forwardRef(function ({ items, onChange, onBlur, name }, ref) {
+const ListPicker = forwardRef(function ({ items, onChange, onBlur, name, ...props }, ref) {
     const checkedIndexInit = [...items]
 
     // TODO: this could be problematic with form reset?
@@ -65,7 +71,7 @@ const ListPicker = forwardRef(function ({ items, onChange, onBlur, name }, ref) 
         }
     }
     return (
-        <Panel>
+        <Panel {...props}>
             {items.map((item) => 
                 <InfoRow 
                     icon={checkedItems.includes(item) ? MdCheckBox : MdCheckBoxOutlineBlank} 
@@ -91,7 +97,7 @@ const ButtonOption = styled(Button)`
 const ButtonOptions = function ({ options = [], onOptionClick, children, selectedIndex }) {
     return (
         <ButtonOptionsContainer>
-            {options.map((o, i) => <ButtonOption selected={i === selectedIndex} onClick={() => onOptionClick(o, i)}>{o}</ButtonOption>)}
+            {options.map((o, i) => <ButtonOption key={o} selected={i === selectedIndex} onClick={() => onOptionClick(o, i)}>{o}</ButtonOption>)}
             {children}
         </ButtonOptionsContainer>
     )
@@ -177,45 +183,56 @@ const DaysForm = forwardRef(function ({ since, until, onChange, name }, ref) {
         onChange({ target: { value, name }})
     }
 
+
+
     return (
         <>
-            <StayLabel>{days.length === 1 ? 'Night' : 'Nights'}: {isEdittingDays ? '' : <>{range} {days.length === 1 ? null : <TextInlineButton icon={MdEdit} onClick={() => setEdittingDays(true)} tooltip="Select dates"/>}</>}</StayLabel>
+        <MenuRow
+            icon={MdNightsStay}
+            title="Stayed nights between"
+            right={<>{isEdittingDays ? null : range}{days.length === 1 ? null : <TextInlineButton icon={MdEdit} onClick={() => setEdittingDays(true)} tooltip="Select dates"/>}</>}
+         />
             {isEdittingDays ? 
-                <ListPicker items={days} onChange={onListChange}/>
+                <ListPicker items={days} onChange={onListChange} style={{marginLeft: 12, marginRight: 12, paddingBottom: 0}}/>
                 : null
             }
         </>
     )
 })
 
-function CustomStayForm({ placeType, since, until, locations, onSubmit }) {
-    const [isEdittingDetails, setEdittingDetails] = useState(false)
-    
+function ExtendStayPage({ phase, previousPhase, onFinished, ...props }) {    
     const { register, handleSubmit, formState } = useForm()
-    const _onSubmit = handleSubmit(onSubmit)
+    const addCustomStays = useAddCustomStays()
+
+    async function submitForm(state) {
+        if (!state.days || state.days.length <= 0) return
+
+        const dayRanges = getDateRanges(state.days)
+        const stays = dayRanges.map(({ since, until }) => ({
+            ...previousPhase.stay,
+            since,
+            until,
+            placeType: StayPlaceType.Extension,
+            price: undefined
+        }))
+        await addCustomStays(stays)
+        await onFinished()
+    }
+
+    const _onSubmit = handleSubmit(submitForm)
 
     return (
-        <>
-            <StayLabel>Stay:</StayLabel>
-            <FormLine>
-                <StayTextField placeholder="Name" {...register('name', { required: true })}/>
-                {isEdittingDetails ? null : <InputInlineButton icon={TbDots} onClick={() => setEdittingDetails(true)} tooltip="Add more details" tooltipPosition="left"/>}
-            </FormLine>
-            {isEdittingDetails ? 
-                <>
-                    <StayTextField type="number" placeholder="Price (optional)" {...register('price')}/>
-                    <StayTextField type="number" placeholder="Total people (optional)" {...register('totalGuests')}/>
-                    
-                </>
-            : null}
-            <Separator/>
-            <StayLabel>Location:</StayLabel>
-            <LocationForm presets={locations} {...register('location', { required: true })}/>
-            <Separator/>
-            <DaysForm since={since} until={until} {...register('days', { required: true, minLength: 1 })}/>
-            <Separator />
-            <Button onClick={_onSubmit} disabled={!formState.isValid}>Add custom stay</Button>
-        </>
+        <Page header="Extend stay" {...props}>
+            <Panel>
+                <MenuRow icon={getStayIcon(previousPhase.stay, previousPhase.stay.type)} title={previousPhase.stay.accomodation.name}/>
+                <DaysForm since={phase.since} until={phase.until} {...register('days', { required: true, minLength: 1 })}/>
+            </Panel>
+            
+            <ModalPageButtons>
+                <Separator />
+                <Button icon={PlaceTypeToIcon[StayPlaceType.Extension]} disabled={formState.isSubmitting} onClick={_onSubmit}>Extend stay</Button>
+            </ModalPageButtons>
+        </Page>
     )
 }
 
@@ -281,8 +298,11 @@ function getDateRanges(dates) {
     return dateRanges
 }
 
-function CustomStayPanel({ phase, previousPhase, initialPlaceTyle, onFinished }) {
-    const [placeType, setPlaceType] = useState(initialPlaceTyle)
+function CustomStayPage({ phase, previousPhase, placeType, onFinished, ...props }) {
+    const [isEdittingDetails, setEdittingDetails] = useState(false)
+    
+    const { register, handleSubmit, formState } = useForm()
+    
     const addCustomStays = useAddCustomStays()
     const locations = phase ? getPresetLocations(phase) : []
 
@@ -303,60 +323,120 @@ function CustomStayPanel({ phase, previousPhase, initialPlaceTyle, onFinished })
         await onFinished()
     }
 
+    const _onSubmit = handleSubmit(submitForm)
+
     return (
-        <Panel contentStyle={{flexDirection: 'row', flex: 1}} style={{flex: 1}}>
-            <Panel.Left>
-                {Object.keys(PlaceTypeToIcon).map(type =>
-                    <InfoRow
-                        selected={placeType === type}
-                        icon={PlaceTypeToIcon[type]}
-                        title={PlaceTypeToTitle[type]}
-                        onClick={() => setPlaceType(type)}
-                    />
-                )}
-            </Panel.Left>
-            <Panel.Right>
-                    {placeType && phase ? 
-                        <CustomStayForm placeType={placeType} previousPhase={previousPhase} since={phase.since} until={phase.until} locations={locations} onSubmit={submitForm}/> :
-                        null}
-            </Panel.Right>
-        </Panel>
+        <Page header="Add stay" {...props}>
+            <Panel>
+                <StayLabel>Stay:</StayLabel>
+                <FormLine>
+                    <StayTextField placeholder="Name" {...register('name', { required: true })}/>
+                    {isEdittingDetails ? null : <InputInlineButton icon={TbDots} onClick={() => setEdittingDetails(true)} tooltip="Add more details" tooltipPosition="left"/>}
+                </FormLine>
+                {isEdittingDetails ? 
+                    <>
+                        <StayTextField type="number" placeholder="Price (optional)" {...register('price')}/>
+                        <StayTextField type="number" placeholder="Total people (optional)" {...register('totalGuests')}/>
+                    </>
+                : null}
+                <Separator/>
+                <StayLabel>Location:</StayLabel>
+                <LocationForm presets={locations} {...register('location', { required: true })}/>
+                <Separator/>
+                <DaysForm since={phase.since} until={phase.until} {...register('days', { required: true, minLength: 1 })}/>
+            </Panel>
+            <ModalPageButtons>
+                <Separator />
+                <Button icon={MdAddCircleOutline} onClick={_onSubmit} disabled={!formState.isValid || formState.isSubmitting}>Add custom stay</Button>
+            </ModalPageButtons>
+        </Page>
     )
 }
 
+function ChooseStayTypePage({ onPlaceTypeSelect, ...props }) {
+    return (
+        <Page header="Stay type" {...props}>
+            <Panel>
+            {Object.keys(PlaceTypeToTitle).map(type =>
+                <MenuRow
+                    key={type}
+                    icon={PlaceTypeToIcon[type]}
+                    title={PlaceTypeToTitle[type]}
+                    onClick={() => onPlaceTypeSelect(type)}
+                    rightIcon={FiChevronRight}
+                />
+            )}
+            </Panel>
+        </Page>
+    )
+}
+
+const WIDTH = 480
 export default function CustomStayModal({ onClickAway, phase, previousPhase, ...props }) {
     const [addStayConfirmed, setAddStayConfirmed] = useState(false)
+    const [selectedStayType, setSelectedStayType] = useState(undefined)
     const uploadFile = useUpload()
 
     const cancel = () => {
         setAddStayConfirmed(false)
+        setSelectedStayType(undefined)
         onClickAway()
     }
 
     const onAddCustomStay = () => setAddStayConfirmed(true)
-    const onExtendStay = () => setAddStayConfirmed(StayPlaceType.Extension)
+    const onExtendStay = () => setSelectedStayType(StayPlaceType.Extension)
     const onContactUs = () => { openDiscord(); cancel() }
     const onUploadFile = () => { uploadFile(); cancel() }
+
+    const onBackFromChoseStayType = () => setAddStayConfirmed(false)
+    const onPlaceTypeSelect = type => setSelectedStayType(type)
+    const onBackFromAddStay = () => setSelectedStayType(undefined)
 
     if (!phase) return null
 
     return (
-        <ModalPage header="Add custom stay" isOpen={!!phase} pageStyle={{ width: 520, minHeight: 352 }} onClickAway={cancel} {...props}>
-            {addStayConfirmed ? 
-                <CustomStayPanel
-                    initialPlaceTyle={addStayConfirmed === StayPlaceType.Extension ? StayPlaceType.Extension : undefined}
-                    phase={phase}
-                    previousPhase={previousPhase}
-                    onFinished={cancel}
-                />
-                : <AccomodationInfoPanel
+        <Modal isOpen={!!phase}  onClickAway={cancel} {...props}>
+            {!addStayConfirmed && !selectedStayType ? 
+                <WhatToDoOptionsPage key="info" style={{ width: WIDTH, }} layout
                     previousPhase={previousPhase}
                     onAddCustomStay={onAddCustomStay}
                     onExtendStay={onExtendStay}
                     onContactUs={onContactUs}
                     onUploadFile={onUploadFile}
-                />
+                /> : null
             }
-        </ModalPage>
+            {addStayConfirmed && !selectedStayType ? 
+                <ChooseStayTypePage
+                    key="info"
+                    style={{ width: WIDTH, }}
+                    layout
+                    onBack={onBackFromChoseStayType}
+                    onPlaceTypeSelect={onPlaceTypeSelect}
+                /> : null
+            }
+            {selectedStayType && selectedStayType === StayPlaceType.Extension ?
+                <ExtendStayPage
+                    key="info"
+                    style={{ width: WIDTH, }}
+                    layout
+                    phase={phase}
+                    previousPhase={previousPhase}
+                    onFinished={cancel}
+                    onBack={onBackFromAddStay}
+                /> : null
+            }
+            {selectedStayType && selectedStayType !== StayPlaceType.Extension ?
+                <CustomStayPage
+                    key="info"
+                    style={{ width: WIDTH, }}
+                    layout
+                    placeType={selectedStayType}
+                    phase={phase}
+                    previousPhase={previousPhase}
+                    onFinished={cancel}
+                    onBack={onBackFromAddStay}
+                /> : null
+            }
+        </Modal>
     )
 }

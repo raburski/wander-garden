@@ -47,6 +47,7 @@ export default function Modal({ isOpen, onClickAway, children }) {
                     exit={{ opacity: 0 }}
                 >
                     <ModalWindow
+                        layout
                         onClick={onWindowClick}
                         initial={{y: 200}}
                         animate={{y: 0}}

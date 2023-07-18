@@ -1,6 +1,7 @@
 import { styled } from "goober"
 import BackButton from "./BackButton"
 import Header from "./Header"
+import { motion } from 'framer-motion'
 
 const NON_MODAL_PAGE_STYLE_DEFAULT = `
     padding-left: 0px;
@@ -19,7 +20,7 @@ const Separator = styled('div')`
     }
 `
 
-const Container = styled('div')`
+const Container = styled(motion.div)`
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -45,6 +46,11 @@ const Container = styled('div')`
     }
 `
 
-export default function Page({ children, header, showBackButton = false, right = null, ...props }) {
-    return <Container {...props}><Header>{showBackButton ? <BackButton /> : null}{header}<Separator />{right}</Header>{children}</Container>
+export default function Page({ children, header, showBackButton = false, right = null, onBack = null, ...props }) {
+    return (
+        <Container {...props}>
+            <Header>{(showBackButton || onBack) ? <BackButton onClick={onBack} /> : null}{header}<Separator />{right}</Header>
+            {children}
+        </Container>
+    )
 }

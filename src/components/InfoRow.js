@@ -10,7 +10,7 @@ const Title = styled('div')`
 const Subtitle = styled('div')`
     font-size: 10px;
     color: ${props => props.theme.text};
-    padding-top: 1px;
+    padding-top: 2px;
 
     @media only screen and (min-width: ${props => props.theme.breakpoints.large}px) {
         padding-top: 2px;
@@ -26,9 +26,11 @@ const TextContainer = styled('div')`
 `
 
 const Right = styled('div')`
+    display: flex;
+    align-items: center;
     margin-right: 6px;
-    margin-bottom: -4px;
-    font-size: 12px;
+
+    font-size: 14px;
     color: ${props => props.theme.text};
 `
 
@@ -46,7 +48,7 @@ const IconContainer = styled('div')`
 `
 
 
-export default function InfoRow({ to, onClick, icon, title, subtitle, right, selected, iconSize = 16, ...props }) {
+export default function InfoRow({ to, onClick, icon, title, subtitle, right, rightStyle, selected, iconSize = 16, children, ...props }) {
     const IconComponent = icon
     return (
         <Row to={to} onClick={onClick} selected={selected} {...props}>
@@ -55,8 +57,9 @@ export default function InfoRow({ to, onClick, icon, title, subtitle, right, sel
                 <Title>{title}</Title>
                 <Subtitle>{subtitle}</Subtitle>
             </TextContainer>
+            {children}
             <Stretch/>
-            {right ? <Right>{right}</Right> : null}
+            {right ? <Right style={rightStyle}>{right}</Right> : null}
         </Row>
     )
 }

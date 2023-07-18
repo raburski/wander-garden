@@ -12,6 +12,6 @@ const StyledPillLink = styled(PillLink)`
     padding-right: 12px;
 `
 
-export default function BackButton() {
-    return <StyledPillLink to={-1} icon={IoMdArrowRoundBack}/>
+export default function BackButton({ onClick }) {
+    return <StyledPillLink to={onClick ? undefined: -1} icon={IoMdArrowRoundBack} onClick={onClick}/>
 }

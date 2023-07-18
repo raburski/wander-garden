@@ -39,6 +39,8 @@ const RightContent = styled('div')`
     display: flex;
     flex-direction: column;
     margin-right: 12px;
+    margn-top: 4px;
+    margn-bottom: 4px;
     align-items: flex-end;
     min-width: 90px;
 `
@@ -50,7 +52,6 @@ const Days = styled('div')`
 
 const Range = styled('div')`
     font-size: 10px;
-    margin-bottom: 4px;
 `
 
 export default function ContentRow({ left, image, to, title, subtitle, onClick, rightText, rightSubText, range, onMoreClick, ...props }) {

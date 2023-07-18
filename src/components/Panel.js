@@ -1,7 +1,8 @@
 import { styled } from 'goober'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
-const Container = styled('div')`
+const Container = styled(motion.div)`
     display: flex;
     flex-direction: column;
     padding-bottom: 12px;

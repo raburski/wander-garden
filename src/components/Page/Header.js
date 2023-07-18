@@ -1,6 +1,7 @@
 import { styled } from "goober"
+import { motion } from 'framer-motion'
 
-export default styled('h1')`
+export default styled(motion.h1)`
     display: flex;
     flex-direction: row;
     align-items: flex-end;

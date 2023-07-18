@@ -1,15 +1,14 @@
-import { useState, Fragment, useEffect } from "react"
-import { useSearchParams, ScrollRestoration } from "react-router-dom"
+import { Fragment } from "react"
+import { useSearchParams } from "react-router-dom"
 import { styled } from 'goober'
 import { onlyUnique } from "array"
 import { getDaysAndRangeText } from 'date'
 import CountryBar from "./CountryBar"
 import Page from "components/Page"
-import colors from "colors"
 import Panel from "components/Panel"
-import { getGroupHighlights, useTimeline, titleFromLocationHighlights, highlightTitle } from 'domain/timeline/groups'
+import { useTimeline, titleFromLocationHighlights, highlightTitle } from 'domain/timeline/groups'
 
-import { EventType, TransportMode, GroupType, CalendarDayType } from 'domain/timeline/types'
+import { GroupType } from 'domain/timeline/types'
 import { useSetting } from "settings"
 import { useTitle, useVisitedCountryCodes } from "domain/timeline"
 
