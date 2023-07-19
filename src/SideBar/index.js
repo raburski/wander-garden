@@ -110,7 +110,7 @@ const SubButtons = styled('div')`
 `
 
 
-const DISCORD_URL = 'https://discord.gg/BhyXtRH6'
+const DISCORD_URL = 'https://discord.gg/9FGuWdpMq4'
 const TWITTER_LINK = 'https://twitter.com/wandergarden_'
 export const openDiscord = () => window.open(DISCORD_URL, '_blank')
 export const openTwitter = () => window.open(TWITTER_LINK, '_blank')

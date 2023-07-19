@@ -2,7 +2,7 @@ import ModalPage, { ModalPageButtons } from "components/ModalPage"
 import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, MdAddTask, MdAddCircleOutline, MdNightsStay, MdPeopleAlt, MdLocationPin } from 'react-icons/md'
 import { FaCouch, FaUserFriends, FaCaravan, FaCar, FaShip, FaDiscord } from 'react-icons/fa'
 import { FiChevronRight, FiExternalLink } from 'react-icons/fi'
-import { TbTent, TbCloudUpload, TbDots } from 'react-icons/tb'
+import { TbTent, TbCloudUpload, TbDots, TbFriends } from 'react-icons/tb'
 import { PlaceTypeToIcon, PlaceTypeToTitle, StayPlaceType } from "./types"
 import InfoRow from "components/InfoRow"
 import Panel from "components/Panel"
@@ -37,7 +37,7 @@ function WhatToDoOptionsPage({ onAddCustomStay, onUploadFile, onContactUs, onExt
         <Page header="What do we do?" {...props}>
             <Panel >
                 <MenuRow icon={FaDiscord} onClick={onContactUs} title="Automatic import not working?" subtitle="Let us know on discord" rightIcon={FiExternalLink}/>
-                <MenuRow icon={TbCloudUpload} onClick={onUploadFile} title="Your friend shared file with this stay?" subtitle="Import stay file"/>
+                <MenuRow icon={FaUserFriends} onClick={onUploadFile} title="Your friend booked this stay?" subtitle="Import their data" rightIcon={FiChevronRight}/>
                 {previousPhase && onExtendStay ? <MenuRow icon={MdAddTask} onClick={onExtendStay} title="Stayed longer?" subtitle={`Extend your stay in ${previousPhase.stay.accomodation.name}`} rightIcon={FiChevronRight}/> : null}
                 <MenuRow icon={MdAddCircleOutline} onClick={onAddCustomStay} title="Something else?" subtitle="Add custom stay" rightIcon={FiChevronRight}/>
             </Panel>

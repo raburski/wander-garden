@@ -6,6 +6,9 @@ import { forwardRef } from 'react'
 const InputField = styled(TextField, forwardRef)`
     border: 0px;
     flex: 1;
+    margin-top: -4px;
+    margin-bottom: -4px;
+    margin-right: -8px;
 `
 
 const InputRowContainer = styled(Row)`
