@@ -1,5 +1,5 @@
 import ModalPage, { ModalPageButtons } from "components/ModalPage"
-import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, MdAddTask, MdAddCircleOutline, MdNightsStay } from 'react-icons/md'
+import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, MdAddTask, MdAddCircleOutline, MdNightsStay, MdPeopleAlt, MdLocationPin } from 'react-icons/md'
 import { FaCouch, FaUserFriends, FaCaravan, FaCar, FaShip, FaDiscord } from 'react-icons/fa'
 import { FiChevronRight, FiExternalLink } from 'react-icons/fi'
 import { TbTent, TbCloudUpload, TbDots } from 'react-icons/tb'
@@ -27,6 +27,8 @@ import Modal from "components/Modal"
 import Page from "components/Page"
 import Phase from "routes/Trip/Phase"
 import { getStayIcon } from "./stays"
+import InputRow from "components/InputRow"
+import { IoMdPricetag } from "react-icons/io"
 
 const ICONS = Object.values(PlaceTypeToIcon)
 
@@ -91,7 +93,7 @@ const ButtonOptionsContainer = styled('div')`
 
 const ButtonOption = styled(Button)`
     margin-right: 6px;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 `
 
 const ButtonOptions = function ({ options = [], onOptionClick, children, selectedIndex }) {
@@ -137,7 +139,7 @@ const FormLine = styled('div')`
     flex-direction: row;
 `
 
-const LocationForm = forwardRef(function ({ presets = [], onChange, name }, ref) {
+const LocationForm = forwardRef(function ({ presets = [], onChange, name, ...props }, ref) {
     const [isEditting, setEditting] = useState(false)
     const [selectedPresetIndex, setSelectedPresetIndex] = useState()
     const presetLabels = presets.map(formattedAccuracyLocation)
@@ -152,7 +154,7 @@ const LocationForm = forwardRef(function ({ presets = [], onChange, name }, ref)
         onChange({ target: { value: presets[selectedPresetIndex], name }})
     }
     return (
-        <>
+        <MenuRow {...props}>
         <ButtonOptions options={presetLabels} onOptionClick={onOptionClick} selectedIndex={selectedPresetIndex}>
             {isEditting ? null : <ButtonInlineButton icon={MdEdit} onClick={() => setEditting(true)} tooltip="Precise edit"/>}
         </ButtonOptions>
@@ -162,7 +164,7 @@ const LocationForm = forwardRef(function ({ presets = [], onChange, name }, ref)
                 <StayTextField placeholder="Lng" />
             </>
         : null}
-        </>
+        </MenuRow>
     )
 })
 
@@ -197,7 +199,7 @@ const DaysForm = forwardRef(function ({ since, until, onChange, name }, ref) {
         <>
             <MenuRow
                 icon={MdNightsStay}
-                title="Stayed nights between"
+                title="Nights stayed"
                 right={<>{isEdittingDays ? null : range}{days.length === 1 ? null : <TextInlineButton icon={MdEdit} onClick={onEditClick} tooltip="Select dates"/>}</>}
             />
             {isEdittingDays ? 
@@ -336,21 +338,10 @@ function CustomStayPage({ phase, previousPhase, placeType, onFinished, ...props 
     return (
         <Page header="Add stay" {...props}>
             <Panel>
-                <StayLabel>Stay:</StayLabel>
-                <FormLine>
-                    <StayTextField placeholder="Name" {...register('name', { required: true })}/>
-                    {isEdittingDetails ? null : <InputInlineButton icon={TbDots} onClick={() => setEdittingDetails(true)} tooltip="Add more details" tooltipPosition="left"/>}
-                </FormLine>
-                {isEdittingDetails ? 
-                    <>
-                        <StayTextField type="number" placeholder="Price (optional)" {...register('price')}/>
-                        <StayTextField type="number" placeholder="Total people (optional)" {...register('totalGuests')}/>
-                    </>
-                : null}
-                <Separator/>
-                <StayLabel>Location:</StayLabel>
-                <LocationForm presets={locations} {...register('location', { required: true })}/>
-                <Separator/>
+                <InputRow icon={PlaceTypeToIcon[placeType]} placeholder="Name" {...register('name', { required: true })}/>
+                <InputRow icon={IoMdPricetag} type="number" placeholder="Price (optional)" {...register('price')}/>
+                <InputRow icon={MdPeopleAlt} type="number" placeholder="Total people (optional)" {...register('totalGuests')}/>
+                <LocationForm icon={MdLocationPin} presets={locations} {...register('location', { required: true })}/>
                 <DaysForm since={phase.since} until={phase.until} {...register('days', { required: true, minLength: 1 })}/>
             </Panel>
             <ModalPageButtons>
