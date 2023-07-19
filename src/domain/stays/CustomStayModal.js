@@ -5,7 +5,7 @@ import { FiChevronRight, FiExternalLink } from 'react-icons/fi'
 import { TbTent, TbCloudUpload, TbDots, TbFriends } from 'react-icons/tb'
 import { PlaceTypeToIcon, PlaceTypeToTitle, StayPlaceType } from "./types"
 import InfoRow from "components/InfoRow"
-import Panel from "components/Panel"
+import Panel, { Row } from "components/Panel"
 import { useState } from "react"
 import Button from "components/Button"
 import Separator from "components/Separator"
@@ -29,15 +29,17 @@ import Phase from "routes/Trip/Phase"
 import { getStayIcon } from "./stays"
 import InputRow from "components/InputRow"
 import { IoMdPricetag } from "react-icons/io"
+import { useNavigate } from "react-router"
+import { RxFileText } from "react-icons/rx"
 
 const ICONS = Object.values(PlaceTypeToIcon)
 
-function WhatToDoOptionsPage({ onAddCustomStay, onUploadFile, onContactUs, onExtendStay, previousPhase, ...props }) {
+function WhatToDoOptionsPage({ onAddCustomStay, onImportFromFriend, onContactUs, onExtendStay, previousPhase, ...props }) {
     return (
         <Page header="What do we do?" {...props}>
             <Panel >
                 <MenuRow icon={FaDiscord} onClick={onContactUs} title="Automatic import not working?" subtitle="Let us know on discord" rightIcon={FiExternalLink}/>
-                <MenuRow icon={FaUserFriends} onClick={onUploadFile} title="Your friend booked this stay?" subtitle="Import their data" rightIcon={FiChevronRight}/>
+                <MenuRow icon={FaUserFriends} onClick={onImportFromFriend} title="Your friend booked this stay?" subtitle="Import their data" rightIcon={FiChevronRight}/>
                 {previousPhase && onExtendStay ? <MenuRow icon={MdAddTask} onClick={onExtendStay} title="Stayed longer?" subtitle={`Extend your stay in ${previousPhase.stay.accomodation.name}`} rightIcon={FiChevronRight}/> : null}
                 <MenuRow icon={MdAddCircleOutline} onClick={onAddCustomStay} title="Something else?" subtitle="Add custom stay" rightIcon={FiChevronRight}/>
             </Panel>
@@ -370,14 +372,62 @@ function ChooseStayTypePage({ onPlaceTypeSelect, ...props }) {
     )
 }
 
-const WIDTH = 480
+
+const SectionRow = styled(Row)`
+    flex-direction: column;
+    align-items: center;
+    padding-left: 32px;
+    padding-right: 32px;
+    padding-bottom: 32px;
+`
+
+const SectionButtom = styled(Button)`
+    margin-top: 28px;
+    align-self: center;
+`
+
+const FRIENDS_ACCOUNT_COPY = `You can import stays from your friends Airbnb or Booking account. 
+You will have to ask for their passwords and use them to log in during capture process.
+
+Remember to log out from your account first, before you start the process!
+`
+
+const IMPORT_STAY_COPY = `Your friend can use Wander Garden to import their stays. Then they can send you a stay file. 
+Those can be exported and imported in the Data section.
+`
+
+function UploadFromFriend({ onFinished, ...props }) {
+    const navigate = useNavigate()
+    const onUploadFile = () => navigate('/data')
+    const onGoToStays = () => navigate('/stays')
+    return (
+        <Page header="Import from friend" {...props}>
+            <Panel>
+                <SectionRow>
+                    <h2>Use friends account</h2>
+                    {FRIENDS_ACCOUNT_COPY}
+                    <SectionButtom icon={MdHotel} onClick={onGoToStays}>Go to stays</SectionButtom>
+                </SectionRow>
+                <SectionRow>
+                    <h2>Import stay file</h2>
+                    {IMPORT_STAY_COPY}
+                    <SectionButtom icon={RxFileText} onClick={onUploadFile}>Go to data</SectionButtom>
+                </SectionRow>
+            </Panel>
+        </Page>
+    )
+}
+
+const WIDTH = 500
 export default function CustomStayModal({ onClickAway, phase, previousPhase, ...props }) {
     const [addStayConfirmed, setAddStayConfirmed] = useState(false)
+    const [uploadFromFriendConfirmed, setUploadFromFriendConfirmed] = useState(false)
     const [selectedStayType, setSelectedStayType] = useState(undefined)
-    const uploadFile = useUpload()
+    
 
     const cancel = () => {
         setAddStayConfirmed(false)
+        setUploadFromFriendConfirmed(false)
         setSelectedStayType(undefined)
         onClickAway()
     }
@@ -385,23 +435,24 @@ export default function CustomStayModal({ onClickAway, phase, previousPhase, ...
     const onAddCustomStay = () => setAddStayConfirmed(true)
     const onExtendStay = () => setSelectedStayType(StayPlaceType.Extension)
     const onContactUs = () => { openDiscord(); cancel() }
-    const onUploadFile = () => { uploadFile(); cancel() }
+    const onImportFromFriend = () => setUploadFromFriendConfirmed(true)
 
     const onBackFromChoseStayType = () => setAddStayConfirmed(false)
     const onPlaceTypeSelect = type => setSelectedStayType(type)
     const onBackFromAddStay = () => setSelectedStayType(undefined)
+    const onBackFromFriend = () => setUploadFromFriendConfirmed(false)
 
     if (!phase) return null
 
     return (
         <Modal isOpen={!!phase}  onClickAway={cancel} {...props}>
-            {!addStayConfirmed && !selectedStayType ? 
+            {!addStayConfirmed && !selectedStayType && !uploadFromFriendConfirmed ? 
                 <WhatToDoOptionsPage key="info" style={{ width: WIDTH, }} layout
                     previousPhase={previousPhase}
                     onAddCustomStay={onAddCustomStay}
                     onExtendStay={onExtendStay}
                     onContactUs={onContactUs}
-                    onUploadFile={onUploadFile}
+                    onImportFromFriend={onImportFromFriend}
                 /> : null
             }
             {addStayConfirmed && !selectedStayType ? 
@@ -435,6 +486,15 @@ export default function CustomStayModal({ onClickAway, phase, previousPhase, ...
                     onFinished={cancel}
                     onBack={onBackFromAddStay}
                 /> : null
+            }
+            {uploadFromFriendConfirmed ?
+                <UploadFromFriend
+                    key="info"
+                    style={{ width: WIDTH, }}
+                    layout
+                    onBack={onBackFromFriend}
+                    onFinished={cancel}
+                /> : null 
             }
         </Modal>
     )
