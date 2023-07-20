@@ -225,8 +225,8 @@ function ExtendStayPage({ phase, previousPhase, onFinished, ...props }) {
             since,
             until,
             placeType: StayPlaceType.Extension,
-            price: state.price && !isNaN(state.price) ? { amount: state.price, currency: previousPhase.stay.price.currency } : undefined,
-            totalGuests: state.totalGuests ? state.totalGuests : undefined
+            price: state.price && !isNaN(state.price) ? { amount: parseFloat(state.price), currency: previousPhase.stay.price.currency } : undefined,
+            totalGuests: !!state.totalGuests ? parseInt(state.totalGuests) : undefined
         }))
         await addCustomStays(stays)
         await onFinished()
@@ -314,8 +314,6 @@ function getDateRanges(dates) {
 }
 
 function CustomStayPage({ phase, previousPhase, placeType, onFinished, ...props }) {
-    const [isEdittingDetails, setEdittingDetails] = useState(false)
-    
     const { register, handleSubmit, formState } = useForm({ defaultValues: { totalGuests: previousPhase?.stay?.totalGuests } })
     
     const addCustomStays = useAddCustomStays()
@@ -333,8 +331,8 @@ function CustomStayPage({ phase, previousPhase, placeType, onFinished, ...props 
             since,
             until,
             placeType,
-            price: state.price && !isNaN(state.price) ? { amount: state.price, currency: previousPhase.stay.price.currency } : undefined,
-            totalGuests: state.totalGuests ? state.totalGuests : undefined
+            price: state.price && !isNaN(state.price) ? { amount: parseFloat(state.price), currency: previousPhase.stay.price.currency } : undefined,
+            totalGuests: !!state.totalGuests ? parseInt(state.totalGuests) : undefined
         }))
         await addCustomStays(stays)
         await onFinished()
