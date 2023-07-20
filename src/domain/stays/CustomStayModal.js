@@ -48,8 +48,8 @@ function WhatToDoOptionsPage({ onAddCustomStay, onImportFromFriend, onContactUs,
 }
 
 function getDaysFromRange(since, until) {
-    const start = moment(since)
-    const end = moment(until)
+    const start = moment(since).startOf('day')
+    const end = moment(until).startOf('day')
     const numberOfDays = end.diff(start, 'days')
     return Array.from({length: numberOfDays}, (_, i) => moment(since).add(i, 'days').format())
 }
@@ -213,7 +213,7 @@ const DaysForm = forwardRef(function ({ since, until, onChange, name }, ref) {
 })
 
 function ExtendStayPage({ phase, previousPhase, onFinished, ...props }) {    
-    const { register, handleSubmit, formState } = useForm()
+    const { register, handleSubmit, formState } = useForm({ defaultValues: { totalGuests: previousPhase?.stay?.totalGuests } })
     const addCustomStays = useAddCustomStays()
 
     async function submitForm(state) {
@@ -225,7 +225,8 @@ function ExtendStayPage({ phase, previousPhase, onFinished, ...props }) {
             since,
             until,
             placeType: StayPlaceType.Extension,
-            price: undefined
+            price: state.price && !isNaN(state.price) ? { amount: state.price, currency: previousPhase.stay.price.currency } : undefined,
+            totalGuests: state.totalGuests ? state.totalGuests : undefined
         }))
         await addCustomStays(stays)
         await onFinished()
@@ -237,6 +238,8 @@ function ExtendStayPage({ phase, previousPhase, onFinished, ...props }) {
         <Page header="Extend stay" {...props}>
             <Panel>
                 <MenuRow icon={getStayIcon(previousPhase.stay, previousPhase.stay.type)} title={previousPhase.stay.accomodation.name}/>
+                <InputRow icon={IoMdPricetag} type="number" placeholder={`Price in ${previousPhase.stay.price.currency} for extended stay (optional)`} {...register('price')}/>
+                <InputRow icon={MdPeopleAlt} type="number" placeholder="Total guests (optional)" {...register('totalGuests')}/>
                 <DaysForm since={phase.since} until={phase.until} {...register('days', { required: true, minLength: 1 })}/>
             </Panel>
             
@@ -313,7 +316,7 @@ function getDateRanges(dates) {
 function CustomStayPage({ phase, previousPhase, placeType, onFinished, ...props }) {
     const [isEdittingDetails, setEdittingDetails] = useState(false)
     
-    const { register, handleSubmit, formState } = useForm()
+    const { register, handleSubmit, formState } = useForm({ defaultValues: { totalGuests: previousPhase?.stay?.totalGuests } })
     
     const addCustomStays = useAddCustomStays()
     const locations = phase ? getPresetLocations(phase) : []
@@ -330,6 +333,8 @@ function CustomStayPage({ phase, previousPhase, placeType, onFinished, ...props 
             since,
             until,
             placeType,
+            price: state.price && !isNaN(state.price) ? { amount: state.price, currency: previousPhase.stay.price.currency } : undefined,
+            totalGuests: state.totalGuests ? state.totalGuests : undefined
         }))
         await addCustomStays(stays)
         await onFinished()
@@ -341,8 +346,8 @@ function CustomStayPage({ phase, previousPhase, placeType, onFinished, ...props 
         <Page header="Add stay" {...props}>
             <Panel>
                 <InputRow icon={PlaceTypeToIcon[placeType]} placeholder="Name" {...register('name', { required: true })}/>
-                <InputRow icon={IoMdPricetag} type="number" placeholder="Price (optional)" {...register('price')}/>
-                <InputRow icon={MdPeopleAlt} type="number" placeholder="Total people (optional)" {...register('totalGuests')}/>
+                {previousPhase?.stay?.price?.currency ? <InputRow icon={IoMdPricetag} type="number" placeholder={`Total price in ${previousPhase.stay.price.currency} (optional)`} {...register('price')}/> : null}
+                <InputRow icon={MdPeopleAlt} type="number" placeholder="Total guests (optional)" {...register('totalGuests')}/>
                 <LocationForm icon={MdLocationPin} presets={locations} {...register('location', { required: true })}/>
                 <DaysForm since={phase.since} until={phase.until} {...register('days', { required: true, minLength: 1 })}/>
             </Panel>
@@ -386,7 +391,7 @@ const SectionButtom = styled(Button)`
     align-self: center;
 `
 
-const FRIENDS_ACCOUNT_COPY = `You can import stays from your friends Airbnb or Booking account. 
+const FRIENDS_ACCOUNT_COPY = `You can import stays from your friends Airbnb or Booking. 
 You will have to ask for their passwords and use them to log in during capture process.
 
 Remember to log out from your account first, before you start the process!

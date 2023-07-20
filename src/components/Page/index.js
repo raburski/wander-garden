@@ -10,6 +10,7 @@ const NON_MODAL_PAGE_STYLE_DEFAULT = `
 
 const NON_MODAL_PAGE_STYLE_LARGE = `
     padding-top: 48px;
+    padding-bottom: 24px;
 `
 
 const Separator = styled('div')`

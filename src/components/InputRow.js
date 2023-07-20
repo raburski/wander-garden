@@ -9,6 +9,8 @@ const InputField = styled(TextField, forwardRef)`
     margin-top: -4px;
     margin-bottom: -4px;
     margin-right: -8px;
+    margin-left: -8px;
+    padding-left: 8px;
 `
 
 const InputRowContainer = styled(Row)`
@@ -36,10 +38,10 @@ const IconContainer = styled('div')`
 `
 
 
-export default forwardRef(function InputRow({ icon, right, rightStyle, iconSize = 24, type ,...props }, ref) {
+export default forwardRef(function InputRow({ icon, right, rightStyle, iconSize = 24, ...props }, ref) {
     const IconComponent = icon
     return (
-        <InputRowContainer >
+        <InputRowContainer>
             {icon ? <IconContainer><IconComponent size={iconSize} /></IconContainer> : null}
             <InputField ref={ref} {...props}/>
             {right ? <Right style={rightStyle}>{right}</Right> : null}
