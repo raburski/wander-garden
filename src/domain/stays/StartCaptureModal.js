@@ -100,6 +100,7 @@ const LoginCopy = styled('div')`
     margin-top: 42px;
     font-weight: bold;
     text-align: center;
+    color: ${props => props.theme.text};
 `
 
 const LOGIN_COPY = `You may need to log in!`

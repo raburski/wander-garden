@@ -1,5 +1,6 @@
 @font-face {
-  font-family: Logo;
+  font-family: 'Logo';
+  font-weight: normal;
   src: url(../public/fonts/Bonche-Light.otf);
 }
 
@@ -44,6 +45,7 @@ body {
   transition: 0.4s;
   margin-top: -2px;
 }
+
 .text-field-input:focus ~ .focus-border {
   width: 100%;
   transition: 0.4s;
