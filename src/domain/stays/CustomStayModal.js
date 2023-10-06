@@ -1,12 +1,12 @@
 import ModalPage, { ModalPageButtons } from "components/ModalPage"
-import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, MdAddTask, MdAddCircleOutline, MdNightsStay, MdPeopleAlt, MdLocationPin } from 'react-icons/md'
+import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, MdAddTask, MdAddCircleOutline, MdNightsStay, MdPeopleAlt, MdLocationPin, MdPlace, MdSearch } from 'react-icons/md'
 import { FaCouch, FaUserFriends, FaCaravan, FaCar, FaShip, FaDiscord } from 'react-icons/fa'
 import { FiChevronRight, FiExternalLink } from 'react-icons/fi'
 import { TbTent, TbCloudUpload, TbDots, TbFriends } from 'react-icons/tb'
 import { PlaceTypeToIcon, PlaceTypeToTitle, StayPlaceType } from "./types"
 import InfoRow from "components/InfoRow"
 import Panel, { Row } from "components/Panel"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Button from "components/Button"
 import Separator from "components/Separator"
 import { useUpload } from "routes/Data/hooks"
@@ -31,6 +31,8 @@ import InputRow from "components/InputRow"
 import { IoMdPricetag } from "react-icons/io"
 import { useNavigate } from "react-router"
 import { RxFileText } from "react-icons/rx"
+import useDebouncedInput from "hooks/useDebouncedInput"
+import { getAddressComponents } from "domain/country"
 
 const ICONS = Object.values(PlaceTypeToIcon)
 
@@ -141,32 +143,101 @@ const FormLine = styled('div')`
     flex-direction: row;
 `
 
-const LocationForm = forwardRef(function ({ presets = [], onChange, name, ...props }, ref) {
-    const [isEditting, setEditting] = useState(false)
+const SearchPlaceFormResultsContainer = styled('div')`
+    margin-left: 48px;
+    margin-bottom: 12px;
+`
+
+function SearchPlaceForm({ onSelect, selectedResult }) {
+    const [value, onChange] = useDebouncedInput(800)
+    const [searchResults, setSearchResults] = useState()
+    useEffect(() => {
+        if (!value) return
+        window.placesService.findPlaceFromQuery({
+            query: value,
+            fields: ['name', 'geometry', 'formatted_address']}, 
+            results => {
+                setSearchResults(results)
+            }
+        )
+        
+    }, [value])
+
+    if (!window.placesService) {
+        return <span>No places service found!</span>
+    }
+    return (
+        <>
+            <InputRow icon={MdPlace} type="text" placeholder="Search with place adress or name" onChange={onChange}/>
+            {value && searchResults ? 
+                <SearchPlaceFormResultsContainer>
+                    {searchResults.map(result => 
+                        <Button onClick={() => onSelect(result)} selected={selectedResult === result}>
+                            {result.name}{"\n"}{result.formatted_address}
+                        </Button>
+                    )}
+                </SearchPlaceFormResultsContainer>
+            : null}
+        </>
+    )
+}
+
+const LocationFormContainer = styled('div')`
+    display: flex;
+    flex-direction: column;
+`
+
+const LocationFormSuggestedContainer = styled('div')`
+    display: flex;
+    flex-direction: column;
+    margin-left: 48px;
+    margin-bottom: 8px;
+`
+
+const LocationFormSuggestionsLabel = styled('div')`
+    font-size: 12px;
+    padding-bottom: 6px;
+    color: ${props => props.theme.text};
+`
+
+function locationFromMapsResult(place) {
+    if (!place) return undefined
+    return {
+        ...getAddressComponents(place.formatted_address),
+        lat: place.geometry.location.lat,
+        lng: place.geometry.location.lng,
+        accuracy: LocationAccuracy.Address,
+    }
+}
+
+const LocationForm = forwardRef(function ({ presets = [], onChange, name, icon, ...props }, ref) {
     const [selectedPresetIndex, setSelectedPresetIndex] = useState()
+    const [selectedSearchPlace, setSelectedSearchPlace] = useState()
     const presetLabels = presets.map(formattedAccuracyLocation)
     
     useImperativeHandle(ref, () => ({
-        value: selectedPresetIndex !== undefined ? presets[selectedPresetIndex] : undefined,
-        reset: () => setSelectedPresetIndex(undefined)
-    }), [selectedPresetIndex])
+        value: selectedPresetIndex !== undefined ? presets[selectedPresetIndex] : locationFromMapsResult(selectedSearchPlace),
+        reset: () => {
+            setSelectedPresetIndex(undefined)
+            setSelectedSearchPlace(undefined)
+        }
+    }), [selectedPresetIndex, selectedSearchPlace])
 
     const onOptionClick = (_, i) => {
         setSelectedPresetIndex(i)
         onChange({ target: { value: presets[selectedPresetIndex], name }})
     }
+
     return (
-        <MenuRow {...props}>
-        <ButtonOptions options={presetLabels} onOptionClick={onOptionClick} selectedIndex={selectedPresetIndex}>
-            {isEditting ? null : <ButtonInlineButton icon={MdEdit} onClick={() => setEditting(true)} tooltip="Precise edit"/>}
-        </ButtonOptions>
-        {isEditting ? 
-            <>
-                <StayTextField placeholder="Lat" />
-                <StayTextField placeholder="Lng" />
-            </>
-        : null}
-        </MenuRow>
+        <LocationFormContainer>
+            <SearchPlaceForm onSelect={setSelectedSearchPlace} selectedResult={selectedSearchPlace}/>
+            {presets.length === 0 ? null :
+                <LocationFormSuggestedContainer>
+                    <LocationFormSuggestionsLabel>Suggestions:</LocationFormSuggestionsLabel>
+                    <ButtonOptions options={presetLabels} onOptionClick={onOptionClick} selectedIndex={selectedPresetIndex} />
+                </LocationFormSuggestedContainer>
+            }
+        </LocationFormContainer>
     )
 })
 
@@ -202,7 +273,12 @@ const DaysForm = forwardRef(function ({ since, until, onChange, name }, ref) {
             <MenuRow
                 icon={MdNightsStay}
                 title="Nights stayed"
-                right={<>{isEdittingDays ? null : range}{days.length === 1 ? null : <TextInlineButton icon={MdEdit} onClick={onEditClick} tooltip="Select dates"/>}</>}
+                right={
+                    <>
+                        {isEdittingDays ? null : range}
+                        {days.length === 1 ? null : <TextInlineButton icon={MdEdit} onClick={onEditClick} style={{marginRight: -12, marginTop: -4, marginBottom: -2}} tooltip="Select dates"/>}
+                    </>
+                }
             />
             {isEdittingDays ? 
                 <ListPicker items={formattedDays} onChange={onListChange} style={{marginLeft: 12, marginRight: 12, paddingBottom: 0}}/>
