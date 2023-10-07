@@ -12,7 +12,7 @@ import { TimelineProvider } from "domain/timeline"
 import { StaysProvider } from "domain/stays"
 import { ThemeProvider, useThemeColors } from "domain/theme"
 import { SettingsProvider } from './settings'
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from '@vercel/analytics/react'
 import mapboxgl from 'mapbox-gl'
  
 mapboxgl.accessToken = 'pk.eyJ1IjoicmFidXJza2kiLCJhIjoiR2ltZ1pkSSJ9.BKiZ33LQkwsLgyyrAw4EyQ';

@@ -87,8 +87,6 @@ const MapComponent = forwardRef(function MyMapComponent({ markers, initPositions
         const google = window.google
         const { center, zoom } = getZoomAndBounds(initPositions)
 
-        window.placesService = new google.maps.places.PlacesService(ref.current)
-
         const map = new google.maps.Map(ref.current, {
             center,
             zoom,
@@ -142,7 +140,7 @@ const MapComponent = forwardRef(function MyMapComponent({ markers, initPositions
     }), [])
 
   
-    return <div ref={ref} id="map" style={{display: 'flex', flex: 1, alignSelf: 'stretch', backgroundColor: 'transparent'}}/>;
+    return <div ref={ref} id="map" style={{display: 'flex', flex: 1, alignSelf: 'stretch', backgroundColor: 'transparent'}}/>
 })
 
 export default function GoogleMaps({ mapRef, onResetView, ...props }) {

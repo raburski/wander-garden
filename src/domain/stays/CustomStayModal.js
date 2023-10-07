@@ -6,7 +6,7 @@ import { TbTent, TbCloudUpload, TbDots, TbFriends } from 'react-icons/tb'
 import { PlaceTypeToIcon, PlaceTypeToTitle, StayPlaceType } from "./types"
 import InfoRow from "components/InfoRow"
 import Panel, { Row } from "components/Panel"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Button from "components/Button"
 import Separator from "components/Separator"
 import { useUpload } from "routes/Data/hooks"
@@ -149,11 +149,15 @@ const SearchPlaceFormResultsContainer = styled('div')`
 `
 
 function SearchPlaceForm({ onSelect, selectedResult }) {
+    const ref = useRef()
     const [value, onChange] = useDebouncedInput(800)
     const [searchResults, setSearchResults] = useState()
+
     useEffect(() => {
         if (!value) return
-        window.placesService.findPlaceFromQuery({
+
+        const placesService = new window.google.maps.places.PlacesService(ref.current)
+        placesService.findPlaceFromQuery({
             query: value,
             fields: ['name', 'geometry', 'formatted_address']}, 
             results => {
@@ -168,11 +172,12 @@ function SearchPlaceForm({ onSelect, selectedResult }) {
     }
     return (
         <>
+            <div ref={ref} id="places_search_map" style={{width:0, height:0}}/>
             <InputRow icon={MdPlace} type="text" placeholder="Search with place adress or name" onChange={onChange}/>
             {value && searchResults ? 
                 <SearchPlaceFormResultsContainer>
                     {searchResults.map(result => 
-                        <Button onClick={() => onSelect(result)} selected={selectedResult === result}>
+                        <Button style={{marginBottom: 4}} onClick={() => onSelect(result)} selected={selectedResult === result}>
                             {result.name}{"\n"}{result.formatted_address}
                         </Button>
                     )}
@@ -225,12 +230,18 @@ const LocationForm = forwardRef(function ({ presets = [], onChange, name, icon, 
 
     const onOptionClick = (_, i) => {
         setSelectedPresetIndex(i)
+        setSelectedSearchPlace(undefined)
         onChange({ target: { value: presets[selectedPresetIndex], name }})
+    }
+    
+    const onSearchResultClick = (result) => {
+        setSelectedSearchPlace(result)
+        setSelectedPresetIndex(undefined)
     }
 
     return (
         <LocationFormContainer>
-            <SearchPlaceForm onSelect={setSelectedSearchPlace} selectedResult={selectedSearchPlace}/>
+            <SearchPlaceForm onSelect={onSearchResultClick} selectedResult={selectedSearchPlace}/>
             {presets.length === 0 ? null :
                 <LocationFormSuggestedContainer>
                     <LocationFormSuggestionsLabel>Suggestions:</LocationFormSuggestionsLabel>

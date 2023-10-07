@@ -39,6 +39,7 @@ export const LIGHT = {
         highlight: colors.neutral.lightest,
     },
     primary: {
+        default: colors.primary.default,
         highlight: colors.primary.lighter,
         active: colors.primary.light,
     },
