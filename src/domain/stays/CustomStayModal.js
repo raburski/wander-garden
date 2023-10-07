@@ -206,9 +206,9 @@ function locationFromMapsResult(place) {
     if (!place) return undefined
     return {
         ...getAddressComponents(place.formatted_address),
-        lat: place.geometry.location.lat,
-        lng: place.geometry.location.lng,
-        accuracy: LocationAccuracy.Address,
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+        accuracy: LocationAccuracy.GPS,
     }
 }
 

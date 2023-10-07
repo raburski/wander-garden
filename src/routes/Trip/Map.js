@@ -12,7 +12,7 @@ function getInfoWindowProperties({ stay, checkin }) {
         const [_, range] = getDaysAndRangeText(stay?.since, stay?.until)
         return {
             ariaLabel: stay?.accomodation?.name,
-            content: `<b>${stay?.accomodation?.name}</b> <a href="${stay?.url}" target="_blank">[🔗]</a></br>${range}`
+            content: `<b>${stay?.accomodation?.name}</b> ${stay?.url ? `<a href="${stay?.url}" target="_blank">[🔗]</a>` : ''}</br>${range}`
         }
     } else if (checkin) {
         const date = moment.unix(checkin.createdAt).format('DD/MM/YYYY HH:mm')
