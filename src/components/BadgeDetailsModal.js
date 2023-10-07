@@ -9,7 +9,7 @@ import { VscCheck } from 'react-icons/vsc'
 export default function BadgeDetailsModal({ selectedBadge, onClickAway}) {
     return (
         <ModalPage isOpen={!!selectedBadge} header={selectedBadge?.name} onClickAway={onClickAway}>
-            <Panel header="Countries in the region">
+            <Panel>
                 {selectedBadge?.oneOfCountry?.map(cc => <CountryRow key={cc} code={cc} right={selectedBadge.matching.includes(cc) ? <VscCheck /> : null}/>)}
             </Panel>
         </ModalPage>

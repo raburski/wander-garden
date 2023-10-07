@@ -252,7 +252,7 @@ const LocationForm = forwardRef(function ({ presets = [], onChange, name, icon, 
 const DaysForm = forwardRef(function ({ since, until, onChange, name }, ref) {
     const [isEdittingDays, setEdittingDays] = useState(false)
     const days = getDaysFromRange(since, until)
-    const formattedDays = days.map(day => moment(day).format('DD/MM/YYYY'))
+    const formattedDays = days.map(day => moment(day).format('DD/MM/YYYY, dddd'))
     const [_, range] = getDaysAndRangeText(since, until)
     const [selectedDays, setSelectedDays] = useState(days)
 

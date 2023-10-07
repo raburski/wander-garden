@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useRegionalBadges } from 'domain/badges'
+import { useRegionalBadges, useReligionBadges } from 'domain/badges'
 import Page from 'components/Page'
 import Panel from 'components/Panel'
 import Badge from 'components/Badge'
@@ -15,15 +15,19 @@ const contentStyle = {
 export default function Badges() {
     const [selectedBadge, setSelectedBadge] = useState()
     const regionalBadges = useRegionalBadges()
+    const religionBadges = useReligionBadges()
     return (
         <Page header="Badges">
-            <Panel header="Regions of the Earth" contentStyle={contentStyle}>
+            <Panel header="Regions" contentStyle={contentStyle}>
                 {regionalBadges.map(badge => <Badge name={badge.name} emoji={badge.emoji} active={badge.acquired} inactive={!badge.acquired} key={badge.name} onClick={() => setSelectedBadge(badge)}/>)}
-                <BadgeDetailsModal
-                    selectedBadge={selectedBadge}
-                    onClickAway={() => setSelectedBadge(null)}
-                />
             </Panel>
+            <Panel header="Religions" contentStyle={contentStyle}>
+                {religionBadges.map(badge => <Badge name={badge.name} emoji={badge.emoji} active={badge.acquired} inactive={!badge.acquired} key={badge.name} onClick={() => setSelectedBadge(badge)}/>)}
+            </Panel>
+            <BadgeDetailsModal
+                selectedBadge={selectedBadge}
+                onClickAway={() => setSelectedBadge(null)}
+            />
         </Page>
     )
 }

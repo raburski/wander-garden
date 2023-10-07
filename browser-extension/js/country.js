@@ -4,7 +4,7 @@ const countryCodeToName = {
     "AL": "Albania",
     "DZ": "Algeria",
     "AS": "American Samoa",
-    "AD": "AndorrA",
+    "AD": "Andorra",
     "AO": "Angola",
     "AI": "Anguilla",
     "AQ": "Antarctica",
@@ -241,7 +241,11 @@ const countryCodeToName = {
     "EH": "Western Sahara",
     "YE": "Yemen",
     "ZM": "Zambia",
-    "ZW": "Zimbabwe"
+    "ZW": "Zimbabwe",
+
+    "RS": "Serbia",
+    "ME": "Montenegro",
+    "XK": "Kosovo"
 }
 
 function getCountryCode(countryName) {
