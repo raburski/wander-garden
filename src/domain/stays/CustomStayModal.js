@@ -167,9 +167,6 @@ function SearchPlaceForm({ onSelect, selectedResult }) {
         
     }, [value])
 
-    if (!window.placesService) {
-        return <span>No places service found!</span>
-    }
     return (
         <>
             <div ref={ref} id="places_search_map" style={{width:0, height:0}}/>
