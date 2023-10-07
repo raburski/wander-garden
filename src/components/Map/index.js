@@ -147,7 +147,7 @@ const MapComponent = forwardRef(function MyMapComponent({ markers, initPositions
 
 export default function GoogleMaps({ mapRef, onResetView, ...props }) {
     return (
-        <GoogleMapsWrapper apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
+        <GoogleMapsWrapper apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} libraries={["places", "maps"]}>
             <MapComponent ref={mapRef} {...props}/>
             {onResetView ? <ResetViewButton icon={MdOutlineGridView} iconSize={22} onClick={onResetView} /> : null}
         </GoogleMapsWrapper>
