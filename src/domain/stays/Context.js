@@ -163,20 +163,34 @@ export function StaysProvider({ children }) {
         setCapturedStays(undefined)
     }
 
-    async function addCustomStays(stays = []) {
-        const staysToAdd = stays
+    function createCustomStays(stays = []) {
+        return stays
             .map(stay => ({
                 ...stay,
-                id: createIDForCustomStay(stay),
+                id: stay.id || createIDForCustomStay(stay),
                 origin: StayOrigin.UserInput,
             }))
             .filter(isStayType)
-        
+    }
+
+    async function addCustomStays(stays = []) {
+        const staysToAdd = createCustomStays(stays)
         if (staysToAdd.length !== stays.length) {
             return console.log('Custom stay data corrupted!')
         }
         const currentStays = customStays[0]
         const finalStays = [...currentStays, ...staysToAdd]
+        await setStays(StayType.Custom, finalStays)
+        await refresh()
+    }
+
+    async function replaceCustomStay(stayID, stays = []) {
+        const staysToAdd = createCustomStays(stays)
+        if (staysToAdd.length !== stays.length) {
+            return console.log('Custom stay data corrupted!')
+        }
+        const currentStays = customStays[0]
+        const finalStays = [...currentStays.filter(stay => stay.id !== stayID), ...staysToAdd]
         await setStays(StayType.Custom, finalStays)
         await refresh()
     }
@@ -218,6 +232,7 @@ export function StaysProvider({ children }) {
         importCapturedStays,
         clearCapturedStays: () => setCapturedStays(undefined),
         addCustomStays,
+        replaceCustomStay,
         stays: {
             [StayType.Booking]: bookingStays,
             [StayType.Agoda]: agodaStays,
@@ -297,6 +312,11 @@ export function useImportCapturedStays() {
 export function useAddCustomStays() {
     const context = useContext(ExtensionContext)
     return context.addCustomStays
+}
+
+export function useReplaceCustomStay() {
+    const context = useContext(ExtensionContext)
+    return context.replaceCustomStay
 }
 
 export function useStays(type) {

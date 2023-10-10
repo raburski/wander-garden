@@ -1,7 +1,7 @@
 import Panel from '../../components/Panel'
 import { PhaseType } from './useTrip'
 import { useRef } from 'react'
-import Map, { Icon } from 'components/Map'
+import Map, { Icon } from 'domain/map'
 import { venueEmoji } from 'domain/swarm/categories'
 import { getDaysAndRangeText } from 'date'
 import moment from 'moment'

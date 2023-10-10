@@ -11,6 +11,7 @@ import { HomesProvider } from "domain/homes"
 import { TimelineProvider } from "domain/timeline"
 import { StaysProvider } from "domain/stays"
 import { ThemeProvider, useThemeColors } from "domain/theme"
+import { MapProvider } from "domain/map"
 import { SettingsProvider } from './settings'
 import { Analytics } from '@vercel/analytics/react'
 import mapboxgl from 'mapbox-gl'
@@ -46,6 +47,7 @@ const RoutesContainer = styled('div')`
 function App() {
   return (
     <Router>
+      <MapProvider>
       <SettingsProvider>
         <ThemeProvider>
           <SwarmProvider>
@@ -66,6 +68,7 @@ function App() {
           </SwarmProvider>
         </ThemeProvider>
       </SettingsProvider>
+      </MapProvider>
     </Router>
   );
 }

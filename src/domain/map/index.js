@@ -1,9 +1,10 @@
-import { Wrapper as GoogleMapsWrapper } from "@googlemaps/react-wrapper"
 import Button from "components/Button";
 import { styled } from "goober";
 import { useEffect, useRef, forwardRef, useImperativeHandle } from "react"
 import { MdOutlineGridView } from "react-icons/md"
 import useMapsStyles from "./useMapStyles"
+
+export { default as MapProvider } from './Provider'
 
 export const Icon = {
     Default: 'default',
@@ -145,9 +146,9 @@ const MapComponent = forwardRef(function MyMapComponent({ markers, initPositions
 
 export default function GoogleMaps({ mapRef, onResetView, ...props }) {
     return (
-        <GoogleMapsWrapper apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} libraries={["places", "maps"]}>
+        <>
             <MapComponent ref={mapRef} {...props}/>
             {onResetView ? <ResetViewButton icon={MdOutlineGridView} iconSize={22} onClick={onResetView} /> : null}
-        </GoogleMapsWrapper>
+        </>
     )
 }

@@ -23,6 +23,7 @@ import { TITLES } from './consts'
 import SquareImage from "components/SquareImage"
 import { PlaceTypeToIcon, StayLogoURL, StayOrigin, StayType, getStayIcon, useShowCaptureStartModal, useStays } from "domain/stays"
 import { downloadString } from "files"
+import CustomStayModal from "domain/stays/CustomStayModal"
 
 const NoStaysContainer = styled('div')`
     display: flex;
@@ -103,12 +104,12 @@ function formattedMoney(money) {
     return `${money.amount} ${money.currency.toUpperCase()}`
 }
 
-function StayRow({ stay, icon }) {
+function StayRow({ stay, icon, ...props }) {
     const guestsSubtitle = (stay.totalGuests && stay.totalGuests > 1) ? `for ${stay.totalGuests} people ` : ''
     const priceSubtitle = stay.price ? `for ${formattedMoney(stay.price)} ` : ''
     const locationSubtitle = stay.location ? `in ${formattedLocation(stay.location)}` : ''
     const subtitle = `${guestsSubtitle}${priceSubtitle}${locationSubtitle}`
-    return <InfoRow icon={icon} title={stay.accomodation.name} subtitle={subtitle} right={<StayActions stay={stay}/>}/>
+    return <InfoRow icon={icon} title={stay.accomodation.name} subtitle={subtitle} right={<StayActions stay={stay}/>} {...props}/>
 }
 
 function isCheckingMatchingPhrase(phrase) {
@@ -141,11 +142,11 @@ function isStayMatchingPhrase(phrase) {
     }
 }
 
-function StaysList({ search, type }) {
+function StaysList({ search, type, onStayClick }) {
     const stays = useStays(type)
     const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : [...stays]
     filteredStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
-    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow icon={getStayIcon(stay, type)} stay={stay} key={stay.id} />) : <NoStaysFound stayType={type}/>
+    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow onClick={onStayClick ? () => onStayClick(stay) : undefined} icon={getStayIcon(stay, type)} stay={stay} key={stay.id} />) : <NoStaysFound stayType={type}/>
 }
 
 const HeaderContainer = styled('div')`
@@ -186,11 +187,15 @@ function Header({ selectedIndex, setSelectedIndex, onRefreshClick, onDownloadCli
 
 export default function Data() {
     const [selectedIndex, setSelectedIndex] = useState(0)
+    const [editStayModalProps, setEditStayModalProps] = useState()
     const onDownloadClick = useDownload(selectedIndex)
     const onUploadClick = useUpload(selectedIndex)
     const onTrashClick = useTrash(selectedIndex)
     const onRefreshClick = useRefresh(selectedIndex)
     const [search, onChangeSearch] = useDebouncedInput()
+
+    const cancelEdit = () => setEditStayModalProps(undefined)
+    const onCustomStayClick = (stay) => setEditStayModalProps({ stay })
 
     return (
         <Page header="Data">
@@ -207,9 +212,10 @@ export default function Data() {
                 {selectedIndex === 1 ? <StaysList type={StayType.Airbnb} search={search}/> : null}
                 {selectedIndex === 2 ? <StaysList type={StayType.Agoda} search={search}/> : null}
                 {selectedIndex === 3 ? <StaysList type={StayType.Travala} search={search}/> : null}
-                {selectedIndex === 4 ? <StaysList type={StayType.Custom} search={search}/> : null}
+                {selectedIndex === 4 ? <StaysList type={StayType.Custom} onStayClick={onCustomStayClick} search={search}/> : null}
                 {selectedIndex === 5 ? <SwarmCheckinsList search={search}/> : null}
             </Panel>
+            {editStayModalProps ? <CustomStayModal onClickAway={cancelEdit} {...editStayModalProps}/> : null}
         </Page>
     )
 }

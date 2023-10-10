@@ -1,5 +1,5 @@
 import ModalPage, { ModalPageButtons } from "components/ModalPage"
-import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, MdAddTask, MdAddCircleOutline, MdNightsStay, MdPeopleAlt, MdLocationPin, MdPlace, MdSearch } from 'react-icons/md'
+import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, MdAddTask, MdAddCircleOutline, MdNightsStay, MdPeopleAlt, MdLocationPin, MdPlace, MdSearch, MdCheck, MdDone } from 'react-icons/md'
 import { FaCouch, FaUserFriends, FaCaravan, FaCar, FaShip, FaDiscord } from 'react-icons/fa'
 import { FiChevronRight, FiExternalLink } from 'react-icons/fi'
 import { TbTent, TbCloudUpload, TbDots, TbFriends } from 'react-icons/tb'
@@ -18,8 +18,8 @@ import { styled } from "goober"
 import { getDaysAndRangeText } from "date"
 import PinButton from 'components/PinButton'
 import { PhaseType } from "routes/Trip/useTrip"
-import { LocationAccuracy, formattedAccuracyLocation } from "domain/location"
-import { useAddCustomStays } from "./Context"
+import { LocationAccuracy, formattedAccuracyLocation, formattedLocation } from "domain/location"
+import { useAddCustomStays, useReplaceCustomStay } from "./Context"
 import { openDiscord } from "SideBar"
 import MenuRow from "components/MenuRow"
 import { AnimatePresence } from 'framer-motion'
@@ -103,7 +103,7 @@ const ButtonOption = styled(Button)`
 const ButtonOptions = function ({ options = [], onOptionClick, children, selectedIndex }) {
     return (
         <ButtonOptionsContainer>
-            {options.map((o, i) => <ButtonOption key={o} selected={i === selectedIndex} onClick={() => onOptionClick(o, i)}>{o}</ButtonOption>)}
+            {options.map((o, i) => <ButtonOption key={o} icon={i === selectedIndex ? MdCheck : null} selected={i === selectedIndex} onClick={() => onOptionClick(o, i)}>{o}</ButtonOption>)}
             {children}
         </ButtonOptionsContainer>
     )
@@ -174,7 +174,7 @@ function SearchPlaceForm({ onSelect, selectedResult }) {
             {value && searchResults ? 
                 <SearchPlaceFormResultsContainer>
                     {searchResults.map(result => 
-                        <Button style={{marginBottom: 4}} onClick={() => onSelect(result)} selected={selectedResult === result}>
+                        <Button style={{marginBottom: 4}} icon={selectedResult === result ? MdCheck : null} onClick={() => onSelect(result)} selected={selectedResult === result}>
                             {result.name}{"\n"}{result.formatted_address}
                         </Button>
                     )}
@@ -212,11 +212,12 @@ function locationFromMapsResult(place) {
     }
 }
 
-const LocationForm = forwardRef(function ({ presets = [], onChange, name, icon, ...props }, ref) {
+const LocationForm = forwardRef(function ({ presets = [], defaultLocation, onChange, name, icon, ...props }, ref) {
     const [selectedPresetIndex, setSelectedPresetIndex] = useState()
     const [selectedSearchPlace, setSelectedSearchPlace] = useState()
     const presetLabels = presets.map(formattedAccuracyLocation)
-    
+    const defaultLocationSelected = !selectedPresetIndex && !selectedSearchPlace
+
     useImperativeHandle(ref, () => ({
         value: selectedPresetIndex !== undefined ? presets[selectedPresetIndex] : locationFromMapsResult(selectedSearchPlace),
         reset: () => {
@@ -234,11 +235,25 @@ const LocationForm = forwardRef(function ({ presets = [], onChange, name, icon, 
     const onSearchResultClick = (result) => {
         setSelectedSearchPlace(result)
         setSelectedPresetIndex(undefined)
+        onChange({ target: { value: locationFromMapsResult(result), name }})
+    }
+
+    const onSelectDefaultLocation = () => {
+        setSelectedPresetIndex(undefined)
+        setSelectedSearchPlace(undefined)
+        onChange({ target: { value: defaultLocation, name }})
     }
 
     return (
         <LocationFormContainer>
             <SearchPlaceForm onSelect={onSearchResultClick} selectedResult={selectedSearchPlace}/>
+            <LocationFormSuggestedContainer>
+                {defaultLocation ? 
+                    <Button style={{marginBottom: 4}} icon={defaultLocationSelected ? MdCheck : null} onClick={onSelectDefaultLocation} selected={defaultLocationSelected}>
+                        {formattedLocation(defaultLocation)}
+                    </Button> : null
+                }
+            </LocationFormSuggestedContainer>
             {presets.length === 0 ? null :
                 <LocationFormSuggestedContainer>
                     <LocationFormSuggestionsLabel>Suggestions:</LocationFormSuggestionsLabel>
@@ -397,10 +412,28 @@ function getDateRanges(dates) {
     return dateRanges
 }
 
-function CustomStayPage({ phase, previousPhase, placeType, onFinished, ...props }) {
-    const { register, handleSubmit, formState } = useForm({ defaultValues: { totalGuests: previousPhase?.stay?.totalGuests } })
+function getFormDefaultValues(previousPhase, stay) {
+    if (previousPhase) {
+        return { totalGuests: previousPhase?.stay?.totalGuests }
+    } else if (stay) {
+        return {
+            name: stay.accomodation.name,
+            location: stay.location,
+            totalGuests: stay.totalGuests
+        }
+    }
+    return {}
+}
+
+function CustomStayPage({ phase, previousPhase, placeType, onFinished, stay, onBack, ...props }) {
+    const { register, handleSubmit, formState } = useForm({ defaultValues: getFormDefaultValues(previousPhase, stay) })
+    const isEditing = !!stay
     
+    const since = phase?.since || stay?.since
+    const until = phase?.until || stay?.until
+
     const addCustomStays = useAddCustomStays()
+    const replaceCustomStay = useReplaceCustomStay()
     const locations = phase ? getPresetLocations(phase) : []
 
     async function submitForm(state) {
@@ -418,24 +451,28 @@ function CustomStayPage({ phase, previousPhase, placeType, onFinished, ...props 
             price: state.price && !isNaN(state.price) ? { amount: parseFloat(state.price), currency: previousPhase.stay.price.currency } : undefined,
             totalGuests: !!state.totalGuests ? parseInt(state.totalGuests) : undefined
         }))
-        await addCustomStays(stays)
+        if (stay) {
+            await replaceCustomStay(stay.id, stays)
+        } else {
+            await addCustomStays(stays)
+        }
         await onFinished()
     }
 
     const _onSubmit = handleSubmit(submitForm)
 
     return (
-        <Page header="Add stay" {...props}>
+        <Page header={isEditing ? 'Edit stay' : 'Add stay'} onBack={isEditing ? null : onBack} {...props}>
             <Panel>
                 <InputRow icon={PlaceTypeToIcon[placeType]} placeholder="Name" {...register('name', { required: true })}/>
                 {previousPhase?.stay?.price?.currency ? <InputRow icon={IoMdPricetag} type="number" placeholder={`Total price in ${previousPhase.stay.price.currency} (optional)`} {...register('price')}/> : null}
                 <InputRow icon={MdPeopleAlt} type="number" placeholder="Total guests (optional)" {...register('totalGuests')}/>
-                <LocationForm icon={MdLocationPin} presets={locations} {...register('location', { required: true })}/>
-                <DaysForm since={phase.since} until={phase.until} {...register('days', { required: true, minLength: 1 })}/>
+                <LocationForm icon={MdLocationPin} defaultLocation={stay?.location} presets={locations} {...register('location', { required: true })}/>
+                <DaysForm since={since} until={until} {...register('days', { required: true, minLength: 1 })}/>
             </Panel>
             <ModalPageButtons>
                 <Separator />
-                <Button icon={MdAddCircleOutline} onClick={_onSubmit} disabled={!formState.isValid || formState.isSubmitting}>Add custom stay</Button>
+                <Button icon={isEditing ? MdDone : MdAdd} onClick={_onSubmit} disabled={!formState.isValid || formState.isSubmitting}>{isEditing ? 'Submit changes' : 'Add custom stay'}</Button>
             </ModalPageButtons>
         </Page>
     )
@@ -506,10 +543,10 @@ function UploadFromFriend({ onFinished, ...props }) {
 }
 
 const WIDTH = 500
-export default function CustomStayModal({ onClickAway, phase, previousPhase, ...props }) {
-    const [addStayConfirmed, setAddStayConfirmed] = useState(false)
+export default function CustomStayModal({ onClickAway, phase, previousPhase, stay, ...props }) {
+    const [addStayConfirmed, setAddStayConfirmed] = useState(!!stay)
     const [uploadFromFriendConfirmed, setUploadFromFriendConfirmed] = useState(false)
-    const [selectedStayType, setSelectedStayType] = useState(undefined)
+    const [selectedStayType, setSelectedStayType] = useState(stay?.placeType)
     
 
     const cancel = () => {
@@ -529,10 +566,10 @@ export default function CustomStayModal({ onClickAway, phase, previousPhase, ...
     const onBackFromAddStay = () => setSelectedStayType(undefined)
     const onBackFromFriend = () => setUploadFromFriendConfirmed(false)
 
-    if (!phase) return null
+    if (!phase && !stay) return null
 
     return (
-        <Modal isOpen={!!phase}  onClickAway={cancel} {...props}>
+        <Modal isOpen={!!phase || !!stay}  onClickAway={cancel} {...props}>
             {!addStayConfirmed && !selectedStayType && !uploadFromFriendConfirmed ? 
                 <WhatToDoOptionsPage key="info" style={{ width: WIDTH, }} layout
                     previousPhase={previousPhase}
@@ -551,7 +588,7 @@ export default function CustomStayModal({ onClickAway, phase, previousPhase, ...
                     onPlaceTypeSelect={onPlaceTypeSelect}
                 /> : null
             }
-            {selectedStayType && selectedStayType === StayPlaceType.Extension ?
+            {selectedStayType && selectedStayType === StayPlaceType.Extension && previousPhase ?
                 <ExtendStayPage
                     key="info"
                     style={{ width: WIDTH, }}
@@ -562,12 +599,13 @@ export default function CustomStayModal({ onClickAway, phase, previousPhase, ...
                     onBack={onBackFromAddStay}
                 /> : null
             }
-            {selectedStayType && selectedStayType !== StayPlaceType.Extension ?
+            {(selectedStayType && selectedStayType !== StayPlaceType.Extension) || stay ?
                 <CustomStayPage
                     key="info"
                     style={{ width: WIDTH, }}
                     layout
                     placeType={selectedStayType}
+                    stay={stay}
                     phase={phase}
                     previousPhase={previousPhase}
                     onFinished={cancel}

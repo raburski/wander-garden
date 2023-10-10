@@ -14,7 +14,7 @@ import Phase from './Phase'
 import { useRef, useState } from 'react';
 import Separator from 'components/Separator';
 import { Column, Row } from 'components/container';
-import Map, { Icon } from 'components/Map'
+import Map, { Icon } from 'domain/map'
 import { detectStayType } from 'domain/stays'
 import Info from './Info'
 import { venueEmoji } from 'domain/swarm/categories'
