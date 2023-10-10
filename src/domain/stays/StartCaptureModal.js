@@ -57,6 +57,7 @@ const ExtensionRequiredContainer = styled('div')`
     justify-content: center;
     align-items: center;
     white-space: pre-wrap;
+    color: ${props => props.theme.text}
 `
 
 const CAPTURE_SETTING_NAME = 'stay_capture_new_only'

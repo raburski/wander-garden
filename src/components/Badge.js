@@ -25,7 +25,19 @@ const BadgeContainerActive = styled(BadgeContainerDefault)`
     background-color: ${props => props.theme.background.highlight};
 
     &:hover {
-        background-color: ${props => props.theme.primary.highlight};
+        background-color: ${props => props.theme.primary.active};
+    }
+`
+
+const BadgeContainerFilled = styled(BadgeContainerDefault)`
+    background-color: ${props => props.theme.primary.active};
+    outline: 2px dashed ${props => props.theme.primary.default};
+    outline-offset: 2px;
+    transition: 0.15s;
+
+    &:hover {
+        background-color: ${props => props.theme.background.default};
+        transform: scale(1.06);
     }
 `
 
@@ -40,8 +52,10 @@ const BadgeName = styled('div')`
     color: ${props => props.theme.text};
 `
 
-function BadgeContainer({ active, inactive, ...props }) {
-    if (active) {
+function BadgeContainer({ active, inactive, filled, ...props }) {
+    if (filled) {
+        return <BadgeContainerFilled {...props}/>
+    } else if (active) {
         return <BadgeContainerActive {...props}/>
     } else if (inactive) {
         return <BadgeContainerInactive {...props}/>
@@ -50,9 +64,9 @@ function BadgeContainer({ active, inactive, ...props }) {
     }
 }
 
-export default function Badge({ name, emoji, active, inactive, onClick }) {
+export default function Badge({ name, emoji, active, inactive, filled, onClick }) {
     return (
-        <BadgeContainer active={active} inactive={inactive} onClick={onClick}>
+        <BadgeContainer active={active} inactive={inactive} filled={filled} onClick={onClick}>
             <BadgeIcon>{emoji}</BadgeIcon>
             <BadgeName>{name}</BadgeName>
         </BadgeContainer>

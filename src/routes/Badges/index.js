@@ -19,10 +19,10 @@ export default function Badges() {
     return (
         <Page header="Badges">
             <Panel header="Regions" contentStyle={contentStyle}>
-                {regionalBadges.map(badge => <Badge name={badge.name} emoji={badge.emoji} active={badge.acquired} inactive={!badge.acquired} key={badge.name} onClick={() => setSelectedBadge(badge)}/>)}
+                {regionalBadges.map(badge => <Badge name={badge.name} emoji={badge.emoji} active={badge.acquired} filled={badge.filled} inactive={!badge.acquired} key={badge.name} onClick={() => setSelectedBadge(badge)}/>)}
             </Panel>
             <Panel header="Religions" contentStyle={contentStyle}>
-                {religionBadges.map(badge => <Badge name={badge.name} emoji={badge.emoji} active={badge.acquired} inactive={!badge.acquired} key={badge.name} onClick={() => setSelectedBadge(badge)}/>)}
+                {religionBadges.map(badge => <Badge name={badge.name} emoji={badge.emoji} active={badge.acquired} filled={badge.filled} inactive={!badge.acquired} key={badge.name} onClick={() => setSelectedBadge(badge)}/>)}
             </Panel>
             <BadgeDetailsModal
                 selectedBadge={selectedBadge}
