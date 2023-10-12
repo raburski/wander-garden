@@ -1,7 +1,9 @@
 import { styled } from "goober"
 import BackButton from "./BackButton"
+import { ErrorBoundary } from "react-error-boundary"
 import Header from "./Header"
 import { motion } from 'framer-motion'
+import ErrorFallback from "../ErrorFallback"
 
 const NON_MODAL_PAGE_STYLE_DEFAULT = `
     padding-left: 0px;
@@ -51,7 +53,9 @@ export default function Page({ children, header, showBackButton = false, right =
     return (
         <Container {...props}>
             <Header>{(showBackButton || onBack) ? <BackButton onClick={onBack} /> : null}{header}<Separator />{right}</Header>
-            {children}
+            <ErrorBoundary FallbackComponent={ErrorFallback}>
+                {children}
+            </ErrorBoundary>
         </Container>
     )
 }

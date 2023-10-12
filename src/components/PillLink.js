@@ -27,7 +27,8 @@ const StyledLink = styled(MotionLink)`
 `
 
 const LinkIcon = styled('div')`
-    margin-top: ${props => props.small ? '4px' : '7px'};
+    margin-top: ${props => props.small ? '2px' : '5px'};
+    margin-bottom: 1px;
     font-size: ${props => props.small ? '16px' : '20px'};
 `
 

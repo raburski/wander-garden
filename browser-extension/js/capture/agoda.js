@@ -92,10 +92,7 @@ function initCapture({ captureStay, captureFinished, lastCapturedStayID }) {
     if (window.location.href.includes('signin')) {
         // on a login page
         return
-    }
-
-    const params = new URLSearchParams(window.location.search)
-    if (window.location.href.includes('account/bookings')) {
+    } else if (window.location.href.includes('account/bookings')) {
         captureBookingsPage(captureFinished)
 
     } else if (window.location.href.includes('editbooking')) {
