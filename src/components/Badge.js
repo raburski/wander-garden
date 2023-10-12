@@ -4,11 +4,11 @@ import colors from '../colors'
 const BadgeContainerDefault = styled('div')`
     display: flex;
     flex-direction: column;
-    padding: 8px;
-    margin: 8px;
+    padding: 6px;
+    margin: 4px;
     align-items: center;
     border-radius: 6px;
-    min-width: 72px;
+    min-width: ${props => props.small ? '54px;' : '72px'};
     cursor: pointer;
 
     &:hover {
@@ -43,7 +43,7 @@ const BadgeContainerFilled = styled(BadgeContainerDefault)`
 
 const BadgeIcon = styled('div')`
     display: flex;
-    font-size: 48px;
+    font-size: ${props => props.small ? '32px' : '48px'};
 `
 
 const BadgeName = styled('div')`
@@ -64,10 +64,10 @@ function BadgeContainer({ active, inactive, filled, ...props }) {
     }
 }
 
-export default function Badge({ name, emoji, active, inactive, filled, onClick }) {
+export default function Badge({ name, emoji, active, inactive, filled, onClick, small }) {
     return (
-        <BadgeContainer active={active} inactive={inactive} filled={filled} onClick={onClick}>
-            <BadgeIcon>{emoji}</BadgeIcon>
+        <BadgeContainer active={active} inactive={inactive} filled={filled} onClick={onClick} small={small}>
+            <BadgeIcon small={small}>{emoji}</BadgeIcon>
             <BadgeName>{name}</BadgeName>
         </BadgeContainer>
     )
