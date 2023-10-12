@@ -103,6 +103,19 @@ function handleExtensionMessage(message, sender) {
                 stays: finalStays,
             })
             break
+        case 'error':
+            chrome.tabs.remove(STORE.captureTabID[message.source])
+            chrome.tabs.update(STORE.captureTabID[ORIGIN.GARDEN], { active: true })
+            STORE.captureTabID[message.source] = undefined
+            sendMessage({
+                source: ORIGIN.SERVICE,
+                target: ORIGIN.GARDEN,
+                subject: message.source,
+                type: 'error',
+                error: message.error,
+                location: message.location,
+            })
+            break
     }
 }
 

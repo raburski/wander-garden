@@ -7,6 +7,7 @@ import moment from "moment"
 import { isStayData, isStayType } from "domain/stays"
 import ImportModal from "./ImportModal"
 import CapturingModal from "./CapturingModal"
+import CapturingErrorModal from './CapturingErrorModal'
 import StartCaptureModal from "./StartCaptureModal"
 import { detectStayType, staysEqual } from "./stays"
 
@@ -78,7 +79,8 @@ function createIDForCustomStay(stay) {
 export function StaysProvider({ children }) {
     const [version, setVersion] = useState()
     const [capturedStays, setCapturedStays] = useState()
-    const [failed, setFailed] = useState(false)
+    const [initFailed, setInitFailed] = useState(false)
+    const [captureError, setCaptureError] = useState()
     const [capturing, setCapturing] = useState(false)
     const [selectedCaptureStayType, setSelectedCaptureStayType] = useState()
 
@@ -116,7 +118,7 @@ export function StaysProvider({ children }) {
                 if (message.type === 'init') {
                     setVersion(message.version)
                 } else if (message.type === 'init_failed') {
-                    setFailed(true)
+                    setInitFailed(true)
                 } else if (message.type === 'capture_finished') {
                     setCapturing(false)
                     const subject = message.subject
@@ -127,17 +129,21 @@ export function StaysProvider({ children }) {
                         diff: getStaysCaptureDiff(message.stays, stays),
                         origin: StayOrigin.Captured,
                     })
+                } else if (message.type === 'error') {
+                    setCaptureError({ error: message.error, location: message.location })
+                    setCapturing(false)
                 }
             }
         }
-        if (!failed) {
+        if (!initFailed) {
             window.addEventListener('message', eventListener)
         }
         return () => window.removeEventListener('message', eventListener)
-    }, [failed, refreshHomes, refreshTimeline, setFailed, setCapturing, setVersion])
+    }, [initFailed, refreshHomes, refreshTimeline, setInitFailed, setCapturing, setVersion])
 
     async function startCapture(stayType, captureNewOnly) {
         setCapturing(true)
+        setCaptureError(undefined)
         const subject = StayTypeToOrigin[stayType]
         const stays = await getStays(stayType)
         const lastCapturedStayID = captureNewOnly ? getLatestStay(stays)?.id : undefined
@@ -223,7 +229,7 @@ export function StaysProvider({ children }) {
     const value = {
         isConnected: !!version,
         version,
-        failed,
+        initFailed,
         capturing,
         startCapture,
         startFileImport,
@@ -250,15 +256,21 @@ export function StaysProvider({ children }) {
                 stayType={selectedCaptureStayType}
                 onCancel={() => setSelectedCaptureStayType(undefined)}
             />
-            <CapturingModal isOpen={capturing}/>
+            <CapturingModal isOpen={capturing} />
+            <CapturingErrorModal 
+                isOpen={!!captureError}
+                error={captureError?.error}
+                location={captureError?.location}
+                onClickAway={() => setCaptureError(undefined)}
+            />
         </ExtensionContext.Provider>
     )
 }
 
 export function useExtensionStatus() {
     const context = useContext(ExtensionContext)
-    if (context.failed) {
-        return Status.Failed
+    if (context.initFailed) {
+        return Status.InitFailed
     } else if (context.version && context.version !== CURRENT_VERSION) {
         return Status.Incompatible
     } else if (context.capturing) {

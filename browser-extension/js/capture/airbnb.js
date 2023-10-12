@@ -74,7 +74,7 @@ function openDetailPage(index, captureFinished) {
     }
 }
 
-function initCapture({ captureStay, captureFinished, lastCapturedStayID }) {
+function initCapture({ captureStay, captureFinished, lastCapturedStayID, onError }) {
     if (window.location.href.includes('login')) {
         // on a login page
         return
@@ -92,6 +92,11 @@ function initCapture({ captureStay, captureFinished, lastCapturedStayID }) {
         const nextURL = atob(parts[1])
         try {
             const stay = extractStayFromDocument()
+        } catch (e) {
+            console.log('airbnb capture failed', e)
+            onError(e, 'extractStayFromDocument')
+        }
+        try {
             if (stay && stay?.id === lastCapturedStayID) {
                 captureFinished()
             } else if (stay) {
@@ -103,7 +108,7 @@ function initCapture({ captureStay, captureFinished, lastCapturedStayID }) {
             }
         } catch (e) {
             console.log('airbnb capture failed', e)
-            alert('Airbnb capture failed :(')
+            onError(e, 'captureFinished')
         }
     }
 }

@@ -75,7 +75,7 @@ export function isStayData(data: any[]) {
 export enum Status {
     Unknown = 'UNKNOWN',
     Connected = 'CONNECTED',
-    Failed = 'FAILED',
+    InitFailed = 'INIT_FAILED',
     Incompatible = 'INCOMPATIBLE',
     Capturing = 'CAPTURING',
 }

@@ -147,6 +147,10 @@ function init(origin, onInitCapture, onInitDefault) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_stay_partial', stay })
     }
 
+    function sendError(error, location) {
+        browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'error', error: `${error}`, location })
+    }
+
     let ON_NETWORK_CAPTURED = undefined
     function registerOnNetworkCaptured(callback) {
         ON_NETWORK_CAPTURED = callback
@@ -184,6 +188,7 @@ function init(origin, onInitCapture, onInitDefault) {
                     captureFinished: sendCaptureFinished,
                     onStayCaptured: registerOnStayCaptured,
                     onNetworkCaptured: registerOnNetworkCaptured,
+                    onError: sendError,
                     lastCapturedStayID: message.lastCapturedStayID
                 })
             } else {

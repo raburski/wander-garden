@@ -75,7 +75,7 @@ function ExtensionConnected() {
     )
 }
 
-function ExtensionFailed() {
+function ExtensionInitFailed() {
     return (
         <>
             <ExtensionStatus/>
@@ -89,9 +89,8 @@ function ExtensionContent() {
     switch (extensionStatus) {
         case Status.Unknown: return <ExtensionNotConnected />
         case Status.Connected: return <ExtensionConnected />
-        case Status.Capturing: 
-            return <ExtensionConnected />
-        case Status.Failed: return <ExtensionFailed />
+        case Status.Capturing: return <ExtensionConnected />
+        case Status.InitFailed: return <ExtensionInitFailed />
         case Status.Incompatible: return <ExtensionVersionNotMatching />
     }
 }
