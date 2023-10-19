@@ -49,10 +49,14 @@ const Container = styled(motion.div)`
     }
 `
 
+const Right = styled('div')`
+    font-size: 28px;
+`
+
 export default function Page({ children, header, showBackButton = false, right = null, onBack = null, ...props }) {
     return (
         <Container {...props}>
-            <Header>{(showBackButton || onBack) ? <BackButton onClick={onBack} /> : null}{header}<Separator />{right}</Header>
+            <Header>{(showBackButton || onBack) ? <BackButton onClick={onBack} /> : null}{header}<Separator /><Right>{right}</Right></Header>
             <ErrorBoundary FallbackComponent={ErrorFallback}>
                 {children}
             </ErrorBoundary>

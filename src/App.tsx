@@ -12,6 +12,7 @@ import { TimelineProvider } from "domain/timeline"
 import { StaysProvider } from "domain/stays"
 import { ThemeProvider, useThemeColors } from "domain/theme"
 import { MapProvider } from "domain/map"
+import { OnboardingProvider } from "domain/onboarding"
 import { SettingsProvider } from './settings'
 import { Analytics } from '@vercel/analytics/react'
 import mapboxgl from 'mapbox-gl'
@@ -56,10 +57,12 @@ function App() {
                 <StaysProvider>
                   <AppContainer>
                       <Analytics />
-                      <SideBar />
-                      <RoutesContainer id="routes-container">
-                        <Routes />
-                      </RoutesContainer>
+                      <OnboardingProvider>
+                        <SideBar />
+                        <RoutesContainer id="routes-container">
+                          <Routes />
+                        </RoutesContainer>
+                      </OnboardingProvider>
                     <Toaster />
                   </AppContainer>
                 </StaysProvider>

@@ -32,23 +32,15 @@ function convertGPSCoordinates(gpsCoordinates) {
     return { latitude, longitude }
 }
 
-function clickLoadMoreButtonUntilGone(callback, lastTime = false) {
-    const button = document.querySelector(".mtr-timeline > span > button")
-    const text = button ? button.innerText : ''
-    if (button && text.length > 6) { // View more bookings
-        button.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
-        setTimeout(function() { clickLoadMoreButtonUntilGone(callback, false) }, 300)
-    } else if (button) { // Loading indicator
-        setTimeout(function() { clickLoadMoreButtonUntilGone(callback, lastTime) }, 300)
-    } else { // button gone
-        if (lastTime) {
-            callback()
-        } else {
-            function oneAdditionalTimeCallback() {
-                setTimeout(function() { clickLoadMoreButtonUntilGone(callback, true) }, 300)
-            }
-            setTimeout(function() { clickLoadMoreButtonUntilGone(oneAdditionalTimeCallback, true) }, 300)
-        }
+function scrollToBottomUntilLoadingGone(callback) {
+    const items = [...document.querySelectorAll("#mytrips-mfe > div > div > div > div ")]
+    const lastItem = items[items.length-1]
+    const isLoading = lastItem.classList.length >= 2 && !lastItem.classList.toString().includes('csxp')
+    if (isLoading) {
+        lastItem.scrollIntoView()
+        setTimeout(function() { scrollToBottomUntilLoadingGone(callback) }, 300)
+    } else {
+        callback()
     }
 }
 
@@ -79,7 +71,7 @@ function initMyTrips(onStayCaptured, captureFinished, lastCapturedStayID) {
     }
 
     function startOpeningStays() {
-        tripLinks = document.querySelectorAll(".mtr-timeline > div > div > a")
+        tripLinks = document.querySelectorAll("#mytrips-mfe > div > div > a")
         if (tripLinks.length === 0) {
             console.log('[WARNING] Wander Garden: no trip urls detected')
         }
@@ -95,7 +87,7 @@ function initMyTrips(onStayCaptured, captureFinished, lastCapturedStayID) {
         processNextTrip()
     })
 
-    clickLoadMoreButtonUntilGone(startOpeningStays)
+    scrollToBottomUntilLoadingGone(startOpeningStays)
 }
 
 function getYearFromURL() {
@@ -131,23 +123,23 @@ function extractStayFromDocument() {
     const priceResult = document.querySelector('span.room-price').textContent
     const roomPrice = parseHTMLSpecialSymbols(priceResult)
     const price = priceFromString(roomPrice)
-    if (!price) return undefined
+    if (!price) return onError('price could not be found', 'extractStayFromDocument')
 
     const gpsResults = gpsRegex.exec(hotelAddressText)
     const addressResults = addressRegex.exec(hotelAddressText)
     const fullAddress = addressResults[1]
 
-    if (!fullAddress) return undefined
+    if (!fullAddress) return onError('full adrress could not be found', 'extractStayFromDocument')
 
     const fullAddressOneLine = fullAddress.replace(/(\r\n|\n|\r)/gm, '')
     const addressComponents = getAddressComponents(fullAddressOneLine)
 
-    if (!addressComponents) return undefined
+    if (!addressComponents) return onError('address components could not be found', 'extractStayFromDocument')
 
     const cc = getCountryCode(addressComponents.country)
     const cords = convertGPSCoordinates(gpsResults[1])
 
-    if (!cords) return undefined
+    if (!cords) return onError('gps coordinates could not be found', 'extractStayFromDocument')
 
     const year = getYearFromURL()
     const datesElement = document.getElementsByClassName('dates')[0]
@@ -175,21 +167,23 @@ function extractStayFromDocument() {
     }
 }
 
-function initSummary(captureStay) {
-    const stay = extractStayFromDocument()
-    if (stay) {
-        captureStay(stay)
-    } else {
-        // TODO: report error?
+function initSummary(captureStay, onError) {
+    try {
+        const stay = extractStayFromDocument(onError)
+        if (stay) {
+            captureStay(stay)
+        }
+    } catch (e) {
+        onError(e, 'extractStayFromDocument')
     }
 }
 
-function initCapture({ captureStayPartial, captureStay, captureFinished, lastCapturedStayID, onStayCaptured }) {
+function initCapture({ captureStayPartial, captureStay, captureFinished, lastCapturedStayID, onStayCaptured, onError }) {
     if (window.location.href.includes('password')) {
         // on a login page
         return
     } else if (window.location.href.includes('mybooking_archivedsummary')) {
-        initSummary(captureStay)
+        initSummary(captureStay, onError)
     } else if (window.location.href.includes('mytrips') || window.location.href.includes('myreservations')) {
         initMyTrips(onStayCaptured, captureFinished, lastCapturedStayID)
     }

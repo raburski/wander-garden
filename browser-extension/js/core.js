@@ -149,6 +149,7 @@ function init(origin, onInitCapture, onInitDefault) {
 
     function sendError(error, location) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'error', error: `${error}`, location })
+        return undefined
     }
 
     let ON_NETWORK_CAPTURED = undefined

@@ -1,14 +1,12 @@
 import Page from "components/Page"
 import InfoPanel from "components/InfoPanel"
 import SquareImage from 'components/SquareImage'
-import { useExtensionStatus, Status, StayType, StayName, StayLogoURL, useShowCaptureStartModal } from 'domain/stays'
+import { useExtensionStatus, Status } from 'domain/stays'
 import OnlineDot from './OnlineDot'
 import ExtensionVersionNotMatching from './VersionMismatch'
 import ExtensionTroubleshoot from './Troubleshoot'
 import WebStoreButton from "./WebStoreButton"
-import Panel from "components/Panel"
-import { styled } from "goober"
-import ContentRow from "components/ContentRow"
+import Stays from './Stays'
 
 const COPY = `In order to enhance your dataset you can install garden browser extension. It will help you import your booking.com, airbnb and agoda bookings.
 
@@ -41,29 +39,6 @@ IMPORTANT: You may need to log in to your account before automatic process start
 
 function HowItWorks() {
     return <InfoPanel header="How this works?" spacing image={<SquareImage size={120} src="/3d/puzzle.png"/>}>{HOW_COPY}</InfoPanel>
-}
-
-const Logo = styled('img')`
-    width: 32px;
-    height: 32px;
-    padding: 6px;
-`
-
-function Stays() {
-    const showCaptureStartModal = useShowCaptureStartModal()
-
-    const createSelectStayType = (stayType) => function onStayTypeSelect() {
-        showCaptureStartModal(stayType)
-    }
-
-    return (
-        <Panel header="Stays">
-            <ContentRow image={<Logo src={StayLogoURL[StayType.Booking]}/>} title={StayName[StayType.Booking]} onClick={createSelectStayType(StayType.Booking)}/>
-            <ContentRow image={<Logo src={StayLogoURL[StayType.Airbnb]}/>} title={StayName[StayType.Airbnb]} onClick={createSelectStayType(StayType.Airbnb)}/>
-            <ContentRow image={<Logo src={StayLogoURL[StayType.Agoda]}/>} title={StayName[StayType.Agoda]} onClick={createSelectStayType(StayType.Agoda)}/>
-            <ContentRow image={<Logo src={StayLogoURL[StayType.Travala]}/>} title={`[WIP] ${StayName[StayType.Travala]}`} onClick={createSelectStayType(StayType.Travala)}/>
-        </Panel>
-    )
 }
 
 function ExtensionConnected() {

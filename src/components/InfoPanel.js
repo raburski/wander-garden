@@ -41,9 +41,9 @@ const DynamicSeparator = styled(Separator)`
 
 const CONTENT_STYLE = { flexDirection: 'row' }
 
-export default function InfoPanel({ image, title, text, children, containerStyle, imageStyle, ...props }) {
+export default function InfoPanel({ image, title, text, children, containerStyle, contentStyle = {}, imageStyle, ...props }) {
     return (
-        <Panel contentStyle={CONTENT_STYLE} {...props}>
+        <Panel contentStyle={{...contentStyle, ...CONTENT_STYLE}} {...props}>
             <ImageContainer style={imageStyle}>{image}</ImageContainer>
             <Container style={containerStyle}>
                 <Title>{title}</Title>

@@ -11,7 +11,7 @@ const COPY = `Please refresh this page to connect.
 
 `
 
-export default function WebStoreButton() {
+export default function WebStoreButton(props) {
     const [isOpen, setOpen] = useState(false)
     const onButtonClick = () => {
         openExtensionWebsite()
@@ -25,7 +25,7 @@ export default function WebStoreButton() {
                 {COPY}
                 <Button icon={FiRefreshCw} onClick={refreshWebsite} style={{alignSelf: 'center'}}>Refresh</Button>
             </ModalPage>
-            <Button icon={FiExternalLink} onClick={onButtonClick}>Open Chrome Web Store</Button>
+            <Button icon={FiExternalLink} onClick={onButtonClick} {...props}>Open Chrome Web Store</Button>
         </>
     )
 }
