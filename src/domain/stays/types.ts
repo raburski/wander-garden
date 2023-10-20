@@ -98,6 +98,14 @@ export enum StayType {
     Custom = 'custom',
 }
 
+export const ALL_STAY_TYPES = [
+    StayType.Booking,
+    StayType.Airbnb,
+    StayType.Agoda,
+    StayType.Travala,
+    StayType.Custom,
+]
+
 export const OriginToStayType = {
     [Origin.Agoda]: StayType.Agoda,
     [Origin.Airbnb]: StayType.Airbnb,

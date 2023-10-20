@@ -1,5 +1,5 @@
 import { downloadString, uploadFile } from 'files'
-import { useCheckins, useClearData as useClearSwarmData, isSwarmData, useStartUpdate, useShowUpdateModal } from 'domain/swarm'
+import { useCheckins, useClearData as useClearSwarmData, isSwarmData, useShowUpdateModal } from 'domain/swarm'
 import toast from 'react-hot-toast'
 import { TITLES } from './consts'
 import { useRefreshTimeline } from 'domain/timeline'

@@ -1,7 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react"
 import { useRefreshHomes } from "domain/homes"
 import { useRefreshTimeline } from "domain/timeline"
-import { Status, Origin, StayTypeToOrigin, StayType, OriginToStayType, StayOrigin } from "./types"
+import { Status, Origin, StayTypeToOrigin, StayType, OriginToStayType, StayOrigin, ALL_STAY_TYPES } from "./types"
 import { IndexedDBStorageAdapter, StorageSet, useSyncedStorage } from "storage"
 import moment from "moment"
 import { isStayData, isStayType } from "domain/stays"
@@ -226,6 +226,14 @@ export function StaysProvider({ children }) {
         })
     }
 
+    async function replaceAllStays(newStays = []) {
+        for(let type of ALL_STAY_TYPES) {
+            const newStaysOfType = newStays.filter(s => s.type === type)
+            await setStays(type, newStaysOfType)
+        }
+        await refresh()
+    }
+
     const value = {
         isConnected: !!version,
         version,
@@ -239,6 +247,7 @@ export function StaysProvider({ children }) {
         clearCapturedStays: () => setCapturedStays(undefined),
         addCustomStays,
         replaceCustomStay,
+        replaceAllStays,
         stays: {
             [StayType.Booking]: bookingStays,
             [StayType.Agoda]: agodaStays,
@@ -346,4 +355,9 @@ export function useClearStays(type) {
     return async function clearData() {
         await setStays([])
     }
+}
+
+export function useReplaceAllStays() {
+    const context = useContext(ExtensionContext)
+    return context.replaceAllStays
 }

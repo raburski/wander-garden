@@ -30,7 +30,6 @@ function ExtensionStatus({ isConnected }) {
 }
 
 const HOW_COPY = `Extension will open new browser tab. It will automatically navigate through the website and will capture all your trips.
-You may also download stay files manually by visiting websites yourself.
 
 Select one of the sources below to start the process!
 
