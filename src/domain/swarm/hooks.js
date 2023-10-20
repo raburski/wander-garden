@@ -54,7 +54,10 @@ export function useFetchSwarm() {
         function onLoaded() {
             setFetching(false)
         }
-        return fetchCheckins().then(onLoaded).then(() => refreshHomes()).then(() => refreshTimeline())
+        return fetchCheckins()
+            .then(() => refreshHomes())
+            .then(() => refreshTimeline())
+            .then(onLoaded)
     } 
     return [isFetching, fetch]
 }

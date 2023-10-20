@@ -51,9 +51,11 @@ function App() {
       <MapProvider>
       <SettingsProvider>
         <ThemeProvider>
+        <HomesProvider>
+        <TimelineProvider>
           <SwarmProvider>
-            <HomesProvider>
-              <TimelineProvider>
+            
+              
                 <StaysProvider>
                   <AppContainer>
                       <Analytics />
@@ -66,9 +68,11 @@ function App() {
                     <Toaster />
                   </AppContainer>
                 </StaysProvider>
-              </TimelineProvider>
-            </HomesProvider>
+              
+            
           </SwarmProvider>
+          </TimelineProvider>
+          </HomesProvider>
         </ThemeProvider>
       </SettingsProvider>
       </MapProvider>

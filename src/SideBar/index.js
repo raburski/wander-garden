@@ -154,8 +154,8 @@ function SideMenu({ onLinkClick, ...props }) {
             {isDEV() ? <StyledPillLink onClick={onLinkClick} to="context" separatorClassName={hideOnMediumBreakpointClassName} icon={VscPulse}>Context</StyledPillLink> : null}
             <StyledPillLink onClick={onLinkClick} to="map" separatorClassName={hideOnMediumBreakpointClassName} icon={TfiMapAlt}>Map</StyledPillLink>
             <StyledPillLink onClick={onLinkClick} to="data" separatorClassName={hideOnMediumBreakpointClassName} icon={RxFileText}>Data</StyledPillLink>
-            <Separator />
-            <StyledPillLink onClick={onLinkClick} to="swarm" separatorClassName={hideOnMediumBreakpointClassName} icon={SiSwarm}>Swarm</StyledPillLink>
+            {/* <Separator /> */}
+            {/* <StyledPillLink onClick={onLinkClick} to="swarm" separatorClassName={hideOnMediumBreakpointClassName} icon={SiSwarm}>Swarm</StyledPillLink> */}
             <StyledPillLink onClick={onLinkClick} to="stays" separatorClassName={hideOnMediumBreakpointClassName} icon={MdHotel}>Stays</StyledPillLink>
             <Separator />
             <StyledPillLink onClick={onLinkClick} to="settings" separatorClassName={hideOnMediumBreakpointClassName} icon={SlSettings}>Settings</StyledPillLink>

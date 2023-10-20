@@ -27,11 +27,14 @@ function getButtonHoverBackground(props) {
 const ButtonContainer = styled('button')`
     position: relative;
     display: flex;
+    flex: 0;
+    flex-shrink: 1;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
-    align-self: flex-start;
+    width: max-content;
+    white-space: nowrap;
 
     border: ${props => props.flat ? '0px' : '1px'} solid ${props => props.theme.border};
     border-radius: .5rem;

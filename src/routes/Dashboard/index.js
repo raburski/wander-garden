@@ -1,12 +1,12 @@
-import { useCheckins, useIsAuthenticated } from '../../domain/swarm'
+import { useCheckins, useIsAuthenticated, useShowUpdateModal } from '../../domain/swarm'
 import { styled } from 'goober'
 import Page from '../../components/Page'
 import CountryRow from '../../components/CountryRow'
 import Panel from '../../components/Panel'
 import Badges from './Badges'
 import Welcome from './Welcome'
-import Swarm from './Swarm'
 import { Column, Row } from 'components/container'
+import PinButton from "components/PinButton"
 
 import countryFlagEmoji from "country-flag-emoji"
 import { formattedLocation } from 'domain/location'
@@ -14,6 +14,7 @@ import { useVisitedCountryCodes } from 'domain/timeline'
 import Separator from 'components/Separator'
 import CountryModal from 'bindings/CountryModal'
 import { useState } from 'react'
+import { TbRefresh } from 'react-icons/tb'
 
 const Text = styled('p')`
     display: flex;
@@ -63,8 +64,14 @@ const CurrentContent = styled('div')`
     color: ${props => props.theme.text};
 `
 
+const Divider = styled('div')`
+    display: flex;
+    flex: 1;
+`
+
 function Current() {
     const [checkins] = useCheckins()
+    const showUpdateModal = useShowUpdateModal()
     const latestCheckin = checkins[0]
     const currentCountry = latestCheckin ? countryFlagEmoji.get(latestCheckin.venue.location.cc) : null
     if (!currentCountry) { return null }
@@ -72,7 +79,12 @@ function Current() {
     const header = `Currently staying in ${currentCountry.name}`
     return (
         <Panel header={header}>
-            <CurrentContent><BigFlag>{currentCountry.emoji}</BigFlag> {formattedLocation(latestCheckin.venue.location)}</CurrentContent>
+            <CurrentContent>
+                <BigFlag>{currentCountry.emoji}</BigFlag>
+                {formattedLocation(latestCheckin.venue.location)}
+                <Divider />
+                <PinButton onClick={showUpdateModal} tooltip="Update checkins" tooltipPosition="left" icon={TbRefresh}/>
+            </CurrentContent>
         </Panel>
     )
 }
@@ -82,13 +94,13 @@ function AuthenticatedDashboard() {
     return (
         <Row>
             <Column style={{flex: 1}}>
-                <Current />
-                {isAuthenticated ? <Swarm /> : null}
-                <Badges />
+                {isAuthenticated ? <Current /> : null}
+                <Countries />
             </Column>
             <Separator />
             <Column style={{flex: 1}}>
-                <Countries />
+                <Badges />
+                
             </Column>
         </Row>
     )

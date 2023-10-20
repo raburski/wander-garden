@@ -1,10 +1,9 @@
 import { downloadString, uploadFile } from 'files'
-import { useCheckins, useClearData as useClearSwarmData, isSwarmData } from 'domain/swarm'
+import { useCheckins, useClearData as useClearSwarmData, isSwarmData, useStartUpdate, useShowUpdateModal } from 'domain/swarm'
 import toast from 'react-hot-toast'
 import { TITLES } from './consts'
 import { useRefreshTimeline } from 'domain/timeline'
 import { isStayData, isStayType, StayType, useClearStays, useShowCaptureStartModal, useStartFileImport, useStays } from 'domain/stays'
-import { useToastedFetchSwarm } from 'domain/swarm/hooks'
 
 function getStayTypeForIndex(index) {
     switch (index) {
@@ -90,13 +89,13 @@ export function useTrash(index) {
 
 export function useRefresh(index) {
     const showCaptureStartModal = useShowCaptureStartModal()
-    const [fetchSwarm] = useToastedFetchSwarm()
+    const showUpdateModal = useShowUpdateModal()
     const stayType = getStayTypeForIndex(index) 
     if (stayType === StayType.Custom) {
         return undefined
     } else if (stayType) {
         return () => showCaptureStartModal(stayType)
     } else {
-        return fetchSwarm
+        return showUpdateModal
     }
 }
