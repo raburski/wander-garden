@@ -1,12 +1,9 @@
 import Panel from "components/Panel"
-import { isSwarmData, useCheckins, useClearData, useIsAuthenticated, useLogout } from "domain/swarm"
-import { IoLogoFoursquare } from "react-icons/io"
-import AuthenticateButton from "bindings/swarm/AuthenticateButton"
+import { isSwarmData, useCheckins, useClearData } from "domain/swarm"
 import Button from "components/Button"
-import { TbBrandBooking, TbBrandAirbnb, TbDownload, TbCloudUpload, TbTrash, TbRefresh } from 'react-icons/tb'
-import { isStayData, useAllStays, useReplaceAllStays, useStartFileImport, useStays } from "domain/stays"
+import { TbDownload, TbCloudUpload, TbTrash } from 'react-icons/tb'
+import { isStayData, useAllStays, useReplaceAllStays } from "domain/stays"
 import { downloadString, uploadFile } from "files"
-import { useRefreshTimeline } from "domain/timeline"
 import toast from "react-hot-toast"
 import { styled } from "goober"
 import Separator from "components/Separator"
@@ -17,7 +14,6 @@ const Buttons = styled('div')`
     display: flex;
     flex: 1;
     flex-direction: row;
-    margin-top: 18px;
 `
 
 function useDownloadAllData() {
@@ -76,6 +72,7 @@ export default function DataPanel() {
     return (
         <Panel header="Data" spacing>
             {COPY}
+            <Separator />
             <Buttons>
                 <Button onClick={download} icon={TbDownload}>Download all data</Button>
                 <Separator />
