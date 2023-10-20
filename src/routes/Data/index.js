@@ -9,9 +9,8 @@ import { getDaysAndRangeText } from 'date'
 import Page from 'components/Page'
 import Panel from 'components/Panel'
 import { LocationAccuracy, formattedLocation } from 'domain/location'
-import { useCheckins } from 'domain/swarm'
+import { useCheckins, useIsAuthenticated, useShowUpdateModal } from 'domain/swarm'
 import Segment from 'components/Segment'
-import NoneFound from 'components/NoneFound'
 import InfoRow from 'components/InfoRow'
 import PinButton from "components/PinButton"
 import Button from "components/Button"
@@ -24,6 +23,7 @@ import SquareImage from "components/SquareImage"
 import { PlaceTypeToIcon, StayLogoURL, StayOrigin, StayType, getStayIcon, useShowCaptureStartModal, useStays } from "domain/stays"
 import { downloadString } from "files"
 import CustomStayModal from "domain/stays/CustomStayModal"
+import { useNavigate } from "react-router"
 
 const NoStaysContainer = styled('div')`
     display: flex;
@@ -47,6 +47,20 @@ function NoStaysFound({ stayType }) {
             <SquareImage size={100} src={StayLogoURL[stayType]}/>
             <NoStayLabel>You don't seem to have any stays here...</NoStayLabel>
             {stayType !== StayType.Custom ? <Button onClick={onButtonClick} style={{alignSelf: 'center'}}>Capture your first ones!</Button> : null}
+        </NoStaysContainer>
+    )
+}
+
+function NoCheckinsFound({ stayType }) {
+    const navigate = useNavigate()
+    const isAuthenticated = useIsAuthenticated()
+    const startCheckinUpdate = useShowUpdateModal()
+    const goToSettings = () => navigate('/settings')
+    return (
+        <NoStaysContainer>
+            <SquareImage size={100} src="/logo/swarm.svg"/>
+            <NoStayLabel>You don't seem to have any checkins here...</NoStayLabel>
+            {isAuthenticated ? <Button onClick={startCheckinUpdate} style={{alignSelf: 'center'}}>Load your first ones!</Button> : <Button onClick={goToSettings} style={{alignSelf: 'center'}}>Connect your Swarm account in settings</Button>}
         </NoStaysContainer>
     )
 }
@@ -127,7 +141,7 @@ function isCheckingMatchingPhrase(phrase) {
 function SwarmCheckinsList({ search }) {
     const [checkins] = useCheckins()
     const filteredCheckins = search ? checkins.filter(isCheckingMatchingPhrase(search)) : checkins
-    return filteredCheckins.length > 0 ? filteredCheckins.map(checkin => <CheckinRow checkin={checkin} key={checkin.id} />) : <NoneFound />
+    return filteredCheckins.length > 0 ? filteredCheckins.map(checkin => <CheckinRow checkin={checkin} key={checkin.id} />) : <NoCheckinsFound />
 }
 
 function isStayMatchingPhrase(phrase) {
