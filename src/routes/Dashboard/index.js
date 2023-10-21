@@ -83,7 +83,7 @@ function Current() {
                 <BigFlag>{currentCountry.emoji}</BigFlag>
                 {formattedLocation(latestCheckin.venue.location)}
                 <Divider />
-                <PinButton onClick={showUpdateModal} tooltip="Update checkins" tooltipPosition="left" icon={TbRefresh}/>
+                <PinButton onClick={showUpdateModal} tooltip="Update checkins" tooltipPosition="left" tooltipOffset={112} icon={TbRefresh}/>
             </CurrentContent>
         </Panel>
     )

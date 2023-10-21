@@ -30,6 +30,7 @@ function useDownloadAllData() {
 function useUploadAllData() {
     const replaceAllStays = useReplaceAllStays()
     const [_, setCheckins] = useCheckins()
+    const clearSwarmData = useClearData()
 
     return async function uploadAllData() {
         const files = await uploadFile()
@@ -39,6 +40,7 @@ function useUploadAllData() {
 
         if (isSwarmData(allData.checkins) && isStayData(allData.stays)) {
             const toastId = toast.loading('Loading new data...')
+            await clearSwarmData()
             await setCheckins(allData.checkins)
             await replaceAllStays(allData.stays)
             toast.dismiss(toastId)
