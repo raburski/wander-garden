@@ -35,7 +35,7 @@ export default function StartUpdateModal({ onStartUpdate, onCancel, ...props }) 
     const [fetching, fetchCheckins] = useFetchSwarm()
     const [lastUpdated] = useLastUpdated()
 
-    const text = `Last updated on ${moment(lastUpdated).format('DD/MM/YYYY')}`
+    const text = lastUpdated ? `Last updated on ${moment(lastUpdated).format('DD/MM/YYYY')}` : 'First update may take a while...'
 
     async function onStartUpdate() {
         await fetchCheckins()

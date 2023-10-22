@@ -49,15 +49,12 @@ export function useFetchSwarm() {
     const refreshHomes = useRefreshHomes()
     const refreshTimeline = useRefreshTimeline()
 
-    function fetch() {
+    async function fetch() {
         setFetching(true)
-        function onLoaded() {
-            setFetching(false)
-        }
-        return fetchCheckins()
-            .then(() => refreshHomes())
-            .then(() => refreshTimeline())
-            .then(onLoaded)
+        await fetchCheckins()
+        await refreshHomes()
+        await refreshTimeline()
+        setFetching(false)
     } 
     return [isFetching, fetch]
 }

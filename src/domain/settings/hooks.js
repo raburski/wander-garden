@@ -7,3 +7,7 @@ export function useOnboardingFinishedSetting() {
 export function useRunningDemoSetting() {
     return useSetting('running_demo', false)
 }
+
+export function useHideSwarmPanelSetting() {
+    return useSetting('swarm_panel', false)
+}

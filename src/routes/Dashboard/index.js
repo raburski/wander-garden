@@ -15,6 +15,7 @@ import Separator from 'components/Separator'
 import CountryModal from 'bindings/CountryModal'
 import { useState } from 'react'
 import { TbRefresh } from 'react-icons/tb'
+import SwarmSetupPanel from './SwarmSetupPanel'
 
 const Text = styled('p')`
     display: flex;
@@ -69,19 +70,19 @@ const Divider = styled('div')`
     flex: 1;
 `
 
+const COPY_LOAD_CHECKINS = 'Fetch your first checkins...'
 function Current() {
     const [checkins] = useCheckins()
     const showUpdateModal = useShowUpdateModal()
     const latestCheckin = checkins[0]
     const currentCountry = latestCheckin ? countryFlagEmoji.get(latestCheckin.venue.location.cc) : null
-    if (!currentCountry) { return null }
     
-    const header = `Currently staying in ${currentCountry.name}`
+    const header = currentCountry ? `Currently staying in ${currentCountry.name}` : 'Where are you now?'
     return (
         <Panel header={header}>
             <CurrentContent>
-                <BigFlag>{currentCountry.emoji}</BigFlag>
-                {formattedLocation(latestCheckin.venue.location)}
+                <BigFlag>{currentCountry ? currentCountry.emoji : '🏳️'}</BigFlag>
+                {latestCheckin ? formattedLocation(latestCheckin.venue.location) : COPY_LOAD_CHECKINS}
                 <Divider />
                 <PinButton onClick={showUpdateModal} tooltip="Update checkins" tooltipPosition="left" tooltipOffset={112} icon={TbRefresh}/>
             </CurrentContent>
@@ -94,7 +95,7 @@ function AuthenticatedDashboard() {
     return (
         <Row>
             <Column style={{flex: 1}}>
-                {isAuthenticated ? <Current /> : null}
+                {isAuthenticated ? <Current /> : <SwarmSetupPanel />}
                 <Countries />
             </Column>
             <Separator />
