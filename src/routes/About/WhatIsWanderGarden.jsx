@@ -7,7 +7,7 @@ All your data is stored solely in your browser. There are no databases and backe
 
 `
 
-export default function WhatIsWanderGarden() {
+export default function WhatIsWanderGarden({ children }) {
     return (
         <InfoPanel
             spacing
@@ -15,6 +15,7 @@ export default function WhatIsWanderGarden() {
             image={<ResponsiveSquareImage size={280} mediumSize={240} smallSize={120} src="/3d/backpackgarden.png"/>}
         >
             {COPY}
+            {children}
         </InfoPanel>
     )
 }

@@ -3,7 +3,7 @@ import { VscDashboard, VscPulse, VscVersions } from 'react-icons/vsc'
 import { FaDiscord, FaTwitter } from 'react-icons/fa'
 import { TfiMapAlt, TfiMenu } from 'react-icons/tfi'
 import { SiSwarm } from 'react-icons/si'
-import { SlSettings } from 'react-icons/sl'
+import { SlClose, SlSettings } from 'react-icons/sl'
 import { MdHotel } from 'react-icons/md'
 import { BsAward } from 'react-icons/bs'
 import { RxFileText } from 'react-icons/rx'
@@ -14,6 +14,10 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Button from 'components/Button'
 import { isDEV } from 'environment'
+import { useOnboardingFinishedSetting, useRunningDemoSetting, useSetting } from 'domain/settings'
+import { useClearData } from 'domain/swarm'
+import { useReplaceAllStays } from 'domain/stays'
+import toast from 'react-hot-toast'
 
 const hideOnMediumBreakpointClassName = css`
 @media only screen and (min-width: 574px) and (max-width: 1024px) {
@@ -144,9 +148,26 @@ function HamburgerMenu({ onClick }) {
 const CLOSED_SIDEBAR_STYLE = { marginLeft: -200}
 
 function SideMenu({ onLinkClick, ...props }) {
+    const [runningDemo, setRunningDemo] = useRunningDemoSetting()
+    const [_, setOnboardingFinished] = useOnboardingFinishedSetting()
+    const clearSwarmData = useClearData()
+    const replaceAllStays = useReplaceAllStays()
+    async function onCloseDemo() {
+        await clearSwarmData()
+        await replaceAllStays([])
+        setRunningDemo(false)
+        // setOnboardingFinished(false)
+    }
     return (
         <Container {...props}>
             <StylelessLink onClick={onLinkClick} to="dashboard"><Logo /></StylelessLink>
+            {runningDemo ? 
+                <>
+                    <Separator />
+                    <Button onClick={onCloseDemo} icon={SlClose} style={{alignSelf: 'center'}}>Finish demo</Button>
+                    <Separator />
+                </>
+            : null}
             <Separator />
             <StyledPillLink onClick={onLinkClick} to="/" separatorClassName={hideOnMediumBreakpointClassName} icon={VscDashboard}>Dashboard</StyledPillLink>
             <StyledPillLink onClick={onLinkClick} to="timeline" separatorClassName={hideOnMediumBreakpointClassName} icon={VscVersions}>Timeline</StyledPillLink>

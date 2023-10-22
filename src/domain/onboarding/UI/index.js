@@ -1,4 +1,4 @@
-import { Status, useCapturedStaysDiff } from "domain/stays"
+import { Status, useAllStays, useCapturedStaysDiff } from "domain/stays"
 import Extension from "./Extension"
 import Intro from './Intro'
 import Capture from './Capture'
@@ -12,26 +12,24 @@ const STEP = {
     Finished: 'FINISHED',
 }
 
-export default function OnboardingUI({ onFinished, extensionStatus }) {
+export default function OnboardingUI({ onFinished, onDemo, extensionStatus }) {
     const initialState = extensionStatus === Status.Connected ? STEP.Capture : STEP.Intro
     const [step, setStep] = useState(initialState)
     const capturedStays = useCapturedStaysDiff()
+    const allStays = useAllStays()
 
     useEffect(() => {
+        if (allStays.length > 0) {
+            return setStep(STEP.Finished)
+        }
         if (extensionStatus === Status.Connected) {
-            setStep(STEP.Capture)
+            return setStep(STEP.Capture)
         }
-    }, [extensionStatus])
-
-    useEffect(() => {
-        if (capturedStays && capturedStays.new.length > 0) {
-            setStep(STEP.Finished)
-        }
-    }, [capturedStays])
+    }, [extensionStatus, allStays.length])
 
     switch (step) {
         case STEP.Intro:
-            return <Intro onNext={() => setStep(STEP.Extension)}/>
+            return <Intro onNext={() => setStep(STEP.Extension)} onDemo={onDemo}/>
         case STEP.Extension:
             return <Extension onNext={() => setStep(STEP.Capture)}/>
         case STEP.Capture:

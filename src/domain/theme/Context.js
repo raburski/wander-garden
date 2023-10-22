@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import { ColorTheme } from "./types"
 import { DARK, LIGHT } from "./colors"
-import { useSetting } from "settings"
+import { useSetting } from "domain/settings"
 
 const initialTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? ColorTheme.Dark : ColorTheme.Light
 export const ThemeContext = createContext(initialTheme)

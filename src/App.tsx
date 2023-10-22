@@ -13,7 +13,7 @@ import { StaysProvider } from "domain/stays"
 import { ThemeProvider, useThemeColors } from "domain/theme"
 import { MapProvider } from "domain/map"
 import { OnboardingProvider } from "domain/onboarding"
-import { SettingsProvider } from './settings'
+import { SettingsProvider } from './domain/settings'
 import { Analytics } from '@vercel/analytics/react'
 import mapboxgl from 'mapbox-gl'
  

@@ -9,7 +9,7 @@ import Panel from "components/Panel"
 import { useTimeline, titleFromLocationHighlights, highlightTitle } from 'domain/timeline/groups'
 
 import { GroupType } from 'domain/timeline/types'
-import { useSetting } from "settings"
+import { useSetting } from "domain/settings"
 import { useTitle, useVisitedCountryCodes } from "domain/timeline"
 
 import NoTimelineContent from './NoTimelineContent'

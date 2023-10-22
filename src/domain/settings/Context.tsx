@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useMemo } from "react"
-import { jsonTransforms, LocalStorageAdapter, useSyncedStorage } from '../storage'
+import { jsonTransforms, LocalStorageAdapter, useSyncedStorage } from '../../storage'
 
 type Settings = {[name: string]: any}
 type ProviderProps = {[name: string]: any}

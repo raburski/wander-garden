@@ -10,7 +10,7 @@ const Container = styled('div')`
 export default function OnboardingPage({ children, ...props }) {
     return (
         <Container>
-            <Page {...props} style={{maxWidth: 600, minHeight: 400, marginTop: '10%'}}>
+            <Page {...props} style={{maxWidth: 620, minHeight: 400, marginTop: '0%'}}>
                 {children}
             </Page>
         </Container>

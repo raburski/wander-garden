@@ -1,0 +1,6 @@
+{
+    "stays": [
+        {"id":"booking:1066.713.343","url":"https://secure.booking.com/mybooking_archivedsummary.en-gb.html?label=gen173nr-1FCA4oggI46AdICVgEaFyIAQGYAQm4AQfIAQzYAQHoAQH4AQKIAgGoAgO4AsaNxakGwAIB0gIkMjU5MWM1MjQtNGZmOC00YzNkLWI0ODQtMDBmNTc1MDYwY2M52AIF4AIB&sid=a0411c06bed1eead061a832c88fdc23d&aid=304142&auth_key=GEMlxXKv_NpvZxwer5KSsQARa5QM53yWIvusW-9B1CkSz56NML4FKOSyC1GW4_Nh5S8OQ50GmyD1nB9o3TDWrbBOvM5tK46nRZl7reTz1EUaBqTWbtQ4fD1vTVKtgIA5z_k1Ox9z8EII5Vds5mE_Pm0XT1AX2qXyrkN3-A&isPrintView=1&year=2017","since":"2017-05-20T21:00:00.000Z","until":"2017-05-25T21:00:00.000Z","location":{"address":"Via Varanini 7","city":"Milan","country":"Italy","cc":"IT","lat":45.49301666666667,"lng":9.217866666666666},"accomodation":{"name":"Euro Inn B&B"},"price":{"amount":1031,"currency":"PLN"},"origin":"CAPTURED","type":"booking"}
+    ],
+    "checkins": []
+}
