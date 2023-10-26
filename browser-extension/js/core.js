@@ -143,6 +143,10 @@ function init(origin, onInitCapture, onInitDefault) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_stay', stay })
     }
 
+    function sendSkipCapture() {
+        browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'skip_capture' })
+    }
+
     function sendCaptureStayPartial(stay) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_stay_partial', stay })
     }
@@ -164,7 +168,7 @@ function init(origin, onInitCapture, onInitDefault) {
 
     function onExtensionMessage(message) {
         console.log('onExtensionMessage', message)
-        if (message.type === 'stay_captured' && ON_STAY_CAPTURED) {
+        if ((message.type === 'stay_captured' || message.type === 'skip_capture') && ON_STAY_CAPTURED) {
             return ON_STAY_CAPTURED(message)
         }
 
@@ -184,6 +188,7 @@ function init(origin, onInitCapture, onInitDefault) {
                 }
 
                 onInitCapture({
+                    skipCapture: sendSkipCapture,
                     captureStay: sendCaptureStay,
                     captureStayPartial: sendCaptureStayPartial,
                     captureFinished: sendCaptureFinished,

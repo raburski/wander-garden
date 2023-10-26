@@ -48,6 +48,10 @@ function isArchivedSummeryLink(url) {
     return url.includes('archivedsummary')
 }
 
+function isConfirmationLink(url) {
+    return url.includes('confirmation.')
+}
+
 function initMyTrips(onStayCaptured, captureFinished, lastCapturedStayID) {
     function processNextTrip() {
         if (!tripLinks[currentURLIndex]) {
@@ -55,7 +59,7 @@ function initMyTrips(onStayCaptured, captureFinished, lastCapturedStayID) {
         }
 
         const link = tripLinks[currentURLIndex]
-        if (!isArchivedSummeryLink(link.href)) {
+        if (!isArchivedSummeryLink(link.href) && !isConfirmationLink(link.href)) {
             currentURLIndex = currentURLIndex + 1
             return processNextTrip()
         }
@@ -81,7 +85,7 @@ function initMyTrips(onStayCaptured, captureFinished, lastCapturedStayID) {
     onStayCaptured(function(message) {
         console.log('Wander Garden: stay captured', message)
         currentWindow.close()
-        if (lastCapturedStayID && message.stay.id === lastCapturedStayID) {
+        if (lastCapturedStayID &&  message.stay && message.stay.id === lastCapturedStayID) {
             return captureFinished()
         }
         processNextTrip()
@@ -113,11 +117,64 @@ function getAddressComponents(string) {
     }
 }
 
-function extractStayFromDocument() {
+
+function extractStayFromConfirmationDocument(onError) {
+    const gpsRegex = /markers=([^&]+)/gi
+
+    const bookingID = document.querySelector('.booknumber-pincode-item span').textContent.trim().replace(/\./gi, '')
+    const hotelName = document.querySelector('div[data-c360-id=hotelTitle]').textContent.trim()
+
+    const hotelAddressElements = document.querySelectorAll('#confirmation-property-section-ddot > div > div > div > div')
+    const hotelAddressText = hotelAddressElements[hotelAddressElements.length - 2].textContent.trim()
+    if (!hotelAddressText) return onError('full adrress could not be found', 'extractStayFromDocument')
+    const addressComponents = getAddressComponents(hotelAddressText)
+    if (!addressComponents) return onError('address components could not be found', 'extractStayFromDocument')
+    const cc = getCountryCode(addressComponents.country)
+
+    const priceResult = document.querySelector('span.room-price').textContent
+    const roomPrice = parseHTMLSpecialSymbols(priceResult)
+    const price = priceFromString(roomPrice)
+    if (!price) return onError('price could not be found', 'extractStayFromDocument')
+
+    const gpsText = document.querySelector('.bhpb_print_property_map').src
+    const gpsResults = gpsRegex.exec(gpsText)
+    const cordsString = gpsResults[1]
+    if (!cordsString) return onError('gps coordinates could not be found', 'extractStayFromDocument')
+    const coordElemenets = cordsString.split(',')
+    const cords = {
+        lat: parseFloat(coordElemenets[0]),
+        lng: parseFloat(coordElemenets[1])
+    }
+    
+    // format: Wed 4 Oct 2023
+    const datesElements = [...document.querySelectorAll('time > div:first-of-type')]
+        .map(dateElement => dateElement.textContent)
+        .map(string => string.split(' '))
+        .map(components => new Date(`${components[1]} ${components[2]} ${components[3]}`))
+    if (datesElements.length < 2) return onError('stay date could not be found', 'extractStayFromDocument')
+
+    return {
+        id: `booking:${bookingID}`,
+        url: window.location.href,
+        since: datesElements[0].toISOString(),
+        until: datesElements[1].toISOString(),
+        location: {
+            ...addressComponents,
+            ...cords,
+            cc,
+        },
+        accomodation: {
+            name: hotelName,
+        },
+        price,
+    }
+}
+
+function extractStayFromArchivedDocument(onError) {
     const gpsRegex = /GPS coordinates: ([^\n]+)/gi
     const addressRegex = /Address:\n(.+?)\n\n/gis
 
-    const bookingID = document.querySelector('.book-num > .book-num__digits').textContent.trim()
+    const bookingID = document.querySelector('.book-num > .book-num__digits').textContent.trim().replace(/\./gi, '')
     const hotelName = document.querySelector('.hotel-details__address h2').textContent.trim()
     const hotelAddressText = document.querySelector('.hotel-details__address').textContent.trim()
     const priceResult = document.querySelector('span.room-price').textContent
@@ -167,23 +224,39 @@ function extractStayFromDocument() {
     }
 }
 
-function initSummary(captureStay, onError) {
+function isCompletedConfirmation() {
+    return document.getElementsByClassName('reservation-status__title-status--completed').length === 1
+}
+
+function extractStayFromDocument(onError) {
+    if (isArchivedSummeryLink(window.location.href)) {
+        return extractStayFromArchivedDocument(onError)
+    } else if (isConfirmationLink(window.location.href)) {
+        return isCompletedConfirmation() ? extractStayFromConfirmationDocument(onError) : undefined
+    } else {
+        throw new Error('Unrecognised extracted document')
+    }
+}
+
+function initExtractStay(captureStay, onError, skipCapture) {
     try {
         const stay = extractStayFromDocument(onError)
         if (stay) {
             captureStay(stay)
+        } else {
+            skipCapture()
         }
     } catch (e) {
-        onError(e, 'extractStayFromDocument')
+        onError(e, 'initExtractStay')
     }
 }
 
-function initCapture({ captureStayPartial, captureStay, captureFinished, lastCapturedStayID, onStayCaptured, onError }) {
+function initCapture({ captureStay, captureFinished, lastCapturedStayID, onStayCaptured, onError, skipCapture }) {
     if (window.location.href.includes('password')) {
         // on a login page
         return
-    } else if (window.location.href.includes('mybooking_archivedsummary')) {
-        initSummary(captureStay, onError)
+    } else if (isArchivedSummeryLink(window.location.href) || isConfirmationLink(window.location.href)) {
+        initExtractStay(captureStay, onError, skipCapture)
     } else if (window.location.href.includes('mytrips') || window.location.href.includes('myreservations')) {
         initMyTrips(onStayCaptured, captureFinished, lastCapturedStayID)
     }

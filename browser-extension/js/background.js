@@ -74,6 +74,14 @@ function handleExtensionMessage(message, sender) {
                 lastCapturedStayID: STORE.lastCapturedStayID[message.source],
             }, sender.tab.id)
             break
+        case 'skip_capture':
+            sendMessage({
+                source: ORIGIN.SERVICE,
+                target: message.source,
+                subject: message.source,
+                type: 'skip_capture',
+            })
+            break
         case 'capture_stay':
             const stay = message.stay || STORE.currentStayPartial
             STORE.capturedStays[message.source].push(stay)
