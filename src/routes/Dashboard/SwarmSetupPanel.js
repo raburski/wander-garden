@@ -2,7 +2,7 @@ import Button from 'components/Button'
 import InfoPanel from '../../components/InfoPanel'
 import SquareImage from '../../components/SquareImage'
 import { useNavigate } from 'react-router'
-import { useHideSwarmPanelSetting } from 'domain/settings'
+import { useHideSwarmPanelSetting, useRunningDemoSetting } from 'domain/settings'
 import { styled } from 'goober'
 import Separator from 'components/Separator'
 import { VscChromeClose } from 'react-icons/vsc'
@@ -19,13 +19,14 @@ const COPY = `You can connect your Swarm account in settings to enhance your tim
 
 `
 export default function SwarmSetupPanel() {
+    const [runningDemo] = useRunningDemoSetting()
     const navigate = useNavigate()
     const [hideSwarmPanel, setHideSwarmPanel] = useHideSwarmPanelSetting()
 
     const onOpenSettings = () => navigate('/settings')
     const onNotInterested = () => setHideSwarmPanel(true)
 
-    if (hideSwarmPanel) return null
+    if (hideSwarmPanel || runningDemo) return null
 
     return (
         <InfoPanel 
