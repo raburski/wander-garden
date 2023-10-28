@@ -147,6 +147,10 @@ function init(origin, onInitCapture, onInitDefault) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'skip_capture' })
     }
 
+    function sendOpenWindow(url) {
+        browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'open_window', url })
+    }
+
     function sendCaptureStayPartial(stay) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_stay_partial', stay })
     }
@@ -188,6 +192,7 @@ function init(origin, onInitCapture, onInitDefault) {
                 }
 
                 onInitCapture({
+                    openWindow: sendOpenWindow,
                     skipCapture: sendSkipCapture,
                     captureStay: sendCaptureStay,
                     captureStayPartial: sendCaptureStayPartial,

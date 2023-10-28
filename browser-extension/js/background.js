@@ -9,7 +9,7 @@ const ORIGIN = {
 }
 
 const STORE = {
-    captureTabID: {},
+    captureTabIDs: {},
     capturedStays: {},
     lastCapturedStayID: {},
     currentStayPartial: {},
@@ -18,7 +18,7 @@ const STORE = {
 const manifest = chrome.runtime.getManifest()
 
 function sendMessage(message, toTabID) {
-    const tabID = toTabID || STORE.captureTabID[message.target]
+    const tabID = toTabID || STORE.captureTabIDs[message.target][0]
     if (tabID) {
         console.log('SEND', message)
         chrome.tabs.sendMessage(tabID, message)
@@ -37,7 +37,7 @@ const ORIGIN_URL = {
 function handleGardenMessage(message, sender) {
     switch (message.type) {
         case 'init':
-            STORE.captureTabID[ORIGIN.GARDEN] = sender.tab.id
+            STORE.captureTabIDs[ORIGIN.GARDEN] = [sender.tab.id]
             sendMessage({
                 source: ORIGIN.SERVICE,
                 target: ORIGIN.GARDEN, 
@@ -46,12 +46,12 @@ function handleGardenMessage(message, sender) {
             })
             break
         case 'start_capture':
-            STORE.captureTabID[ORIGIN.GARDEN] = sender.tab.id
+            STORE.captureTabIDs[ORIGIN.GARDEN] = [sender.tab.id]
             const url = ORIGIN_URL[message.subject]
             STORE.capturedStays[message.subject] = []
             STORE.lastCapturedStayID[message.subject] = message.lastCapturedStayID
             chrome.tabs.create({ url }, function(newTab) {
-                STORE.captureTabID[message.subject] = newTab.id
+                STORE.captureTabIDs[message.subject] = [newTab.id]
             })
             break
     }
@@ -70,7 +70,7 @@ function handleExtensionMessage(message, sender) {
                 source: ORIGIN.SERVICE,
                 target: message.source, 
                 type: 'init',
-                start_capture: !!STORE.captureTabID[message.source],
+                start_capture: STORE.captureTabIDs[message.source].includes(sender.tab.id),
                 lastCapturedStayID: STORE.lastCapturedStayID[message.source],
             }, sender.tab.id)
             break
@@ -80,6 +80,11 @@ function handleExtensionMessage(message, sender) {
                 target: message.source,
                 subject: message.source,
                 type: 'skip_capture',
+            })
+            break
+        case 'open_window':
+            chrome.tabs.create({ url: message.url }, function(newTab) {
+                STORE.captureTabIDs[message.source].push(newTab.id)
             })
             break
         case 'capture_stay':
@@ -98,9 +103,9 @@ function handleExtensionMessage(message, sender) {
             STORE.currentStayPartial = deepMerge(STORE.currentStayPartial, message.stay)
             break
         case 'capture_finished':
-            chrome.tabs.remove(STORE.captureTabID[message.source])
-            chrome.tabs.update(STORE.captureTabID[ORIGIN.GARDEN], { active: true })
-            STORE.captureTabID[message.source] = undefined
+            STORE.captureTabIDs[message.source].forEach(tabId => chrome.tabs.remove(tabId))
+            chrome.tabs.update(STORE.captureTabIDs[ORIGIN.GARDEN][0], { active: true })
+            STORE.captureTabIDs[message.source] = undefined
             const stays = message.stays || STORE.capturedStays[message.source]
             const finalStays = staysWithNoDuplicates(stays)
             sendMessage({
@@ -112,9 +117,9 @@ function handleExtensionMessage(message, sender) {
             })
             break
         case 'error':
-            chrome.tabs.remove(STORE.captureTabID[message.source])
-            chrome.tabs.update(STORE.captureTabID[ORIGIN.GARDEN], { active: true })
-            STORE.captureTabID[message.source] = undefined
+            STORE.captureTabIDs[message.source].forEach(tabId => chrome.tabs.remove(tabId))
+            chrome.tabs.update(STORE.captureTabIDs[ORIGIN.GARDEN][0], { active: true })
+            STORE.captureTabIDs[message.source] = undefined
             sendMessage({
                 source: ORIGIN.SERVICE,
                 target: ORIGIN.GARDEN,

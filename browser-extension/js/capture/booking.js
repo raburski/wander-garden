@@ -52,7 +52,7 @@ function isConfirmationLink(url) {
     return url.includes('confirmation.')
 }
 
-function initMyTrips(onStayCaptured, captureFinished, lastCapturedStayID) {
+function initMyTrips(onStayCaptured, captureFinished, openWindow, lastCapturedStayID) {
     function processNextTrip() {
         if (!tripLinks[currentURLIndex]) {
             return captureFinished()
@@ -70,7 +70,7 @@ function initMyTrips(onStayCaptured, captureFinished, lastCapturedStayID) {
             year = new Date().getFullYear()
         }
 
-        currentWindow = window.open(`${link.href}&year=${year}`, '_blank')
+        openWindow(`${link.href}&year=${year}`)
         currentURLIndex = currentURLIndex + 1
     }
 
@@ -84,7 +84,6 @@ function initMyTrips(onStayCaptured, captureFinished, lastCapturedStayID) {
 
     onStayCaptured(function(message) {
         console.log('Wander Garden: stay captured', message)
-        currentWindow.close()
         if (lastCapturedStayID &&  message.stay && message.stay.id === lastCapturedStayID) {
             return captureFinished()
         }
@@ -246,19 +245,20 @@ function initExtractStay(captureStay, onError, skipCapture) {
         } else {
             skipCapture()
         }
+        window.close()
     } catch (e) {
         onError(e, 'initExtractStay')
     }
 }
 
-function initCapture({ captureStay, captureFinished, lastCapturedStayID, onStayCaptured, onError, skipCapture }) {
+function initCapture({ captureStay, captureFinished, lastCapturedStayID, onStayCaptured, onError, openWindow, skipCapture }) {
     if (window.location.href.includes('password')) {
         // on a login page
         return
     } else if (isArchivedSummeryLink(window.location.href) || isConfirmationLink(window.location.href)) {
         initExtractStay(captureStay, onError, skipCapture)
     } else if (window.location.href.includes('mytrips') || window.location.href.includes('myreservations')) {
-        initMyTrips(onStayCaptured, captureFinished, lastCapturedStayID)
+        initMyTrips(onStayCaptured, captureFinished, openWindow, lastCapturedStayID)
     }
 }
 
