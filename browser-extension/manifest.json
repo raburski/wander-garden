@@ -15,7 +15,18 @@
             "*://*.booking.com/*"
         ],
         "run_at": "document_start",
-        "js":["js/consts.js", "js/ui.js", "js/core.js", "js/country.js", "js/capture/booking.js"]
+        "js":[
+          "js/consts.js",
+          "js/utils.js",
+          "js/ui.js",
+          "js/core.js",
+          "js/country.js",
+          "js/capture/booking/pages/archived.js",
+          "js/capture/booking/pages/confirmation.js",
+          "js/capture/booking/pages/login.js",
+          "js/capture/booking/pages/trips.js",
+          "js/capture/booking/index.js"
+        ]
       },
       {
         "matches":[

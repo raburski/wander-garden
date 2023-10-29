@@ -199,7 +199,7 @@ function init(origin, onInitCapture, onInitDefault) {
                     captureFinished: sendCaptureFinished,
                     onStayCaptured: registerOnStayCaptured,
                     onNetworkCaptured: registerOnNetworkCaptured,
-                    onError: sendError,
+                    sendError: sendError,
                     lastCapturedStayID: message.lastCapturedStayID
                 })
             } else {
@@ -229,4 +229,36 @@ function init(origin, onInitCapture, onInitDefault) {
     })
 }
 
+class Page {
+    constructor(isCapturing = false, core = {}) {
+        this.core = core
+        this.isCapturing = isCapturing
+        if (this.core.onStayCaptured && this.onStayCaptured) {
+            this.core.onStayCaptured(this.onStayCaptured.bind(this))
+        }
+    }
+}
+
+function getCurrentPageClass(pages) {
+    return pages.find(page => {
+        const paths = Array.isArray(page.path) ? page.path : [page.path]
+        const url = window.location.href
+        return paths.map(path => url.includes(path)).reduce((v, acc) => v || acc, false)
+    })
+}
+
+function initPages(origin, ...pages) {
+    const PageClass = getCurrentPageClass(pages)
+    function onInitCapture(core) {
+        const page = new PageClass(true, core)
+        page.run()
+    }
+    function onInitDefault() {
+        // TODO: for now just ignoring this
+        // only capturing is a legit form of getting stays
+    }
+    init(origin, onInitCapture, onInitDefault)
+}
+
 globalThis.init = init
+globalThis.initPages = initPages

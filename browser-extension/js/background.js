@@ -70,7 +70,7 @@ function handleExtensionMessage(message, sender) {
                 source: ORIGIN.SERVICE,
                 target: message.source, 
                 type: 'init',
-                start_capture: STORE.captureTabIDs[message.source].includes(sender.tab.id),
+                start_capture: STORE.captureTabIDs[message.source]?.includes(sender.tab.id),
                 lastCapturedStayID: STORE.lastCapturedStayID[message.source],
             }, sender.tab.id)
             break

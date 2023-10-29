@@ -43,3 +43,16 @@ function getDownloadStayWidget(stay) {
 
     return widget
 }
+
+
+function scrollIntoViewUntil({ elementSelector, isFinishedCheck, callback }) {
+    const items = [...document.querySelectorAll(elementSelector)]
+    const lastItem = items[items.length-1]
+    const isFinished = isFinishedCheck(lastItem)
+    if (isFinished) {
+        callback()
+    } else {
+        lastItem.scrollIntoView()
+        setTimeout(function() { scrollIntoViewUntil({ elementSelector, isFinishedCheck, callback }) }, 300)
+    }
+}
