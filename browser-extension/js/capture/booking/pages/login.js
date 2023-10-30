@@ -1,5 +1,5 @@
-class LoginPage extends Page {
+class BookingLoginPage extends Page {
     static path = 'password'
 
-    run() {}
+    async run() {}
 }

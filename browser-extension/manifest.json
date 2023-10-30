@@ -36,7 +36,16 @@
             "*://*.airbnb.pl/*",
             "*://*.airbnb.hu/*"
         ],
-        "js":["js/consts.js", "js/ui.js", "js/core.js", "js/country.js", "js/capture/airbnb.js"]
+        "js":[
+          "js/consts.js",
+          "js/ui.js",
+          "js/core.js", 
+          "js/country.js",
+          "js/capture/airbnb/pages/login.js",
+          "js/capture/airbnb/pages/trip.js",
+          "js/capture/airbnb/pages/trips.js",
+          "js/capture/airbnb/index.js"
+        ]
       },
       {
         "matches":[

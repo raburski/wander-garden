@@ -3,7 +3,7 @@ function getYearFromURL() {
     return parseInt(urlParams.get('year'))
 }
 
-class ArchivedPage extends Page {
+class BookingArchivedPage extends Page {
     static path = 'archivedsummary'
 
     extractStayFromArchivedDocument() {
@@ -60,7 +60,7 @@ class ArchivedPage extends Page {
         }
     }
 
-    run() {
+    async run() {
         const stay = this.extractStay()
         this.core.captureStay(stay)
         window.close()

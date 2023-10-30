@@ -1,4 +1,4 @@
-class ConfirmationPage extends Page {
+class BookingConfirmationPage extends Page {
     static path = 'confirmation.'
 
     isCompletedConfirmation() {
@@ -57,7 +57,7 @@ class ConfirmationPage extends Page {
         }
     }
 
-    run() {
+    async run() {
         if (this.isCompletedConfirmation()) {
             const stay = this.extractStay()
             this.core.captureStay(stay)

@@ -230,7 +230,7 @@ function init(origin, onInitCapture, onInitDefault) {
 }
 
 class Page {
-    constructor(isCapturing = false, core = {}) {
+    init(isCapturing = false, core = {}) {
         this.core = core
         this.isCapturing = isCapturing
         if (this.core.onStayCaptured && this.onStayCaptured) {
@@ -243,15 +243,18 @@ function getCurrentPageClass(pages) {
     return pages.find(page => {
         const paths = Array.isArray(page.path) ? page.path : [page.path]
         const url = window.location.href
-        return paths.map(path => url.includes(path)).reduce((v, acc) => v || acc, false)
+        return paths.map(path => url.toUpperCase().includes(path.toUpperCase())).reduce((v, acc) => v || acc, false)
     })
 }
 
 function initPages(origin, ...pages) {
     const PageClass = getCurrentPageClass(pages)
-    function onInitCapture(core) {
-        const page = new PageClass(true, core)
-        page.run()
+    if (!PageClass) return
+    
+    const page = new PageClass()
+    async function onInitCapture(core) {
+        await page.init(true, core)
+        await page.run()
     }
     function onInitDefault() {
         // TODO: for now just ignoring this

@@ -1,4 +1,4 @@
-class TripsPage extends Page {
+class BookingTripsPage extends Page {
     static path = ['mytrips', 'myreservations']
     constructor(...args) {
         super(...args)
@@ -8,9 +8,6 @@ class TripsPage extends Page {
 
     onStayCaptured(message) {
         console.log('Wander Garden: stay captured', message)
-        if (this.core.lastCapturedStayID && message.stay && message.stay.id === this.core.lastCapturedStayID) {
-            return this.core.captureFinished()
-        }
         this.processNextTrip()
     }
 
@@ -20,7 +17,7 @@ class TripsPage extends Page {
         }
 
         const link = this.tripLinks[this.currentURLIndex]
-        if (!link.href.includes(ArchivedPage.path) && !link.href.includes(ConfirmationPage.path)) {
+        if (!link.href.includes(BookingArchivedPage.path) && !link.href.includes(BookingConfirmationPage.path)) {
             this.currentURLIndex = this.currentURLIndex + 1
             return this.processNextTrip()
         }
@@ -43,7 +40,7 @@ class TripsPage extends Page {
         this.processNextTrip()
     }
 
-    run() {
+    async run() {
         scrollIntoViewUntil({
             elementSelector: "#mytrips-mfe > div > div > div > div ",
             isFinishedCheck: element => element.classList.length < 2 || element.classList.toString().includes('csxp'),
