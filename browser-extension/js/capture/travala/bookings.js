@@ -1,4 +1,3 @@
-
 function isCompletedStay(data) {
     return data.status === 'BOOKING_SUCCESS'
 }
@@ -49,27 +48,28 @@ function receiptDataToStay(data) {
     }
 }
 
-function initCapture({ captureStayPartial, captureStay, captureFinished, lastCapturedStayID, onStayCaptured, onNetworkCaptured }) {
+class TravalaBookingsPage extends Page {
+    static path = 'my-bookings'
+    constructor() {
+        super()
+        this.stays = undefined
+    }
 
-    const ORDERS_URL = 'orders/receipt'
-    onNetworkCaptured(function(url, data) {
+    onNetworkCaptured(url, data) {
+        console.log('onNetworkCaptured', url)
+        const ORDERS_URL = 'orders/receipt'
         if (!url.includes(ORDERS_URL)) return
         
         const json = JSON.parse(data)
-        const stays = json.data
+        this.stays = json.data
             .filter(isCompletedStay)
             .map(receiptDataToStay)
             
-        stays.forEach(captureStay)
-
-        if (stays.some(stay => stay.id === lastCapturedStayID)) {
-            captureFinished()
-        }
+        this.stays.forEach(this.core.captureStay)
         
         // TODO: work on when multiple pages, more than 10 bookings
-        captureFinished()
-    })
-    
-}
+        this.core.captureFinished()
+    }
 
-init(ORIGIN.TRAVALA, initCapture)
+    async run() {}
+}

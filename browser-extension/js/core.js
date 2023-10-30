@@ -211,15 +211,30 @@ function init(origin, onInitCapture, onInitDefault) {
     }
     
     browser.runtime.onMessage.addListener(onExtensionMessage)
-    
-    onWindowLoad(function() {
-        function onWindowMessage(message) {
-            if (message.data && message.data.type === "response_captured" && ON_NETWORK_CAPTURED) {
-                ON_NETWORK_CAPTURED(message.data.url, message.data.body)
+
+    let WINDOW_INITD = false
+    let STORED_NETWORKING = []
+    function storeOrSendNetworkCaptured(_url, _body) {
+        if (!WINDOW_INITD) {
+            STORED_NETWORKING.push({ url: _url, body: _body })
+        } else {
+            STORED_NETWORKING.forEach(({ url, body }) => ON_NETWORK_CAPTURED(url, body))
+            if (_url && _body) {
+                ON_NETWORK_CAPTURED(_url, _body)
             }
         }
-        
-        window.addEventListener("message", onWindowMessage)
+
+    }
+    function onWindowMessage(message) {
+        if (message.data && message.data.type === "response_captured" && ON_NETWORK_CAPTURED) {
+            ON_NETWORK_CAPTURED(message.data.url, message.data.body)
+        }
+    }
+    window.addEventListener("message", onWindowMessage)
+    
+    onWindowLoad(function() {
+        WINDOW_INITD = true
+        storeOrSendNetworkCaptured()
 
         browser.runtime.sendMessage({
             source: origin,
@@ -236,6 +251,9 @@ class Page {
         if (this.core.onStayCaptured && this.onStayCaptured) {
             this.core.onStayCaptured(this.onStayCaptured.bind(this))
         }
+        if (this.core.onNetworkCaptured && this.onNetworkCaptured) {
+            this.core.onNetworkCaptured(this.onNetworkCaptured.bind(this))
+        }
     }
 }
 
@@ -250,7 +268,7 @@ function getCurrentPageClass(pages) {
 function initPages(origin, ...pages) {
     const PageClass = getCurrentPageClass(pages)
     if (!PageClass) return
-    
+
     const page = new PageClass()
     async function onInitCapture(core) {
         await page.init(true, core)

@@ -1,0 +1,4 @@
+initPages(
+    ORIGIN.TRAVALA,
+    TravalaBookingsPage
+)

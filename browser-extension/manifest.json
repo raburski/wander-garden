@@ -21,10 +21,10 @@
           "js/ui.js",
           "js/core.js",
           "js/country.js",
-          "js/capture/booking/pages/archived.js",
-          "js/capture/booking/pages/confirmation.js",
-          "js/capture/booking/pages/login.js",
-          "js/capture/booking/pages/trips.js",
+          "js/capture/booking/archived.js",
+          "js/capture/booking/confirmation.js",
+          "js/capture/booking/login.js",
+          "js/capture/booking/trips.js",
           "js/capture/booking/index.js"
         ]
       },
@@ -41,9 +41,9 @@
           "js/ui.js",
           "js/core.js", 
           "js/country.js",
-          "js/capture/airbnb/pages/login.js",
-          "js/capture/airbnb/pages/trip.js",
-          "js/capture/airbnb/pages/trips.js",
+          "js/capture/airbnb/login.js",
+          "js/capture/airbnb/trip.js",
+          "js/capture/airbnb/trips.js",
           "js/capture/airbnb/index.js"
         ]
       },
@@ -67,7 +67,14 @@
             "*://*.travala.com/*"
         ],
         "run_at": "document_start",
-        "js":["js/consts.js", "js/ui.js", "js/core.js", "js/country.js", "js/capture/travala.js"]
+        "js":[
+          "js/consts.js",
+          "js/ui.js",
+          "js/core.js",
+          "js/country.js",
+          "js/capture/travala/bookings.js",
+          "js/capture/travala/index.js"
+        ]
       },
       {
           "matches":[
