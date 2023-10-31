@@ -135,6 +135,36 @@ function onWindowLoad(callback) {
 
 function init(origin, onInitCapture, onInitDefault) {
     console.log('on core init')
+    let ON_NETWORK_CAPTURED = undefined
+    function registerOnNetworkCaptured(callback) {
+        ON_NETWORK_CAPTURED = callback
+    }
+
+    let ON_STAY_CAPTURED = undefined
+    function registerOnStayCaptured(callback) {
+        ON_STAY_CAPTURED = callback
+    }
+
+    let WINDOW_INITD = false
+    let STORED_NETWORKING = []
+    function storeOrSendNetworkCaptured(_url, _body) {
+        if (!WINDOW_INITD || !ON_NETWORK_CAPTURED) {
+            STORED_NETWORKING.push({ url: _url, body: _body })
+        } else {
+            STORED_NETWORKING.forEach(({ url, body }) => ON_NETWORK_CAPTURED(url, body))
+            if (_url && _body) {
+                ON_NETWORK_CAPTURED(_url, _body)
+            }
+        }
+
+    }
+    function onWindowMessage(message) {
+        if (message.data && message.data.type === "response_captured") {
+            storeOrSendNetworkCaptured(message.data.url, message.data.body)
+        }
+    }
+    window.addEventListener("message", onWindowMessage)
+
     function sendCaptureFinished(stays) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_finished', stays })
     }
@@ -160,24 +190,14 @@ function init(origin, onInitCapture, onInitDefault) {
         return undefined
     }
 
-    let ON_NETWORK_CAPTURED = undefined
-    function registerOnNetworkCaptured(callback) {
-        ON_NETWORK_CAPTURED = callback
-    }
-
-    let ON_STAY_CAPTURED = undefined
-    function registerOnStayCaptured(callback) {
-        ON_STAY_CAPTURED = callback
-    }
-
     function onExtensionMessage(message) {
         console.log('onExtensionMessage', message)
-        if ((message.type === 'stay_captured' || message.type === 'skip_capture') && ON_STAY_CAPTURED) {
-            return ON_STAY_CAPTURED(message)
-        }
-
         if (message.target !== origin || message.source !== ORIGIN.SERVICE) {
             return
+        }
+
+        if ((message.type === 'stay_captured' || message.type === 'skip_capture') && ON_STAY_CAPTURED) {
+            return ON_STAY_CAPTURED(message)
         }
         
         if (message.type === 'init') {
@@ -202,6 +222,7 @@ function init(origin, onInitCapture, onInitDefault) {
                     sendError: sendError,
                     lastCapturedStayID: message.lastCapturedStayID
                 })
+                storeOrSendNetworkCaptured()
             } else {
                 if (onInitDefault) {
                     onInitDefault()
@@ -212,30 +233,10 @@ function init(origin, onInitCapture, onInitDefault) {
     
     browser.runtime.onMessage.addListener(onExtensionMessage)
 
-    let WINDOW_INITD = false
-    let STORED_NETWORKING = []
-    function storeOrSendNetworkCaptured(_url, _body) {
-        if (!WINDOW_INITD) {
-            STORED_NETWORKING.push({ url: _url, body: _body })
-        } else {
-            STORED_NETWORKING.forEach(({ url, body }) => ON_NETWORK_CAPTURED(url, body))
-            if (_url && _body) {
-                ON_NETWORK_CAPTURED(_url, _body)
-            }
-        }
 
-    }
-    function onWindowMessage(message) {
-        if (message.data && message.data.type === "response_captured" && ON_NETWORK_CAPTURED) {
-            ON_NETWORK_CAPTURED(message.data.url, message.data.body)
-        }
-    }
-    window.addEventListener("message", onWindowMessage)
     
     onWindowLoad(function() {
         WINDOW_INITD = true
-        storeOrSendNetworkCaptured()
-
         browser.runtime.sendMessage({
             source: origin,
             target: ORIGIN.SERVICE, 
@@ -272,7 +273,11 @@ function initPages(origin, ...pages) {
     const page = new PageClass()
     async function onInitCapture(core) {
         await page.init(true, core)
-        await page.run()
+        try {
+            await page.run()
+        } catch (e) {
+            core.sendError(e, 'core run page')
+        }
     }
     function onInitDefault() {
         // TODO: for now just ignoring this

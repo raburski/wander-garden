@@ -64,6 +64,5 @@ class BookingConfirmationPage extends Page {
         } else {
             this.core.skipCapture()
         }
-        window.close()
     }
 }

@@ -52,15 +52,33 @@
             "*://*.agoda.com/*"
         ],
         "run_at": "document_start",
-        "js":["js/consts.js", "js/ui.js", "js/core.js", "js/country.js", "js/capture/agoda.js"]
+        "world": "MAIN",
+        "js":["inject/locationExtract.js"]
       },
       {
         "matches":[
-            "*://*.travala.com/*"
+            "*://*.agoda.com/*"
+        ],
+        "run_at": "document_start",
+        "js":[
+          "js/consts.js",
+          "js/ui.js",
+          "js/core.js",
+          "js/country.js",
+          "js/capture/agoda/signin.js",
+          "js/capture/agoda/edit.js",
+          "js/capture/agoda/bookings.js",
+          "js/capture/agoda/index.js"
+        ]
+      },
+      {
+        "matches":[
+            "*://*.travala.com/*",
+            "*://*.agoda.com/*"
         ],
         "run_at": "document_start",
         "world": "MAIN",
-        "js":["injectXMLExtract.js"]
+        "js":["inject/XMLExtract.js"]
       },
       {
         "matches":[
@@ -88,11 +106,11 @@
       "service_worker": "js/background.js"
     },
     "web_accessible_resources": [{
-      "resources": ["injectXMLExtract.js"],
+      "resources": ["inject/XMLExtract.js"],
       "matches": ["*://*.travala.com/*"]
     },
     {
-      "resources": ["injectWindowExtract.js"],
+      "resources": ["inject/windowExtract.js", "inject/locationExtract.js"],
       "matches": ["*://*.agoda.com/*"]
     }]
 }

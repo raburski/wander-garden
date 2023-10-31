@@ -56,7 +56,6 @@ class TravalaBookingsPage extends Page {
     }
 
     onNetworkCaptured(url, data) {
-        console.log('onNetworkCaptured', url)
         const ORDERS_URL = 'orders/receipt'
         if (!url.includes(ORDERS_URL)) return
         

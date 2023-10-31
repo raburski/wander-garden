@@ -63,6 +63,5 @@ class BookingArchivedPage extends Page {
     async run() {
         const stay = this.extractStay()
         this.core.captureStay(stay)
-        window.close()
     }
 }

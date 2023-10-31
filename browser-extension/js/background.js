@@ -63,6 +63,21 @@ function staysWithNoDuplicates(stays) {
     })
 }
 
+function captureFinished(source, messageStays) {
+    STORE.captureTabIDs[source].forEach(tabId => chrome.tabs.remove(tabId))
+    chrome.tabs.update(STORE.captureTabIDs[ORIGIN.GARDEN][0], { active: true })
+    STORE.captureTabIDs[source] = undefined
+    const stays = messageStays || STORE.capturedStays[source]
+    const finalStays = staysWithNoDuplicates(stays)
+    sendMessage({
+        source: ORIGIN.SERVICE,
+        target: ORIGIN.GARDEN,
+        subject: source,
+        type: 'capture_finished',
+        stays: finalStays,
+    })
+}
+
 function handleExtensionMessage(message, sender) {
     switch (message.type) {
         case 'init':
@@ -75,6 +90,10 @@ function handleExtensionMessage(message, sender) {
             }, sender.tab.id)
             break
         case 'skip_capture':
+            if (STORE.captureTabIDs[message.source]?.includes(sender.tab.id)) {
+                STORE.captureTabIDs[message.source] = STORE.captureTabIDs[message.source].filter(tabId => tabId !== sender.tab.id)
+                chrome.tabs.remove(sender.tab.id)
+            }
             sendMessage({
                 source: ORIGIN.SERVICE,
                 target: message.source,
@@ -89,8 +108,18 @@ function handleExtensionMessage(message, sender) {
             break
         case 'capture_stay':
             const stay = message.stay || STORE.currentStayPartial
-            STORE.capturedStays[message.source].push(stay)
             STORE.currentStayPartial = {}
+
+            // TODO: Test this
+            // if (lastCapturedStayID && lastCapturedStayID === stay.id) {
+            //     captureFinished(message.source)
+            //     break
+            // }
+            STORE.capturedStays[message.source].push(stay)
+            if (STORE.captureTabIDs[message.source]?.includes(sender.tab.id)) {
+                STORE.captureTabIDs[message.source] = STORE.captureTabIDs[message.source].filter(tabId => tabId !== sender.tab.id)
+                chrome.tabs.remove(sender.tab.id)
+            }
             sendMessage({
                 source: ORIGIN.SERVICE,
                 target: message.source,
@@ -103,18 +132,7 @@ function handleExtensionMessage(message, sender) {
             STORE.currentStayPartial = deepMerge(STORE.currentStayPartial, message.stay)
             break
         case 'capture_finished':
-            STORE.captureTabIDs[message.source].forEach(tabId => chrome.tabs.remove(tabId))
-            chrome.tabs.update(STORE.captureTabIDs[ORIGIN.GARDEN][0], { active: true })
-            STORE.captureTabIDs[message.source] = undefined
-            const stays = message.stays || STORE.capturedStays[message.source]
-            const finalStays = staysWithNoDuplicates(stays)
-            sendMessage({
-                source: ORIGIN.SERVICE,
-                target: ORIGIN.GARDEN,
-                subject: message.source,
-                type: 'capture_finished',
-                stays: finalStays,
-            })
+            captureFinished(message.source, message.stays)
             break
         case 'error':
             STORE.captureTabIDs[message.source].forEach(tabId => chrome.tabs.remove(tabId))

@@ -1,4 +1,4 @@
-function monkeyPatch() {
+function monkeyPatchXML() {
     console.log("Injecting Wander Garden secateur.");
     let oldXHROpen = window.XMLHttpRequest.prototype.open
     window.XMLHttpRequest.prototype.open = function() {
@@ -16,4 +16,4 @@ function monkeyPatch() {
     }
 }
 
-monkeyPatch()
+monkeyPatchXML()
