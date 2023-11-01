@@ -16,7 +16,7 @@ function showLoadingIndicator() {
     indicatorElement.style.padding = '11px'
     indicatorElement.style.fontWeight = 'bold'
     indicatorElement.style.fontSize = '16px'
-    indicatorElement.style.zIndex = '100'
+    indicatorElement.style.zIndex = '500'
 
 
     document.body.style.marginTop = '44px'
@@ -45,14 +45,13 @@ function getDownloadStayWidget(stay) {
 }
 
 
-function scrollIntoViewUntil({ elementSelector, isFinishedCheck, callback }) {
+async function scrollIntoViewUntil({ elementSelector, isFinishedCheck }) {
     const items = [...document.querySelectorAll(elementSelector)]
     const lastItem = items[items.length-1]
     const isFinished = isFinishedCheck(lastItem)
-    if (isFinished) {
-        callback()
-    } else {
-        lastItem.scrollIntoView()
-        setTimeout(function() { scrollIntoViewUntil({ elementSelector, isFinishedCheck, callback }) }, 300)
-    }
+    if (isFinished) return 
+
+    lastItem.scrollIntoView()
+    await sleep(300)
+    await scrollIntoViewUntil({ elementSelector, isFinishedCheck })
 }

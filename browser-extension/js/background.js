@@ -145,6 +145,7 @@ function handleExtensionMessage(message, sender) {
                 type: 'error',
                 error: message.error,
                 location: message.location,
+                stack: message.stack,
             })
             break
     }

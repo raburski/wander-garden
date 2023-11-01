@@ -6,7 +6,7 @@ function getYearFromURL() {
 class BookingArchivedPage extends Page {
     static path = 'archivedsummary'
 
-    extractStayFromArchivedDocument() {
+    extractStay() {
         const gpsRegex = /GPS coordinates: ([^\n]+)/gi
         const addressRegex = /Address:\n(.+?)\n\n/gis
     

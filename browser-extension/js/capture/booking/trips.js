@@ -41,10 +41,10 @@ class BookingTripsPage extends Page {
     }
 
     async run() {
-        scrollIntoViewUntil({
-            elementSelector: "#mytrips-mfe > div > div > div > div ",
-            isFinishedCheck: element => element.classList.length < 2 || element.classList.toString().includes('csxp'),
-            callback: () => this.startOpeningStays()
+        await scrollIntoViewUntil({
+            elementSelector: "#mytrips-mfe > div > div > div > div",
+            isFinishedCheck: element => !element || element.classList.length < 2 || element.classList.toString().includes('csxp'),
         })
+        await this.startOpeningStays()
     }
 }
