@@ -11,7 +11,7 @@ import CapturingErrorModal from './CapturingErrorModal'
 import StartCaptureModal from "./StartCaptureModal"
 import { detectStayType, staysEqual } from "./stays"
 
-export const CURRENT_VERSION = '0.0.9'
+export const CURRENT_VERSION = '0.1.0'
 
 export const agodaStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'agoda')
 export const airbnbStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'airbnb')
