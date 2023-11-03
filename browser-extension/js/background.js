@@ -111,10 +111,12 @@ function handleExtensionMessage(message, sender) {
             STORE.currentStayPartial = {}
 
             // TODO: Test this
-            // if (lastCapturedStayID && lastCapturedStayID === stay.id) {
-            //     captureFinished(message.source)
-            //     break
-            // }
+            const lastCapturedStayID = STORE.lastCapturedStayID[message.source]
+            console.log('CHECK', lastCapturedStayID, message.source, stay?.id)
+            if (lastCapturedStayID && stay && lastCapturedStayID === stay.id) {
+                captureFinished(message.source)
+                break
+            }
             STORE.capturedStays[message.source].push(stay)
             if (STORE.captureTabIDs[message.source]?.includes(sender.tab.id)) {
                 STORE.captureTabIDs[message.source] = STORE.captureTabIDs[message.source].filter(tabId => tabId !== sender.tab.id)
