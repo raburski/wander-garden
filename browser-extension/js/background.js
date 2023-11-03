@@ -110,7 +110,6 @@ function handleExtensionMessage(message, sender) {
             const stay = message.stay || STORE.currentStayPartial
             STORE.currentStayPartial = {}
 
-            // TODO: Test this
             const lastCapturedStayID = STORE.lastCapturedStayID[message.source]
             console.log('CHECK', lastCapturedStayID, message.source, stay?.id)
             if (lastCapturedStayID && stay && lastCapturedStayID === stay.id) {
