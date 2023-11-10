@@ -6,6 +6,8 @@ import { venueEmoji } from 'domain/swarm/categories'
 import { getDaysAndRangeText } from 'date'
 import moment from 'moment'
 import { LocationAccuracy } from 'domain/location'
+import { ErrorBoundary } from 'react-error-boundary'
+import ErrorFallback from 'components/ErrorFallback'
 
 function getInfoWindowProperties({ stay, checkin }) {
     if (stay) {
@@ -54,15 +56,17 @@ export default function TripMap({ trip, checkins = [], style = {}, mapRef, highl
     }
 
     return (
-        <Panel style={{flex: 1, alignSelf: 'stretch', flexShrink: 2, ...style }} contentStyle={{ flex: 1, display: 'flexbox', alignSelf: 'stretch'}}>
-            <Map
-                mapRef={mapRef}
-                initPositions={initPositions}
-                markers={markers}
-                onMarkerClick={onMarkerClick}
-                bouncingMarkerIndex={highlightedStayIndex}
-                onResetView={onResetView}
-            />
-        </Panel>
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <Panel style={{flex: 1, alignSelf: 'stretch', flexShrink: 2, ...style }} contentStyle={{ flex: 1, display: 'flexbox', alignSelf: 'stretch'}}>
+                <Map
+                    mapRef={mapRef}
+                    initPositions={initPositions}
+                    markers={markers}
+                    onMarkerClick={onMarkerClick}
+                    bouncingMarkerIndex={highlightedStayIndex}
+                    onResetView={onResetView}
+                />
+            </Panel>
+        </ErrorBoundary>
     )
 }

@@ -9,7 +9,7 @@ import ImportModal from "./ImportModal"
 import CapturingModal from "./CapturingModal"
 import CapturingErrorModal from './CapturingErrorModal'
 import StartCaptureModal from "./StartCaptureModal"
-import { detectStayType, staysEqual } from "./stays"
+import { detectStayType, getStayIcon, staysEqual } from "./stays"
 
 export const CURRENT_VERSION = '0.1.0'
 
@@ -130,7 +130,7 @@ export function StaysProvider({ children }) {
                         origin: StayOrigin.Captured,
                     })
                 } else if (message.type === 'error') {
-                    setCaptureError({ error: message.error, location: message.location })
+                    setCaptureError({ error: message.error, location: message.location, stack: message.stack })
                     setCapturing(false)
                 }
             }
@@ -226,9 +226,10 @@ export function StaysProvider({ children }) {
         })
     }
 
-    async function replaceAllStays(newStays = []) {
+    async function replaceAllStays(_newStays = []) {
+        const newStays = _newStays.filter(isStayType)
         for(let type of ALL_STAY_TYPES) {
-            const newStaysOfType = newStays.filter(s => s.type === type)
+            const newStaysOfType = newStays.filter(stay => detectStayType(stay) === type)
             await setStays(type, newStaysOfType)
         }
         await refresh()
@@ -270,6 +271,7 @@ export function StaysProvider({ children }) {
                 isOpen={!!captureError}
                 error={captureError?.error}
                 location={captureError?.location}
+                stack={captureError?.stack}
                 onClickAway={() => setCaptureError(undefined)}
             />
         </ExtensionContext.Provider>
