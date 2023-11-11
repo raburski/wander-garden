@@ -8,7 +8,6 @@ const AllFlagsContainer = styled('div')`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    margin-bottom: 8px;
 `
 
 const OptionsContainer = styled('div')`
@@ -26,9 +25,9 @@ export default function FiltersPanel({ countryCodes, selectedCountryCode, select
     return (
         <Panel spacing {...props}>
             <AllFlags countryCodes={countryCodes} selectedCountryCode={selectedCountryCode}/>
-            <OptionsContainer>
+            {/* <OptionsContainer>
                 <Segment titles={SEGMENT_TITLES} selectedIndex={selectedSegmentIndex} onClick={onSetSegmentIndex}/>
-            </OptionsContainer>
+            </OptionsContainer> */}
         </Panel>
     )
 }
