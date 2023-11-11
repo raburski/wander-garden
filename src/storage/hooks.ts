@@ -12,7 +12,7 @@ export function useStatePersistedCallback<Type>(currentState: Type, setState: se
 }
 
 export function useSyncedStorage<T>(storage: StorageAdapter<T>): [T, StorageSet<T>] {
-    const [data, setDataState] = useState(storage.initialValue)
+    const [data, setDataState] = useState(storage.getInitial())
     useEffect(() => {
         storage.get().then(setDataState)
     }, [storage])

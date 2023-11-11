@@ -85,6 +85,9 @@ export default class IndexedDBStorageAdapter<Type extends ObjectWithID> implemen
         this.initialValue = initialValue
         this.store = indexedDBSingleton.registerStore<Type>(dbName, version, storeName, parameters)
     }
+    getInitial(): Type[] {
+      return this.initialValue
+    }
     get(): Promise<Type[]> {
       return this.store.getAll()
     }

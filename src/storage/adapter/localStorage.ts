@@ -12,6 +12,10 @@ export default class LocalStorageAdapter<Type> implements StorageAdapter<Type> {
         this.transforms = transforms
         this.initialValue = this.transforms.get(this.defaultStoreValue)
     }
+    getInitial(): Type {
+        const instantValue = localStorage.getItem(this.storeKey)
+        return instantValue ? this.transforms.get(instantValue) : this.initialValue
+    }
     get(): Promise<Type> {
         const storedValue: string = localStorage.getItem(this.storeKey) || this.defaultStoreValue
         return Promise.resolve(this.transforms.get(storedValue))
