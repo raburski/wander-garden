@@ -5,9 +5,29 @@ class BookingConfirmationPage extends Page {
         return document.getElementsByClassName('reservation-status__title-status--completed').length === 1
     }
 
-    extractStay() {
-        const gpsRegex = /markers=([^&]+)/gi
+    extractGPSCoordinates() {
+        let cordsString = undefined
+        const propertyMapOne = document.querySelector('.bhpb_print_property_map')
+        const propertyMapTwo = document.querySelector('.pb_conf_print_map__tile')
+        if (propertyMapOne) {
+            const markersRegex = /markers=([^&]+)/gi
+            const markersResults = markersRegex.exec(propertyMapOne.src)
+            cordsString = markersResults[1]
+        } else if (propertyMapTwo) {
+            const centerRegex = /center=([^&]+)/gi
+            const centerResults = centerRegex.exec(propertyMapTwo.getAttribute('data-defer-src'))
+            cordsString = centerResults[1]
+        }
 
+        if (!cordsString || !cordsString.includes(',')) return undefined    
+        const coordElemenets = cordsString.split(',')
+        return {
+            lat: parseFloat(coordElemenets[0]),
+            lng: parseFloat(coordElemenets[1])
+        }
+    }
+
+    extractStay() {
         const bookingID = document.querySelector('.booknumber-pincode-item span').textContent.trim().replace(/\./gi, '')
         const hotelName = document.querySelector('div[data-c360-id=hotelTitle]').textContent.trim()
     
@@ -23,15 +43,8 @@ class BookingConfirmationPage extends Page {
         const price = priceFromString(roomPrice)
         if (!price) return this.core.sendError('price could not be found', 'extractStayFromDocument')
     
-        const gpsText = document.querySelector('.bhpb_print_property_map').src
-        const gpsResults = gpsRegex.exec(gpsText)
-        const cordsString = gpsResults[1]
-        if (!cordsString) return this.core.sendError('gps coordinates could not be found', 'extractStayFromDocument')
-        const coordElemenets = cordsString.split(',')
-        const cords = {
-            lat: parseFloat(coordElemenets[0]),
-            lng: parseFloat(coordElemenets[1])
-        }
+        const coords = this.extractGPSCoordinates()
+        if (!coords) return this.core.sendError('gps coordinates could not be found', 'extractStayFromDocument')
         
         // format: Wed 4 Oct 2023
         const datesElements = [...document.querySelectorAll('time > div:first-of-type')]
@@ -47,7 +60,7 @@ class BookingConfirmationPage extends Page {
             until: datesElements[1].toISOString(),
             location: {
                 ...addressComponents,
-                ...cords,
+                ...coords,
                 cc,
             },
             accomodation: {

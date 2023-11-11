@@ -186,8 +186,8 @@ function init(origin, onInitCapture, onInitDefault) {
     }
 
     function sendError(error, location) {
-        let stack = error.stack
-            .replace(/chrome-extension:\/\/[a-zA-Z]{25,50}\//gi, '')
+        let stack = error.stack ? error.stack
+            .replace(/chrome-extension:\/\/[a-zA-Z]{25,50}\//gi, '') : error
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'error', error: `${error}`, location, stack })
         return undefined
     }
