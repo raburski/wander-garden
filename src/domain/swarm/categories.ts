@@ -34,7 +34,9 @@ export function getTransportType(checkin: Checkin) {
 }
 
 export function isTransportation(checkin: Checkin): boolean {
-    return checkin.venue ? checkin.venue.categories.some(category => TRANSPORT_CATEGORIES.includes(category.id)) : false
+    const isTransportationCategory = checkin.venue ? checkin.venue.categories.some(category => TRANSPORT_CATEGORIES.includes(category.id)) : false
+    const isTransportationAddress = checkin.venue ? !!checkin.venue.location.address?.toLowerCase().includes('airport') : false
+    return isTransportationCategory || isTransportationAddress
 }
 
 export function onlyNonTransportation(checkin: Checkin): boolean {
