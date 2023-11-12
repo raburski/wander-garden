@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useToken } from 'domain/swarm'
 import InfoPanel from 'components/InfoPanel'
 import SquareImage from 'components/SquareImage'
@@ -14,16 +14,30 @@ const STATUS = {
     ALREADY_AUTHENTICATED: 3,
 }
 
+function useTokenSet() {
+    const [swarmToken, setSwarmToken] = useToken()
+    const [instaToken, setInstaToken] = useState()
+
+    const params = new URL(window.location.href).searchParams
+    const url_token = params.get('access_token')
+    const url_type = params.get('type')
+    if (url_type === 'foursquare') {
+        return [url_token, swarmToken, setSwarmToken]
+    } else if (url_token === 'instagram') {
+        return [url_token, instaToken, setInstaToken]
+    }
+    return []
+}
+
 function useAuthenticationStatus() {
-    const [token, setToken] = useToken()
-    const url_token = new URL(window.location.href).searchParams.get('access_token')
-    if (token) {
+    const [urlToken, savedToken, setToken] = useTokenSet()
+    if (savedToken) {
         return STATUS.ALREADY_AUTHENTICATED
     }
-    if (!token && !url_token) {
+    if (!savedToken && !urlToken) {
         return STATUS.FAILED
     }
-    setToken(url_token)
+    setToken(urlToken)
     return STATUS.SUCCESS
 }
 

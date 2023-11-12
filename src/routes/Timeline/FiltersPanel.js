@@ -16,7 +16,15 @@ const OptionsContainer = styled('div')`
 `
 
 function AllFlags({ countryCodes = [], selectedCountryCode }) {
-    return <AllFlagsContainer>{countryCodes.map(cc => <FlagButton key={cc} to={selectedCountryCode === cc.toLowerCase() ? `?` : `?cc=${cc.toLowerCase()}`} selected={selectedCountryCode == cc.toLowerCase()}>{countryFlagEmoji.get(cc).emoji}</FlagButton>)}</AllFlagsContainer>
+    return (
+        <AllFlagsContainer>
+            {countryCodes.map(cc => 
+                <FlagButton key={cc} to={selectedCountryCode === cc.toLowerCase() ? `?` : `?cc=${cc.toLowerCase()}`} selected={selectedCountryCode == cc.toLowerCase()}>
+                    {countryFlagEmoji.get(cc).emoji}
+                </FlagButton>
+            )}
+        </AllFlagsContainer>
+    )
 }
 
 const SEGMENT_TITLES = ['all', 'trips', 'abroad']
