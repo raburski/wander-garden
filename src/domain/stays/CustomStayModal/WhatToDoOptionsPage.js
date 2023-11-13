@@ -1,5 +1,4 @@
-import { ModalPageButtons } from "components/ModalPage"
-import { MdHotel, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, MdAddTask, MdAddCircleOutline, MdNightsStay, MdPeopleAlt, MdLocationPin, MdPlace, MdCheck, MdDone } from 'react-icons/md'
+import { MdAddTask, MdAddCircleOutline } from 'react-icons/md'
 import { FaUserFriends, FaDiscord, FaPlane } from 'react-icons/fa'
 import { FiChevronRight, FiExternalLink } from 'react-icons/fi'
 import Panel from "components/Panel"

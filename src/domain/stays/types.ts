@@ -2,7 +2,7 @@ import type { Location } from 'domain/location'
 import { isLocationType } from "domain/location"
 import { isOptionalOfType, isOfType, isMoneyType, Money, isArrayOfType } from "type"
 import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, MdAddTask } from 'react-icons/md'
-import { FaCouch, FaUserFriends, FaCaravan, FaCar, FaShip, FaPlane, FaTrain } from 'react-icons/fa'
+import { FaCouch, FaUserFriends, FaCaravan, FaCar, FaShip, FaPlane, FaTrain, FaBus } from 'react-icons/fa'
 import { FiExternalLink } from 'react-icons/fi'
 import { TbTent, TbCloudUpload, TbDots } from 'react-icons/tb'
 
@@ -29,6 +29,7 @@ export enum StayPlaceType {
     Car = 'CAR',
     Airplane = 'AIRPLANE',
     Train = 'TRAIN',
+    Bus = 'BUS',
 }
 
 export interface Stay {
@@ -150,6 +151,7 @@ export const PlaceTypeToIcon = {
     [StayPlaceType.Sailboat]: MdSailing,
     [StayPlaceType.Airplane]: FaPlane,
     [StayPlaceType.Train]: FaTrain,
+    [StayPlaceType.Bus]: FaBus,
 }
 
 export const PlaceTypeToTitle = {
@@ -161,4 +163,8 @@ export const PlaceTypeToTitle = {
     [StayPlaceType.Cruiseship]: 'Cruise Ship',
     [StayPlaceType.Friends]: 'Friends',
     [StayPlaceType.Sailboat]: 'Sailboat',
+    [StayPlaceType.Airplane]: 'Airplane',
+    [StayPlaceType.Train]: 'Train',
+    [StayPlaceType.Bus]: 'Bus',
+
 }

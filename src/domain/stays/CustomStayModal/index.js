@@ -9,6 +9,10 @@ import CustomStayPage from "./CustomStayPage"
 import ChooseStayTypePage from "./ChooseStayTypePage"
 import UploadFromFriendPage from "./UploadFromFriendPage"
 
+const STAY_CATEGORY = {
+    TRANSPORT: 'transport',
+    COMMON: 'common'
+}
 
 const WIDTH = 500
 export default function CustomStayModal({ onClickAway, phase, previousPhase, stay, ...props }) {
@@ -24,8 +28,8 @@ export default function CustomStayModal({ onClickAway, phase, previousPhase, sta
         onClickAway()
     }
 
-    const onAddCustomStay = () => setAddStayConfirmed(true)
-    const onAddTransit = () => {}
+    const onAddCustomStay = () => setAddStayConfirmed(STAY_CATEGORY.COMMON)
+    const onAddTransit = () => setAddStayConfirmed(STAY_CATEGORY.TRANSPORT)
     const onExtendStay = () => setSelectedStayType(StayPlaceType.Extension)
     const onContactUs = () => { openDiscord(); cancel() }
     const onImportFromFriend = () => setUploadFromFriendConfirmed(true)
@@ -52,6 +56,7 @@ export default function CustomStayModal({ onClickAway, phase, previousPhase, sta
             {addStayConfirmed && !selectedStayType ? 
                 <ChooseStayTypePage
                     key="info"
+                    category={addStayConfirmed}
                     style={{ width: WIDTH, }}
                     layout
                     onBack={onBackFromChoseStayType}
