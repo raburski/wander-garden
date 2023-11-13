@@ -4,7 +4,7 @@ import Button from "components/Button"
 import { styled } from "goober"
 import Page from "components/Page"
 import { useNavigate } from "react-router"
-import { RxFileText } from "react-icons/rx"
+import { ImFileText2 } from 'react-icons/im'
 
 const SectionRow = styled(Row)`
     flex-direction: column;
@@ -44,7 +44,7 @@ export default function UploadFromFriendPage({ onFinished, ...props }) {
                 <SectionRow>
                     <h2>Import stay file</h2>
                     {IMPORT_STAY_COPY}
-                    <SectionButtom icon={RxFileText} onClick={onUploadFile}>Go to data</SectionButtom>
+                    <SectionButtom icon={ImFileText2} onClick={onUploadFile}>Go to data</SectionButtom>
                 </SectionRow>
             </Panel>
         </Page>

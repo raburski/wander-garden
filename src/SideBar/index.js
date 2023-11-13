@@ -1,12 +1,9 @@
 import { styled, css } from 'goober'
 import { VscDashboard, VscPulse, VscVersions } from 'react-icons/vsc'
 import { FaDiscord, FaTwitter } from 'react-icons/fa'
-import { TfiMapAlt, TfiMenu } from 'react-icons/tfi'
-import { SiSwarm } from 'react-icons/si'
 import { SlClose, SlSettings } from 'react-icons/sl'
 import { MdHotel } from 'react-icons/md'
 import { BsAward } from 'react-icons/bs'
-import { RxFileText } from 'react-icons/rx'
 import Logo from './Logo'
 import StylelessLink from 'components/StylelessLink'
 import PillLink from 'components/PillLink'
@@ -14,10 +11,11 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Button from 'components/Button'
 import { isDEV } from 'environment'
-import { useOnboardingFinishedSetting, useRunningDemoSetting, useSetting } from 'domain/settings'
+import { useOnboardingFinishedSetting, useRunningDemoSetting } from 'domain/settings'
 import { useClearData } from 'domain/swarm'
 import { useReplaceAllStays } from 'domain/stays'
-import toast from 'react-hot-toast'
+import { ImFileText2, ImMap2 } from 'react-icons/im'
+import { FiMenu } from 'react-icons/fi'
 
 const hideOnMediumBreakpointClassName = css`
 @media only screen and (min-width: 574px) and (max-width: 1024px) {
@@ -142,7 +140,7 @@ const HamburgerButton = styled(Button)`
 `
 
 function HamburgerMenu({ onClick }) {
-    return <HamburgerButton onClick={onClick} icon={TfiMenu} />
+    return <HamburgerButton onClick={onClick} icon={FiMenu} />
 }
 
 const CLOSED_SIDEBAR_STYLE = { marginLeft: -200}
@@ -173,8 +171,8 @@ function SideMenu({ onLinkClick, ...props }) {
             <StyledPillLink onClick={onLinkClick} to="timeline" separatorClassName={hideOnMediumBreakpointClassName} icon={VscVersions}>Timeline</StyledPillLink>
             <StyledPillLink onClick={onLinkClick} to="badges" separatorClassName={hideOnMediumBreakpointClassName} icon={BsAward}>Badges</StyledPillLink>
             {isDEV() ? <StyledPillLink onClick={onLinkClick} to="context" separatorClassName={hideOnMediumBreakpointClassName} icon={VscPulse}>Context</StyledPillLink> : null}
-            <StyledPillLink onClick={onLinkClick} to="map" separatorClassName={hideOnMediumBreakpointClassName} icon={TfiMapAlt}>Map</StyledPillLink>
-            <StyledPillLink onClick={onLinkClick} to="data" separatorClassName={hideOnMediumBreakpointClassName} icon={RxFileText}>Data</StyledPillLink>
+            <StyledPillLink onClick={onLinkClick} to="map" separatorClassName={hideOnMediumBreakpointClassName} icon={ImMap2}>Map</StyledPillLink>
+            <StyledPillLink onClick={onLinkClick} to="data" separatorClassName={hideOnMediumBreakpointClassName} icon={ImFileText2}>Data</StyledPillLink>
             {/* <Separator /> */}
             {/* <StyledPillLink onClick={onLinkClick} to="swarm" separatorClassName={hideOnMediumBreakpointClassName} icon={SiSwarm}>Swarm</StyledPillLink> */}
             <StyledPillLink onClick={onLinkClick} to="stays" separatorClassName={hideOnMediumBreakpointClassName} icon={MdHotel}>Stays</StyledPillLink>
