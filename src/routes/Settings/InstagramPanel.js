@@ -1,5 +1,5 @@
 import Panel from "components/Panel"
-import { useIsAuthenticated, useLogout } from "domain/swarm"
+import { useIsAuthenticated, useLogout } from "domain/instagram"
 import { IoLogoInstagram } from "react-icons/io"
 import AuthenticateButton from "bindings/instagram/AuthenticateButton"
 import Button from "components/Button"
@@ -9,8 +9,8 @@ const ACCOUNT_COPY_AUTHED = `You can disconnect your instagram account anytime. 
 const ACCOUNT_COPY_DEFAULT = `Once account is connected you will be able to fetch all you instagram photos.`
 
 export default function InstagramPanel() {
-    const isAuthenticated = false // TODO
-    const onLogout = () => {} //useLogout()
+    const isAuthenticated = useIsAuthenticated()
+    const onLogout = useLogout()
 
     return (
         <Panel header="Instagram" spacing>

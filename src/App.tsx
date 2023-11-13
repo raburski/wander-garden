@@ -16,6 +16,7 @@ import { OnboardingProvider } from "domain/onboarding"
 import { SettingsProvider } from './domain/settings'
 import { Analytics } from '@vercel/analytics/react'
 import mapboxgl from 'mapbox-gl'
+import { InstagramProvider } from "domain/instagram"
  
 mapboxgl.accessToken = 'pk.eyJ1IjoicmFidXJza2kiLCJhIjoiR2ltZ1pkSSJ9.BKiZ33LQkwsLgyyrAw4EyQ';
 
@@ -54,7 +55,7 @@ function App() {
         <HomesProvider>
         <TimelineProvider>
           <SwarmProvider>
-            
+            <InstagramProvider>
               
                 <StaysProvider>
                   <AppContainer>
@@ -69,7 +70,7 @@ function App() {
                   </AppContainer>
                 </StaysProvider>
               
-            
+            </InstagramProvider>
           </SwarmProvider>
           </TimelineProvider>
           </HomesProvider>

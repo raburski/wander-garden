@@ -1,13 +1,11 @@
 import { createContext, useState, useContext, useMemo } from "react"
-import { fetchCheckins, UnauthorizedError } from './API'
-import { dateTransforms, zipsonTransforms, stringTransforms, LocalStorageAdapter, useStatePersistedCallback, useSyncedStorage, IndexedDBStorageAdapter } from 'storage'
-import moment from 'moment'
+import { dateTransforms, stringTransforms, LocalStorageAdapter, useSyncedStorage, IndexedDBStorageAdapter } from 'storage'
 import StartUpdateModal from "./StartUpdateModal"
 
 export const SwarmContext = createContext({})
 
 const localStorageLastUpdated = new LocalStorageAdapter('swarm_checkins_last_update', null, dateTransforms)
-const localStorageToken = new LocalStorageAdapter('access_token', null, stringTransforms)
+const localStorageToken = new LocalStorageAdapter('swarm_access_token', null, stringTransforms)
 
 export const checkinsStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'checkins')
 
