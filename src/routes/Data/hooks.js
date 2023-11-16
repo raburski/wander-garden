@@ -2,8 +2,8 @@ import { downloadString, uploadFile } from 'files'
 import { useCheckins, useClearData as useClearSwarmData, isSwarmData, useShowUpdateModal } from 'domain/swarm'
 import toast from 'react-hot-toast'
 import { TITLES } from './consts'
-import { useRefreshTimeline } from 'domain/timeline'
 import { isStayData, isStayType, StayType, useClearStays, useShowCaptureStartModal, useStartFileImport, useStays } from 'domain/stays'
+import { useRefreshTrips } from 'domain/trips'
 
 function getStayTypeForIndex(index) {
     switch (index) {
@@ -47,7 +47,7 @@ async function uploadSwarmCheckins(items, setCheckins, onFinish) {
 }
 
 export function useUpload() {
-    const refreshTimeline = useRefreshTimeline()
+    const refreshTrips = useRefreshTrips()
     const startFileImport = useStartFileImport()
 
     const [_, setCheckins] = useCheckins()
@@ -57,7 +57,7 @@ export function useUpload() {
         const items = JSON.parse(files)
 
         if (isSwarmData(items)) {
-            await uploadSwarmCheckins(items, setCheckins, refreshTimeline)
+            await uploadSwarmCheckins(items, setCheckins, refreshTrips)
         } else if (isStayType(items) || isStayData(items)) {
             startFileImport(items)
         } else {
@@ -68,18 +68,18 @@ export function useUpload() {
 
 export function useTrash(index) {
     const stayType = getStayTypeForIndex(index)
-    const refreshTimeline = useRefreshTimeline()
+    const refreshTrips = useRefreshTrips()
     const clearStayData = useClearStays(stayType)
     const clearSwarmData = useClearSwarmData()
 
     return () => {
         if (window.confirm(`Are you sure you want to delete all ${TITLES[index]} data?`) && window.confirm(`Are you REALLY sure you want to CLEAN IT?`)) {
             if (clearStayData) {
-                clearStayData().then(() => refreshTimeline())
+                clearStayData().then(() => refreshTrips())
             } else {
                 clearSwarmData().then(() => {
                     console.log('clear swarm refresh?')
-                    refreshTimeline()
+                    refreshTrips()
                     console.log('refreshed!')
                 })
             }
