@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { useCheckins, useLastUpdated, useToken } from 'domain/swarm'
-import { useRefreshHomes } from 'domain/homes'
-import { useRefreshTimeline } from 'domain/timeline'
 import { fetchCheckins, UnauthorizedError } from './API'
 import moment from 'moment'
+import { useRefreshTrips } from 'domain/trips'
 
 export function useFetchCheckins() {
     const [checkins, setCheckins] = useCheckins()
@@ -45,15 +44,12 @@ function toastSandwich(fnReturningPromise) {
 export function useFetchSwarm() {
     const [isFetching, setFetching] = useState(false)
     const fetchCheckins = useFetchCheckins()
-
-    const refreshHomes = useRefreshHomes()
-    const refreshTimeline = useRefreshTimeline()
+    const refreshTrips = useRefreshTrips()
 
     async function fetch() {
         setFetching(true)
         await fetchCheckins()
-        await refreshHomes()
-        await refreshTimeline()
+        await refreshTrips()
         setFetching(false)
     } 
     return [isFetching, fetch]
