@@ -28,6 +28,37 @@ const SHOP_CATEGORIES: string[] = [
     '4bf58dd8d48988d1f6941735', // Department Store
 ]
 
+const SIGNIFICANT_CATEGORIES: string[] = [
+    '4bf58dd8d48988d12d941735', // Monument / Landmark
+    '4bf58dd8d48988d190941735', // History Museum
+    '4bf58dd8d48988d181941735', // Museum
+    '4bf58dd8d48988d18f941735', // Art Museum
+    '52e81612bcbc57f1066b7a3e', // Buddist Temple
+    '4bf58dd8d48988d13a941735', // Temple
+    '52e81612bcbc57f1066b7a3f', // Hindu Temple
+    '4bf58dd8d48988d159941735', // Hiking Trail
+    '50aaa49e4b90af0d42d5de11', // Castle
+    '4deefb944765f83613cdba6e', // Historic and protected site
+    '52e81612bcbc57f1066b7a40', // Monastry
+    '4bf58dd8d48988d182941735', // Amusement Park
+    '4eb1d80a4b900d56c88a45ff', // Shrine
+    '4bf58dd8d48988d136941735', // Opera House
+    '4e74f6cabd41c4836eac4c31', // Pier
+    '4bf58dd8d48988d1e2941735', // Beach
+    '4bf58dd8d48988d132941735', // Church
+    '56aa371be4b08b9a8d573532', // Exhibit
+    '4bf58dd8d48988d166941735', // Sculpture Garden
+    '4bf58dd8d48988d17b941735', // Zoo
+    '4bf58dd8d48988d193941735', // Water Park
+    '56aa371be4b08b9a8d573560', // Waterfall
+    '4bf58dd8d48988d160941735', // Hot Spring
+    '4bf58dd8d48988d165941735', // Scenic Lookout
+]
+
+export function isSignificant(checkin: Checkin) {
+    return checkin.venue ? checkin.venue.categories.some(category => SIGNIFICANT_CATEGORIES.includes(category.id)) : false
+}
+
 export function getTransportType(checkin: Checkin) {
     const category = checkin.venue ? checkin.venue.categories.find(category => TRANSPORT_CATEGORIES.includes(category.id)) : null
     return category ? TRANSPORT_CATEGORY_TYPES[category.id] : undefined

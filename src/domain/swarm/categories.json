@@ -654,7 +654,7 @@
         "name": "Theme Park",
         "shortName": "Theme Park",
         "pluralName": "Theme Parks",
-        "emoji": null
+        "emoji": "🎢"
     },
     {
         "id": "52e81612bcbc57f1066b7a14",
@@ -668,7 +668,7 @@
         "name": "Museum",
         "shortName": "Museum",
         "pluralName": "Museums",
-        "emoji": null
+        "emoji": "🏛️"
     },
     {
         "id": "4bf58dd8d48988d10d941735",
@@ -696,14 +696,14 @@
         "name": "Sculpture Garden",
         "shortName": "Sculpture",
         "pluralName": "Sculpture Gardens",
-        "emoji": null
+        "emoji": "🗿"
     },
     {
         "id": "4bf58dd8d48988d193941735",
         "name": "Water Park",
         "shortName": "Water Park",
         "pluralName": "Water Parks",
-        "emoji": null
+        "emoji": "🤿"
     },
     {
         "id": "4eb1d4d54b900d56c88a45fc",
@@ -1095,14 +1095,14 @@
         "name": "Monastery",
         "shortName": "Monastery",
         "pluralName": "Monasteries",
-        "emoji": null
+        "emoji": "⛪️"
     },
     {
         "id": "4bf58dd8d48988d160941735",
         "name": "Hot Spring",
         "shortName": "Hot Spring",
         "pluralName": "Hot Springs",
-        "emoji": null
+        "emoji": "🌋"
     },
     {
         "id": "55a5a1ebe4b013909087cb86",
@@ -1676,7 +1676,7 @@
         "name": "Pier",
         "shortName": "Piers",
         "pluralName": "Piers",
-        "emoji": null
+        "emoji": "🎡"
     },
     {
         "id": "52f2ab2ebcbc57f1066b8b18",
@@ -1859,5 +1859,19 @@
         "shortName": "Education",
         "pluralName": "General Colleges & Universities",
         "emoji": null
+    },
+    {
+        "id": "4eb1d80a4b900d56c88a45ff",
+        "name": "Shrine",
+        "shortName": "Shrine",
+        "pluralName": "Shrine",
+        "emoji": "🙏🏻"
+    },
+    {
+        "id": "56aa371be4b08b9a8d573532",
+        "name": "Exhibit",
+        "shortName": "Exhibit",
+        "pluralName": "Exhibit",
+        "emoji": "🖼️"
     }
 ]
