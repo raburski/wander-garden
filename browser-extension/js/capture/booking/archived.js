@@ -6,6 +6,29 @@ function getYearFromURL() {
 class BookingArchivedPage extends Page {
     static path = 'archivedsummary'
 
+    getSinceUntil() {
+        const year = getYearFromURL()
+        const datesElement = document.getElementsByClassName('dates')[0]
+        const dayElements = datesElement.querySelectorAll('.summary__big-num')
+        const monthElements = datesElement.querySelectorAll('.dates__month')
+    
+        const dateSince = new Date(`${monthElements[0].textContent} ${dayElements[0].textContent}, ${year}`)
+        const dateUntil = new Date(`${monthElements[1].textContent} ${dayElements[1].textContent}, ${year}`)
+
+        if (dateSince.getTime() <= dateUntil.getTime()) {
+            return {
+                since: dateSince,
+                until: dateUntil,
+            }
+        } else {
+            // date until is probably already in new year
+            return {
+                since: new Date(`${monthElements[0].textContent} ${dayElements[0].textContent}, ${year}`),
+                until: new Date(`${monthElements[1].textContent} ${dayElements[1].textContent}, ${year + 1}`)
+            }
+        }
+    }
+
     extractStay() {
         const gpsRegex = /GPS coordinates: ([^\n]+)/gi
         const addressRegex = /Address:\n(.+?)\n\n/gis
@@ -34,19 +57,13 @@ class BookingArchivedPage extends Page {
     
         if (!cords) return this.core.sendError('gps coordinates could not be found', 'extractStayFromDocument')
     
-        const year = getYearFromURL()
-        const datesElement = document.getElementsByClassName('dates')[0]
-        const dayElements = datesElement.querySelectorAll('.summary__big-num')
-        const monthElements = datesElement.querySelectorAll('.dates__month')
-    
-        const dateSince = new Date(`${monthElements[0].textContent} ${dayElements[0].textContent}, ${year}`)
-        const dateUntil = new Date(`${monthElements[1].textContent} ${dayElements[1].textContent}, ${year}`)
-    
+        const sinceUntil = this.getSinceUntil()
+
         return {
             id: `booking:${bookingID}`,
             url: window.location.href,
-            since: dateSince.toISOString(),
-            until: dateUntil.toISOString(),
+            since: sinceUntil.since.toISOString(),
+            until: sinceUntil.until.toISOString(),
             location: {
                 ...addressComponents,
                 cc,
