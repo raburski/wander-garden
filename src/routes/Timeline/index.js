@@ -16,8 +16,9 @@ import { useTrips, useTitle } from "domain/trips"
 
 function Trip({ trip }) {
     const title = useTitle(trip && trip.id)
-    const locationTitle = titleFromLocationHighlights(trip.highlights)
-    const countryCodes = trip.highlights.map(highlight => highlight.location.cc).filter(onlyUnique).reverse()
+    const highlights = trip.highlights.reversed()
+    const locationTitle = titleFromLocationHighlights(highlights)
+    const countryCodes = highlights.map(highlight => highlight.location.cc).filter(onlyUnique).reversed()
     const [days, range] = getDaysAndRangeText(trip.since, trip.until)
 
     return (

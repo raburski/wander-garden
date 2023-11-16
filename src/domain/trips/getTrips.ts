@@ -120,8 +120,8 @@ function groupStays(checkins: Checkin[]) {
             const highlights = getHighlightsFromStays(stays)
             return {
                 id: `trip:${stays[0].id}`,
-                since: phases[0].since,
-                until: phases[phases.length - 1].until,
+                since: phases.first().since,
+                until: phases.last().until,
                 highlights: highlights,
                 phases: phases,
             }
@@ -133,13 +133,6 @@ export default async function getTrips(): Promise<Trip[]> {
     const stays = await getAllStays()
     const checkins = await getAllCheckins()
     // Sorted: oldest to newest
-    // const enhancedStays = stays.map(stay => { 
-    //     const firstDay = moment(stay.since)
-    //     firstDay.set('hour', ) // Assuming reaching a hotel by night
-    //     const lastDay = moment(stay.until)
-    //     lastDay.set('hour', 7) // Assuming staying in a hotel by early morning
-    //     return ({ ...stay, since: })
-    // })
     const sortedStays = [...stays].sort((a: Stay, b: Stay) => moment(a.since).diff(moment(b.since)))
     const trips = arrayQueryReplace(groupStays(checkins), sortedStays)
     console.log(trips)
