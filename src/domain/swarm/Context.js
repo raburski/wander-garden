@@ -72,3 +72,7 @@ export function useLogout() {
     const [_, setToken] = useToken()
     return () => setToken(null)
 }
+
+export async function getAllCheckins() {
+    return await checkinsStorage.get()
+}

@@ -5,7 +5,6 @@ import Panel from "components/Panel"
 import Button from "components/Button"
 import Separator from "components/Separator"
 import { useForm } from "react-hook-form"
-import { PhaseType } from "routes/Trip/useTrip"
 import { LocationAccuracy, formattedAccuracyLocation } from "domain/location"
 import { useAddCustomStays, useReplaceCustomStay } from "../Context"
 import Page from "components/Page"
@@ -16,7 +15,7 @@ import DaysForm from "./DaysForm"
 import { getDateRanges } from "date"
 
 function getPresetLocations(phase) {
-    if (phase.type !== PhaseType.Unknown) return []
+    if (!phase.stay) return []
     const locations = phase.guessedLocations.flatMap(l => [
         { ...l, accuracy: LocationAccuracy.City },
         { ...l, accuracy: LocationAccuracy.Country },

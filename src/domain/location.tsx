@@ -71,6 +71,7 @@ const fixNames: {[name: string]: string} = {
 }
 
 export function cleanLocation(location: string = "") {
+    // if (!location) return undefined
     const latinLocation = cyrylicToLatin(location)
     const fixedNames = fixNames[latinLocation] || latinLocation
     return cleanState(fixedNames)
@@ -119,13 +120,15 @@ export function isEqualMetro(leftLocation: Location, rightLocation: Location): b
     const rightState = cleanLocation(rightLocation.state)
     const leftMetroCity = cleanLocation(STATE_AS_CITY[leftState])
     const rightMetroCity = cleanLocation(STATE_AS_CITY[rightState])
-    if (leftCity === rightState || leftState === rightCity) {
+    if (!!leftCity && !!rightState && leftCity === rightState) {
         return true
-    } else if (leftMetroCity && rightMetroCity && leftMetroCity === rightMetroCity) {
+    } else if (!!leftState && !!rightCity && leftState === rightCity) {
         return true
-    } else if (leftMetroCity && leftMetroCity === rightCity) {
+    } else if (!!leftMetroCity && !!rightMetroCity && leftMetroCity === rightMetroCity) {
         return true
-    } else if (rightMetroCity && rightMetroCity === leftCity) {
+    } else if (!!leftMetroCity && !!rightCity && leftMetroCity === rightCity) {
+        return true
+    } else if (!!rightMetroCity && !!leftCity && rightMetroCity === leftCity) {
         return true
     }
     return false

@@ -1,6 +1,6 @@
 import Panel from "components/Panel"
 import EmojiRow from "components/EmojiRow"
-import { addTripPrices } from "./useTrip"
+import { addTripPrices } from "./functions"
 import { getDaysAndRangeText } from "date"
 
 const emojiStyle = {
@@ -8,8 +8,8 @@ const emojiStyle = {
 }
 
 export default function Info({ trip, style }) {
-    const since = trip.phases[0].since
-    const until = trip.phases[trip.phases.length - 1].until
+    const since = trip.since
+    const until = trip.until
     const dateRange = getDaysAndRangeText(since, until)
     const totalPrices = addTripPrices(trip)
     

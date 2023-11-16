@@ -3,10 +3,8 @@ import { titleFromLocationHighlights } from 'domain/timeline/groups'
 import { useParams } from 'react-router'
 import Page from '../../components/Page'
 import Panel from '../../components/Panel'
-import GroupEvent from 'routes/Timeline/GroupEvent'
 import { styled } from 'goober'
 import moment from 'moment'
-import useTrip, { PhaseType, StayPhase } from './useTrip'
 import GroupBar from 'routes/Timeline/GroupBar'
 import { getDaysAndRangeText } from 'date'
 import useGroups, { GroupType } from './useGroups'
@@ -21,6 +19,7 @@ import { venueEmoji } from 'domain/swarm/categories'
 import TripMap from './Map'
 import CustomStayModal from 'domain/stays/CustomStayModal'
 import { LocationAccuracy } from 'domain/location'
+import { useTrip } from 'domain/trips'
 
 const EventsContainer = styled('div')`
     display: flex;
@@ -82,28 +81,26 @@ export default function Trip() {
     const { id } = useParams()
     const [highlightedPhase, setHighlightedPhase] = useState()
     const [customStayModal, setCustomStayModal] = useState()
-    const group = useTimelineGroup(id)
+    const trip = useTrip(id)
+    const groups = useGroups(trip)
     const mapRef = useRef()
 
-    const checkins = group ? group.events.map(e => e?.checkin).filter(c => detectStayType(c) === undefined ? c : undefined).filter(Boolean) : []
+    if (!trip) { return null }
 
-    const trip = useTrip(group?.since, group?.until)
-    const groups = useGroups(group?.since, group?.until)
+    const checkins = trip.phases.flatMap(phase => phase.checkins)
 
-    if (!group) { return null }
-
-    const header = `Trip to ${titleFromLocationHighlights(group.highlights)}`
-    const leftToRightPhases = [...group.phases].reverse()
+    const header = `Trip to ${titleFromLocationHighlights(trip.highlights)}`
+    const leftToRightPhases = [...trip.phases].reverse()
 
     const onPhaseClick = (phase) => {
-        if (phase.type === PhaseType.Unknown) {
+        if (!phase.stay) {
             const phaseIndex = trip.phases.findIndex(p => p.since === phase.since)
             const previousPhase = phaseIndex > 0 ? trip.phases[phaseIndex - 1] : undefined
             setCustomStayModal({
                 phase,
                 previousPhase,
             })
-        } else if (phase.type === PhaseType.Stay) {
+        } else if (phase.stay) {
             const location = phase.stay.location
             if (!location.accuracy || location.accuracy === LocationAccuracy.GPS) {
                 const map = mapRef.current.getMap()
@@ -131,9 +128,6 @@ export default function Trip() {
         <Page header={header} showBackButton>
             <Row style={{flex:1, height: '86vh', alignItems: 'stretch', marginTop: -18}}>
                 <Column style={{flex:0.7, overflowY: 'scroll', overflowX: 'hidden', minWidth: 400}}>
-                    {/* <Panel style={{paddingTop: 18}}>
-                        <EventsContainer>{leftToRightPhases.map(event => <GroupEvent key={event.id} event={event}/>)}</EventsContainer>
-                    </Panel> */}
                     <Info style={{paddingTop: 18}} trip={trip} />
                     <GroupsPanel
                         groups={groups}

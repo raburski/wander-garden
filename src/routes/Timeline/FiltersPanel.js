@@ -1,18 +1,15 @@
 import { styled } from 'goober'
 import countryFlagEmoji from "country-flag-emoji"
 import Panel from "components/Panel"
-import Segment from "components/Segment"
 import FlagButton from "./FlagButton"
+import Button from 'components/Button'
+import { isDEV } from 'environment'
+import { useRefreshTrips } from 'domain/trips'
 
 const AllFlagsContainer = styled('div')`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-`
-
-const OptionsContainer = styled('div')`
-    display: flex;
-    flex-direction: row;
 `
 
 function AllFlags({ countryCodes = [], selectedCountryCode }) {
@@ -27,15 +24,12 @@ function AllFlags({ countryCodes = [], selectedCountryCode }) {
     )
 }
 
-const SEGMENT_TITLES = ['all', 'trips', 'abroad']
-
 export default function FiltersPanel({ countryCodes, selectedCountryCode, selectedSegmentIndex, onSetSegmentIndex, ...props  }) {
+    const refresh = useRefreshTrips()
     return (
         <Panel spacing {...props}>
             <AllFlags countryCodes={countryCodes} selectedCountryCode={selectedCountryCode}/>
-            {/* <OptionsContainer>
-                <Segment titles={SEGMENT_TITLES} selectedIndex={selectedSegmentIndex} onClick={onSetSegmentIndex}/>
-            </OptionsContainer> */}
+            {isDEV() ? <Button onClick={refresh}>Refresh</Button> : null}
         </Panel>
     )
 }

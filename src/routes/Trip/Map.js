@@ -1,5 +1,4 @@
 import Panel from '../../components/Panel'
-import { PhaseType } from './useTrip'
 import { useRef } from 'react'
 import Map, { Icon } from 'domain/map'
 import { venueEmoji } from 'domain/swarm/categories'
@@ -30,8 +29,7 @@ function getInfoWindowProperties({ stay, checkin }) {
 
 export default function TripMap({ trip, checkins = [], style = {}, mapRef, highlightedPhase }) {
     const infoWindow = useRef()
-    const stays = trip ? trip.phases.map(phase => 
-        phase.type === PhaseType.Stay && (!phase.stay.location.accuracy || phase.stay.location.accuracy === LocationAccuracy.GPS) ? phase.stay : undefined).filter(Boolean) : []
+    const stays = trip ? trip.phases.filter(phase => phase.stay && (!phase.stay.location.accuracy || phase.stay.location.accuracy === LocationAccuracy.GPS)).map(p => p.stay) : null
     const markers = [
         ...stays.map(stay => ({ stay, position: stay.location, icon: Icon.Default })),
         ...checkins.map(checkin => ({ checkin, position: checkin?.venue?.location, icon: Icon.OrangeDot }))

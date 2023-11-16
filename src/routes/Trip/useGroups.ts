@@ -1,6 +1,6 @@
 import { isEqualLocation, isEqualLocationCity, isEqualLocationCountry, Location } from "domain/location"
 import arrayQueryReplace, { any } from "domain/timeline/arrayQueryReplace"
-import useTrip, { Phase, PhaseType, StayPhase, UnknownPhase } from "./useTrip"
+import { Trip, TripPhase } from "domain/trips/types"
 
 export enum GroupType {
     Unknown = 'unknown',
@@ -10,7 +10,7 @@ export enum GroupType {
 
 export interface Group {
     type: GroupType
-    phases: Phase[]
+    phases: TripPhase[]
     since: string
     until: string
 }
@@ -31,81 +31,64 @@ export interface UnknownGroup extends Group {
 }
 
 
-type GroupPhasesByCityContext = { phaseType: PhaseType, location: Location }
-function groupPhasesByCity() {
-    return {
-        pattern: [
-            (phase: Phase, phases: Phase[], context: GroupPhasesByCityContext) => {
-                context.phaseType = phase.type
-                context.location = (phase as StayPhase)?.stay?.location
-                return true
-            },
-            any((phase: Phase, phases: Phase[], context: GroupPhasesByCityContext) => {
-                if (phase.type !== context.phaseType) {
-                    return false
-                }
-                if (phase.type === PhaseType.Stay) {
-                    return isEqualLocationCity((phase as StayPhase).stay.location, context.location)
-                }
-                return false
-            }),
-        ],
-        result: (phases: Phase[], context: GroupPhasesByCityContext) => {
-            if (context.phaseType === PhaseType.Stay) {
-                return {
-                    type: GroupType.City,
-                    phases,
-                    location: context.location,
-                    since: phases[0].since,
-                    until: phases[phases.length - 1].until
+// type GroupPhasesByCityContext = { phaseType: PhaseType, location: Location }
+// function groupPhasesByCity() {
+//     return {
+//         pattern: [
+//             (phase: Phase, phases: Phase[], context: GroupPhasesByCityContext) => {
+//                 context.phaseType = phase.type
+//                 context.location = (phase as StayPhase)?.stay?.location
+//                 return true
+//             },
+//             any((phase: Phase, phases: Phase[], context: GroupPhasesByCityContext) => {
+//                 if (phase.type !== context.phaseType) {
+//                     return false
+//                 }
+//                 if (phase.type === PhaseType.Stay) {
+//                     return isEqualLocationCity((phase as StayPhase).stay.location, context.location)
+//                 }
+//                 return false
+//             }),
+//         ],
+//         result: (phases: Phase[], context: GroupPhasesByCityContext) => {
+//             if (context.phaseType === PhaseType.Stay) {
+//                 return {
+//                     type: GroupType.City,
+//                     phases,
+//                     location: context.location,
+//                     since: phases[0].since,
+//                     until: phases[phases.length - 1].until
 
-                }
-            }
-            return {
-                type: GroupType.Unknown,
-                phases,
-                guessedLocations: [],
-                since: phases[0].since,
-                until: phases[phases.length - 1].until
-            }
-        }
-    }
-}
+//                 }
+//             }
+//             return {
+//                 type: GroupType.Unknown,
+//                 phases,
+//                 guessedLocations: [],
+//                 since: phases[0].since,
+//                 until: phases[phases.length - 1].until
+//             }
+//         }
+//     }
+// }
 
-type GroupPhasesByCountryContext = { phaseType: PhaseType, location: Location }
+type GroupPhasesByCountryContext = { location: Location }
 function groupPhasesByCountry() {
     return {
         pattern: [
-            (phase: Phase, phases: Phase[], context: GroupPhasesByCountryContext) => {
-                context.phaseType = phase.type
-                context.location = (phase as StayPhase)?.stay?.location
+            (phase: TripPhase, phases: TripPhase[], context: GroupPhasesByCountryContext) => {
+                context.location = phase.stay!.location
                 return true
             },
-            any((phase: Phase, phases: Phase[], context: GroupPhasesByCountryContext) => {
-                if (phase.type !== context.phaseType) {
-                    return false
-                }
-                if (phase.type === PhaseType.Stay) {
-                    return isEqualLocationCountry((phase as StayPhase).stay.location, context.location)
-                }
-                return false
+            any((phase: TripPhase, phases: TripPhase[], context: GroupPhasesByCountryContext) => {
+                return !phase.stay || isEqualLocationCountry(phase.stay.location, context.location)
             }),
         ],
-        result: (phases: Phase[], context: GroupPhasesByCountryContext) => {
-            if (context.phaseType === PhaseType.Stay) {
-                return {
-                    type: GroupType.Country,
-                    phases,
-                    location: context.location,
-                    since: phases[0].since,
-                    until: phases[phases.length - 1].until
-
-                }
-            }
+        result: (phases: TripPhase[], context: GroupPhasesByCountryContext) => {
             return {
-                type: GroupType.Unknown,
+                type: GroupType.Country,
                 phases,
-                guessedLocations: phases.flatMap(p => (p as UnknownPhase).guessedLocations),
+                location: context.location,
                 since: phases[0].since,
                 until: phases[phases.length - 1].until
             }
@@ -113,8 +96,6 @@ function groupPhasesByCountry() {
     }
 }
 
-export default function useGroups(since: string, until: string): Group[] {
-    const trip = useTrip(since, until)
-
+export default function useGroups(trip: Trip): Group[] {
     return arrayQueryReplace(groupPhasesByCountry(), trip?.phases || [])
 }

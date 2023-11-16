@@ -40,7 +40,7 @@ export default function ExtendStayPage({ phase, previousPhase, onFinished, ...pr
         <Page header="Extend stay" {...props}>
             <Panel>
                 <MenuRow icon={getStayIcon(previousPhase.stay, previousPhase.stay.type)} title={previousPhase.stay.accomodation.name}/>
-                <InputRow icon={IoMdPricetag} type="number" placeholder={`Price in ${previousPhase.stay.price.currency} for extended stay (optional)`} {...register('price')}/>
+                {previousPhase.stay.price ? <InputRow icon={IoMdPricetag} type="number" placeholder={`Price in ${previousPhase.stay.price.currency} for extended stay (optional)`} {...register('price')}/> :  null}
                 <InputRow icon={MdPeopleAlt} type="number" placeholder="Total guests (optional)" {...register('totalGuests')}/>
                 <DaysForm since={phase.since} until={phase.until} {...register('days', { required: true, minLength: 1 })}/>
             </Panel>

@@ -1,10 +1,10 @@
 import { Fragment } from 'react'
 import GroupBar from "./GroupBar"
 
-export default function CountryBar({ name, children, ...props }) {
+export default function CountryBar({ name, countryCodes, children, ...props }) {
     return (
         <Fragment>
-            <GroupBar title={name} {...props}></GroupBar>
+            <GroupBar title={name} countryCodes={countryCodes} {...props}></GroupBar>
             {children}
         </Fragment>
     )

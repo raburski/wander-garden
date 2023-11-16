@@ -53,6 +53,7 @@ function App() {
       <SettingsProvider>
         <ThemeProvider>
         <HomesProvider>
+          <TripsProvider>
         <TimelineProvider>
           <SwarmProvider>
             <InstagramProvider>
@@ -73,6 +74,7 @@ function App() {
             </InstagramProvider>
           </SwarmProvider>
           </TimelineProvider>
+          </TripsProvider>
           </HomesProvider>
         </ThemeProvider>
       </SettingsProvider>

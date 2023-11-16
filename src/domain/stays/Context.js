@@ -1,15 +1,14 @@
 import { createContext, useState, useContext, useEffect } from "react"
-import { useRefreshHomes } from "domain/homes"
-import { useRefreshTimeline } from "domain/timeline"
 import { Status, Origin, StayTypeToOrigin, StayType, OriginToStayType, StayOrigin, ALL_STAY_TYPES } from "./types"
-import { IndexedDBStorageAdapter, StorageSet, useSyncedStorage } from "storage"
+import { IndexedDBStorageAdapter, useSyncedStorage } from "storage"
 import moment from "moment"
 import { isStayData, isStayType } from "domain/stays"
 import ImportModal from "./ImportModal"
 import CapturingModal from "./CapturingModal"
 import CapturingErrorModal from './CapturingErrorModal'
 import StartCaptureModal from "./StartCaptureModal"
-import { detectStayType, getStayIcon, staysEqual } from "./stays"
+import { detectStayType, staysEqual } from "./stays"
+import { useRefreshTrips } from "domain/trips"
 
 export const CURRENT_VERSION = '0.1.0'
 
@@ -107,8 +106,7 @@ export function StaysProvider({ children }) {
         }
     }
 
-    const refreshHomes = useRefreshHomes()
-    const refreshTimeline = useRefreshTimeline()
+    const refreshTrips = useRefreshTrips()
 
     useEffect(() => {
         async function eventListener(event) {
@@ -139,7 +137,7 @@ export function StaysProvider({ children }) {
             window.addEventListener('message', eventListener)
         }
         return () => window.removeEventListener('message', eventListener)
-    }, [initFailed, refreshHomes, refreshTimeline, setInitFailed, setCapturing, setVersion])
+    }, [initFailed, refreshTrips, setInitFailed, setCapturing, setVersion])
 
     async function startCapture(stayType, captureNewOnly) {
         setCapturing(true)
@@ -151,8 +149,7 @@ export function StaysProvider({ children }) {
     }
 
     async function refresh() {
-        await refreshHomes()
-        await refreshTimeline()
+        await refreshTrips()
     }
 
     async function importCapturedStays(ids) {

@@ -30,6 +30,9 @@ export function getDaysFromRange(since, until) {
     return Array.from({length: numberOfDays}, (_, i) => moment(since).add(i, 'days').format())
 }
 
+export function isDateBetween(date, start, end) {
+  return date.isSameOrAfter(start, 'day') && date.isSameOrBefore(end, 'day')
+}
 
 export function getDateRanges(dates) {
     // Sort the dates in ascending order
