@@ -17,6 +17,7 @@ import { SettingsProvider } from './domain/settings'
 import { Analytics } from '@vercel/analytics/react'
 import mapboxgl from 'mapbox-gl'
 import { InstagramProvider } from "domain/instagram"
+import { TripsProvider } from "domain/trips"
  
 mapboxgl.accessToken = 'pk.eyJ1IjoicmFidXJza2kiLCJhIjoiR2ltZ1pkSSJ9.BKiZ33LQkwsLgyyrAw4EyQ';
 
