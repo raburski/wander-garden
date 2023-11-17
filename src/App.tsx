@@ -18,6 +18,7 @@ import { Analytics } from '@vercel/analytics/react'
 import mapboxgl from 'mapbox-gl'
 import { InstagramProvider } from "domain/instagram"
 import { TripsProvider } from "domain/trips"
+import { TitlesProvider } from "domain/titles"
  
 mapboxgl.accessToken = 'pk.eyJ1IjoicmFidXJza2kiLCJhIjoiR2ltZ1pkSSJ9.BKiZ33LQkwsLgyyrAw4EyQ';
 
@@ -53,6 +54,7 @@ function App() {
       <MapProvider>
       <SettingsProvider>
         <ThemeProvider>
+          <TitlesProvider>
         <HomesProvider>
           <TripsProvider>
         <TimelineProvider>
@@ -77,6 +79,7 @@ function App() {
           </TimelineProvider>
           </TripsProvider>
           </HomesProvider>
+          </TitlesProvider>
         </ThemeProvider>
       </SettingsProvider>
       </MapProvider>

@@ -12,7 +12,8 @@ import NoTimelineContent from './NoTimelineContent'
 import FiltersPanel from './FiltersPanel'
 import usePersistedScroll from "hooks/usePersistedScroll"
 
-import { useTrips, useTitle } from "domain/trips"
+import { useTrips } from "domain/trips"
+import { useTitle } from "domain/titles"
 
 function Trip({ trip }) {
     const title = useTitle(trip && trip.id)

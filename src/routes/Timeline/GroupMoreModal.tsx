@@ -1,5 +1,5 @@
 import Page from "components/Page"
-import { useSetTitle, useTitle } from "domain/timeline"
+import { useSetTitle, useTitle } from "domain/titles"
 import Modal from "components/Modal"
 import TextField from "components/TextField"
 import Button from "components/Button"

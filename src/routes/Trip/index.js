@@ -20,12 +20,15 @@ import TripMap from './Map'
 import CustomStayModal from 'domain/stays/CustomStayModal'
 import { LocationAccuracy } from 'domain/location'
 import { useTrip } from 'domain/trips'
+import PinButton from 'components/PinButton'
+import { MdEdit } from 'react-icons/md'
+import EditTitleModal from './EditTitleModal'
+import { useTitle } from 'domain/titles'
 
-const EventsContainer = styled('div')`
-    display: flex;
-    padding: 12px;
-    flex-wrap: wrap;
-    align-items: center;
+const EditHeaderButton = styled(PinButton)`
+    align-self: center;
+    margin-left: 12px;
+    margin-bottom: 4px;
 `
 
 const GroupContainer = styled('div')`
@@ -81,15 +84,21 @@ export default function Trip() {
     const { id } = useParams()
     const [highlightedPhase, setHighlightedPhase] = useState()
     const [customStayModal, setCustomStayModal] = useState()
+    const [showEditTitle, setShowEditTitle] = useState(false)
     const trip = useTrip(id)
     const groups = useGroups(trip)
+    const title = useTitle(id)
     const mapRef = useRef()
 
     if (!trip) { return null }
 
     const checkins = trip.phases.flatMap(phase => phase.checkins)
 
-    const header = `Trip to ${titleFromLocationHighlights(trip.highlights)}`
+    const onEditTitle = () => setShowEditTitle(true)
+    const onFinishEditTitle = () => setShowEditTitle(false)
+
+    const headerText = title || `Trip to ${titleFromLocationHighlights(trip.highlights)}`
+    const header = <>{headerText}<EditHeaderButton onClick={onEditTitle} icon={MdEdit}/></>
     const leftToRightPhases = [...trip.phases].reverse()
 
     const onPhaseClick = (phase) => {
@@ -140,6 +149,7 @@ export default function Trip() {
                 <TripMap style={{paddingTop: 18}} mapRef={mapRef} trip={trip} checkins={checkins} highlightedPhase={highlightedPhase} />
             </Row>
             <CustomStayModal {...customStayModal} onClickAway={closeCustomStayModal}/>
+            <EditTitleModal isOpen={showEditTitle} onFinished={onFinishEditTitle} tripId={trip.id}/>
         </Page>
     )
 }

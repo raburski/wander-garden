@@ -11,15 +11,12 @@ import getTrips from "./getTrips"
 export const TripsContext = createContext({})
 
 const visitedStorage = new LocalStorageAdapter('trips.visited', '[]', jsonTransforms)
-const titlesStorage = new LocalStorageAdapter('trips.titles', '{}', jsonTransforms)
 
 const tripsStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'trips')
 
 export function TripsProvider({ children }) {
     const [trips, setTrips] = useSyncedStorage(tripsStorage)
     const [visitedCountryCodes, setVisitedCountryCodes] = useSyncedStorage(visitedStorage)
-    const [titles, setTitles] = useSyncedStorage(titlesStorage)
-
 
     async function refresh() {
         const trips = await getTrips()
@@ -30,7 +27,6 @@ export function TripsProvider({ children }) {
     const value = {
         trips: sortedTrips,
         visitedCountryCodes: [visitedCountryCodes, setVisitedCountryCodes],
-        titles: [titles, setTitles],
         refresh
     }
 
@@ -49,18 +45,6 @@ export function useTrips() {
 export function useTrip(id) {
     const context = useContext(TripsContext)
     return context.trips.find(t => t.id === id)
-}
-
-export function useTitle(id) {
-    const context = useContext(TripsContext)
-    const [titles] = context.titles
-    return titles[id]
-}
-
-export function useSetTitle(id) {
-    const context = useContext(TripsContext)
-    const [titles, setTitles] = context.titles
-    return (title) => setTitles({ ...titles, [id]: title })
 }
 
 export function useRefreshTrips() {
