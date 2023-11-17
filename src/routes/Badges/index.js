@@ -4,6 +4,7 @@ import Page from 'components/Page'
 import Panel from 'components/Panel'
 import Badge from 'components/Badge'
 import BadgeDetailsModal from 'components/BadgeDetailsModal'
+import Footer from 'components/Footer'
 
 const contentStyle = {
     flexDirection: 'row',
@@ -28,6 +29,7 @@ export default function Badges() {
                 selectedBadge={selectedBadge}
                 onClickAway={() => setSelectedBadge(null)}
             />
+            <Footer />
         </Page>
     )
 }

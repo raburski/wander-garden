@@ -7,6 +7,9 @@ import ExtensionVersionNotMatching from './VersionMismatch'
 import ExtensionTroubleshoot from './Troubleshoot'
 import WebStoreButton from "./WebStoreButton"
 import Stays from './Stays'
+import { isDEV } from "environment"
+import Tours from "./Tours"
+import Footer from "components/Footer"
 
 const COPY = `In order to enhance your dataset you can install garden browser extension. It will help you import your booking.com, airbnb and agoda bookings.
 
@@ -74,6 +77,8 @@ export default function Hotels() {
         <Page header="Stays">
             <ExtensionContent />
             <Stays />
+            {isDEV() ? <Tours /> : null}
+            <Footer />
         </Page>
     )
 }

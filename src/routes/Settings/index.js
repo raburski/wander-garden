@@ -4,6 +4,7 @@ import DataPanel from "./DataPanel"
 import InterfacePanel from "./InterfacePanel"
 import InstagramPanel from "./InstagramPanel"
 import { isDEV } from "environment"
+import Footer from "components/Footer"
 
 export default function SettingsPage() {
     return (
@@ -12,6 +13,7 @@ export default function SettingsPage() {
             {isDEV() ? <InstagramPanel /> : null}
             <SwarmPanel />
             <DataPanel />
+            <Footer />
         </Page>
     )
 }

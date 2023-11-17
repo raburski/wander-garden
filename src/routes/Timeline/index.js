@@ -14,6 +14,7 @@ import usePersistedScroll from "hooks/usePersistedScroll"
 
 import { useTrips } from "domain/trips"
 import { useTitle } from "domain/titles"
+import Footer from "components/Footer"
 
 function Trip({ trip }) {
     const title = useTitle(trip && trip.id)
@@ -66,6 +67,7 @@ export default function TimelinePage(props) {
     return (
         <Page header="Timeline" {...props}>
             {countryCodes.length === 0 ? <NoTimelineContent /> : <TimelineContent countryCodes={countryCodes}/>}
+            <Footer />
         </Page>
     )
 }

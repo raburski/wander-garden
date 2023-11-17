@@ -23,6 +23,7 @@ import { StayLogoURL, StayType, getStayIcon, useShowCaptureStartModal, useStays 
 import { downloadString } from "files"
 import CustomStayModal from "domain/stays/CustomStayModal"
 import { useNavigate } from "react-router"
+import Footer from "components/Footer"
 
 const NoStaysContainer = styled('div')`
     display: flex;
@@ -229,6 +230,7 @@ export default function Data() {
                 {selectedIndex === 5 ? <SwarmCheckinsList search={search}/> : null}
             </Panel>
             {editStayModalProps ? <CustomStayModal onClickAway={cancelEdit} {...editStayModalProps}/> : null}
+            <Footer />
         </Page>
     )
 }
