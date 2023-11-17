@@ -58,10 +58,11 @@ function App() {
           <TitlesProvider>
         <HomesProvider>
           <TripsProvider>
+          <VisitedCountriesProvider>
         <TimelineProvider>
           <SwarmProvider>
             <InstagramProvider>
-              <VisitedCountriesProvider>
+              
                 <StaysProvider>
                   <AppContainer>
                       <Analytics />
@@ -74,10 +75,11 @@ function App() {
                     <Toaster />
                   </AppContainer>
                 </StaysProvider>
-              </VisitedCountriesProvider>
+              
             </InstagramProvider>
           </SwarmProvider>
           </TimelineProvider>
+          </VisitedCountriesProvider>
           </TripsProvider>
           </HomesProvider>
           </TitlesProvider>

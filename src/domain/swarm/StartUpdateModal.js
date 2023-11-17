@@ -41,7 +41,9 @@ export default function StartUpdateModal({ onStartUpdate, onCancel, ...props }) 
         try {
             await fetchCheckins()
             toast.success('List updated sucessfully!')
-        } catch (e) {}
+        } catch (e) {
+            console.log('fetch checkins error', e)
+        }
         onCancel()
     }
 

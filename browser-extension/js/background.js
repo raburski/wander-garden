@@ -111,7 +111,6 @@ function handleExtensionMessage(message, sender) {
             STORE.currentStayPartial = {}
 
             const lastCapturedStayID = STORE.lastCapturedStayID[message.source]
-            console.log('CHECK', lastCapturedStayID, message.source, stay?.id)
             if (lastCapturedStayID && stay && lastCapturedStayID === stay.id) {
                 captureFinished(message.source)
                 break
