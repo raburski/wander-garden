@@ -74,12 +74,19 @@ function getPhases(stays: Stay[], checkins: Checkin[]) {
 
         const areOverlapping = moment(currentStay.since).isSame(olderStay.until, 'day')
         if (areOverlapping) {
-            phases.push({ 
-                stay: currentStay, 
-                since: currentStay.since, 
-                until: currentStay.until, 
-                checkins: getCheckins(currentStay.since, currentStay.until, checkins)
-            })
+            if (isEqualLocation(currentStay.location, olderStay.location)) {
+                // Stay extension
+                const lastPhase = phases.last()
+                lastPhase.until = currentStay.until
+                lastPhase.checkins = getCheckins(lastPhase.since, currentStay.until, checkins)
+            } else {
+                phases.push({ 
+                    stay: currentStay, 
+                    since: currentStay.since, 
+                    until: currentStay.until, 
+                    checkins: getCheckins(currentStay.since, currentStay.until, checkins)
+                })
+            }
         } else {
             phases.push({ 
                 stay: undefined, 
