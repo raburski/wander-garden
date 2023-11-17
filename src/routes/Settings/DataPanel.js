@@ -7,6 +7,8 @@ import { downloadString, uploadFile } from "files"
 import toast from "react-hot-toast"
 import { styled } from "goober"
 import Separator from "components/Separator"
+import { useAllTitles, useReplaceAllTitles } from "domain/titles"
+import useRefresh from "domain/refresh"
 
 const COPY = `Manage everything Wander Garden is using to construct your timeline and statistics.`
 
@@ -19,9 +21,11 @@ const Buttons = styled('div')`
 function useDownloadAllData() {
     const [checkins] = useCheckins()
     const stays = useAllStays()
+    const titles = useAllTitles()
     const allData = {
         stays,
         checkins,
+        titles,
     }
 
     return () => downloadString(JSON.stringify(allData), 'json', 'wander-garden-data.json')
@@ -29,6 +33,7 @@ function useDownloadAllData() {
 
 function useUploadAllData() {
     const replaceAllStays = useReplaceAllStays()
+    const replaceAllTitles = useReplaceAllTitles()
     const [_, setCheckins] = useCheckins()
     const clearSwarmData = useClearData()
 
@@ -41,6 +46,7 @@ function useUploadAllData() {
         if (isSwarmData(allData.checkins) && isStayData(allData.stays)) {
             const toastId = toast.loading('Loading new data...')
             await clearSwarmData()
+            await replaceAllTitles(allData.titles)
             await setCheckins(allData.checkins)
             await replaceAllStays(allData.stays)
             toast.dismiss(toastId)
@@ -54,13 +60,17 @@ function useUploadAllData() {
 function useClearAllData() {
     const clearSwarmData = useClearData()
     const replaceAllStays = useReplaceAllStays()
+    const replaceAllTitles = useReplaceAllTitles()
+    const refresh = useRefresh()
 
     return async function clearAllData() {
         if (!window.confirm('Are you sure you want to CLEAR all wander garden data?')) return undefined
 
         const toastId = toast.loading('Clearing all data...')
         await clearSwarmData()
+        await replaceAllTitles({})
         await replaceAllStays([])
+        await refresh()
         toast.dismiss(toastId)
         toast.success('Everything cleared!')
     }
