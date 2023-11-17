@@ -1,9 +1,9 @@
 import { downloadString, uploadFile } from 'files'
-import { useCheckins, useClearData as useClearSwarmData, isSwarmData, useShowUpdateModal } from 'domain/swarm'
+import { useCheckins, useClearData as useClearSwarmData, isSwarmData, useShowUpdateModal, useIsAuthenticated } from 'domain/swarm'
 import toast from 'react-hot-toast'
 import { TITLES } from './consts'
 import { isStayData, isStayType, StayType, useClearStays, useShowCaptureStartModal, useStartFileImport, useStays } from 'domain/stays'
-import { useRefreshTrips } from 'domain/trips'
+import useRefresh from 'domain/refresh'
 
 function getStayTypeForIndex(index) {
     switch (index) {
@@ -47,7 +47,7 @@ async function uploadSwarmCheckins(items, setCheckins, onFinish) {
 }
 
 export function useUpload() {
-    const refreshTrips = useRefreshTrips()
+    const refresh = useRefresh()
     const startFileImport = useStartFileImport()
 
     const [_, setCheckins] = useCheckins()
@@ -57,7 +57,7 @@ export function useUpload() {
         const items = JSON.parse(files)
 
         if (isSwarmData(items)) {
-            await uploadSwarmCheckins(items, setCheckins, refreshTrips)
+            await uploadSwarmCheckins(items, setCheckins, refresh)
         } else if (isStayType(items) || isStayData(items)) {
             startFileImport(items)
         } else {
@@ -68,18 +68,18 @@ export function useUpload() {
 
 export function useTrash(index) {
     const stayType = getStayTypeForIndex(index)
-    const refreshTrips = useRefreshTrips()
+    const refresh = useRefresh()
     const clearStayData = useClearStays(stayType)
     const clearSwarmData = useClearSwarmData()
 
     return () => {
         if (window.confirm(`Are you sure you want to delete all ${TITLES[index]} data?`) && window.confirm(`Are you REALLY sure you want to CLEAN IT?`)) {
             if (clearStayData) {
-                clearStayData().then(() => refreshTrips())
+                clearStayData().then(() => refresh())
             } else {
                 clearSwarmData().then(() => {
                     console.log('clear swarm refresh?')
-                    refreshTrips()
+                    refresh()
                     console.log('refreshed!')
                 })
             }
@@ -87,7 +87,8 @@ export function useTrash(index) {
     }
 }
 
-export function useRefresh(index) {
+export function useCapture(index) {
+    const isSwarmAuthenticated = useIsAuthenticated()
     const showCaptureStartModal = useShowCaptureStartModal()
     const showUpdateModal = useShowUpdateModal()
     const stayType = getStayTypeForIndex(index) 
@@ -96,6 +97,6 @@ export function useRefresh(index) {
     } else if (stayType) {
         return () => showCaptureStartModal(stayType)
     } else {
-        return showUpdateModal
+        return isSwarmAuthenticated ? showUpdateModal : undefined
     }
 }

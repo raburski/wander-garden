@@ -1,9 +1,8 @@
 import { useState } from "react"
 import { styled } from 'goober'
 import { SiSwarm } from 'react-icons/si'
-import { TbBrandBooking, TbBrandAirbnb, TbDownload, TbCloudUpload, TbTrash, TbRefresh } from 'react-icons/tb'
+import { TbDownload, TbCloudUpload, TbTrash, TbRefresh } from 'react-icons/tb'
 import { FiExternalLink, FiMapPin } from 'react-icons/fi'
-import { MdHotel, MdOutlineUploadFile } from 'react-icons/md'
 import moment from 'moment'
 import { getDaysAndRangeText } from 'date'
 import Page from 'components/Page'
@@ -17,10 +16,10 @@ import Button from "components/Button"
 import Separator from 'components/HalfSeparator'
 import useDebouncedInput from 'hooks/useDebouncedInput'
 import TextField from 'components/TextField'
-import { useDownload, useRefresh, useTrash, useUpload } from "./hooks"
+import { useDownload, useCapture, useTrash, useUpload } from "./hooks"
 import { TITLES } from './consts'
 import SquareImage from "components/SquareImage"
-import { PlaceTypeToIcon, StayLogoURL, StayOrigin, StayType, getStayIcon, useShowCaptureStartModal, useStays } from "domain/stays"
+import { StayLogoURL, StayType, getStayIcon, useShowCaptureStartModal, useStays } from "domain/stays"
 import { downloadString } from "files"
 import CustomStayModal from "domain/stays/CustomStayModal"
 import { useNavigate } from "react-router"
@@ -205,7 +204,7 @@ export default function Data() {
     const onDownloadClick = useDownload(selectedIndex)
     const onUploadClick = useUpload(selectedIndex)
     const onTrashClick = useTrash(selectedIndex)
-    const onRefreshClick = useRefresh(selectedIndex)
+    const onRefreshClick = useCapture(selectedIndex)
     const [search, onChangeSearch] = useDebouncedInput()
 
     const cancelEdit = () => setEditStayModalProps(undefined)

@@ -4,7 +4,7 @@ import Panel from "components/Panel"
 import FlagButton from "./FlagButton"
 import Button from 'components/Button'
 import { isDEV } from 'environment'
-import { useRefreshTrips } from 'domain/trips'
+import useRefresh from 'domain/refresh'
 
 const AllFlagsContainer = styled('div')`
     display: flex;
@@ -25,7 +25,7 @@ function AllFlags({ countryCodes = [], selectedCountryCode }) {
 }
 
 export default function FiltersPanel({ countryCodes, selectedCountryCode, selectedSegmentIndex, onSetSegmentIndex, ...props  }) {
-    const refresh = useRefreshTrips()
+    const refresh = useRefresh()
     return (
         <Panel spacing {...props}>
             <AllFlags countryCodes={countryCodes} selectedCountryCode={selectedCountryCode}/>

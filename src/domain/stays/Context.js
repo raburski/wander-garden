@@ -8,7 +8,7 @@ import CapturingModal from "./CapturingModal"
 import CapturingErrorModal from './CapturingErrorModal'
 import StartCaptureModal from "./StartCaptureModal"
 import { detectStayType, staysEqual } from "./stays"
-import { useRefreshTrips } from "domain/trips"
+import useRefresh from "domain/refresh"
 
 export const CURRENT_VERSION = '0.1.0'
 
@@ -106,7 +106,7 @@ export function StaysProvider({ children }) {
         }
     }
 
-    const refreshTrips = useRefreshTrips()
+    const refresh = useRefresh()
 
     useEffect(() => {
         async function eventListener(event) {
@@ -137,7 +137,7 @@ export function StaysProvider({ children }) {
             window.addEventListener('message', eventListener)
         }
         return () => window.removeEventListener('message', eventListener)
-    }, [initFailed, refreshTrips, setInitFailed, setCapturing, setVersion])
+    }, [initFailed, refresh, setInitFailed, setCapturing, setVersion])
 
     async function startCapture(stayType, captureNewOnly) {
         setCapturing(true)
@@ -146,10 +146,6 @@ export function StaysProvider({ children }) {
         const stays = await getStays(stayType)
         const lastCapturedStayID = captureNewOnly ? getLatestStay(stays)?.id : undefined
         sendExtensionMessage({ type: 'start_capture', subject, target: Origin.Extension, lastCapturedStayID })
-    }
-
-    async function refresh() {
-        await refreshTrips()
     }
 
     async function importCapturedStays(ids) {

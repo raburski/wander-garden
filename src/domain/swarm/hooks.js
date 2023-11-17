@@ -3,7 +3,7 @@ import toast from 'react-hot-toast'
 import { useCheckins, useLastUpdated, useToken } from 'domain/swarm'
 import { fetchCheckins, UnauthorizedError } from './API'
 import moment from 'moment'
-import { useRefreshTrips } from 'domain/trips'
+import useRefresh from 'domain/refresh'
 
 export function useFetchCheckins() {
     const [checkins, setCheckins] = useCheckins()
@@ -24,6 +24,7 @@ export function useFetchCheckins() {
         } catch (e) {
             if (e === UnauthorizedError) {
                 await setToken(null)
+                alert('Your swarm session has expired. Please authenticate again in settings!')
             }
             throw e
         }
@@ -44,12 +45,12 @@ function toastSandwich(fnReturningPromise) {
 export function useFetchSwarm() {
     const [isFetching, setFetching] = useState(false)
     const fetchCheckins = useFetchCheckins()
-    const refreshTrips = useRefreshTrips()
+    const refresh = useRefresh()
 
     async function fetch() {
         setFetching(true)
         await fetchCheckins()
-        await refreshTrips()
+        await refresh()
         setFetching(false)
     } 
     return [isFetching, fetch]

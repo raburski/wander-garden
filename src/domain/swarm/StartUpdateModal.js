@@ -38,8 +38,10 @@ export default function StartUpdateModal({ onStartUpdate, onCancel, ...props }) 
     const text = lastUpdated ? `Last updated on ${moment(lastUpdated).format('DD/MM/YYYY')}` : 'First update may take a while...'
 
     async function onStartUpdate() {
-        await fetchCheckins()
-        toast.success('List updated sucessfully!')
+        try {
+            await fetchCheckins()
+            toast.success('List updated sucessfully!')
+        } catch (e) {}
         onCancel()
     }
 
