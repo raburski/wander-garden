@@ -1,4 +1,4 @@
-import { useVisitedCountryCodes } from "domain/timeline"
+import { useVisitedCountryCodes } from "domain/visitedCountries"
 import createBadgeVerifier from "./verifier"
 
 export const regionalBadgeRules = [
@@ -80,6 +80,6 @@ export const regionalBadgeRules = [
 ]
 
 export function useRegionalBadges() {
-    const [visitedCountryCodes] = useVisitedCountryCodes()
+    const visitedCountryCodes = useVisitedCountryCodes()
     return regionalBadgeRules.map(createBadgeVerifier(visitedCountryCodes))
 }

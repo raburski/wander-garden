@@ -6,7 +6,7 @@ import Page from "components/Page"
 import Panel from "components/Panel"
 import { titleFromLocationHighlights, } from 'domain/timeline/groups'
 
-import { useVisitedCountryCodes } from "domain/timeline"
+import { useVisitedCountryCodes } from "domain/visitedCountries"
 
 import NoTimelineContent from './NoTimelineContent'
 import FiltersPanel from './FiltersPanel'
@@ -61,7 +61,7 @@ function TimelineContent({ countryCodes }) {
 }
 
 export default function TimelinePage(props) {
-    const [countryCodes] = useVisitedCountryCodes()
+    const countryCodes = useVisitedCountryCodes()
 
     return (
         <Page header="Timeline" {...props}>

@@ -10,7 +10,7 @@ import PinButton from "components/PinButton"
 
 import countryFlagEmoji from "country-flag-emoji"
 import { formattedLocation } from 'domain/location'
-import { useVisitedCountryCodes } from 'domain/timeline'
+import { useVisitedCountryCodes } from 'domain/visitedCountries'
 import Separator from 'components/Separator'
 import CountryModal from 'bindings/CountryModal'
 import { useState } from 'react'
@@ -35,7 +35,7 @@ function Countries() {
     const [openedCountry, setOpenedCountry] = useState()
     const onCountryClick = (cc) => setOpenedCountry(cc)
     const onClickAway = (cc) => setOpenedCountry(undefined)
-    const [countryCodes] = useVisitedCountryCodes()
+    const countryCodes = useVisitedCountryCodes()
 
     if (countryCodes.length <= 0) {
         return null
@@ -109,7 +109,7 @@ function AuthenticatedDashboard() {
 
 
 export default function Dashboard() {
-    const [countries] = useVisitedCountryCodes()
+    const countries = useVisitedCountryCodes()
     return (
         <Page header="Dashboard">
             {countries.length ? <AuthenticatedDashboard /> : <Welcome />}

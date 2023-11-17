@@ -19,6 +19,7 @@ import mapboxgl from 'mapbox-gl'
 import { InstagramProvider } from "domain/instagram"
 import { TripsProvider } from "domain/trips"
 import { TitlesProvider } from "domain/titles"
+import { VisitedCountriesProvider } from "domain/visitedCountries"
  
 mapboxgl.accessToken = 'pk.eyJ1IjoicmFidXJza2kiLCJhIjoiR2ltZ1pkSSJ9.BKiZ33LQkwsLgyyrAw4EyQ';
 
@@ -60,7 +61,7 @@ function App() {
         <TimelineProvider>
           <SwarmProvider>
             <InstagramProvider>
-              
+              <VisitedCountriesProvider>
                 <StaysProvider>
                   <AppContainer>
                       <Analytics />
@@ -73,7 +74,7 @@ function App() {
                     <Toaster />
                   </AppContainer>
                 </StaysProvider>
-              
+              </VisitedCountriesProvider>
             </InstagramProvider>
           </SwarmProvider>
           </TimelineProvider>

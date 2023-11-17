@@ -1,4 +1,4 @@
-import { useVisitedCountryCodes } from "domain/timeline"
+import { useVisitedCountryCodes } from "domain/visitedCountries"
 import createBadgeVerifier from "./verifier"
 
 export const religionBadgeRules = [
@@ -45,6 +45,6 @@ export const religionBadgeRules = [
 ]
 
 export function useReligionBadges() {
-    const [visitedCountryCodes] = useVisitedCountryCodes()
+    const visitedCountryCodes = useVisitedCountryCodes()
     return religionBadgeRules.map(createBadgeVerifier(visitedCountryCodes))
 }
