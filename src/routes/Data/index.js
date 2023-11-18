@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { styled } from 'goober'
 import { SiSwarm } from 'react-icons/si'
-import { TbDownload, TbCloudUpload, TbTrash, TbRefresh } from 'react-icons/tb'
+import { TbDownload, TbCloudUpload, TbTrash, TbRefresh, TbShare } from 'react-icons/tb'
 import { FiExternalLink, FiMapPin } from 'react-icons/fi'
 import moment from 'moment'
 import { getDaysAndRangeText } from 'date'
@@ -24,6 +24,8 @@ import { downloadString } from "files"
 import CustomStayModal from "domain/stays/CustomStayModal"
 import { useNavigate } from "react-router"
 import Footer from "components/Footer"
+import toast from "react-hot-toast"
+import Base64 from "Base64"
 
 const NoStaysContainer = styled('div')`
     display: flex;
@@ -100,6 +102,14 @@ function StayActions({ stay }) {
         const since = moment(stay.since).format('DD-MM-YYYY')
         downloadString(JSON.stringify(stay), 'json', `${since}, ${stay.accomodation.name}, ${stay.location.city}.json`)
     }
+    const onShareClick = () => {
+        const base64 = Base64.encode(JSON.stringify(stay))
+        const host = window.location.host
+        const protocol = window.location.protocol
+        const link = `${protocol}//${host}/stays/${stay.id}?data=${base64}`
+        navigator.clipboard.writeText(link)
+        toast.success('Link copied to your clipboard')
+    }
 
     return (
         <StayActionsContainer>
@@ -110,6 +120,8 @@ function StayActions({ stay }) {
             {stay.url ? <PinButton icon={FiExternalLink} onClick={onExternalClick} tooltip="Open booking" tooltipPosition="left" tooltipOffset={96}/> : null}
             <Separator />
             <PinButton icon={TbDownload} onClick={onDownloadClick} tooltip="Download stay" tooltipPosition="left" tooltipOffset={100}/>
+            <Separator />
+            <PinButton icon={TbShare} onClick={onShareClick} tooltip="Copy stay link" tooltipPosition="left" tooltipOffset={100}/>
         </StayActionsContainer>
     )
 }
@@ -160,7 +172,14 @@ function StaysList({ search, type, onStayClick }) {
     const stays = useStays(type)
     const filteredStays = search ? stays.filter(isStayMatchingPhrase(search)) : [...stays]
     filteredStays.sort((a, b) => moment(b.since).diff(moment(a.since)))
-    return filteredStays.length > 0 ? filteredStays.map(stay => <StayRow onClick={onStayClick ? () => onStayClick(stay) : undefined} icon={getStayIcon(stay, type)} stay={stay} key={stay.id} />) : <NoStaysFound stayType={type}/>
+    return filteredStays.length > 0 ? filteredStays.map(stay => 
+        <StayRow
+            onClick={onStayClick ? () => onStayClick(stay) : undefined}
+            icon={getStayIcon(stay, type)} 
+            stay={stay}
+            key={stay.id}
+        />
+    ) : <NoStaysFound stayType={type}/>
 }
 
 const HeaderContainer = styled('div')`

@@ -14,12 +14,14 @@ import Map from './Map'
 import Stays from './Extension'
 import Trip from './Trip'
 import Settings from "./Settings"
+import Stay from "./Stay"
 
 export default function AllRoutes() {
     return (
     <Routes>
         <Route path="swarm" element={<Swarm />}/>
         <Route path="stays" element={<Stays />}/>
+        <Route path="stays/:id" element={<Stay />}/>
         <Route path="auth" element={<AuthenticationFinish />}/>
         <Route path="netflix" element={<Netflix />}/>
         <Route path="phone" element={<Phone />}/>
