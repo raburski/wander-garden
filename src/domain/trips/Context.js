@@ -1,11 +1,6 @@
 import { createContext, useContext, useMemo } from "react"
 import { LocalStorageAdapter, IndexedDBStorageAdapter, jsonTransforms, useSyncedStorage } from 'storage'
-import { onlyUnique } from "array"
-import { onlyNonTransportation } from "domain/swarm/categories"
 import moment from 'moment'
-import { checkinsStorage } from "domain/swarm"
-import { getAllStays } from "domain/stays"
-import { homesStorage, useRefreshHomes } from "domain/homes"
 import getTrips from "./getTrips"
 
 export const TripsContext = createContext({})

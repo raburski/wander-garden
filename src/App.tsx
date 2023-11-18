@@ -20,6 +20,7 @@ import { InstagramProvider } from "domain/instagram"
 import { TripsProvider } from "domain/trips"
 import { TitlesProvider } from "domain/titles"
 import { VisitedCountriesProvider } from "domain/visitedCountries"
+import { ExtensionProvider } from "domain/extension"
  
 mapboxgl.accessToken = 'pk.eyJ1IjoicmFidXJza2kiLCJhIjoiR2ltZ1pkSSJ9.BKiZ33LQkwsLgyyrAw4EyQ';
 
@@ -55,6 +56,7 @@ function App() {
       <MapProvider>
       <SettingsProvider>
         <ThemeProvider>
+          <ExtensionProvider>
           <TitlesProvider>
         <HomesProvider>
           <TripsProvider>
@@ -83,6 +85,7 @@ function App() {
           </TripsProvider>
           </HomesProvider>
           </TitlesProvider>
+          </ExtensionProvider>
         </ThemeProvider>
       </SettingsProvider>
       </MapProvider>

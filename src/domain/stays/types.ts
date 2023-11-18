@@ -5,6 +5,7 @@ import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, 
 import { FaCouch, FaUserFriends, FaCaravan, FaCar, FaShip, FaPlane, FaTrain, FaBus, FaHome } from 'react-icons/fa'
 import { FiExternalLink } from 'react-icons/fi'
 import { TbTent, TbCloudUpload, TbDots } from 'react-icons/tb'
+import { Origin } from "domain/extension/types"
 
 export interface Accomodation {
     name: string
@@ -74,24 +75,6 @@ export function isStayType(stay?: Stay): boolean {
 
 export function isStayData(data: any[]) {
     return isArrayOfType(data, isStayType)
-}
-
-export enum Status {
-    Unknown = 'UNKNOWN',
-    Connected = 'CONNECTED',
-    InitFailed = 'INIT_FAILED',
-    Incompatible = 'INCOMPATIBLE',
-    Capturing = 'CAPTURING',
-}
-
-export enum Origin {
-    Garden = 'wander_garden',
-    Extension = 'wander_garden_extension',
-    Service = 'wander_garden_service',
-    Booking = 'booking.com_extension',
-    Airbnb = 'airbnb_extension',
-    Agoda = 'agoda_extension',
-    Travala = 'travala_extension',
 }
 
 export enum StayType {

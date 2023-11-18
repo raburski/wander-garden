@@ -1,7 +1,7 @@
 import Page from "components/Page"
 import InfoPanel from "components/InfoPanel"
 import SquareImage from 'components/SquareImage'
-import { useExtensionStatus, Status } from 'domain/stays'
+import { useExtensionStatus, Status } from 'domain/extension'
 import OnlineDot from './OnlineDot'
 import ExtensionVersionNotMatching from './VersionMismatch'
 import ExtensionTroubleshoot from './Troubleshoot'

@@ -3,7 +3,7 @@ import Button from 'components/Button'
 import ModalPage, { ModalPageButtons } from 'components/ModalPage'
 import { FiExternalLink, FiChevronRight, FiChevronDown } from 'react-icons/fi'
 import { SlPuzzle } from 'react-icons/sl'
-import { Status, StayLogoURL, useCaptureStayType, useExtensionStatus } from 'domain/stays'
+import { StayLogoURL, useCaptureStayType } from 'domain/stays'
 import { styled } from 'goober'
 import { useState } from 'react'
 import { useSetting } from 'domain/settings'
@@ -11,6 +11,7 @@ import Segment from 'components/Segment'
 import { useNavigate } from 'react-router'
 import SquareImage from 'components/SquareImage'
 import PinButton from 'components/PinButton'
+import { useExtensionStatus, Status } from 'domain/extension'
 
 const Logo = styled('img')`
     width: 112px;

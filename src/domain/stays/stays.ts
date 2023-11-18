@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useMemo, useEffect } from "react"
-import { Status, Origin, StayTypeToOrigin, StayType, OriginToStayType, StayOrigin, PlaceTypeToIcon, StayPlaceType } from "./types"
+import { StayTypeToOrigin, StayType, OriginToStayType, StayOrigin, PlaceTypeToIcon, StayPlaceType } from "./types"
 import equal from 'fast-deep-equal'
 import { IndexedDBStorageAdapter, StorageSet, useSyncedStorage } from "storage"
 import { Stay } from "./types"

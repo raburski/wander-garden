@@ -1,8 +1,9 @@
-import { useOnboardingFinishedSetting, useRunningDemoSetting, useSetting } from "domain/settings"
+import { useOnboardingFinishedSetting, useRunningDemoSetting } from "domain/settings"
 import OnboardingUI from './UI'
-import { useExtensionStatus, useReplaceAllStays } from "domain/stays"
+import { useReplaceAllStays } from "domain/stays"
 import toast from "react-hot-toast"
 import { useCheckins } from "domain/swarm"
+import { useExtensionStatus } from "domain/extension"
 
 
 export default function OnboardingProvider({ children }) {

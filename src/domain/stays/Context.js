@@ -1,14 +1,13 @@
 import { createContext, useState, useContext, useEffect } from "react"
-import { Status, Origin, StayTypeToOrigin, StayType, OriginToStayType, StayOrigin, ALL_STAY_TYPES } from "./types"
+import { StayTypeToOrigin, StayType, OriginToStayType, StayOrigin, ALL_STAY_TYPES } from "./types"
 import { IndexedDBStorageAdapter, useSyncedStorage } from "storage"
 import moment from "moment"
 import { isStayData, isStayType } from "domain/stays"
 import ImportModal from "./ImportModal"
-import CapturingModal from "./CapturingModal"
-import CapturingErrorModal from './CapturingErrorModal'
 import StartCaptureModal from "./StartCaptureModal"
 import { detectStayType, staysEqual } from "./stays"
 import useRefresh from "domain/refresh"
+import { useCaptured, useClearCaptured, useStartCapture } from "domain/extension"
 
 export const CURRENT_VERSION = '0.1.0'
 
@@ -35,14 +34,7 @@ export function getStays(type) {
     }
 }
 
-export const ExtensionContext = createContext({})
-
-function sendExtensionMessage(msg) {
-    window.postMessage({
-        source: Origin.Garden,
-        ...msg,
-    }, '*')
-}
+export const StaysContext = createContext({})
 
 function getStaysCaptureDiff(capturedStays, localStays) {
     const newStays = capturedStays.filter(stay => localStays.findIndex(localStay => localStay.id === stay.id) === -1)
@@ -76,12 +68,13 @@ function createIDForCustomStay(stay) {
 
 
 export function StaysProvider({ children }) {
-    const [version, setVersion] = useState()
-    const [capturedStays, setCapturedStays] = useState()
-    const [initFailed, setInitFailed] = useState(false)
-    const [captureError, setCaptureError] = useState()
-    const [capturing, setCapturing] = useState(false)
     const [selectedCaptureStayType, setSelectedCaptureStayType] = useState()
+    const [capturedStays, setCapturedStays] = useState()
+
+    // extension methods
+    const extensionStartCapture = useStartCapture()
+    const captured = useCaptured()
+    const clearCaptured = useClearCaptured()
 
     const bookingStays = useSyncedStorage(bookingStaysStorage)
     const airbnbStays = useSyncedStorage(airbnbStaysStorage)
@@ -109,43 +102,34 @@ export function StaysProvider({ children }) {
     const refresh = useRefresh()
 
     useEffect(() => {
-        async function eventListener(event) {
-            const message = event.data
-            if (!message) { return }
-            if (message.source === Origin.Service || message.source === Origin.Extension) {
-                if (message.type === 'init') {
-                    setVersion(message.version)
-                } else if (message.type === 'init_failed') {
-                    setInitFailed(true)
-                } else if (message.type === 'capture_finished') {
-                    setCapturing(false)
-                    const subject = message.subject
-                    const stayType = OriginToStayType[subject]
-                    const stays = await getStays(stayType)
-                    setCapturedStays({ 
-                        subject,
-                        diff: getStaysCaptureDiff(message.stays, stays),
-                        origin: StayOrigin.Captured,
-                    })
-                } else if (message.type === 'error') {
-                    setCaptureError({ error: message.error, location: message.location, stack: message.stack })
-                    setCapturing(false)
-                }
-            }
+        if (!captured) return 
+
+        const subject = captured.subject
+        const stayType = OriginToStayType[subject]
+        if (stayType) {
+            getStays(stayType).then((stays) => {
+                setCapturedStays({ 
+                    stayType,
+                    diff: getStaysCaptureDiff(captured.stays, stays),
+                    origin: StayOrigin.Captured,
+                })
+            })
         }
-        if (!initFailed) {
-            window.addEventListener('message', eventListener)
-        }
-        return () => window.removeEventListener('message', eventListener)
-    }, [initFailed, refresh, setInitFailed, setCapturing, setVersion])
+    }, [captured])
+
+    async function clearCapturedStays() {
+        setCapturedStays(undefined)
+        await clearCaptured()
+    }
 
     async function startCapture(stayType, captureNewOnly) {
-        setCapturing(true)
-        setCaptureError(undefined)
         const subject = StayTypeToOrigin[stayType]
-        const stays = await getStays(stayType)
-        const lastCapturedStayID = captureNewOnly ? getLatestStay(stays)?.id : undefined
-        sendExtensionMessage({ type: 'start_capture', subject, target: Origin.Extension, lastCapturedStayID })
+        const props = {}
+        if (captureNewOnly) {
+            const stays = await getStays(stayType)
+            props.lastCapturedStayID = getLatestStay(stays)?.id
+        }
+        extensionStartCapture(subject, props)
     }
 
     async function importCapturedStays(ids) {
@@ -154,12 +138,12 @@ export function StaysProvider({ children }) {
             ...capturedStays.diff.new.filter(stay => ids.includes(stay.id)),
             ...capturedStays.diff.modified.filter(stay => ids.includes(stay.id)),
         ].map(stay => ({ ...stay, origin: capturedStays.origin }))
-        const stayType = OriginToStayType[capturedStays.subject]
+        const stayType = capturedStays.stayType
         const currentStays = await getStays(stayType)
         const finalStays = [ ...currentStays.filter(stay => !ids.includes(stay.id)), ...newStays ]
         await setStays(stayType, finalStays, modifiedIds)
         await refresh()
-        setCapturedStays(undefined)
+        await clearCapturedStays()
     }
 
     function createCustomStays(stays = []) {
@@ -213,7 +197,7 @@ export function StaysProvider({ children }) {
 
         const localStays = await getStays(stayType)
         setCapturedStays({ 
-            subject: StayTypeToOrigin[stayType],
+            stayType,
             diff: getStaysCaptureDiff(stays, localStays),
             origin: StayOrigin.File,
         })
@@ -229,16 +213,12 @@ export function StaysProvider({ children }) {
     }
 
     const value = {
-        isConnected: !!version,
-        version,
-        initFailed,
-        capturing,
+        capturedStays,
         startCapture,
         startFileImport,
         showCaptureStartModal: (stayType) => setSelectedCaptureStayType(stayType),
-        capturedStays,
         importCapturedStays,
-        clearCapturedStays: () => setCapturedStays(undefined),
+        clearCapturedStays,
         addCustomStays,
         replaceCustomStay,
         replaceAllStays,
@@ -252,97 +232,67 @@ export function StaysProvider({ children }) {
     }
 
     return (
-        <ExtensionContext.Provider value={value}>
+        <StaysContext.Provider value={value}>
             {children}
             <ImportModal />
             <StartCaptureModal
                 stayType={selectedCaptureStayType}
                 onCancel={() => setSelectedCaptureStayType(undefined)}
             />
-            <CapturingModal isOpen={capturing} />
-            <CapturingErrorModal 
-                isOpen={!!captureError}
-                error={captureError?.error}
-                location={captureError?.location}
-                stack={captureError?.stack}
-                onClickAway={() => setCaptureError(undefined)}
-            />
-        </ExtensionContext.Provider>
+        </StaysContext.Provider>
     )
 }
 
-export function useExtensionStatus() {
-    const context = useContext(ExtensionContext)
-    if (context.initFailed) {
-        return Status.InitFailed
-    } else if (context.version && context.version !== CURRENT_VERSION) {
-        return Status.Incompatible
-    } else if (context.capturing) {
-        return Status.Capturing
-    } else if (context.isConnected) {
-        return Status.Connected
-    } else {
-        return Status.Unknown
-    }
-}
-
 export function useCapturedStaysDiff() {
-    const context = useContext(ExtensionContext)
+    const context = useContext(StaysContext)
     return context.capturedStays?.diff
 }
 
 export function useStartFileImport() {
-    const context = useContext(ExtensionContext)
+    const context = useContext(StaysContext)
     return context.startFileImport
 }
 
 export function useShowCaptureStartModal() {
-    const context = useContext(ExtensionContext)
+    const context = useContext(StaysContext)
     return context.showCaptureStartModal
 }
 
 export function useCaptureStayType() {
-    const context = useContext(ExtensionContext)
+    const context = useContext(StaysContext)
     return function captureStayType(stayType, captureNewOnly) {
         context.startCapture(stayType, captureNewOnly)
     }
 }
 
-export function useCapture(stayType) {
-    const context = useContext(ExtensionContext)
-    return function captureBooking() {
-        context.startCapture(stayType)
-    }
-}
-
 export function useClearCapturedStays() {
-    const context = useContext(ExtensionContext)
+    const context = useContext(StaysContext)
     return context.clearCapturedStays
 }
 
 export function useImportCapturedStays() {
-    const context = useContext(ExtensionContext)
+    const context = useContext(StaysContext)
     return context.importCapturedStays
 }
 
 export function useAddCustomStays() {
-    const context = useContext(ExtensionContext)
+    const context = useContext(StaysContext)
     return context.addCustomStays
 }
 
 export function useReplaceCustomStay() {
-    const context = useContext(ExtensionContext)
+    const context = useContext(StaysContext)
     return context.replaceCustomStay
 }
 
 export function useStays(type) {
-    const context = useContext(ExtensionContext)
+    const context = useContext(StaysContext)
     if (!type) return undefined
     return context.stays[type][0]
 }
 
 export function useClearStays(type) {
-    const context = useContext(ExtensionContext)
+    const context = useContext(StaysContext)
     if (!type) return undefined
     const [_, setStays] = context.stays[type]
     if (!setStays) return undefined
@@ -353,6 +303,6 @@ export function useClearStays(type) {
 }
 
 export function useReplaceAllStays() {
-    const context = useContext(ExtensionContext)
+    const context = useContext(StaysContext)
     return context.replaceAllStays
 }

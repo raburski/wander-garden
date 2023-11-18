@@ -1,4 +1,5 @@
-import { Status, useAllStays, useCapturedStaysDiff } from "domain/stays"
+import { useAllStays, useCapturedStaysDiff } from "domain/stays"
+import { Status } from "domain/extension"
 import Extension from "./Extension"
 import Intro from './Intro'
 import Capture from './Capture'
