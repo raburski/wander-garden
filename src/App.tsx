@@ -21,6 +21,7 @@ import { TripsProvider } from "domain/trips"
 import { TitlesProvider } from "domain/titles"
 import { VisitedCountriesProvider } from "domain/visitedCountries"
 import { ExtensionProvider } from "domain/extension"
+import { ToursProvider } from "domain/tours"
  
 mapboxgl.accessToken = 'pk.eyJ1IjoicmFidXJza2kiLCJhIjoiR2ltZ1pkSSJ9.BKiZ33LQkwsLgyyrAw4EyQ';
 
@@ -59,6 +60,7 @@ function App() {
           <ExtensionProvider>
           <TitlesProvider>
         <HomesProvider>
+          <ToursProvider>
           <TripsProvider>
           <VisitedCountriesProvider>
         <TimelineProvider>
@@ -83,6 +85,7 @@ function App() {
           </TimelineProvider>
           </VisitedCountriesProvider>
           </TripsProvider>
+          </ToursProvider>
           </HomesProvider>
           </TitlesProvider>
           </ExtensionProvider>

@@ -14,4 +14,7 @@ export enum Origin {
     Airbnb = 'airbnb_extension',
     Agoda = 'agoda_extension',
     Travala = 'travala_extension',
+
+    GetYourGuide = 'get_your_guide_extension',
+    TripAdvisor = 'trip_advisor_extension',
 }
