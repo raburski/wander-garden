@@ -77,7 +77,7 @@ export default function Hotels() {
         <Page header="Stays">
             <ExtensionContent />
             <Stays />
-            {isDEV() ? <Tours /> : null}
+            <Tours />
             <Footer />
         </Page>
     )
