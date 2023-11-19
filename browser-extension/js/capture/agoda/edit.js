@@ -46,13 +46,13 @@ class AgodaEditBookingPage extends Page {
     static path = 'editbooking'
 
     run() {
-        const captureStay = this.core.captureStay
+        const capture = this.core.capture
         window.addEventListener('message', function(event) {
             const message = event.data
             if (message && message.target === ORIGIN.AGODA) {
                 console.log('something data', message.data)
                 const stay = dataToStay(message.data)
-                captureStay(stay)
+                capture(stay)
             }
         })
         injectExtractScript()

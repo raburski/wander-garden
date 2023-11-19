@@ -6,7 +6,7 @@ class BookingTripsPage extends Page {
         this.currentURLIndex = 0
     }
 
-    onStayCaptured(message) {
+    onCaptured(message) {
         console.log('Wander Garden: stay captured', message)
         this.processNextTrip()
     }

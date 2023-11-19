@@ -95,6 +95,37 @@
         ]
       },
       {
+        "matches":[
+            "*://*.tripadvisor.com/*"
+        ],
+        "run_at": "document_start",
+        "js":[
+          "js/consts.js",
+          "js/ui.js",
+          "js/core.js",
+          "js/country.js",
+          "js/capture/tripAdvisor/bookings.js",
+          "js/capture/tripAdvisor/booking.js",
+          "js/capture/tripAdvisor/index.js"
+        ]
+      },
+      {
+        "matches":[
+            "*://*.getyourguide.com/*"
+        ],
+        "run_at": "document_start",
+        "js":[
+          "js/consts.js",
+          "js/ui.js",
+          "js/core.js",
+          "js/country.js",
+          "js/capture/getYourGuide/bookings.js",
+          "js/capture/getYourGuide/booking.js",
+          "js/capture/getYourGuide/account.js",
+          "js/capture/getYourGuide/index.js"
+        ]
+      },
+      {
           "matches":[
               "*://*.wander.garden/*",
               "*://127.0.0.1/*"

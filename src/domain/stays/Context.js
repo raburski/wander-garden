@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react"
-import { StayTypeToOrigin, StayType, OriginToStayType, StayOrigin, ALL_STAY_TYPES } from "./types"
+import { StayTypeToOrigin, StayType, OriginToStayType, ALL_STAY_TYPES } from "./types"
 import { IndexedDBStorageAdapter, useSyncedStorage } from "storage"
 import moment from "moment"
 import { isStayData, isStayType } from "domain/stays"
@@ -8,6 +8,8 @@ import StartCaptureModal from "./StartCaptureModal"
 import { detectStayType, staysEqual } from "./stays"
 import useRefresh from "domain/refresh"
 import { useCaptured, useClearCaptured, useStartCapture } from "domain/extension"
+import { DataOrigin } from "type"
+import { getCaptureDiff } from "capture"
 
 export const CURRENT_VERSION = '0.1.0'
 
@@ -35,26 +37,6 @@ export function getStays(type) {
 }
 
 export const StaysContext = createContext({})
-
-function getStaysCaptureDiff(capturedStays, localStays) {
-    const newStays = capturedStays.filter(stay => localStays.findIndex(localStay => localStay.id === stay.id) === -1)
-    const modifiedStays = capturedStays.filter(stay => {
-        const localStay = localStays.find(lStay => lStay.id === stay.id)
-        if (!localStay) { return false }
-        if (staysEqual(stay, localStay)) { return false }
-        return true
-    })
-    const unchangedStays = capturedStays.filter(stay => {
-        if (newStays.findIndex(ns => ns.id === stay.id) >= 0) { return false }
-        if (modifiedStays.findIndex(ms => ms.id === stay.id) >= 0) { return false }
-        return true
-    })
-    return {
-        new: newStays,
-        modified: modifiedStays,
-        unchanged: unchangedStays,
-    }
-}
 
 function getLatestStay(stays) {
     const orderedStays = [...stays]
@@ -110,8 +92,8 @@ export function StaysProvider({ children }) {
             getStays(stayType).then((stays) => {
                 setCapturedStays({ 
                     stayType,
-                    diff: getStaysCaptureDiff(captured.stays, stays),
-                    origin: StayOrigin.Captured,
+                    diff: getCaptureDiff(captured.objects, stays, staysEqual),
+                    origin: DataOrigin.Captured,
                 })
             })
         }
@@ -127,7 +109,7 @@ export function StaysProvider({ children }) {
         const props = {}
         if (captureNewOnly) {
             const stays = await getStays(stayType)
-            props.lastCapturedStayID = getLatestStay(stays)?.id
+            props.lastCapturedObjectID = getLatestStay(stays)?.id
         }
         extensionStartCapture(subject, props)
     }
@@ -151,7 +133,7 @@ export function StaysProvider({ children }) {
             .map(stay => ({
                 ...stay,
                 id: stay.id || createIDForCustomStay(stay),
-                origin: StayOrigin.UserInput,
+                origin: DataOrigin.UserInput,
             }))
             .filter(isStayType)
     }
@@ -198,8 +180,8 @@ export function StaysProvider({ children }) {
         const localStays = await getStays(stayType)
         setCapturedStays({ 
             stayType,
-            diff: getStaysCaptureDiff(stays, localStays),
-            origin: StayOrigin.File,
+            diff: getCaptureDiff(stays, localStays, staysEqual),
+            origin: DataOrigin.File,
         })
     }
 

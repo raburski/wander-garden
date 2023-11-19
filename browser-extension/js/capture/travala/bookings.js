@@ -64,7 +64,7 @@ class TravalaBookingsPage extends Page {
             .filter(isCompletedStay)
             .map(receiptDataToStay)
             
-        this.stays.forEach(this.core.captureStay)
+        this.stays.forEach(this.core.capture)
         
         // TODO: work on when multiple pages, more than 10 bookings
         this.core.captureFinished()

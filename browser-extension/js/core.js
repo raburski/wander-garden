@@ -1,5 +1,9 @@
 const browser = chrome
 
+function getRootTextContent(element) {
+    return [].reduce.call(element.childNodes, function(a, b) { return a + (b.nodeType === 3 ? b.textContent : ''); }, '');
+}
+
 function deepMerge(target, source) {
   Object.keys(source).forEach(key => {
     if (source[key] instanceof Object && key in target) {
@@ -27,8 +31,10 @@ function ensureFullURL(_url) {
     }
     if (url.startsWith('/')) {
         return `${window.location.protocol}//${window.location.hostname}${url}`
-    } else {
+    } else if (url.startsWith('http')) {
         return url
+    } else {
+        return `${window.location.protocol}//${window.location.hostname}/${url}`
     }
 }
 
@@ -134,15 +140,15 @@ function onWindowLoad(callback) {
 }
 
 function init(origin, onInitCapture, onInitDefault) {
-    console.log('on core init')
+    console.log('on core init', origin)
     let ON_NETWORK_CAPTURED = undefined
     function registerOnNetworkCaptured(callback) {
         ON_NETWORK_CAPTURED = callback
     }
 
-    let ON_STAY_CAPTURED = undefined
-    function registerOnStayCaptured(callback) {
-        ON_STAY_CAPTURED = callback
+    let ON_OBJECT_CAPTURED = undefined
+    function registerOnObjectCaptured(callback) {
+        ON_OBJECT_CAPTURED = callback
     }
 
     let WINDOW_INITD = false
@@ -165,12 +171,12 @@ function init(origin, onInitCapture, onInitDefault) {
     }
     window.addEventListener("message", onWindowMessage)
 
-    function sendCaptureFinished(stays) {
-        browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_finished', stays })
+    function sendCaptureFinished(objects) {
+        browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_finished', objects })
     }
 
-    function sendCaptureStay(stay) {
-        browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_stay', stay })
+    function sendCaptureObject(object) {
+        browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_object', object })
     }
 
     function sendSkipCapture() {
@@ -181,8 +187,8 @@ function init(origin, onInitCapture, onInitDefault) {
         browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'open_window', url })
     }
 
-    function sendCaptureStayPartial(stay) {
-        browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_stay_partial', stay })
+    function sendCaptureObjectPartial(object) {
+        browser.runtime.sendMessage({ source: origin, target: ORIGIN.SERVICE, type: 'capture_object_partial', object })
     }
 
     function sendError(error, location) {
@@ -198,8 +204,8 @@ function init(origin, onInitCapture, onInitDefault) {
             return
         }
 
-        if ((message.type === 'stay_captured' || message.type === 'skip_capture') && ON_STAY_CAPTURED) {
-            return ON_STAY_CAPTURED(message)
+        if ((message.type === 'object_captured' || message.type === 'skip_capture') && ON_OBJECT_CAPTURED) {
+            return ON_OBJECT_CAPTURED(message)
         }
         
         if (message.type === 'init') {
@@ -216,13 +222,13 @@ function init(origin, onInitCapture, onInitDefault) {
                 onInitCapture({
                     openWindow: sendOpenWindow,
                     skipCapture: sendSkipCapture,
-                    captureStay: sendCaptureStay,
-                    captureStayPartial: sendCaptureStayPartial,
+                    capture: sendCaptureObject,
+                    capturePartial: sendCaptureObjectPartial,
                     captureFinished: sendCaptureFinished,
-                    onStayCaptured: registerOnStayCaptured,
+                    onCaptured: registerOnObjectCaptured,
                     onNetworkCaptured: registerOnNetworkCaptured,
                     sendError: sendError,
-                    lastCapturedStayID: message.lastCapturedStayID
+                    lastCapturedObjectID: message.lastCapturedObjectID
                 })
                 storeOrSendNetworkCaptured()
             } else {
@@ -251,8 +257,8 @@ class Page {
     init(isCapturing = false, core = {}) {
         this.core = core
         this.isCapturing = isCapturing
-        if (this.core.onStayCaptured && this.onStayCaptured) {
-            this.core.onStayCaptured(this.onStayCaptured.bind(this))
+        if (this.core.onCaptured && this.onCaptured) {
+            this.core.onCaptured(this.onCaptured.bind(this))
         }
         if (this.core.onNetworkCaptured && this.onNetworkCaptured) {
             this.core.onNetworkCaptured(this.onNetworkCaptured.bind(this))
@@ -283,7 +289,7 @@ function initPages(origin, ...pages) {
     }
     function onInitDefault() {
         // TODO: for now just ignoring this
-        // only capturing is a legit form of getting stays
+        // only capturing is a legit form of getting objects
     }
     init(origin, onInitCapture, onInitDefault)
 }

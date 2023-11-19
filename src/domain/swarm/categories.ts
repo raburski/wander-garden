@@ -53,6 +53,7 @@ const SIGNIFICANT_CATEGORIES: string[] = [
     '56aa371be4b08b9a8d573560', // Waterfall
     '4bf58dd8d48988d160941735', // Hot Spring
     '4bf58dd8d48988d165941735', // Scenic Lookout
+    '4eb1d4d54b900d56c88a45fc', // Mountain
 ]
 
 export function isSignificant(checkin: Checkin) {

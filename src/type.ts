@@ -32,3 +32,9 @@ export function isMoneyType(money?: Money): boolean {
         && isOfType(money.amount, 'number')
         && isOptionalOfType(money.currency, 'string')
 }
+
+export enum DataOrigin {
+    File = 'FILE',
+    Captured = 'CAPTURED',
+    UserInput = 'USER_INPUT',
+}

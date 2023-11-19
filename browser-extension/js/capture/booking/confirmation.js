@@ -73,7 +73,7 @@ class BookingConfirmationPage extends Page {
     async run() {
         if (this.isCompletedConfirmation()) {
             const stay = this.extractStay()
-            this.core.captureStay(stay)
+            this.core.capture(stay)
         } else {
             this.core.skipCapture()
         }

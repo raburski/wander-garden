@@ -1,6 +1,6 @@
 import type { Location } from 'domain/location'
 import { isLocationType } from "domain/location"
-import { isOptionalOfType, isOfType, isMoneyType, Money, isArrayOfType } from "type"
+import { isOptionalOfType, isOfType, isMoneyType, Money, isArrayOfType, DataOrigin } from "type"
 import { MdHotel, MdSailing, MdAdd, MdCheckBoxOutlineBlank, MdCheckBox, MdEdit, MdAddTask } from 'react-icons/md'
 import { FaCouch, FaUserFriends, FaCaravan, FaCar, FaShip, FaPlane, FaTrain, FaBus, FaHome } from 'react-icons/fa'
 import { FiExternalLink } from 'react-icons/fi'
@@ -10,12 +10,6 @@ import { Origin } from "domain/extension/types"
 export interface Accomodation {
     name: string
     url?: string
-}
-
-export enum StayOrigin {
-    File = 'FILE',
-    Captured = 'CAPTURED',
-    UserInput = 'USER_INPUT',
 }
 
 export enum StayPlaceType {
@@ -43,7 +37,7 @@ export interface Stay {
     accomodation?: Accomodation
     price?: Money
     totalGuests?: number
-    origin?: StayOrigin // DEFAULT: Captured
+    origin?: DataOrigin // DEFAULT: Captured
     placeType?: StayPlaceType // DEFAULT: Accomodation
 }
 

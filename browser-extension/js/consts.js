@@ -6,4 +6,7 @@ const ORIGIN = {
     AIRBNB: 'airbnb_extension',
     AGODA: 'agoda_extension',
     TRAVALA: 'travala_extension',
+    
+    TRIP_ADVISOR: 'trip_advisor_extension',
+    GET_YOUR_GUIDE: 'get_your_guide_extension',
 }

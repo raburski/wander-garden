@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useMemo, useEffect } from "react"
-import { StayTypeToOrigin, StayType, OriginToStayType, StayOrigin, PlaceTypeToIcon, StayPlaceType } from "./types"
+import { StayTypeToOrigin, StayType, OriginToStayType, PlaceTypeToIcon, StayPlaceType } from "./types"
 import equal from 'fast-deep-equal'
 import { IndexedDBStorageAdapter, StorageSet, useSyncedStorage } from "storage"
 import { Stay } from "./types"
@@ -7,6 +7,7 @@ import { getStays, useStays } from "./Context"
 import { TbBrandBooking, TbBrandAirbnb, TbDownload, TbCloudUpload, TbTrash, TbRefresh } from 'react-icons/tb'
 import { FiExternalLink, FiMapPin } from 'react-icons/fi'
 import { MdHotel, MdOutlineUploadFile } from 'react-icons/md'
+import { DataOrigin } from "type"
 
 export function getAllStays() {
     return Promise.all([
@@ -76,11 +77,11 @@ export function getStayTypeIcon(type: StayType) {
 
 export function getStayIcon(stay: Stay, type: StayType) {
     switch (stay.origin) {
-        case StayOrigin.File:
+        case DataOrigin.File:
             return MdOutlineUploadFile
-        case StayOrigin.UserInput:
+        case DataOrigin.UserInput:
             return PlaceTypeToIcon[stay.placeType || StayPlaceType.Accomodation]
-        case StayOrigin.Captured:
+        case DataOrigin.Captured:
             return getStayTypeIcon(type)
         default:
             return getStayTypeIcon(type)

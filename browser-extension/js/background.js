@@ -1,3 +1,4 @@
+// DOUBLED IN COSTS.JS
 const ORIGIN = {
     GARDEN: 'wander_garden',
     EXTENSION: 'wander_garden_extension',
@@ -6,13 +7,16 @@ const ORIGIN = {
     AIRBNB: 'airbnb_extension',
     AGODA: 'agoda_extension',
     TRAVALA: 'travala_extension',
+
+    TRIP_ADVISOR: 'trip_advisor_extension',
+    GET_YOUR_GUIDE: 'get_your_guide_extension',
 }
 
 const STORE = {
     captureTabIDs: {},
-    capturedStays: {},
-    lastCapturedStayID: {},
-    currentStayPartial: {},
+    capturedObjects: {},
+    lastCapturedObjectID: {},
+    currentObjectPartial: {},
 }
 
 const manifest = chrome.runtime.getManifest()
@@ -31,7 +35,9 @@ const ORIGIN_URL = {
     [ORIGIN.BOOKING]: 'https://secure.booking.com/myreservations.en-gb.html',
     [ORIGIN.AIRBNB]: 'https://www.airbnb.com/trips/v1',
     [ORIGIN.AGODA]: 'https://www.agoda.com/en-gb/account/bookings.html?sort=CheckinDate&state=Past&page=1',
-    [ORIGIN.TRAVALA]: 'https://www.travala.com/my-bookings'
+    [ORIGIN.TRAVALA]: 'https://www.travala.com/my-bookings',
+    [ORIGIN.GET_YOUR_GUIDE]: 'https://www.getyourguide.com/customer-bookings/',
+    [ORIGIN.TRIP_ADVISOR]: 'https://www.tripadvisor.com/Bookings',
 }
 
 function handleGardenMessage(message, sender) {
@@ -48,8 +54,8 @@ function handleGardenMessage(message, sender) {
         case 'start_capture':
             STORE.captureTabIDs[ORIGIN.GARDEN] = [sender.tab.id]
             const url = ORIGIN_URL[message.subject]
-            STORE.capturedStays[message.subject] = []
-            STORE.lastCapturedStayID[message.subject] = message.lastCapturedStayID
+            STORE.capturedObjects[message.subject] = []
+            STORE.lastCapturedObjectID[message.subject] = message.lastCapturedObjectID
             chrome.tabs.create({ url }, function(newTab) {
                 STORE.captureTabIDs[message.subject] = [newTab.id]
             })
@@ -57,24 +63,24 @@ function handleGardenMessage(message, sender) {
     }
 }
 
-function staysWithNoDuplicates(stays) {
-    return stays.filter((stay, index) => {
-        return stays.findIndex(s => s.id === stay.id) === index
+function objectsWithNoDuplicates(objects) {
+    return objects.filter((object, index) => {
+        return objects.findIndex(s => s.id === object.id) === index
     })
 }
 
-function captureFinished(source, messageStays) {
+function captureFinished(source, messageObjects) {
     STORE.captureTabIDs[source].forEach(tabId => chrome.tabs.remove(tabId))
     chrome.tabs.update(STORE.captureTabIDs[ORIGIN.GARDEN][0], { active: true })
     STORE.captureTabIDs[source] = undefined
-    const stays = messageStays || STORE.capturedStays[source]
-    const finalStays = staysWithNoDuplicates(stays)
+    const objects = messageObjects || STORE.capturedObjects[source]
+    const finalObjects = objectsWithNoDuplicates(objects)
     sendMessage({
         source: ORIGIN.SERVICE,
         target: ORIGIN.GARDEN,
         subject: source,
         type: 'capture_finished',
-        stays: finalStays,
+        objects: finalObjects,
     })
 }
 
@@ -86,7 +92,7 @@ function handleExtensionMessage(message, sender) {
                 target: message.source, 
                 type: 'init',
                 start_capture: STORE.captureTabIDs[message.source]?.includes(sender.tab.id),
-                lastCapturedStayID: STORE.lastCapturedStayID[message.source],
+                lastCapturedObjectID: STORE.lastCapturedObjectID[message.source],
             }, sender.tab.id)
             break
         case 'skip_capture':
@@ -106,16 +112,16 @@ function handleExtensionMessage(message, sender) {
                 STORE.captureTabIDs[message.source].push(newTab.id)
             })
             break
-        case 'capture_stay':
-            const stay = message.stay || STORE.currentStayPartial
-            STORE.currentStayPartial = {}
+        case 'capture_object':
+            const object = message.object || STORE.currentObjectPartial
+            STORE.currentObjectPartial = {}
 
-            const lastCapturedStayID = STORE.lastCapturedStayID[message.source]
-            if (lastCapturedStayID && stay && lastCapturedStayID === stay.id) {
+            const lastCapturedObjectID = STORE.lastCapturedObjectID[message.source]
+            if (lastCapturedObjectID && object && lastCapturedObjectID === object.id) {
                 captureFinished(message.source)
                 break
             }
-            STORE.capturedStays[message.source].push(stay)
+            STORE.capturedObjects[message.source].push(object)
             if (STORE.captureTabIDs[message.source]?.includes(sender.tab.id)) {
                 STORE.captureTabIDs[message.source] = STORE.captureTabIDs[message.source].filter(tabId => tabId !== sender.tab.id)
                 chrome.tabs.remove(sender.tab.id)
@@ -124,15 +130,15 @@ function handleExtensionMessage(message, sender) {
                 source: ORIGIN.SERVICE,
                 target: message.source,
                 subject: message.source,
-                type: 'stay_captured',
-                stay,
+                type: 'object_captured',
+                object,
             })
             break
-        case 'capture_stay_partial':
-            STORE.currentStayPartial = deepMerge(STORE.currentStayPartial, message.stay)
+        case 'capture_object_partial':
+            STORE.currentObjectPartial = deepMerge(STORE.currentObjectPartial, message.object)
             break
         case 'capture_finished':
-            captureFinished(message.source, message.stays)
+            captureFinished(message.source, message.objects)
             break
         case 'error':
             STORE.captureTabIDs[message.source].forEach(tabId => chrome.tabs.remove(tabId))
