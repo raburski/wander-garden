@@ -68,7 +68,10 @@ const Bottom = styled('div')`
     justify-content: center;
     bottom: 0px;
     left: 0px;
-    padding: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 8px;
+    padding-top: 6px;
     right: 0px;
     
     color: ${props => props.theme.text};

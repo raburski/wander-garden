@@ -11,8 +11,6 @@ import { useCaptured, useClearCaptured, useStartCapture } from "domain/extension
 import { DataOrigin } from "type"
 import { getCaptureDiff } from "capture"
 
-export const CURRENT_VERSION = '0.1.0'
-
 export const agodaStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'agoda')
 export const airbnbStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'airbnb')
 export const bookingStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'booking')
