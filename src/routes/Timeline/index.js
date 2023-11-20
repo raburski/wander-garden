@@ -1,9 +1,7 @@
 import { useSearchParams } from "react-router-dom"
 import { onlyUnique } from "array"
 import { getDaysAndRangeText } from 'date'
-import CountryBar from "./CountryBar"
 import Page from "components/Page"
-import Panel from "components/Panel"
 import { titleFromLocationHighlights, } from 'domain/timeline/groups'
 
 import { useVisitedCountryCodes } from "domain/visitedCountries"
@@ -46,7 +44,6 @@ function groupByYear(trips) {
     if (!trips) return {}
     return trips.reduce((acc, trip) => {
         const year = moment(trip.since).get('year')
-        console.log('acc', acc)
         acc[year] = acc[year] ? [...acc[year], trip] : [trip]
         return acc
     }, {})

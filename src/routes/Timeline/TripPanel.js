@@ -64,7 +64,7 @@ const Container = styled(MotionLink)`
 const Bottom = styled('div')`
     position: absolute;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     bottom: 0px;
     left: 0px;
@@ -81,7 +81,7 @@ const Bottom = styled('div')`
 `
 
 const Title = styled('div')`
-    font-size: 17px;
+    font-size: 18px;
     font-family: Primary;
 `
 
@@ -90,34 +90,9 @@ const Subtitle = styled('div')`
     font-size: 11px;
 `
 
-const RightContent = styled('div')`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    align-self: center;
-    min-width: 84px;
-`
-
-const LeftContent = styled('div')`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    justify-content: center;
-`
-
-
-const Days = styled('div')`
-    font-size: 14px;
-    margin-bottom: 2px;
-`
-
-const Range = styled('div')`
-    font-size: 8px;
-`
-
 const containerVariants = {
     rest: {},
-    hover: { scale: 1.03, transition: { ease: "easeOut", duration: 0.2 } }
+    hover: { scale: 1.02, transition: { ease: "easeOut", duration: 0.2 } }
 }
 
 export default function TripPanel({ title, subtitle, countryCodes, days, range, children, ...props }) {
@@ -125,14 +100,9 @@ export default function TripPanel({ title, subtitle, countryCodes, days, range, 
         <Container initial="rest" whileHover="hover" animate="rest" variants={containerVariants} {...props}>
             {countryCodes.map(code => <CountryPanel code={code} />)}
             <Bottom>
-                <LeftContent>
-                    <Title>{title}</Title>
-                    {subtitle ? <Subtitle>{subtitle}</Subtitle> : null}
-                </LeftContent>
-                <RightContent>
-                    <Days>{days}</Days>
-                    <Range>{range}</Range>
-                </RightContent>
+                <Title>{title}</Title>
+                {subtitle ? <Subtitle>{subtitle}</Subtitle> : null}
+                <Subtitle>{days}, {range}</Subtitle>
             </Bottom>
         </Container>
     )
