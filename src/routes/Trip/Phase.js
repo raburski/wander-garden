@@ -4,21 +4,51 @@ import { getStayIcon } from 'domain/stays'
 import { styled } from 'goober'
 import { FaQuestion } from 'react-icons/fa'
 import { isSignificant, venueEmoji } from 'domain/swarm/categories'
+import { TripPhaseEventType } from 'domain/trips/types'
+import { TourLogoURL } from 'domain/tours/types'
+import SquareImage from 'components/SquareImage'
 
 const QuestionMark = styled(FaQuestion)`
     color: red;
 `
 
-function UnknownPhaseLine({ phase, checkins, ...props }) {
+function UnknownPhaseLine({ phase, ...props }) {
     const [days, range] = getDaysAndRangeText(phase.since, phase.until)
     return (
         <PhaseLine icon={QuestionMark} style={{marginTop: 10, marginBottom: 10}} title={`Where did you stay for ${days}?`} range={range} {...props} />
     )
 }
 
-function CheckinLine({ checkin }) {
+function emojiIcon(emoji) {
+    return function EmojiIcon() { return <div>{emoji}</div> }
+}
+
+function CheckinEventLine({ checkin }) {
     const emoji = venueEmoji(checkin.venue)
-    return <PhaseLine title={`    ${emoji}  ${checkin.venue.name}`}/>
+    return <PhaseLine icon={emojiIcon(emoji)} title={checkin.venue.name}/>
+}
+
+const IconImage = styled('img')`
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+`
+
+function TourEventLine({ tour }) {
+    const logoURL = TourLogoURL[tour.tourType]
+    const LogoIcon = () => <IconImage src={logoURL} />
+    return <PhaseLine icon={LogoIcon} title={tour.title}/>
+}
+
+function EventLine({ event }) {
+    switch (event.type) {
+        case TripPhaseEventType.Checkin:
+            return <CheckinEventLine checkin={event.checkin}/>
+        case TripPhaseEventType.Tour:
+            return <TourEventLine tour={event.tour} />
+        default:
+            return null
+    }
 }
 
 function getPhaseTitle(phase) {
@@ -26,12 +56,12 @@ function getPhaseTitle(phase) {
 }
 
 export default function Phase({ phase, onClick, onMouseEnter, ...props }) {
-    const checkins = phase.checkins.filter(isSignificant) || []
+    const events = phase?.events || []
     if (!phase.stay) {
         return (
             <>
-                <UnknownPhaseLine phase={phase} checkins={checkins} onClick={onClick}/>
-                {checkins.map(checkin => <CheckinLine checkin={checkin} />)}
+                <UnknownPhaseLine phase={phase} onClick={onClick}/>
+                {events.map(event => <EventLine event={event} />)}
             </>
         )
     }
@@ -39,8 +69,8 @@ export default function Phase({ phase, onClick, onMouseEnter, ...props }) {
     const [days, range] = getDaysAndRangeText(phase.stay.since, phase.stay.until)
     return (
         <>
-            <PhaseLine checkins={checkins} icon={getStayIcon(phase.stay, phase.stay.type)} title={getPhaseTitle(phase)} range={range} onClick={onClick} onMouseEnter={onMouseEnter}/>
-            {checkins.map(checkin => <CheckinLine checkin={checkin} />)}
+            <PhaseLine icon={getStayIcon(phase.stay, phase.stay.type)} title={getPhaseTitle(phase)} range={range} onClick={onClick} onMouseEnter={onMouseEnter}/>
+            {events.map(event => <EventLine event={event} />)}
         </>
     )
 }

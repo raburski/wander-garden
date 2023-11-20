@@ -1,6 +1,7 @@
 import { Location } from "domain/location"
 import { Stay } from "domain/stays"
 import { Checkin } from "domain/swarm"
+import { Tour } from "domain/tours/types"
 
 export enum LocationHighlightType {
     Country = 'COUNTRY',
@@ -13,11 +14,22 @@ export interface LocationHighlight {
     location: Location
 }
 
+export enum TripPhaseEventType {
+    Checkin = 'CHECKIN',
+    Tour = 'TOUR',
+}
+
+export interface TripPhaseEvent {
+    type: TripPhaseEventType,
+    checkin?: Checkin,
+    tour?: Tour,
+}
+
 export interface TripPhase {
     since: string,
     until: string,
     stay?: Stay,
-    checkins: Checkin[],
+    events: TripPhaseEvent[],
 }
 
 export interface Trip { 

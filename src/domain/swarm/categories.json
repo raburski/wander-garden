@@ -1871,7 +1871,14 @@
         "id": "56aa371be4b08b9a8d573532",
         "name": "Exhibit",
         "shortName": "Exhibit",
-        "pluralName": "Exhibit",
+        "pluralName": "Exhibits",
         "emoji": "🖼️"
+    },
+    {
+        "id": "4bf58dd8d48988d138941735",
+        "name": "Mosque",
+        "shortName": "Mosque",
+        "pluralName": "Mosques",
+        "emoji": "🕌"
     }
 ]

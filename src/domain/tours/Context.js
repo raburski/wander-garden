@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react"
 import { IndexedDBStorageAdapter, useSyncedStorage } from 'storage'
 import { OriginToTourType, TourTypeToOrigin, toursEqual } from "./types"
 import StartTourCaptureModal from "./StartCaptureModal"
-import { useCaptured, useStartCapture } from "domain/extension"
+import { useCaptured, useClearCaptured, useStartCapture } from "domain/extension"
 import { DataOrigin } from "type"
 import { getCaptureDiff } from "capture"
 import ImportModal from "./ImportModal"
@@ -19,12 +19,17 @@ function getLatestTour(tours) {
     return orderedTours[0]
 }
 
+export async function getAllTours() {
+    return toursStorage.get()
+}
+
 export function ToursProvider({ children }) {
     const [selectedCaptureTourType, setSelectedCaptureTourType] = useState()
     const [tours, setTours] = useSyncedStorage(toursStorage)
     const [capturedTours, setCapturedTours] = useState()
     const extensionStartCapture = useStartCapture()
     const captured = useCaptured()
+    const clearCaptured = useClearCaptured()
     const refresh = useRefresh()
 
     async function startCapture(tourType, captureNewOnly) {
@@ -52,6 +57,7 @@ export function ToursProvider({ children }) {
 
     async function clearCapturedTours() {
         setCapturedTours(undefined)
+        clearCaptured()
     }
 
     async function importCapturedTours(ids) {

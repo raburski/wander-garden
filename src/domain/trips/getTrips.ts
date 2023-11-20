@@ -2,9 +2,12 @@ import { Checkin, checkinsStorage, getAllCheckins } from "domain/swarm"
 import { Stay, StayPlaceType, getAllStays } from "domain/stays"
 import arrayQueryReplace, { some } from "domain/timeline/arrayQueryReplace"
 import moment from "moment"
-import { LocationHighlight, LocationHighlightType, Trip, TripPhase } from "./types"
+import { LocationHighlight, LocationHighlightType, Trip, TripPhase, TripPhaseEvent, TripPhaseEventType } from "./types"
 import { cleanLocation, isEqualLocation } from "domain/location"
 import { isDateBetween } from "date"
+import { getAllTours } from "domain/tours"
+import { Tour } from "domain/tours/types"
+import { isSignificant } from "domain/swarm/categories"
 
 
 export function getHighlightsFromStays(stays: Stay[]): LocationHighlight[] {
@@ -53,11 +56,35 @@ export function getHighlightsFromStays(stays: Stay[]): LocationHighlight[] {
     return []
 }
 
+export function getPhaseEventMoment(event: TripPhaseEvent) {
+    switch (event.type) {
+        case TripPhaseEventType.Checkin:
+            return moment.unix(event.checkin!.createdAt)
+        case TripPhaseEventType.Tour:
+            return moment(event.tour!.date)
+        default:
+            return moment()
+    }
+}
+
 function getCheckins(since: string, until: string, checkins: Checkin[]) {
     return checkins.filter(checkin => moment.unix(checkin.createdAt).isBetween(since, until))
 }
 
-function getPhases(stays: Stay[], checkins: Checkin[]) {
+function getTours(since: string, until: string, tours: Tour[]) {
+    return tours.filter(tour => moment(tour.date).isBetween(since, until))
+}
+
+function getPhaseEvents(since: string, until: string, checkins: Checkin[], tours: Tour[]): TripPhaseEvent[] {
+    const events = [
+        ...getCheckins(since, until, checkins).map(checkin => ({ type: TripPhaseEventType.Checkin, checkin }) as TripPhaseEvent),
+        ...getTours(since, until, tours).map(tour => ({ type: TripPhaseEventType.Tour, tour }) as TripPhaseEvent),
+    ]
+    events.sort((a, b) => getPhaseEventMoment(b).isBefore(getPhaseEventMoment(a)) ? 1 : -1)
+    return events
+}
+
+function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[]) {
     let phases: TripPhase[] = []
 
     const firstStay = stays[0]
@@ -65,7 +92,7 @@ function getPhases(stays: Stay[], checkins: Checkin[]) {
         stay: firstStay, 
         since: firstStay.since, 
         until: firstStay.until,
-        checkins: getCheckins(firstStay.since, firstStay.until, checkins)
+        events: getPhaseEvents(firstStay.since, firstStay.until, checkins, tours)
     })
 
     for (let currentIndex = 1; currentIndex < stays.length; currentIndex++) {
@@ -78,13 +105,13 @@ function getPhases(stays: Stay[], checkins: Checkin[]) {
                 // Stay extension
                 const lastPhase = phases.last()
                 lastPhase.until = currentStay.until
-                lastPhase.checkins = getCheckins(lastPhase.since, currentStay.until, checkins)
+                lastPhase.events = getPhaseEvents(lastPhase.since, currentStay.until, checkins, tours)
             } else {
                 phases.push({ 
                     stay: currentStay, 
                     since: currentStay.since, 
-                    until: currentStay.until, 
-                    checkins: getCheckins(currentStay.since, currentStay.until, checkins)
+                    until: currentStay.until,
+                    events: getPhaseEvents(currentStay.since, currentStay.until, checkins, tours),
                 })
             }
         } else {
@@ -92,13 +119,13 @@ function getPhases(stays: Stay[], checkins: Checkin[]) {
                 stay: undefined, 
                 since: olderStay.until, 
                 until: currentStay.since,
-                checkins: getCheckins(olderStay.until, currentStay.since, checkins)
+                events: getPhaseEvents(olderStay.until, currentStay.since, checkins, tours),
             })
             phases.push({ 
                 stay: currentStay, 
                 since: currentStay.since, 
                 until: currentStay.until,
-                checkins: getCheckins(currentStay.since, currentStay.until, checkins)
+                events: getPhaseEvents(currentStay.since, currentStay.until, checkins, tours),
              })
         }
     }
@@ -107,7 +134,7 @@ function getPhases(stays: Stay[], checkins: Checkin[]) {
 }
 
 
-function groupStays(checkins: Checkin[]) {
+function groupStays(checkins: Checkin[], tours: Tour[]) {
     return {
         pattern: [
             some((stay: Stay, stays: Stay[]) => {
@@ -121,9 +148,12 @@ function groupStays(checkins: Checkin[]) {
             }),
         ],
         result: (stays: Stay[]): Trip => {
-            const filteredCheckins = checkins.filter(checkin => moment.unix(checkin.createdAt).isBetween(stays[0].since, stays[stays.length - 1].until))
-            
-            const phases = getPhases(stays, filteredCheckins)
+            const filteredCheckins = checkins.filter(checkin => moment.unix(checkin.createdAt).isBetween(stays.first().since, stays.last().until))
+            const filteredTours = tours.filter(tour => {
+                return moment(tour.date).isBetween(stays.first().since, stays.last().until)
+            })
+
+            const phases = getPhases(stays, filteredCheckins, filteredTours)
             const highlights = getHighlightsFromStays(stays)
             return {
                 id: `trip:${stays[0].id}`,
@@ -139,9 +169,11 @@ function groupStays(checkins: Checkin[]) {
 export default async function getTrips(): Promise<Trip[]> {
     const stays = await getAllStays()
     const checkins = await getAllCheckins()
+    const tours = await getAllTours()
+    const significantCheckins = checkins.filter(isSignificant)
     // Sorted: oldest to newest
     const sortedStays = [...stays].sort((a: Stay, b: Stay) => moment(a.since).diff(moment(b.since)))
-    const trips = arrayQueryReplace(groupStays(checkins), sortedStays)
+    const trips = arrayQueryReplace(groupStays(significantCheckins, tours), sortedStays)
     console.log(trips)
     return trips
 }
