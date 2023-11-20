@@ -13,14 +13,14 @@ function getInfoWindowProperties({ stay, checkin }) {
         const [_, range] = getDaysAndRangeText(stay?.since, stay?.until)
         return {
             ariaLabel: stay?.accomodation?.name,
-            content: `<b>${stay?.accomodation?.name}</b> ${stay?.url ? `<a href="${stay?.url}" target="_blank">[🔗]</a>` : ''}</br>${range}`
+            content: `<span style="color:black;"><b>${stay?.accomodation?.name}</b> ${stay?.url ? `<a href="${stay?.url}" target="_blank">[🔗]</a>` : ''}</br>${range}</span>`
         }
     } else if (checkin) {
         const date = moment.unix(checkin.createdAt).format('DD/MM/YYYY HH:mm')
         const emoji = checkin?.venue ? venueEmoji(checkin?.venue) : ''
         return {
             ariaLabel: checkin?.venue?.name,
-            content: `<b>${emoji} ${checkin?.venue?.name}</b></br>${date}`
+            content: `<span style="color:black;"><b>${emoji} ${checkin?.venue?.name}</b></br>${date}</span>`
         }
     } else {
         return {}
