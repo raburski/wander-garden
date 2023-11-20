@@ -55,6 +55,17 @@ function getPhaseTitle(phase) {
     return phase?.stay?.accomodation?.name
 }
 
+function isEventSignificant(event) {
+    switch (event.type) {
+        case TripPhaseEventType.Checkin:
+            return isSignificant(event.checkin)
+        case TripPhaseEventType.Tour:
+            return true
+        default:
+            return false
+    }
+}
+
 export default function Phase({ phase, onClick, onMouseEnter, ...props }) {
     const events = phase?.events || []
     if (!phase.stay) {
@@ -70,7 +81,7 @@ export default function Phase({ phase, onClick, onMouseEnter, ...props }) {
     return (
         <>
             <PhaseLine icon={getStayIcon(phase.stay, phase.stay.type)} title={getPhaseTitle(phase)} range={range} onClick={onClick} onMouseEnter={onMouseEnter}/>
-            {events.map(event => <EventLine event={event} />)}
+            {events.filter(isEventSignificant).map(event => <EventLine event={event} />)}
         </>
     )
 }

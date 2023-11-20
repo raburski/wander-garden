@@ -61,10 +61,14 @@ const YearTripsContainer = styled('div')`
     flex-wrap: wrap;
 `
 
+const YearTitle = styled('h2')`
+    color: ${props => props.theme.text};
+`
+
 function YearGroup({ year, trips }) {
     return (
         <YearContainer>
-            <h2>{year}</h2>
+            <YearTitle>{year}</YearTitle>
             <YearTripsContainer>
                 {trips.map(trip => <Trip key={trip.id} trip={trip} />)}
             </YearTripsContainer>

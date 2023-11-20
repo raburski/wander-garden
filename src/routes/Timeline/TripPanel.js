@@ -11,7 +11,7 @@ const CountryPanelContainer = styled('div')`
     border: 1px solid ${props => props.theme.border};
 
     overflow: hidden;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
 `
 
 const CountryPanelBackground = styled(motion.div)`

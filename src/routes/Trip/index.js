@@ -24,6 +24,7 @@ import PinButton from 'components/PinButton'
 import { MdEdit } from 'react-icons/md'
 import EditTitleModal from './EditTitleModal'
 import { useTitle } from 'domain/titles'
+import { TripPhaseEventType } from 'domain/trips/types'
 
 const EditHeaderButton = styled(PinButton)`
     align-self: center;
@@ -92,7 +93,7 @@ export default function Trip() {
 
     if (!trip) { return null }
 
-    const checkins = trip.phases.flatMap(phase => phase.checkins)
+    const checkins = trip.phases.flatMap(phase => phase.events.filter(e => e.type === TripPhaseEventType.Checkin).map(e => e.checkin))
 
     const onEditTitle = () => setShowEditTitle(true)
     const onFinishEditTitle = () => setShowEditTitle(false)

@@ -89,8 +89,8 @@ function groupPhasesByCountry() {
                 type: GroupType.Country,
                 phases,
                 location: context.location,
-                since: phases[0].since,
-                until: phases[phases.length - 1].until
+                since: phases.first().since,
+                until: phases.last().until
             }
         }
     }
