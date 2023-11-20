@@ -15,6 +15,9 @@ import usePersistedScroll from "hooks/usePersistedScroll"
 import { useTrips } from "domain/trips"
 import { useTitle } from "domain/titles"
 import Footer from "components/Footer"
+import TripPanel from "./TripPanel"
+import { styled } from "goober"
+import moment from "moment"
 
 function Trip({ trip }) {
     const title = useTitle(trip && trip.id)
@@ -24,7 +27,7 @@ function Trip({ trip }) {
     const [days, range] = getDaysAndRangeText(trip.since, trip.until)
 
     return (
-        <CountryBar to={`/timeline/${trip.id}`}
+        <TripPanel to={`/timeline/${trip.id}`}
             title={title ? title : locationTitle}
             subtitle={title ? locationTitle : null}
             countryCodes={countryCodes}
@@ -34,13 +37,56 @@ function Trip({ trip }) {
     )
 }
 
+const TripsContainer = styled('div')`
+    display: flex;
+    flex-direction: column;
+`
+
+function groupByYear(trips) {
+    if (!trips) return {}
+    return trips.reduce((acc, trip) => {
+        const year = moment(trip.since).get('year')
+        console.log('acc', acc)
+        acc[year] = acc[year] ? [...acc[year], trip] : [trip]
+        return acc
+    }, {})
+}
+
+const YearContainer = styled('div')`
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+`
+
+const YearTripsContainer = styled('div')`
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+`
+
+function YearGroup({ year, trips }) {
+    return (
+        <YearContainer>
+            <h2>{year}</h2>
+            <YearTripsContainer>
+                {trips.map(trip => <Trip key={trip.id} trip={trip} />)}
+            </YearTripsContainer>
+        </YearContainer>
+    )
+}
+
+
 function Trips({ selectedCountryCode }) {
     const trips = useTrips()
     const filteredTrips = selectedCountryCode ? trips.filter(trip => trip.highlights.find(h => h.location.cc.toLowerCase() === selectedCountryCode)) : trips
+    const groupedTrips = groupByYear(filteredTrips)
+    const years = Object.keys(groupedTrips).sort().reverse()
     return (
-        <Panel>
-            {filteredTrips.map(trip => <Trip key={trip.id} trip={trip} />)}
-        </Panel>
+        <TripsContainer>
+            {years.map(year => (
+                <YearGroup year={year} trips={groupedTrips[year]}/>
+            ))}
+        </TripsContainer>
     )
 }
 
