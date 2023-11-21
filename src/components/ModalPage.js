@@ -1,6 +1,8 @@
 import Modal from 'components/Modal'
 import Page from 'components/Page'
+import Button from 'components/Button'
 import { styled } from 'goober'
+import { VscChromeClose } from 'react-icons/vsc'
 
 export const ModalPageButtons = styled('div')`
     display: flex;
@@ -10,10 +12,25 @@ export const ModalPageButtons = styled('div')`
     align-self: stretch;
 `
 
+const CloseButton = styled(Button)`
+    border-radius: 28px;
+    border-width: 0px;
+    box-shadow: 0px 0px 0px;
+    margin-top: -40px;
+    margin-right: -2px;
+`
+
+
 export default function ModalPage({ isOpen, onClickAway, header, children, pageStyle, ...props }) {
     return (
         <Modal isOpen={isOpen} onClickAway={onClickAway}>
-            <Page header={header} style={pageStyle} isModal {...props}>
+            <Page   
+                header={header}
+                right={<CloseButton icon={VscChromeClose} onClick={onClickAway}/>}
+                style={pageStyle}
+                isModal
+                {...props}
+            >
                 {children}
             </Page>
         </Modal>
