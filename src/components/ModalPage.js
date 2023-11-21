@@ -26,7 +26,7 @@ export default function ModalPage({ isOpen, onClickAway, header, children, pageS
         <Modal isOpen={isOpen} onClickAway={onClickAway}>
             <Page   
                 header={header}
-                right={<CloseButton icon={VscChromeClose} onClick={onClickAway}/>}
+                right={onClickAway ? <CloseButton icon={VscChromeClose} onClick={onClickAway}/> : null}
                 style={pageStyle}
                 isModal
                 {...props}

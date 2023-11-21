@@ -1,10 +1,8 @@
-import { useTimelineGroup } from 'domain/timeline'
 import { titleFromLocationHighlights } from 'domain/timeline/groups'
 import { useParams } from 'react-router'
 import Page from '../../components/Page'
 import Panel from '../../components/Panel'
 import { styled } from 'goober'
-import moment from 'moment'
 import GroupBar from 'routes/Timeline/GroupBar'
 import { getDaysAndRangeText } from 'date'
 import useGroups, { GroupType } from './useGroups'
@@ -12,10 +10,7 @@ import Phase from './Phase'
 import { useRef, useState } from 'react';
 import Separator from 'components/Separator';
 import { Column, Row } from 'components/container';
-import Map, { Icon } from 'domain/map'
-import { detectStayType } from 'domain/stays'
 import Info from './Info'
-import { venueEmoji } from 'domain/swarm/categories'
 import TripMap from './Map'
 import CustomStayModal from 'domain/stays/CustomStayModal'
 import { LocationAccuracy } from 'domain/location'
@@ -100,7 +95,6 @@ export default function Trip() {
 
     const headerText = title || `Trip to ${titleFromLocationHighlights(trip.highlights)}`
     const header = <>{headerText}<EditHeaderButton onClick={onEditTitle} icon={MdEdit}/></>
-    const leftToRightPhases = [...trip.phases].reverse()
 
     const onPhaseClick = (phase) => {
         if (!phase.stay) {

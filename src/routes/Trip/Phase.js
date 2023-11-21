@@ -6,7 +6,7 @@ import { FaQuestion } from 'react-icons/fa'
 import { isSignificant, venueEmoji } from 'domain/swarm/categories'
 import { TripPhaseEventType } from 'domain/trips/types'
 import { TourLogoURL } from 'domain/tours/types'
-import SquareImage from 'components/SquareImage'
+import createEmojiIcon from 'components/createEmojiIcon'
 
 const QuestionMark = styled(FaQuestion)`
     color: red;
@@ -19,13 +19,12 @@ function UnknownPhaseLine({ phase, ...props }) {
     )
 }
 
-function emojiIcon(emoji) {
-    return function EmojiIcon() { return <div>{emoji}</div> }
-}
+
 
 function CheckinEventLine({ checkin }) {
     const emoji = venueEmoji(checkin.venue)
-    return <PhaseLine icon={emojiIcon(emoji)} title={checkin.venue.name}/>
+    const Icon = createEmojiIcon(emoji)
+    return <PhaseLine icon={Icon} title={checkin.venue.name}/>
 }
 
 const IconImage = styled('img')`

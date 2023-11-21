@@ -34,6 +34,7 @@ const IconContainer = styled('div')`
     align-items: center;
     justify-content: center;
     margin-right: 14px;
+    font-size: 24px;
     color: ${props => props.theme.text};
 `
 

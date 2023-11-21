@@ -24,6 +24,7 @@ export default function ExtendStayPage({ phase, previousPhase, onFinished, ...pr
         const dayRanges = getDateRanges(state.days)
         const stays = dayRanges.map(({ since, until }) => ({
             ...previousPhase.stay,
+            id: `extended:${since}:${previousPhase.stay.id}`,
             since,
             until,
             placeType: StayPlaceType.Extension,
