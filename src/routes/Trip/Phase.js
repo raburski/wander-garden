@@ -19,12 +19,14 @@ function UnknownPhaseLine({ phase, ...props }) {
     )
 }
 
-
+const CheckinPhaseLine = styled(PhaseLine)`
+    margin-left: 24px;
+`
 
 function CheckinEventLine({ checkin }) {
     const emoji = venueEmoji(checkin.venue)
     const Icon = createEmojiIcon(emoji)
-    return <PhaseLine icon={Icon} title={checkin.venue.name}/>
+    return <CheckinPhaseLine icon={Icon} title={checkin.venue.name}/>
 }
 
 const IconImage = styled('img')`
@@ -33,10 +35,18 @@ const IconImage = styled('img')`
     object-fit: contain;
 `
 
+const TourPhaseLine = styled(PhaseLine)`
+    background-color: ${props => props.theme.primary.highlight};
+    border-radius: 8px;
+    margin-left: 14px;
+    margin-right: 14px;
+    padding-left: 12px;
+`
+
 function TourEventLine({ tour }) {
     const logoURL = TourLogoURL[tour.tourType]
     const LogoIcon = () => <IconImage src={logoURL} />
-    return <PhaseLine icon={LogoIcon} title={tour.title}/>
+    return <TourPhaseLine icon={LogoIcon} title={tour.title}/>
 }
 
 function EventLine({ event }) {
