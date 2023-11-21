@@ -1,17 +1,14 @@
 import { createContext, useContext, useMemo } from "react"
-import { LocalStorageAdapter, IndexedDBStorageAdapter, jsonTransforms, useSyncedStorage } from 'storage'
+import { LocalStorageAdapter, IndexedDBStorageAdapter, useSyncedStorage, stringTransforms } from 'storage'
 import moment from 'moment'
 import getTrips from "./getTrips"
 
 export const TripsContext = createContext({})
 
-const visitedStorage = new LocalStorageAdapter('trips.visited', '[]', jsonTransforms)
-
 const tripsStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'trips')
 
 export function TripsProvider({ children }) {
     const [trips, setTrips] = useSyncedStorage(tripsStorage)
-    const [visitedCountryCodes, setVisitedCountryCodes] = useSyncedStorage(visitedStorage)
 
     async function refresh() {
         const trips = await getTrips()
@@ -21,7 +18,6 @@ export function TripsProvider({ children }) {
     const sortedTrips = [...trips].sort((a, b) => moment(b.since).diff(moment(a.since)))
     const value = {
         trips: sortedTrips,
-        visitedCountryCodes: [visitedCountryCodes, setVisitedCountryCodes],
         refresh
     }
 
