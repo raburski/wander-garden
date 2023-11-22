@@ -10,7 +10,7 @@ import Spacer from "components/Spacer"
 
 const Line = styled(Row)`
     border: 0px solid;
-    padding-left: 26px;
+    padding-left: 22px;
     padding-right: 16px;
     flex-direction: column;
     align-items: stretch;

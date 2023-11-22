@@ -4,13 +4,15 @@ import { Row } from './Panel'
 const FlagIcon = styled('div')`
     display: flex;
     flex: 0;
-    align-self: start;
+    align-self: center;
 `
 
 const CountryName = styled('div')`
     font-size: 14px;
+    margin-top: 4px;
+    margin-bottom: 5px;
     margin-left: 8px;
-    margin-top: -1px;
+
     color: ${props => props.theme.text};
 
     @media only screen and (min-width: ${props => props.theme.breakpoints.large}px) {

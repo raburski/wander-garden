@@ -28,11 +28,7 @@ const CheckinPhaseLine = styled(PhaseLine)`
 function CheckinEventLine({ checkin, note, ...props }) {
     const emoji = venueEmoji(checkin.venue)
     const Icon = createEmojiIcon(emoji)
-    return (
-        <>
-            <CheckinPhaseLine icon={Icon} note={note?.highlight} title={checkin.venue.name} {...props}/>
-        </>
-    )
+    return <CheckinPhaseLine icon={Icon} note={note?.highlight} title={checkin.venue.name} {...props}/>
 }
 
 const IconImage = styled('img')`
@@ -44,8 +40,8 @@ const IconImage = styled('img')`
 const TourPhaseLine = styled(PhaseLine)`
     background-color: ${props => props.theme.primary.highlight};
     border-radius: 8px;
-    margin-left: 16px;
-    margin-right: 14px;
+    margin-left: 12px;
+    margin-right: 12px;
     padding-left: 34px;
     padding-right: 6px;
 `
@@ -53,11 +49,7 @@ const TourPhaseLine = styled(PhaseLine)`
 function TourEventLine({ tour, note, ...props }) {
     const logoURL = TourLogoURL[tour.tourType]
     const LogoIcon = () => <IconImage src={logoURL} />
-    return (
-        <>
-            <TourPhaseLine icon={LogoIcon} note={note?.highlight} title={tour.title} {...props}/>
-        </>
-    )
+    return <TourPhaseLine icon={LogoIcon} note={note?.highlight} title={tour.title} {...props}/>
 }
 
 function EventLine({ event, ...props }) {

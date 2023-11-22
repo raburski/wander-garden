@@ -54,12 +54,12 @@ function getNewNoteID() {
 export function useSaveNote() {
     const context = useContext(NotesContext)
     return (_note) => {
-        
+        const id = _note.id || getNewNoteID()
         const note = {
             ..._note,
-            id: _note.id || getNewNoteID(),
+            id,
         }
-        context.setNotes([...context.notes, note])
+        context.setNotes([...context.notes.filter(n => n.id !== id), note], [id])
     }
 }
 
