@@ -75,6 +75,7 @@ export function ToursProvider({ children }) {
 
     const value = {
         tours,
+        setTours,
         showCaptureStartModal: (tourType) => setSelectedCaptureTourType(tourType),
         startCapture,
     }
@@ -115,4 +116,9 @@ export function useCaptureTourType() {
     return function captureTourType(tourType, captureNewOnly) {
         context.startCapture(tourType, captureNewOnly)
     }
+}
+
+export function useReplaceAllTours() {
+    const context = useContext(ToursContext)
+    return context.setTours
 }

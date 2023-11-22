@@ -1,5 +1,5 @@
 import Panel from "components/Panel"
-import { isSwarmData, useCheckins, useClearData } from "domain/swarm"
+import { isSwarmData, useCheckins, useClearData, useReplaceAllCheckins } from "domain/swarm"
 import Button from "components/Button"
 import { TbDownload, TbCloudUpload, TbTrash } from 'react-icons/tb'
 import { isStayData, useAllStays, useReplaceAllStays } from "domain/stays"
@@ -8,7 +8,9 @@ import toast from "react-hot-toast"
 import { styled } from "goober"
 import Separator from "components/Separator"
 import { useAllTitles, useReplaceAllTitles } from "domain/titles"
-import useRefresh from "domain/refresh"
+import useRefresh, { useClearAll } from "domain/refresh"
+import { useNotes, useReplaceAllNotes } from "domain/notes"
+import { useReplaceAllTours, useTours } from "domain/tours"
 
 const COPY = `Manage everything Wander Garden is using to construct your timeline and statistics.`
 
@@ -22,20 +24,26 @@ function useDownloadAllData() {
     const [checkins] = useCheckins()
     const stays = useAllStays()
     const titles = useAllTitles()
+    const notes = useNotes()
+    const tours = useTours()
     const allData = {
         stays,
         checkins,
         titles,
+        notes,
+        tours,
     }
 
     return () => downloadString(JSON.stringify(allData), 'json', 'wander-garden-data.json')
 }
 
 function useUploadAllData() {
+    const clearAll = useClearAll()
     const replaceAllStays = useReplaceAllStays()
     const replaceAllTitles = useReplaceAllTitles()
-    const [_, setCheckins] = useCheckins()
-    const clearSwarmData = useClearData()
+    const replaceAllTours = useReplaceAllTours()
+    const replaceAllNotes = useReplaceAllNotes()
+    const replaceAllCheckins = useReplaceAllCheckins()
 
     return async function uploadAllData() {
         const files = await uploadFile()
@@ -45,9 +53,11 @@ function useUploadAllData() {
 
         if (isSwarmData(allData.checkins) && isStayData(allData.stays)) {
             const toastId = toast.loading('Loading new data...')
-            await clearSwarmData()
+            await clearAll()
+            await replaceAllTours(allData.tours)
             await replaceAllTitles(allData.titles)
-            await setCheckins(allData.checkins)
+            await replaceAllNotes(allData.notes)
+            await replaceAllCheckins(allData.checkins)
             await replaceAllStays(allData.stays)
             toast.dismiss(toastId)
             toast.success('All uploaded!')
@@ -58,19 +68,13 @@ function useUploadAllData() {
 }
 
 function useClearAllData() {
-    const clearSwarmData = useClearData()
-    const replaceAllStays = useReplaceAllStays()
-    const replaceAllTitles = useReplaceAllTitles()
-    const refresh = useRefresh()
+    const clearAll = useClearAll()
 
     return async function clearAllData() {
         if (!window.confirm('Are you sure you want to CLEAR all wander garden data?')) return undefined
 
         const toastId = toast.loading('Clearing all data...')
-        await clearSwarmData()
-        await replaceAllTitles({})
-        await replaceAllStays([])
-        await refresh()
+        await clearAll()
         toast.dismiss(toastId)
         toast.success('Everything cleared!')
     }

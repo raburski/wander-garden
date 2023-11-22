@@ -69,3 +69,8 @@ export function useEditSubjectNote() {
         context.setEditingSubjectID(subjectId)
     }
 }
+
+export function useReplaceAllNotes() {
+    const context = useContext(NotesContext)
+    return context.setNotes
+}

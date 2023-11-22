@@ -38,6 +38,11 @@ export function useCheckins() {
     return context.checkins
 }
 
+export function useReplaceAllCheckins() {
+    const context = useContext(SwarmContext)
+    return context.checkins[1]
+}
+
 export function useLastUpdated() {
     const context = useContext(SwarmContext)
     return context.lastUpdated
