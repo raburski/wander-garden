@@ -4,10 +4,16 @@ import { styled } from 'goober'
 import colors from "../../colors"
 import { Row } from "../../components/Panel"
 import { TbDotsVertical } from 'react-icons/tb'
+import { MdNoteAdd, MdOutlineEditNote } from "react-icons/md"
+import { motion } from "framer-motion"
+import Spacer from "components/Spacer"
 
 const Line = styled(Row)`
     border: 0px solid;
     padding-left: 26px;
+    padding-right: 16px;
+    flex-direction: column;
+    align-items: stretch;
 `
 
 const TitleContent = styled('div')`
@@ -17,63 +23,80 @@ const TitleContent = styled('div')`
     margin-left: 12px;
 `
 
-const Emoji = styled('div')`
-    font-size: 12px;
-`
-
 const Title = styled('div')`
     display: flex;
+    align-items: center;
     flex: 1;
     font-size: 12px;
     font-weight: regular;
-    margin-bottom: 2px;
+    margin-top: 2px;
+    margin-bottom: 4px;
     color: ${props => props.theme.text};
 `
 
-const ActionsContent = styled('div')`
+const ActionsContent = styled(motion.div)`
     display: flex;
     flex-direction: row;
-    margin-right: 12px;
     align-items: flex-end;
 `
 
-const RightContent = styled('div')`
+const Subtitle = styled('div')`
     display: flex;
     flex: 1;
-    flex-direction: column;
-    margin-right: 12px;
-    align-items: flex-end;
-    min-width: 90px;
-`
-
-const Days = styled('div')`
-    font-size: 16px;
-    margin-bottom: 2px;
-`
-
-const Range = styled('div')`
-    font-size: 10px;
+    flex-direction: row;
+    margin-top: -3px;
     margin-bottom: 4px;
+    margin-right: 12px;
+    font-size: 10px;
 `
 
-export default function PhaseLine({ emoji, icon, to, title, subtitle, onClick, days, range, onMoreClick, children, ...props }) {
+const Note = styled('div')`
+    border-radius: 8px;
+    background-color: ${props => props.theme.background.default};
+    border: 1px solid ${props => props.theme.border};
+    padding: 4px;
+    padding-left: 8px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 20px;
+    font-size: 12px;
+`
+
+const ACTIONS_VARIANTS = {
+    rest: { opacity: 0, marginLeft: 20, marginRight: -20 },
+    hover: { opacity: 1, marginLeft: 0, marginRight: 0, transition: { ease: "easeOut", duration: 0.1 } },
+}
+
+const LineRow = styled('div')`
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+`
+
+export default function PhaseLine({ emoji, icon, to, title, note, onClick, days, range, onMoreClick, onNoteClick, children, ...props }) {
     const Icon = icon
     return (
-        <Line onClick={onClick} to={to} {...props}>
-            {icon ? <Icon /> : null}
-            <TitleContent>
-                <Title>{title}</Title>
-            </TitleContent>
-            {children}
-            <RightContent>
-                <Days>{days}</Days>
-                <Range>{range}</Range>
-            </RightContent>
-            {onMoreClick ?
-                <ActionsContent>
-                    <PinButton icon={TbDotsVertical} onClick={onMoreClick}/>
+        <Line onClick={onClick} initial="rest" whileHover="hover" animate="rest" to={to} {...props}>
+            <LineRow>
+                {icon ? <Icon /> : null}
+                <TitleContent>
+                    <Title>{title}</Title>
+                    {(days || range) ?
+                    <Subtitle>
+                        {days}, {range}
+                    </Subtitle> 
+                : null}
+                </TitleContent>
+                {children}
+                <Spacer />
+                <ActionsContent variants={ACTIONS_VARIANTS}>
+                    {onNoteClick ? <PinButton icon={MdOutlineEditNote} onClick={onNoteClick}/> : null}
+                    {onMoreClick ? <PinButton icon={TbDotsVertical} onClick={onMoreClick}/> : null}
                 </ActionsContent>
-            : null }
+            </LineRow>
+            {note ? <Note>✏️&nbsp;&nbsp;{note}</Note> : null}
         </Line>
     )
 }

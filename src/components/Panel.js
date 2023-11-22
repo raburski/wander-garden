@@ -60,7 +60,7 @@ Panel.Right = styled('div')`
 `
 
 
-export const StaticRow = styled('div')`
+export const StaticRow = styled(motion.div)`
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -105,7 +105,7 @@ export const LinkRow = styled(Link)`
     }
 `
 
-export const ClickRow = styled('div')`
+export const ClickRow = styled(motion.div)`
     display: flex;
     flex-direction: row;
     align-items: center;

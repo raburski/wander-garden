@@ -31,9 +31,9 @@ const Right = styled('div')`
 const IconContainer = styled('div')`
     display: flex;
     flex: 0;
-    align-items: center;
-    justify-content: center;
+    align-self: flex-start;
     margin-right: 14px;
+    margin-top: 2px;
     font-size: 24px;
     color: ${props => props.theme.text};
 `

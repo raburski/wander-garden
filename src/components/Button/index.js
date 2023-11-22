@@ -37,12 +37,11 @@ const ButtonContainer = styled('button')`
     white-space: nowrap;
 
     border: ${props => props.flat ? '0px' : '1px'} solid ${props => props.theme.border};
-    border-radius: .5rem;
     font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
     font-size: .875rem;
     font-weight: 600;
     line-height: 1.25rem;
-    padding: .65rem .8rem;
+    
     text-align: center;
     text-decoration: none #D1D5DB solid;
     text-decoration-thickness: auto;
@@ -108,7 +107,7 @@ function getTooltipStyles(position, offset) {
 
 const TOOLTIP_TRANSITION = { duration: 0.1 }
 
-export default function Button({ disabled = false, icon = undefined, selected = false, iconSize = 16, children, onClick = () => {}, flat = false, tooltip = null, tooltipOffset = 32, tooltipPosition = TOOLTIP_POSITION.TOP, ...props }) {
+export function BaseButton({ disabled = false, icon = undefined, selected = false, iconSize = 16, children, onClick = () => {}, flat = false, tooltip = null, tooltipOffset = 32, tooltipPosition = TOOLTIP_POSITION.TOP, ...props }) {
     const [isHover, setHover] = useDebouncedState(false, 400)
     const IconComponent = icon
     const noPropagateClick = (event) => {
@@ -129,3 +128,8 @@ export default function Button({ disabled = false, icon = undefined, selected = 
         </ButtonContainer>
     )
 }
+
+export default styled(BaseButton)`
+    padding: .65rem .8rem;
+    border-radius: .5rem;
+`

@@ -7,6 +7,7 @@ import { isSignificant, venueEmoji } from 'domain/swarm/categories'
 import { TripPhaseEventType } from 'domain/trips/types'
 import { TourLogoURL } from 'domain/tours/types'
 import createEmojiIcon from 'components/createEmojiIcon'
+import { useEditSubjectNote, useSubjectNote } from 'domain/notes'
 
 const QuestionMark = styled(FaQuestion)`
     color: red;
@@ -15,7 +16,7 @@ const QuestionMark = styled(FaQuestion)`
 function UnknownPhaseLine({ phase, ...props }) {
     const [days, range] = getDaysAndRangeText(phase.since, phase.until)
     return (
-        <PhaseLine icon={QuestionMark} style={{marginTop: 10, marginBottom: 10}} title={`Where did you stay for ${days}?`} range={range} {...props} />
+        <PhaseLine icon={QuestionMark} style={{marginTop: 10, marginBottom: 10}} title={`Where did you stay for ${days}?`} {...props} />
     )
 }
 
@@ -23,10 +24,15 @@ const CheckinPhaseLine = styled(PhaseLine)`
     margin-left: 24px;
 `
 
-function CheckinEventLine({ checkin }) {
+
+function CheckinEventLine({ checkin, note, ...props }) {
     const emoji = venueEmoji(checkin.venue)
     const Icon = createEmojiIcon(emoji)
-    return <CheckinPhaseLine icon={Icon} title={checkin.venue.name}/>
+    return (
+        <>
+            <CheckinPhaseLine icon={Icon} note={note?.highlight} title={checkin.venue.name} {...props}/>
+        </>
+    )
 }
 
 const IconImage = styled('img')`
@@ -38,23 +44,29 @@ const IconImage = styled('img')`
 const TourPhaseLine = styled(PhaseLine)`
     background-color: ${props => props.theme.primary.highlight};
     border-radius: 8px;
-    margin-left: 14px;
+    margin-left: 16px;
     margin-right: 14px;
-    padding-left: 12px;
+    padding-left: 34px;
+    padding-right: 6px;
 `
 
-function TourEventLine({ tour }) {
+function TourEventLine({ tour, note, ...props }) {
     const logoURL = TourLogoURL[tour.tourType]
     const LogoIcon = () => <IconImage src={logoURL} />
-    return <TourPhaseLine icon={LogoIcon} title={tour.title}/>
+    return (
+        <>
+            <TourPhaseLine icon={LogoIcon} note={note?.highlight} title={tour.title} {...props}/>
+        </>
+    )
 }
 
-function EventLine({ event }) {
+function EventLine({ event, ...props }) {
+    const note = useSubjectNote(getEventSubjectId(event))
     switch (event.type) {
         case TripPhaseEventType.Checkin:
-            return <CheckinEventLine checkin={event.checkin}/>
+            return <CheckinEventLine checkin={event.checkin} note={note} {...props}/>
         case TripPhaseEventType.Tour:
-            return <TourEventLine tour={event.tour} />
+            return <TourEventLine tour={event.tour} note={note} {...props}/>
         default:
             return null
     }
@@ -75,13 +87,28 @@ function isEventSignificant(event) {
     }
 }
 
+function getEventSubjectId(event) {
+    switch (event.type) {
+        case TripPhaseEventType.Checkin:
+            return event.checkin.id
+        case TripPhaseEventType.Tour:
+            return event.tour.id
+        default:
+            return undefined
+    }
+}
+
 export default function Phase({ phase, onClick, onMouseEnter, ...props }) {
+    const editNote = useEditSubjectNote()
+    const note = useSubjectNote(phase?.stay?.id)
     const events = phase?.events || []
+    const significantEvents = events.filter(isEventSignificant)
+    
     if (!phase.stay) {
         return (
             <>
                 <UnknownPhaseLine phase={phase} onClick={onClick}/>
-                {events.map(event => <EventLine event={event} />)}
+                {significantEvents.map(event => <EventLine event={event} onNoteClick={() => editNote(getEventSubjectId(event))}/>)}
             </>
         )
     }
@@ -89,8 +116,8 @@ export default function Phase({ phase, onClick, onMouseEnter, ...props }) {
     const [days, range] = getDaysAndRangeText(phase.stay.since, phase.stay.until)
     return (
         <>
-            <PhaseLine icon={getStayIcon(phase.stay, phase.stay.type)} title={getPhaseTitle(phase)} range={range} onClick={onClick} onMouseEnter={onMouseEnter}/>
-            {events.filter(isEventSignificant).map(event => <EventLine event={event} />)}
+            <PhaseLine icon={getStayIcon(phase.stay, phase.stay.type)} onNoteClick={() => editNote(phase.stay.id)} title={getPhaseTitle(phase)} days={days} range={range} note={note?.highlight} onClick={onClick} onMouseEnter={onMouseEnter}/>
+            {significantEvents.map(event => <EventLine event={event} onNoteClick={() => editNote(getEventSubjectId(event))}/>)}
         </>
     )
 }

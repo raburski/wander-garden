@@ -1,7 +1,15 @@
 import { styled } from 'goober'
 import { forwardRef } from 'react'
 
-const Input = styled('input', forwardRef)`
+const InputOrTextarea = forwardRef(({ type, ...props }, ref) => {
+    if (type === 'textarea') {
+        return <textarea ref={ref} rows="6" {...props}/>
+    } else {
+        return <input ref={ref} {...props}/>
+    }
+})
+
+const Input = styled(InputOrTextarea, forwardRef)`
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
