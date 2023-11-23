@@ -108,7 +108,7 @@ const LOGIN_COPY = `You may need to log in!`
 
 export default function StartCaptureModal({ isOpen, logoURL, onStartCapture, onCancel, header, ...props }) {
     const extensionStatus = useExtensionStatus()
-    const [captureNewOnly, setCaptureNewOnly] = useSetting(CAPTURE_SETTING_NAME, false)
+    const [captureNewOnly, setCaptureNewOnly] = useSetting(CAPTURE_SETTING_NAME, true)
 
     function _onStartCapture() {
         onStartCapture(captureNewOnly)

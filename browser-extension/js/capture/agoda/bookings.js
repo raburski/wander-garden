@@ -11,7 +11,7 @@ class AgodaBookingsPage extends Page {
         this.bookingIDs = []
     }
 
-    onStayCaptured(message) {
+    onCaptured(message) {
         console.log('Wander Garden: stay captured', message)
         this.processNextBooking()
     }
