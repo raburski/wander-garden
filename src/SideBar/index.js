@@ -2,7 +2,7 @@ import { styled, css } from 'goober'
 import { VscDashboard, VscPulse, VscVersions } from 'react-icons/vsc'
 import { FaDiscord, FaTwitter } from 'react-icons/fa'
 import { SlClose, SlSettings } from 'react-icons/sl'
-import { MdHotel } from 'react-icons/md'
+import { MdHotel, MdOutlineDownloading } from 'react-icons/md'
 import { BsAward } from 'react-icons/bs'
 import Logo from './Logo'
 import StylelessLink from 'components/StylelessLink'
@@ -175,7 +175,7 @@ function SideMenu({ onLinkClick, ...props }) {
             <StyledPillLink onClick={onLinkClick} to="data" separatorClassName={hideOnMediumBreakpointClassName} icon={ImFileText2}>Data</StyledPillLink>
             {/* <Separator /> */}
             {/* <StyledPillLink onClick={onLinkClick} to="swarm" separatorClassName={hideOnMediumBreakpointClassName} icon={SiSwarm}>Swarm</StyledPillLink> */}
-            <StyledPillLink onClick={onLinkClick} to="stays" separatorClassName={hideOnMediumBreakpointClassName} icon={MdHotel}>Stays</StyledPillLink>
+            <StyledPillLink onClick={onLinkClick} to="capture" separatorClassName={hideOnMediumBreakpointClassName} icon={MdOutlineDownloading}>Capture</StyledPillLink>
             <Separator />
             <StyledPillLink onClick={onLinkClick} to="settings" separatorClassName={hideOnMediumBreakpointClassName} icon={SlSettings}>Settings</StyledPillLink>
             <SpreadSeparator />

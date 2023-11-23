@@ -11,7 +11,7 @@ import PhoneConnect from './PhoneConnect'
 import AuthenticationFinish from './AuthenticationFinish'
 import About from "./About"
 import Map from './Map'
-import Stays from './Extension'
+import Capture from './Extension'
 import Trip from './Trip'
 import Settings from "./Settings"
 import Stay from "./Stay"
@@ -20,7 +20,7 @@ export default function AllRoutes() {
     return (
     <Routes>
         <Route path="swarm" element={<Swarm />}/>
-        <Route path="stays" element={<Stays />}/>
+        <Route path="capture" element={<Capture />}/>
         <Route path="stays/:id" element={<Stay />}/>
         <Route path="auth" element={<AuthenticationFinish />}/>
         <Route path="netflix" element={<Netflix />}/>

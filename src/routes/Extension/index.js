@@ -72,9 +72,9 @@ function ExtensionContent() {
     }
 }
 
-export default function Hotels() {
+export default function Capture() {
     return (
-        <Page header="Stays">
+        <Page header="Capture">
             <ExtensionContent />
             <Stays />
             <Tours />
