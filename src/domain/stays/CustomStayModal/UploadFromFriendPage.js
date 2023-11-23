@@ -32,7 +32,7 @@ Those can be exported and imported in the Data section.
 export default function UploadFromFriendPage({ onFinished, ...props }) {
     const navigate = useNavigate()
     const onUploadFile = () => navigate('/data')
-    const onGoToStays = () => navigate('/stays')
+    const onGoToStays = () => navigate('/capture')
     return (
         <Page header="Import from friend" {...props}>
             <Panel>

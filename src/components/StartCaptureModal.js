@@ -71,7 +71,7 @@ Working browser extension required.
 function WorkingExtensionRequired({ onCancel }) {
     const navigate = useNavigate()
     const onGoToExtension = () => {
-        navigate('/stays')
+        navigate('/capture')
         onCancel()
     }
     return (
