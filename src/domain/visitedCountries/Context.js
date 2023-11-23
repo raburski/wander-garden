@@ -21,7 +21,7 @@ export function VisitedCountriesProvider({ children }) {
         setVisitedCountryCodes([
             ...nonTransportCheckins.map(checkin => checkin?.venue?.location?.cc.toLowerCase()),
             ...allStays.map(stay => stay.location.cc.toLowerCase()),
-        ].filter(onlyUnique).reverse())
+        ].filter(onlyUnique).filter(Boolean).reverse())
     }
 
     const value = {

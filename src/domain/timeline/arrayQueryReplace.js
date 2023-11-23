@@ -46,7 +46,8 @@ export function end(fn) {
 }
 
 function normalizePattern(pattern) {
-    return pattern.map(e => isExpression(e) ? e : exact(e))
+    const _pattern = Array.isArray(pattern) ? pattern : [pattern]
+    return _pattern.map(e => isExpression(e) ? e : exact(e))
 }
 
 function match(pattern, array, currentIndex = 0, previousValues = [], context) {
@@ -131,7 +132,7 @@ export default function arrayQueryReplace(query, initArray) {
             const lastIndex = match(normalizedPattern, resultedArray.slice(searchIndex), searchIndex, [], context)
             if (lastIndex) {
                 const matchedArrayFragment = resultedArray.slice(searchIndex, lastIndex)
-                const actualResult = result(matchedArrayFragment, context)
+                const actualResult = result(matchedArrayFragment, context) || []
                 const resultArray = Array.isArray(actualResult) ? actualResult : [actualResult]
                 resultedArray = [...resultedArray.slice(0, searchIndex), ...resultArray, ...resultedArray.slice(lastIndex)]
                 searchIndex = searchIndex + resultArray.length

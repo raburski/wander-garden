@@ -8,6 +8,7 @@ import { TbBrandBooking, TbBrandAirbnb, TbDownload, TbCloudUpload, TbTrash, TbRe
 import { FiExternalLink, FiMapPin } from 'react-icons/fi'
 import { MdHotel, MdOutlineUploadFile } from 'react-icons/md'
 import { DataOrigin } from "type"
+import { LocationAccuracy } from "domain/location"
 
 export function getAllStays() {
     return Promise.all([
@@ -86,4 +87,12 @@ export function getStayIcon(stay: Stay, type: StayType) {
         default:
             return getStayTypeIcon(type)
     }
+}
+
+export const DEFAULT_HOME_LOCATION = {
+    country: '',
+    cc: '',
+    accuracy: LocationAccuracy.None,
+    lat: 0,
+    lng: 0,
 }

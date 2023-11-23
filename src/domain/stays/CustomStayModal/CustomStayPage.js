@@ -1,6 +1,6 @@
 import { ModalPageButtons } from "components/ModalPage"
 import { MdAdd, MdPeopleAlt, MdLocationPin, MdDone } from 'react-icons/md'
-import { PlaceTypeToIcon } from "../types"
+import { PlaceTypeToIcon, StayPlaceType } from "../types"
 import Panel from "components/Panel"
 import Button from "components/Button"
 import Separator from "components/Separator"
@@ -13,6 +13,7 @@ import { IoMdPricetag } from "react-icons/io"
 import LocationForm from "./LocationForm"
 import DaysForm from "./DaysForm"
 import { getDateRanges } from "date"
+import { DEFAULT_HOME_LOCATION } from "../stays"
 
 function getPresetLocations(phase) {
     if (!phase.stay) return []
@@ -30,12 +31,14 @@ function getPresetLocations(phase) {
     })
 }
 
-function getFormDefaultValues(previousPhase, stay) {
+const HOME_NAME = 'My home'
+
+function getFormDefaultValues(previousPhase, stay, isHome) {
     if (previousPhase) {
-        return { totalGuests: previousPhase?.stay?.totalGuests }
+        return { totalGuests: previousPhase?.stay?.totalGuests, name: isHome ? HOME_NAME : undefined }
     } else if (stay) {
         return {
-            name: stay.accomodation.name,
+            name: isHome ? stay.accomodation.name : HOME_NAME,
             location: stay.location,
             totalGuests: stay.totalGuests
         }
@@ -44,7 +47,9 @@ function getFormDefaultValues(previousPhase, stay) {
 }
 
 export default function CustomStayPage({ phase, previousPhase, placeType, onFinished, stay, onBack, ...props }) {
-    const { register, handleSubmit, formState } = useForm({ defaultValues: getFormDefaultValues(previousPhase, stay) })
+    const isHome = placeType === StayPlaceType.Home
+
+    const { register, handleSubmit, formState } = useForm({ defaultValues: getFormDefaultValues(previousPhase, stay, isHome) })
     const isEditing = !!stay
     
     const since = phase?.since || stay?.since
@@ -55,14 +60,15 @@ export default function CustomStayPage({ phase, previousPhase, placeType, onFini
     const locations = phase ? getPresetLocations(phase) : []
 
     async function submitForm(state) {
-        if (!state.name || !state.location || !state.days) return
+        if (!state.name || !state.days) return
+        if (!isHome && !state.location) return
 
         const dayRanges = getDateRanges(state.days)
         const stays = dayRanges.map(({ since, until }) => ({
             accomodation: {
                 name: state.name
             },
-            location: state.location,
+            location: state.location || DEFAULT_HOME_LOCATION,
             since,
             until,
             placeType,
@@ -83,9 +89,9 @@ export default function CustomStayPage({ phase, previousPhase, placeType, onFini
         <Page header={isEditing ? 'Edit stay' : 'Add stay'} onBack={isEditing ? null : onBack} {...props}>
             <Panel>
                 <InputRow icon={PlaceTypeToIcon[placeType]} placeholder="Name" {...register('name', { required: true })}/>
-                {previousPhase?.stay?.price?.currency ? <InputRow icon={IoMdPricetag} type="number" placeholder={`Total price in ${previousPhase.stay.price.currency} (optional)`} {...register('price')}/> : null}
-                <InputRow icon={MdPeopleAlt} type="number" placeholder="Total guests (optional)" {...register('totalGuests')}/>
-                <LocationForm icon={MdLocationPin} defaultLocation={stay?.location} presets={locations} {...register('location', { required: true })}/>
+                {!isHome && previousPhase?.stay?.price?.currency ? <InputRow icon={IoMdPricetag} type="number" placeholder={`Total price in ${previousPhase.stay.price.currency} (optional)`} {...register('price')}/> : null}
+                {isHome ? null : <InputRow icon={MdPeopleAlt} type="number" placeholder="Total guests (optional)" {...register('totalGuests')}/>}
+                {isHome ? null : <LocationForm icon={MdLocationPin} defaultLocation={stay?.location} presets={locations} {...register('location', { required: true })}/>}
                 <DaysForm since={since} until={until} {...register('days', { required: true, minLength: 1 })}/>
             </Panel>
             <ModalPageButtons>

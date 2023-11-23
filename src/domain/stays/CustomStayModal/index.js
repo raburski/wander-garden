@@ -11,7 +11,7 @@ import UploadFromFriendPage from "./UploadFromFriendPage"
 
 const STAY_CATEGORY = {
     TRANSPORT: 'transport',
-    COMMON: 'common'
+    COMMON: 'common',
 }
 
 const WIDTH = 500
@@ -33,6 +33,7 @@ export default function CustomStayModal({ onClickAway, phase, previousPhase, sta
     const onExtendStay = () => setSelectedStayType(StayPlaceType.Extension)
     const onContactUs = () => { openDiscord(); cancel() }
     const onImportFromFriend = () => setUploadFromFriendConfirmed(true)
+    const onStayedAtHome = () => setSelectedStayType(StayPlaceType.Home)
 
     const onBackFromChoseStayType = () => setAddStayConfirmed(false)
     const onPlaceTypeSelect = type => setSelectedStayType(type)
@@ -51,6 +52,7 @@ export default function CustomStayModal({ onClickAway, phase, previousPhase, sta
                     onExtendStay={onExtendStay}
                     onContactUs={onContactUs}
                     onImportFromFriend={onImportFromFriend}
+                    onStayedAtHome={onStayedAtHome}
                 /> : null
             }
             {addStayConfirmed && !selectedStayType ? 
