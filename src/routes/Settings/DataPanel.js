@@ -44,6 +44,7 @@ function useUploadAllData() {
     const replaceAllTours = useReplaceAllTours()
     const replaceAllNotes = useReplaceAllNotes()
     const replaceAllCheckins = useReplaceAllCheckins()
+    const refresh = useRefresh()
 
     return async function uploadAllData() {
         const files = await uploadFile()
@@ -59,6 +60,7 @@ function useUploadAllData() {
             await replaceAllNotes(allData.notes)
             await replaceAllCheckins(allData.checkins)
             await replaceAllStays(allData.stays)
+            await refresh()
             toast.dismiss(toastId)
             toast.success('All uploaded!')
         } else {

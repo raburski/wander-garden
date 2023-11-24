@@ -77,11 +77,7 @@ export function useTrash(index) {
             if (clearStayData) {
                 clearStayData().then(() => refresh())
             } else {
-                clearSwarmData().then(() => {
-                    console.log('clear swarm refresh?')
-                    refresh()
-                    console.log('refreshed!')
-                })
+                clearSwarmData().then(() => refresh())
             }
         }
     }

@@ -189,7 +189,6 @@ export function StaysProvider({ children }) {
             const newStaysOfType = newStays.filter(stay => detectStayType(stay) === type)
             await setStays(type, newStaysOfType)
         }
-        await refresh()
     }
 
     const value = {

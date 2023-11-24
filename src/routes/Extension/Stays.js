@@ -3,16 +3,18 @@ import Panel from "components/Panel"
 import Logo from "./Logo"
 import ContentRow from "components/ContentRow"
 import toast from 'react-hot-toast'
-import { isSwarmData, useCheckins, useClearData } from 'domain/swarm'
+import { isSwarmData, useCheckins, useClearData, useReplaceAllCheckins } from 'domain/swarm'
 import { uploadFile } from 'files'
 import { useReplaceAllTitles } from 'domain/titles'
+import useRefresh from 'domain/refresh'
 
 function useUploadAndAddData() {
     const replaceAllStays = useReplaceAllStays()
     const replaceAllTitles = useReplaceAllTitles()
-    const [_, setCheckins] = useCheckins()
+    const replaceAllCheckins = useReplaceAllCheckins()
     const clearSwarmData = useClearData()
     const startFileImport = useStartFileImport()
+    const refresh = useRefresh()
 
     return async function uploadAllData() {
         const file = await uploadFile()
@@ -24,8 +26,10 @@ function useUploadAndAddData() {
         } else if (isSwarmData(allData.checkins) && isStayData(allData.stays)) {
             await clearSwarmData()
             await replaceAllTitles(allData.titles)
-            await setCheckins(allData.checkins)
+            await replaceAllCheckins(allData.checkins)
             await replaceAllStays(allData.stays)
+            // TODO: tours etc maybe?
+            await refresh()
             toast.success('All uploaded!')
         } else {
             alert('Data does not seem to be in any recognised format!')

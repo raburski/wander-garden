@@ -16,6 +16,7 @@ import { useClearData } from 'domain/swarm'
 import { useReplaceAllStays } from 'domain/stays'
 import { ImFileText2, ImMap2 } from 'react-icons/im'
 import { FiMenu } from 'react-icons/fi'
+import useRefresh from 'domain/refresh'
 
 const hideOnMediumBreakpointClassName = css`
 @media only screen and (min-width: 574px) and (max-width: 1024px) {
@@ -150,11 +151,12 @@ function SideMenu({ onLinkClick, ...props }) {
     const [_, setOnboardingFinished] = useOnboardingFinishedSetting()
     const clearSwarmData = useClearData()
     const replaceAllStays = useReplaceAllStays()
+    const refresh = useRefresh()
     async function onCloseDemo() {
         await clearSwarmData()
         await replaceAllStays([])
-        setRunningDemo(false)
-        // setOnboardingFinished(false)
+        await refresh()
+        await setRunningDemo(false)
     }
     return (
         <Container {...props}>

@@ -94,7 +94,7 @@ export function StatsProvider({ children }) {
         const trips = await getAllTrips()
 
         if (!trips || trips.length === 0) {
-            return await setStats(undefined)
+            return await setStats({})
         }
 
         const longestTrip = getLongestTrip(trips)
