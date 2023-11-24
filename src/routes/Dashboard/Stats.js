@@ -64,9 +64,9 @@ export default function Stats() {
     const navigate = useNavigate()
     const stats = useStats()
 
-    if (!stats) return null
+    if (!stats || Object.keys(stats).length === 0) return null
 
-    const mostTimeSpentCountry = countryFlagEmoji.get(stats.mostTimeSpentCountry)
+    const mostTimeSpentCountry = stats.mostTimeSpentCountry ? countryFlagEmoji.get(stats.mostTimeSpentCountry) : undefined
     console.log('stats', stats)
 
     const goToTrips = () => navigate('/timeline')
@@ -75,14 +75,14 @@ export default function Stats() {
     const goToMostVisitedTrips = () => navigate(`/timeline?cc=${stats.mostTimeSpentCountry}`)
     return (
         <Panel header="Stats" contentStyle={{flexDirection: 'row', flexWrap: 'wrap', padding: 6, justifyContent: 'space-evenly'}}>
-            <Stat icon={MdOutlineFlag} title="countries visited" value={stats.visitedCountries.length} onClick={openCountries}/>
-            <Stat icon={TbPlaneDeparture} title="different trips" value={stats.totalTrips} onClick={goToTrips}/>
-            <Stat icon={TbCalendar} title="total days away" value={stats.totalDaysAway}/>
-            <Stat icon={MdOutlineTimer} title="days on longest trip" value={stats.longestTripDays}/>
-            <Stat icon={MdHotel} title="different hotel stays" value={stats.totalDifferentHotels}/>
+            {stats.visitedCountries ? <Stat icon={MdOutlineFlag} title="countries visited" value={stats.visitedCountries.length} onClick={openCountries}/> :  null}
+            {stats.totalTrips ? <Stat icon={TbPlaneDeparture} title="different trips" value={stats.totalTrips} onClick={goToTrips}/> : null}
+            {stats.totalDaysAway ? <Stat icon={TbCalendar} title="total days away" value={stats.totalDaysAway}/> : null}
+            {stats.longestTripDays ? <Stat icon={MdOutlineTimer} title="days on longest trip" value={stats.longestTripDays}/> : null}
+            {stats.totalDifferentHotels ? <Stat icon={MdHotel} title="different hotel stays" value={stats.totalDifferentHotels}/> : null}
             {mostTimeSpentCountry ? <Stat icon={MdFavoriteBorder} title="most time spent" value={mostTimeSpentCountry.emoji} onClick={goToMostVisitedTrips}/> : null}
-            <Stat icon={TbCalendar} title="favourite travel season" value={stats.favouriteTravelSeason}/>
-            <Stat icon={TbWorld} title="favourite region" value="🏰"/>
+            {stats.favouriteTravelSeason ? <Stat icon={TbCalendar} title="favourite travel season" value={stats.favouriteTravelSeason}/> : null}
+            {stats.favouriteRegion ? <Stat icon={TbWorld} title="favourite region" value={stats.favouriteRegion}/> : null}
 
             <CountriesModal isOpen={isCountriesOpen} onClickAway={closeCountries}/>
         </Panel>

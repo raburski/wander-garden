@@ -93,12 +93,16 @@ export function StatsProvider({ children }) {
         const allStays = await getAllStays()
         const trips = await getAllTrips()
 
+        if (!trips || trips.length === 0) {
+            return await setStats(undefined)
+        }
+
         const longestTrip = getLongestTrip(trips)
 
         const newStats = {
             visitedCountries: getVisitedCountriesCodes(checkins, allStays),
             mostTimeSpentCountry: getMostTimeSpentCountryCode(trips),
-            totalTrips: trips.length,
+            totalTrips: trips?.length || 0,
             totalDaysAway: getTotalDaysAway(trips),
             longestTrip,
             longestTripDays: getTripDays(longestTrip),
