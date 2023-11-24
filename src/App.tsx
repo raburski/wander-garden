@@ -24,6 +24,7 @@ import { ExtensionProvider } from "domain/extension"
 import { ToursProvider } from "domain/tours"
 import { VersionProvider } from "domain/version"
 import { NotesProvider } from "domain/notes"
+import { StatsProvider } from "domain/stats"
  
 mapboxgl.accessToken = 'pk.eyJ1IjoicmFidXJza2kiLCJhIjoiR2ltZ1pkSSJ9.BKiZ33LQkwsLgyyrAw4EyQ';
 
@@ -71,6 +72,7 @@ function App() {
             <InstagramProvider>
               
                 <StaysProvider>
+                  <StatsProvider>
                   <VersionProvider>
                     <NotesProvider>
                   <AppContainer>
@@ -85,6 +87,7 @@ function App() {
                   </AppContainer>
                   </NotesProvider>
                   </VersionProvider>
+                  </StatsProvider>
                 </StaysProvider>
               
             </InstagramProvider>

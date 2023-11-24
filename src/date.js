@@ -6,6 +6,13 @@ export function seasonEmojiForDate(date) {
     return MONTH_TO_SEASON[month]
 }
 
+export function getSeasonEmojiForRange(_since, _until) {
+    const until = moment(_until).startOf('day')
+    const since = moment(_since).startOf('day')
+    const numberOfDays = until.diff(since, 'days')
+    return seasonEmojiForDate(since.add(numberOfDays/2, 'days'))
+}
+
 export function getDaysAndRangeText(_since, _until) {
     const until = moment(_until).startOf('day')
     const since = moment(_since).startOf('day')

@@ -9,6 +9,7 @@ const contentStyle = {
     flexWrap: 'wrap',
     maxWidth: 554,
     padding: 6,
+    justifyContent: 'space-evenly',
 }
 
 const smallContentStyle = {
@@ -16,6 +17,7 @@ const smallContentStyle = {
     flexWrap: 'wrap',
     maxWidth: 520,
     padding: 6,
+    justifyContent: 'space-evenly',
 }
 
 export default function Badges() {

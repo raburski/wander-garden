@@ -12,7 +12,7 @@ export function TripsProvider({ children }) {
 
     async function refresh() {
         const trips = await getTrips()
-        setTrips(trips, trips.map(t => t.id))
+        await setTrips(trips, trips.map(t => t.id))
     }
 
     const sortedTrips = [...trips].sort((a, b) => moment(b.since).diff(moment(a.since)))
@@ -41,4 +41,8 @@ export function useTrip(id) {
 export function useRefreshTrips() {
     const context = useContext(TripsContext)
     return context.refresh
+}
+
+export async function getAllTrips() {
+    return await tripsStorage.get()
 }

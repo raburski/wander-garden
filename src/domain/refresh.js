@@ -1,4 +1,5 @@
 import { useReplaceAllNotes } from "./notes"
+import { useRefreshStats } from "./stats"
 import { useReplaceAllStays } from "./stays"
 import { useClearData } from "./swarm"
 import { useReplaceAllTitles } from "./titles"
@@ -10,10 +11,12 @@ import toast from "react-hot-toast"
 export default function useRefresh() {
     const refreshTrips = useRefreshTrips()
     const refreshVisited = useRefreshVisited()
+    const refreshStats = useRefreshStats()
     return async function refresh() {
         const toastId = toast.loading('Refreshing your data...')
         await refreshVisited()
         await refreshTrips()
+        await refreshStats()
         toast.dismiss(toastId)
     }
 }

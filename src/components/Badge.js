@@ -1,5 +1,4 @@
 import { styled } from 'goober'
-import colors from '../colors'
 
 const BadgeContainerDefault = styled('div')`
     display: flex;

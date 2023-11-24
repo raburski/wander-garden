@@ -79,6 +79,11 @@ export const regionalBadgeRules = [
     },
 ]
 
+export function getRegionEmojiForCountry(cc) {
+    const lowerCC = cc.toLowerCase()
+    return regionalBadgeRules.find(rule => rule.oneOfCountry.includes(lowerCC))?.emoji
+}
+
 export function useRegionalBadges() {
     const visitedCountryCodes = useVisitedCountryCodes()
     return regionalBadgeRules.map(createBadgeVerifier(visitedCountryCodes))

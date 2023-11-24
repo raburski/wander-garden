@@ -12,42 +12,10 @@ import countryFlagEmoji from "country-flag-emoji"
 import { formattedLocation } from 'domain/location'
 import { useVisitedCountryCodes } from 'domain/visitedCountries'
 import Separator from 'components/Separator'
-import CountryModal from 'bindings/CountryModal'
-import { useState } from 'react'
 import { TbRefresh } from 'react-icons/tb'
 import SwarmSetupPanel from './SwarmSetupPanel'
+import Stats from './Stats'
 
-const Text = styled('p')`
-    display: flex;
-    margin: 0px;
-    padding: 8px;
-    padding-left: 14px;
-    margin-bottom: 2px;
-    font-size: 14px;
-    color: ${props => props.theme.text}
-`
-
-function NoData() {
-    return <Text>No data available...</Text>
-}
-
-function Countries() {
-    const [openedCountry, setOpenedCountry] = useState()
-    const onCountryClick = (cc) => setOpenedCountry(cc)
-    const onClickAway = (cc) => setOpenedCountry(undefined)
-    const countryCodes = useVisitedCountryCodes()
-
-    if (countryCodes.length <= 0) {
-        return null
-    }
-    const header = `You have visited ${countryCodes.length} countries`
-    return (
-        <Panel header={header}>
-            {countryCodes.length == 0 ? <NoData /> : countryCodes.map(cc => <CountryRow code={cc} key={cc} onClick={() => onCountryClick(cc)} />)}
-            <CountryModal countryCode={openedCountry} onClickAway={onClickAway}/>
-        </Panel>
-    )
-}
 
 const BigFlag = styled('div')`
     display: flex;
@@ -96,7 +64,7 @@ function AuthenticatedDashboard() {
         <Row>
             <Column style={{flex: 1}}>
                 {isAuthenticated ? <Current /> : <SwarmSetupPanel />}
-                <Countries />
+                <Stats />
             </Column>
             <Separator />
             <Column style={{flex: 1}}>
