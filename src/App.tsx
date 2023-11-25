@@ -40,8 +40,7 @@ const AppContainer = styled('div')`
   flex: 1;
   align-self: stretch;
   height: 100vh;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow: hidden;
 `
 
 const RoutesContainer = styled('div')`
@@ -102,7 +101,7 @@ function App() {
       </SettingsProvider>
       </MapProvider>
     </Router>
-  );
+  )
 }
 
 export default App;
