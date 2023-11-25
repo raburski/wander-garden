@@ -1,4 +1,6 @@
 import ImportModal from 'components/ImportModal'
+import useRefresh from 'domain/refresh'
+import { useCapturedToursDiff, useClearCapturedTours, useImportCapturedTours } from 'domain/tours'
 
 function tourToObject(tour) {
     return { id: tour.id, title: tour.title }
@@ -13,11 +15,21 @@ function toursDiffToDiff(diff) {
     }
 }
 
-export default function ImportToursModal({ diff, onCancel, onImportSelected }) {
+export default function ImportToursModal() {
+    const diff = useCapturedToursDiff()
+    const clearCapturedTours = useClearCapturedTours()
+    const importCapturedTours = useImportCapturedTours()
+    const refresh = useRefresh()
+
+    async function onImportSelected(selected) {
+        await importCapturedTours(selected)
+        await refresh()
+    }
+
     return (
         <ImportModal
             header="Import tours"
-            onCancel={onCancel}
+            onCancel={clearCapturedTours}
             onImportSelected={onImportSelected}
             diff={toursDiffToDiff(diff)}
         />

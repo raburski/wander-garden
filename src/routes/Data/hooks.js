@@ -2,7 +2,7 @@ import { downloadString, uploadFile } from 'files'
 import { useCheckins, useClearData as useClearSwarmData, isSwarmData, useShowUpdateModal, useIsAuthenticated } from 'domain/swarm'
 import toast from 'react-hot-toast'
 import { TITLES } from './consts'
-import { isStayData, isStayType, StayType, useClearStays, useShowCaptureStartModal, useStartFileImport, useStays } from 'domain/stays'
+import { isStayData, isStayType, StayType, useClearStaysType, useShowCaptureStartModal, useStartFileImport, useStays } from 'domain/stays'
 import useRefresh from 'domain/refresh'
 
 function getStayTypeForIndex(index) {
@@ -69,15 +69,17 @@ export function useUpload() {
 export function useTrash(index) {
     const stayType = getStayTypeForIndex(index)
     const refresh = useRefresh()
-    const clearStayData = useClearStays(stayType)
+    const clearStayData = useClearStaysType(stayType)
     const clearSwarmData = useClearSwarmData()
 
-    return () => {
+    return async function () {
         if (window.confirm(`Are you sure you want to delete all ${TITLES[index]} data?`) && window.confirm(`Are you REALLY sure you want to CLEAN IT?`)) {
             if (clearStayData) {
-                clearStayData().then(() => refresh())
+                await clearStayData()
+                await refresh()
             } else {
-                clearSwarmData().then(() => refresh())
+                await clearSwarmData()
+                await refresh()
             }
         }
     }

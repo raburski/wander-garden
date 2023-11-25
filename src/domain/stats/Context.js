@@ -51,7 +51,7 @@ function getLongestTrip(trips) {
         acc[trip.id] = getTripDays(trip)
         return acc
     }, {})
-    return [...trips].sort((a, b) => lengths[a.id] > lengths[b.id]).first()
+    return [...trips].sort((a, b) => lengths[b.id] - lengths[a.id]).first()
 }
 
 function getTotalDifferentHotels(stays) {

@@ -40,6 +40,6 @@ export function useSetTitle(id) {
 export function useReplaceAllTitles() {
     const context = useContext(TitlesContext)
     const [_, setTitles] = context.titles
-    return setTitles
+    return (titles = {}) => setTitles(titles)
 }
 

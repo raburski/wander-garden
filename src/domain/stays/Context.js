@@ -1,37 +1,23 @@
 import { createContext, useState, useContext, useEffect } from "react"
-import { StayTypeToOrigin, StayType, OriginToStayType, ALL_STAY_TYPES } from "./types"
+import { StayTypeToOrigin, StayType, OriginToStayType } from "./types"
 import { IndexedDBStorageAdapter, useSyncedStorage } from "storage"
 import moment from "moment"
 import { isStayData, isStayType } from "domain/stays"
-import ImportModal from "./ImportModal"
 import StartCaptureModal from "./StartCaptureModal"
 import { detectStayType, staysEqual } from "./stays"
-import useRefresh from "domain/refresh"
 import { useCaptured, useClearCaptured, useStartCapture } from "domain/extension"
 import { DataOrigin } from "type"
 import { getCaptureDiff } from "capture"
 
-export const agodaStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'agoda')
-export const airbnbStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'airbnb')
-export const bookingStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'booking')
-export const travalaStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'travala')
-export const customStaysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'custom')
+export const staysStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'stays')
 
-export function getStays(type) {
-    switch (type) {
-        case StayType.Agoda:
-            return agodaStaysStorage.get()
-        case StayType.Booking:
-            return bookingStaysStorage.get()
-        case StayType.Airbnb:
-            return airbnbStaysStorage.get()
-        case StayType.Travala:
-            return travalaStaysStorage.get()
-        case StayType.Custom:
-            return customStaysStorage.get()
-        default:
-            throw new Error('No stays of this type!')
-    }
+export async function getAllStays() {
+    return staysStorage.get()
+}
+
+export async function getStaysType(type) {
+    const stays = await staysStorage.get()
+    return stays.filter(stay => detectStayType(stay) === type)
 }
 
 export const StaysContext = createContext({})
@@ -46,7 +32,6 @@ function createIDForCustomStay(stay) {
     return `custom:${stay.location.cc}:${stay.since}-${stay.until}`
 }
 
-
 export function StaysProvider({ children }) {
     const [selectedCaptureStayType, setSelectedCaptureStayType] = useState()
     const [capturedStays, setCapturedStays] = useState()
@@ -56,30 +41,7 @@ export function StaysProvider({ children }) {
     const captured = useCaptured()
     const clearCaptured = useClearCaptured()
 
-    const bookingStays = useSyncedStorage(bookingStaysStorage)
-    const airbnbStays = useSyncedStorage(airbnbStaysStorage)
-    const agodaStays = useSyncedStorage(agodaStaysStorage)
-    const travalaStays = useSyncedStorage(travalaStaysStorage)
-    const customStays = useSyncedStorage(customStaysStorage)
-
-    function setStays(type, stays, keysToReplace = []) {
-        switch (type) {
-            case StayType.Agoda:
-                return agodaStays[1](stays, keysToReplace)
-            case StayType.Booking:
-                return bookingStays[1](stays, keysToReplace)
-            case StayType.Airbnb:
-                return airbnbStays[1](stays, keysToReplace)
-            case StayType.Travala:
-                return travalaStays[1](stays, keysToReplace)
-            case StayType.Custom:
-                return customStays[1](stays, keysToReplace)
-            default:
-                throw new Error('No stays of this type!')
-        }
-    }
-
-    const refresh = useRefresh()
+    const [stays, setStays] = useSyncedStorage(staysStorage)
 
     useEffect(() => {
         if (!captured) return 
@@ -87,7 +49,7 @@ export function StaysProvider({ children }) {
         const subject = captured.subject
         const stayType = OriginToStayType[subject]
         if (stayType) {
-            getStays(stayType).then((stays) => {
+            getStaysType(stayType).then((stays) => {
                 setCapturedStays({ 
                     stayType,
                     diff: getCaptureDiff(captured.objects, stays, staysEqual),
@@ -106,7 +68,7 @@ export function StaysProvider({ children }) {
         const subject = StayTypeToOrigin[stayType]
         const props = {}
         if (captureNewOnly) {
-            const stays = await getStays(stayType)
+            const stays = await getStaysType(stayType)
             props.lastCapturedObjectID = getLatestStay(stays)?.id
         }
         extensionStartCapture(subject, props)
@@ -118,11 +80,8 @@ export function StaysProvider({ children }) {
             ...capturedStays.diff.new.filter(stay => ids.includes(stay.id)),
             ...capturedStays.diff.modified.filter(stay => ids.includes(stay.id)),
         ].map(stay => ({ ...stay, origin: capturedStays.origin }))
-        const stayType = capturedStays.stayType
-        const currentStays = await getStays(stayType)
-        const finalStays = [ ...currentStays.filter(stay => !ids.includes(stay.id)), ...newStays ]
-        await setStays(stayType, finalStays, modifiedIds)
-        await refresh()
+        const finalStays = [ ...stays.filter(stay => !ids.includes(stay.id)), ...newStays ]
+        await setStays(finalStays, modifiedIds)
         await clearCapturedStays()
     }
 
@@ -131,31 +90,28 @@ export function StaysProvider({ children }) {
             .map(stay => ({
                 ...stay,
                 id: stay.id || createIDForCustomStay(stay),
+                type: StayType.Custom,
                 origin: DataOrigin.UserInput,
             }))
             .filter(isStayType)
     }
 
-    async function addCustomStays(stays = []) {
-        const staysToAdd = createCustomStays(stays)
-        if (staysToAdd.length !== stays.length) {
+    async function addCustomStays(customStays = []) {
+        const staysToAdd = createCustomStays(customStays)
+        if (staysToAdd.length !== customStays.length) {
             return console.log('Custom stay data corrupted!')
         }
-        const currentStays = customStays[0]
-        const finalStays = [...currentStays, ...staysToAdd]
-        await setStays(StayType.Custom, finalStays)
-        await refresh()
+        const finalStays = [...stays, ...staysToAdd]
+        await setStays(finalStays)
     }
 
-    async function replaceCustomStay(stayID, stays = []) {
-        const staysToAdd = createCustomStays(stays)
-        if (staysToAdd.length !== stays.length) {
+    async function replaceCustomStay(stayID, customStays = []) {
+        const staysToAdd = createCustomStays(customStays)
+        if (staysToAdd.length !== customStays.length) {
             return console.log('Custom stay data corrupted!')
         }
-        const currentStays = customStays[0]
-        const finalStays = [...currentStays.filter(stay => stay.id !== stayID), ...staysToAdd]
-        await setStays(StayType.Custom, finalStays)
-        await refresh()
+        const finalStays = [...stays.filter(stay => stay.id !== stayID), ...staysToAdd]
+        await setStays(finalStays, [stayID])
     }
 
     async function startFileImport(stayOrStays) {
@@ -175,7 +131,7 @@ export function StaysProvider({ children }) {
             throw Error('All stays should have valid type.')
         }
 
-        const localStays = await getStays(stayType)
+        const localStays = await getStaysType(stayType)
         setCapturedStays({ 
             stayType,
             diff: getCaptureDiff(stays, localStays, staysEqual),
@@ -185,10 +141,13 @@ export function StaysProvider({ children }) {
 
     async function replaceAllStays(_newStays = []) {
         const newStays = _newStays.filter(isStayType)
-        for(let type of ALL_STAY_TYPES) {
-            const newStaysOfType = newStays.filter(stay => detectStayType(stay) === type)
-            await setStays(type, newStaysOfType)
-        }
+        await setStays(newStays)
+    }
+
+    async function clearStaysType(type) {
+        if (!type) return undefined
+        const nonTypeStays = stays.filter(stay => detectStayType(stay) !== type)
+        await setStays(nonTypeStays)
     }
 
     const value = {
@@ -201,19 +160,13 @@ export function StaysProvider({ children }) {
         addCustomStays,
         replaceCustomStay,
         replaceAllStays,
-        stays: {
-            [StayType.Booking]: bookingStays,
-            [StayType.Agoda]: agodaStays,
-            [StayType.Airbnb]: airbnbStays,
-            [StayType.Travala]: travalaStays,
-            [StayType.Custom]: customStays,
-        }
+        stays,
+        clearStaysType,
     }
 
     return (
         <StaysContext.Provider value={value}>
             {children}
-            <ImportModal />
             <StartCaptureModal
                 stayType={selectedCaptureStayType}
                 onCancel={() => setSelectedCaptureStayType(undefined)}
@@ -267,21 +220,20 @@ export function useReplaceCustomStay() {
 export function useStays(type) {
     const context = useContext(StaysContext)
     if (!type) return undefined
-    return context.stays[type][0]
+    return context.stays.filter(stay => detectStayType(stay) === type)
 }
 
-export function useClearStays(type) {
+export function useAllStays() {
     const context = useContext(StaysContext)
-    if (!type) return undefined
-    const [_, setStays] = context.stays[type]
-    if (!setStays) return undefined
+    return context.stays
+}
 
-    return async function clearData() {
-        await setStays([])
-    }
+export function useClearStaysType(type) {
+    const context = useContext(StaysContext)
+    return () => context.clearStaysType(type)
 }
 
 export function useReplaceAllStays() {
     const context = useContext(StaysContext)
-    return context.replaceAllStays
+    return (stays = []) => context.replaceAllStays(stays)
 }

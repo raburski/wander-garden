@@ -14,6 +14,7 @@ import LocationForm from "./LocationForm"
 import DaysForm from "./DaysForm"
 import { getDateRanges } from "date"
 import { DEFAULT_HOME_LOCATION } from "../stays"
+import useRefresh from "domain/refresh"
 
 function getPresetLocations(phase) {
     if (!phase.stay) return []
@@ -56,6 +57,7 @@ export default function CustomStayPage({ phase, previousPhase, placeType, onFini
     const until = phase?.until || stay?.until
 
     const addCustomStays = useAddCustomStays()
+    const refresh = useRefresh()
     const replaceCustomStay = useReplaceCustomStay()
     const locations = phase ? getPresetLocations(phase) : []
 
@@ -80,6 +82,7 @@ export default function CustomStayPage({ phase, previousPhase, placeType, onFini
         } else {
             await addCustomStays(stays)
         }
+        await refresh()
         await onFinished()
     }
 

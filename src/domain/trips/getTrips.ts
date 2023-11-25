@@ -210,6 +210,5 @@ export default async function getTrips(): Promise<Trip[]> {
     // Sorted: oldest to newest
     const sortedStays = [...stays].sort((a: Stay, b: Stay) => moment(a.since).diff(moment(b.since)))
     const trips = arrayQueryReplace(groupStays(checkins, tours), sortedStays)
-    console.log(trips)
     return trips
 }

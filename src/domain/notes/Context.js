@@ -72,5 +72,5 @@ export function useEditSubjectNote() {
 
 export function useReplaceAllNotes() {
     const context = useContext(NotesContext)
-    return context.setNotes
+    return (notes = []) => context.setNotes(notes)
 }

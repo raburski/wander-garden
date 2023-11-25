@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo } from "react"
+import { createContext, useContext, useMemo, useState } from "react"
 import { LocalStorageAdapter, IndexedDBStorageAdapter, jsonTransforms, useSyncedStorage } from 'storage'
 import { createTimelineEvents } from "./events"
 import { onlyUnique } from "array"
@@ -14,10 +14,10 @@ export const TimelineContext = createContext({})
 const localStorageVisited = new LocalStorageAdapter('timeline.visited', '[]', jsonTransforms)
 const localStorageTitles = new LocalStorageAdapter('timeline.titles', '{}', jsonTransforms)
 
-const timelineGroupsStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'timeline-groups')
+// const timelineGroupsStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'timeline-groups')
 
 export function TimelineProvider({ children }) {
-    const [groups, setGroups] = useSyncedStorage(timelineGroupsStorage)
+    const [groups, setGroups] = useState()//useSyncedStorage(timelineGroupsStorage)
     const [visitedCountryCodes, setVisitedCountryCodes] = useSyncedStorage(localStorageVisited)
     const [titles, setTitles] = useSyncedStorage(localStorageTitles)
 

@@ -13,10 +13,12 @@ import InputRow from "components/InputRow"
 import { IoMdPricetag } from "react-icons/io"
 import DaysForm from "./DaysForm"
 import { getDateRanges } from "date"
+import useRefresh from "domain/refresh"
 
 export default function ExtendStayPage({ phase, previousPhase, onFinished, ...props }) {    
     const { register, handleSubmit, formState } = useForm({ defaultValues: { totalGuests: previousPhase?.stay?.totalGuests } })
     const addCustomStays = useAddCustomStays()
+    const refresh = useRefresh()
 
     async function submitForm(state) {
         if (!state.days || state.days.length <= 0) return
@@ -32,6 +34,7 @@ export default function ExtendStayPage({ phase, previousPhase, onFinished, ...pr
             totalGuests: !!state.totalGuests ? parseInt(state.totalGuests) : undefined
         }))
         await addCustomStays(stays)
+        await refresh()
         await onFinished()
     }
 

@@ -40,7 +40,7 @@ export function useCheckins() {
 
 export function useReplaceAllCheckins() {
     const context = useContext(SwarmContext)
-    return context.checkins[1]
+    return (checkins = []) => context.checkins[1](checkins)
 }
 
 export function useLastUpdated() {

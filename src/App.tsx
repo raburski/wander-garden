@@ -8,7 +8,6 @@ import { Toaster } from 'react-hot-toast'
 import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill"
 import { SwarmProvider } from 'domain/swarm'
 import { HomesProvider } from "domain/homes"
-import { TimelineProvider } from "domain/timeline"
 import { StaysProvider } from "domain/stays"
 import { ThemeProvider, useThemeColors } from "domain/theme"
 import { MapProvider } from "domain/map"
@@ -24,6 +23,7 @@ import { ToursProvider } from "domain/tours"
 import { VersionProvider } from "domain/version"
 import { NotesProvider } from "domain/notes"
 import { StatsProvider } from "domain/stats"
+import ModalsProvider from "domain/modals"
  
 mapboxgl.accessToken = 'pk.eyJ1IjoicmFidXJza2kiLCJhIjoiR2ltZ1pkSSJ9.BKiZ33LQkwsLgyyrAw4EyQ';
 
@@ -64,7 +64,6 @@ function App() {
         <HomesProvider>
           
           <TripsProvider>
-        <TimelineProvider>
         <ToursProvider>
           <SwarmProvider>
             <InstagramProvider>
@@ -75,12 +74,15 @@ function App() {
                     <NotesProvider>
                   <AppContainer>
                       <Analytics />
+                      <ModalsProvider>
                       <OnboardingProvider>
+                      
                         <SideBar />
                         <RoutesContainer id="routes-container">
                           <Routes />
                         </RoutesContainer>
                       </OnboardingProvider>
+                      </ModalsProvider>
                     <Toaster />
                   </AppContainer>
                   </NotesProvider>

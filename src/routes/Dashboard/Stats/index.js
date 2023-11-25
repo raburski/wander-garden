@@ -40,13 +40,20 @@ const Icon = styled('div')`
 `
 
 const Value = styled('div')`
+    display: flex;
+    flex-basis: 40px;
+    min-width: 40px;
     font-size: 32px;
     margin: 4px;
-    margin-right: 8px;
+    padding-right: 4px;
     font-family: Primary;
+    justify-content: center;
+
 `
 
 const Title = styled('div')`
+    display: flex;
+    flex-wrap: wrap;
     font-size: 10px;
 `
 

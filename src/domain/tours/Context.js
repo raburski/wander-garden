@@ -5,8 +5,6 @@ import StartTourCaptureModal from "./StartCaptureModal"
 import { useCaptured, useClearCaptured, useStartCapture } from "domain/extension"
 import { DataOrigin } from "type"
 import { getCaptureDiff } from "capture"
-import ImportModal from "./ImportModal"
-import useRefresh from "domain/refresh"
 import moment from "moment"
 
 export const ToursContext = createContext({})
@@ -30,7 +28,6 @@ export function ToursProvider({ children }) {
     const extensionStartCapture = useStartCapture()
     const captured = useCaptured()
     const clearCaptured = useClearCaptured()
-    const refresh = useRefresh()
 
     async function startCapture(tourType, captureNewOnly) {
         const subject = TourTypeToOrigin[tourType]
@@ -57,7 +54,7 @@ export function ToursProvider({ children }) {
 
     async function clearCapturedTours() {
         setCapturedTours(undefined)
-        clearCaptured()
+        await clearCaptured()
     }
 
     async function importCapturedTours(ids) {
@@ -69,7 +66,6 @@ export function ToursProvider({ children }) {
         ].map(tour => ({ ...tour, tourType, origin: capturedTours.origin }))
         const finalTours = [ ...tours.filter(tour => !ids.includes(tour.id)), ...newTours ]
         await setTours(finalTours, modifiedIds)
-        await refresh()
         await clearCapturedTours()
     }
 
@@ -78,6 +74,10 @@ export function ToursProvider({ children }) {
         setTours,
         showCaptureStartModal: (tourType) => setSelectedCaptureTourType(tourType),
         startCapture,
+
+        capturedTours,
+        importCapturedTours,
+        clearCapturedTours,
     }
 
     return (
@@ -86,11 +86,6 @@ export function ToursProvider({ children }) {
             <StartTourCaptureModal
                 tourType={selectedCaptureTourType}
                 onCancel={() => setSelectedCaptureTourType(undefined)}
-            />
-            <ImportModal
-                diff={capturedTours?.diff}
-                onCancel={clearCapturedTours}
-                onImportSelected={importCapturedTours}
             />
         </ToursContext.Provider>
     )
@@ -120,5 +115,20 @@ export function useCaptureTourType() {
 
 export function useReplaceAllTours() {
     const context = useContext(ToursContext)
-    return context.setTours
+    return (tours = []) => context.setTours(tours)
+}
+
+export function useImportCapturedTours() {
+    const context = useContext(ToursContext)
+    return context.importCapturedTours
+}
+
+export function useClearCapturedTours() {
+    const context = useContext(ToursContext)
+    return context.clearCapturedTours
+}
+
+export function useCapturedToursDiff() {
+    const context = useContext(ToursContext)
+    return context.capturedTours?.diff
 }
