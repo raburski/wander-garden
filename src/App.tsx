@@ -93,7 +93,6 @@ function App() {
             </InstagramProvider>
           </SwarmProvider>
           </ToursProvider>
-          </TimelineProvider>
           </TripsProvider>
           
           </HomesProvider>
