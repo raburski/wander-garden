@@ -5,16 +5,13 @@ import { useClearData } from "./swarm"
 import { useReplaceAllTitles } from "./titles"
 import { useReplaceAllTours } from "./tours"
 import { useRefreshTrips } from "./trips"
-import { useRefreshVisited } from "./visitedCountries"
 import toast from "react-hot-toast"
 
 export default function useRefresh() {
     const refreshTrips = useRefreshTrips()
-    const refreshVisited = useRefreshVisited()
     const refreshStats = useRefreshStats()
     return async function refresh() {
         const toastId = toast.loading('Refreshing your data...')
-        await refreshVisited()
         await refreshTrips()
         await refreshStats()
         toast.dismiss(toastId)

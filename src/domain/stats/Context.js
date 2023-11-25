@@ -2,7 +2,7 @@ import { onlyUnique } from "array"
 import countryFlagEmoji from "country-flag-emoji"
 import { SEASON, SEASON_TO_EMOJI, getDaysBetween, seasonForDate } from "date"
 import { getRegionForCountry } from "domain/badges"
-import { getAllStays } from "domain/stays"
+import { StayPlaceType, StayType, getAllStays } from "domain/stays"
 import { getAllCheckins } from "domain/swarm"
 import { onlyNonTransportation } from "domain/swarm/categories"
 import { getAllTrips } from "domain/trips"
@@ -56,6 +56,7 @@ function getLongestTrip(trips) {
 
 function getTotalDifferentHotels(stays) {
     return stays
+        .filter(stay => stay.placeType !== StayPlaceType.Home)
         .map(stay => stay.accomodation?.name)
         .filter(Boolean)
         .filter(onlyUnique)
@@ -172,5 +173,10 @@ export function useStats() {
 export function useRefreshStats() {
     const context = useContext(StatsContext)
     return context.refresh
+}
+
+export function useVisitedCountryCodes() {
+    const context = useContext(StatsContext)
+    return context.stats?.visitedCountries || []
 }
 

@@ -70,11 +70,6 @@ export function useTimelineGroup(id) {
     return groups.find(g => g.id === id)
 }
 
-export function useVisitedCountryCodes() {
-    const context = useContext(TimelineContext)
-    return context.visitedCountryCodes
-}
-
 export function useTitle(id) {
     const context = useContext(TimelineContext)
     const [titles] = context.titles

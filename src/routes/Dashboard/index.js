@@ -10,7 +10,7 @@ import PinButton from "components/PinButton"
 
 import countryFlagEmoji from "country-flag-emoji"
 import { formattedLocation } from 'domain/location'
-import { useVisitedCountryCodes } from 'domain/visitedCountries'
+import { useVisitedCountryCodes } from 'domain/stats'
 import Separator from 'components/Separator'
 import { TbRefresh } from 'react-icons/tb'
 import SwarmSetupPanel from './SwarmSetupPanel'

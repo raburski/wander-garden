@@ -1,4 +1,4 @@
-import { useVisitedCountryCodes } from "domain/visitedCountries"
+import { useVisitedCountryCodes } from "domain/stats"
 import createBadgeVerifier from "./verifier"
 
 export const regionalBadgeRules = [

@@ -19,7 +19,6 @@ import mapboxgl from 'mapbox-gl'
 import { InstagramProvider } from "domain/instagram"
 import { TripsProvider } from "domain/trips"
 import { TitlesProvider } from "domain/titles"
-import { VisitedCountriesProvider } from "domain/visitedCountries"
 import { ExtensionProvider } from "domain/extension"
 import { ToursProvider } from "domain/tours"
 import { VersionProvider } from "domain/version"
@@ -65,7 +64,6 @@ function App() {
         <HomesProvider>
           
           <TripsProvider>
-          <VisitedCountriesProvider>
         <TimelineProvider>
         <ToursProvider>
           <SwarmProvider>
@@ -94,7 +92,6 @@ function App() {
           </SwarmProvider>
           </ToursProvider>
           </TimelineProvider>
-          </VisitedCountriesProvider>
           </TripsProvider>
           
           </HomesProvider>

@@ -4,7 +4,7 @@ import { getDaysAndRangeText } from 'date'
 import Page from "components/Page"
 import { titleFromLocationHighlights, } from 'domain/timeline/groups'
 
-import { useVisitedCountryCodes } from "domain/visitedCountries"
+import { useVisitedCountryCodes } from "domain/stats"
 
 import NoTimelineContent from './NoTimelineContent'
 import FiltersPanel from './FiltersPanel'

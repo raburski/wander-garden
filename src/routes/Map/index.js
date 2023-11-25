@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Page from 'components/Page'
 import Panel from 'components/Panel'
-import { useVisitedCountryCodes } from 'domain/visitedCountries'
+import { useVisitedCountryCodes } from 'domain/stats'
 import MapSVG from './map.jsx'
 import { useThemeColors } from 'domain/theme'
 import getStyles from './styles'

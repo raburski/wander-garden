@@ -2,7 +2,7 @@ import CountryModal from "bindings/CountryModal"
 import ModalPage from "components/ModalPage"
 import CountryRow from 'components/CountryRow'
 import Panel from "components/Panel"
-import { useVisitedCountryCodes } from "domain/visitedCountries"
+import { useVisitedCountryCodes } from "domain/stats"
 import { useState } from "react"
 
 export function CountriesModal({ ...props }) {
