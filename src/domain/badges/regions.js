@@ -79,9 +79,9 @@ export const regionalBadgeRules = [
     },
 ]
 
-export function getRegionEmojiForCountry(cc) {
+export function getRegionForCountry(cc) {
     const lowerCC = cc.toLowerCase()
-    return regionalBadgeRules.find(rule => rule.oneOfCountry.includes(lowerCC))?.emoji
+    return regionalBadgeRules.find(rule => rule.oneOfCountry.includes(lowerCC))
 }
 
 export function useRegionalBadges() {

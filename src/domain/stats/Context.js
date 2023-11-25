@@ -1,6 +1,7 @@
 import { onlyUnique } from "array"
-import { getSeasonEmojiForRange } from "date"
-import { getRegionEmojiForCountry } from "domain/badges"
+import countryFlagEmoji from "country-flag-emoji"
+import { SEASON, SEASON_TO_EMOJI, getDaysBetween, seasonForDate } from "date"
+import { getRegionForCountry } from "domain/badges"
 import { getAllStays } from "domain/stays"
 import { getAllCheckins } from "domain/swarm"
 import { onlyNonTransportation } from "domain/swarm/categories"
@@ -15,6 +16,19 @@ const localStorageStats = new LocalStorageAdapter('stats', '{}', jsonTransforms)
 
 function getTripDays(trip) {
     return moment(trip.until).diff(moment(trip.since), 'days')
+}
+
+function countryCodeFromPhase(phase) {
+    const stayCC = phase.stay?.location?.cc
+    if (stayCC) return stayCC.toLowerCase()
+
+    const checkinsCC = phase.events
+        .map(e => e.checkin?.venue?.location?.cc)
+        .filter(Boolean)
+        .filter(onlyUnique)
+    if (checkinsCC.length === 1) return checkinsCC.first().toLowerCase()
+
+    return undefined
 }
 
 function getVisitedCountriesCodes(checkins, allStays) {
@@ -48,41 +62,66 @@ function getTotalDifferentHotels(stays) {
         .length
 }
 
-function getMostTimeSpentCountryCode(trips) {
-    const countryDays = trips
+function getFavouriteCountries(trips) {
+    const countries = trips
         .flatMap(trip => trip.phases)
         .reduce((acc, phase) => {
-            const countryCode = phase.stay?.location?.cc
+            const countryCode = countryCodeFromPhase(phase)
+            const countryName = phase.stay?.location?.country
             if (!countryCode) return acc
-            acc[countryCode] = (acc[countryCode] || 0) + getTripDays(phase)
+            const country = acc.find(a => a.code === countryCode)
+            if (country) {
+                country.days = country.days + getTripDays(phase)
+            } else {
+                const emoji = countryFlagEmoji.get(countryCode).emoji
+                acc.push({ code: countryCode, emoji, days: getTripDays(phase), name: countryName })
+            }
             return acc
-        }, {})
-    return Object.keys(countryDays).sort((a, b) => countryDays[a] > countryDays[b]).first()
+        }, [])
+    return countries.sort((a, b) => b.days - a.days)
 }
 
-function getFavouriteTravelSeason(trips) {
-    const seasonDays = trips
+function getFavouriteSeasons(trips) {
+    const seasons = {
+        [SEASON.SPRING]: { name: SEASON.SPRING, emoji: SEASON_TO_EMOJI[SEASON.SPRING], days: 0 },
+        [SEASON.SUMMER]: { name: SEASON.SUMMER, emoji: SEASON_TO_EMOJI[SEASON.SUMMER], days: 0 },
+        [SEASON.AUTUMN]: { name: SEASON.AUTUMN, emoji: SEASON_TO_EMOJI[SEASON.AUTUMN], days: 0 },
+        [SEASON.WINTER]: { name: SEASON.WINTER, emoji: SEASON_TO_EMOJI[SEASON.WINTER], days: 0 },
+    }
+
+    trips
         .flatMap(trip => trip.phases)
-        .reduce((acc, phase) => {
-            const emoji = getSeasonEmojiForRange(phase.since, phase.until)
-            acc[emoji] = (acc[emoji] || 0) + getTripDays(phase)
-            return acc
-        }, {})
-    return Object.keys(seasonDays).sort((a, b) => seasonDays[a] > seasonDays[b]).first()
+        .flatMap(phase => getDaysBetween(phase.since, phase.until))
+        .filter(onlyUnique)
+        .forEach(date => {
+            const season = seasonForDate(date)
+            seasons[season].days = seasons[season].days + 1
+        })
+    
+    return Object.values(seasons).sort((a, b) => b.days - a.days)
 }
 
-function getFavouriteRegion(trips) {
-    const regionDays = trips
+function getFavouriteRegions(trips) {
+    const regions = trips
         .flatMap(trip => trip.phases)
         .reduce((acc, phase) => {
-            const countryCode = phase.stay?.location?.cc
+            const countryCode = countryCodeFromPhase(phase)
             if (!countryCode) return acc
 
-            const emoji = getRegionEmojiForCountry(countryCode)
-            acc[emoji] = (acc[emoji] || 0) + getTripDays(phase)
+            const days = getTripDays(phase)
+            const region = getRegionForCountry(countryCode)
+            if (!region) return acc
+
+            const object = acc.find(o => o.emoji === region.emoji)
+            if (object) {
+                object.days = object.days + days
+            } else {
+                acc.push({ emoji: region.emoji, name: region.name, days })
+            }
             return acc
-        }, {})
-    return Object.keys(regionDays).sort((a, b) => regionDays[a] > regionDays[b]).first()
+        }, [])
+
+    return regions.sort((a, b) => b.days - a.days)
 }
 
 export function StatsProvider({ children }) {
@@ -101,14 +140,14 @@ export function StatsProvider({ children }) {
 
         const newStats = {
             visitedCountries: getVisitedCountriesCodes(checkins, allStays),
-            mostTimeSpentCountry: getMostTimeSpentCountryCode(trips),
             totalTrips: trips?.length || 0,
             totalDaysAway: getTotalDaysAway(trips),
             longestTrip,
             longestTripDays: getTripDays(longestTrip),
             totalDifferentHotels: getTotalDifferentHotels(allStays),
-            favouriteTravelSeason: getFavouriteTravelSeason(trips),
-            favouriteRegion: getFavouriteRegion(trips),
+            favouriteSeasons: getFavouriteSeasons(trips),
+            favouriteRegions: getFavouriteRegions(trips),
+            favouriteCountries: getFavouriteCountries(trips),
         }
         await setStats(newStats)
     }

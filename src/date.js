@@ -1,16 +1,53 @@
 import moment from 'moment'
 
-const MONTH_TO_SEASON = ['❄️', '❄️', '🌸', '🌸', '🌸', '☀️', '☀️', '☀️', '🍁', '🍁', '🍁', '❄️']
+export const SEASON = {
+  SPRING: 'Spring',
+  SUMMER: 'Summer',
+  AUTUMN: 'Autumn',
+  WINTER: 'Winter'
+}
+
+export const SEASON_TO_EMOJI = {
+  [SEASON.SPRING]: '🌸',
+  [SEASON.SUMMER]: '☀️',
+  [SEASON.AUTUMN]: '🍁',
+  [SEASON.WINTER]: '❄️',
+}
+
+const MONTH_TO_SEASON = [
+  SEASON.WINTER,
+  SEASON.WINTER,
+  SEASON.SPRING,
+  SEASON.SPRING,
+  SEASON.SPRING,
+  SEASON.SUMMER,
+  SEASON.SUMMER,
+  SEASON.SUMMER,
+  SEASON.AUTUMN,
+  SEASON.AUTUMN,
+  SEASON.AUTUMN,
+  SEASON.WINTER,
+]
+
+export function seasonForDate(_date) {
+  const date = typeof _date === 'string' ? moment(_date) : _date
+  const month = date.get('month') // index from 0
+  return MONTH_TO_SEASON[month]
+}
+
 export function seasonEmojiForDate(date) {
-    const month = date.get('month') // index from 0
-    return MONTH_TO_SEASON[month]
+    return SEASON_TO_EMOJI[seasonForDate(date)]
+}
+
+export function getSeasonForRange(_since, _until) {
+  const until = moment(_until).startOf('day')
+  const since = moment(_since).startOf('day')
+  const numberOfDays = until.diff(since, 'days')
+  return seasonForDate(since.add(numberOfDays/2, 'days'))
 }
 
 export function getSeasonEmojiForRange(_since, _until) {
-    const until = moment(_until).startOf('day')
-    const since = moment(_since).startOf('day')
-    const numberOfDays = until.diff(since, 'days')
-    return seasonEmojiForDate(since.add(numberOfDays/2, 'days'))
+    return SEASON_TO_EMOJI[getSeasonForRange(_since, _until)]
 }
 
 export function getDaysAndRangeText(_since, _until) {
@@ -39,6 +76,17 @@ export function getDaysFromRange(since, until) {
 
 export function isDateBetween(date, start, end) {
   return date.isSameOrAfter(start, 'day') && date.isSameOrBefore(end, 'day')
+}
+
+export function getDaysBetween(since, until) {
+  const untilDate = moment(until).startOf('day')
+  const currentDate = moment(since).startOf('day')
+  const days = [currentDate.format()]
+  while (currentDate.isBefore(untilDate)) {
+    currentDate.add(1, 'day')
+    days.push(currentDate.format())
+  }
+  return days
 }
 
 export function getDateRanges(dates) {
