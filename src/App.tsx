@@ -24,15 +24,11 @@ import { VersionProvider } from "domain/version"
 import { NotesProvider } from "domain/notes"
 import { StatsProvider } from "domain/stats"
 import ModalsProvider from "domain/modals"
- 
-mapboxgl.accessToken = 'pk.eyJ1IjoicmFidXJza2kiLCJhIjoiR2ltZ1pkSSJ9.BKiZ33LQkwsLgyyrAw4EyQ';
 
 setupGoober(React.createElement, undefined, useThemeColors)
 if (/windows/i.test(navigator.userAgent)) {
   polyfillCountryFlagEmojis()
-  document.body.classList.add('windows-flags')
 }
-
 
 const AppContainer = styled('div')`
   display: flex;

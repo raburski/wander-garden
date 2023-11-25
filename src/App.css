@@ -14,10 +14,6 @@
   src: url(../public/fonts/Geomatrix.ttf);
 }
 
-.windows-flags {
-  font-family: "Twemoji Country Flags";
-}
-
 body {
   background-color: white;
 }

@@ -7,7 +7,7 @@ export function RegionsModal({ favouriteRegions, ...props }) {
     return (
         <ModalPage header="Favourite regions" {...props}>
             <Panel>
-                {favouriteRegions?.map(region => <EmojiRow emoji={region.emoji} value={region.name} right={`${region.days} days`}/>)}
+                {favouriteRegions?.map(region => <EmojiRow emoji={region.emoji} key={region.name} value={region.name} right={`${region.days} days`}/>)}
             </Panel>
         </ModalPage>
     )

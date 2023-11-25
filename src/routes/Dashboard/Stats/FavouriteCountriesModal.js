@@ -13,6 +13,7 @@ export function FavouriteCountriesModal({ favouriteCountries, ...props }) {
                     <EmojiRow
                         emoji={country.emoji}
                         value={country.name}
+                        key={country.name}
                         right={`${country.days} days`}
                         onClick={() => navigate(`/timeline?cc=${country.code}`)}
                     />
