@@ -38,7 +38,7 @@ function getFormDefaultValues(previousPhase, stay, isHome) {
         return { totalGuests: previousPhase?.stay?.totalGuests, name: isHome ? HOME_NAME : undefined }
     } else if (stay) {
         return {
-            name: isHome ? stay.accomodation.name : HOME_NAME,
+            name: (stay.accomodation.name || !isHome) ? stay.accomodation.name : HOME_NAME,
             location: stay.location,
             totalGuests: stay.totalGuests
         }

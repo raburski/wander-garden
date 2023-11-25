@@ -19,7 +19,7 @@ import TextField from 'components/TextField'
 import { useDownload, useCapture, useTrash, useUpload } from "./hooks"
 import { TITLES } from './consts'
 import SquareImage from "components/SquareImage"
-import { StayLogoURL, StayType, getStayIcon, useShowCaptureStartModal, useStays } from "domain/stays"
+import { StayLogoURL, StayPlaceType, StayType, getStayIcon, useShowCaptureStartModal, useStays } from "domain/stays"
 import { downloadString } from "files"
 import CustomStayModal from "domain/stays/CustomStayModal"
 import { useNavigate } from "react-router"
@@ -133,8 +133,9 @@ function formattedMoney(money) {
 function StayRow({ stay, icon, ...props }) {
     const guestsSubtitle = (stay.totalGuests && stay.totalGuests > 1) ? `for ${stay.totalGuests} people ` : ''
     const priceSubtitle = stay.price ? `for ${formattedMoney(stay.price)} ` : ''
-    const locationSubtitle = stay.location ? `in ${formattedLocation(stay.location)}` : ''
-    const subtitle = `${guestsSubtitle}${priceSubtitle}${locationSubtitle}`
+    const formattedStayLocation = stay.location ? formattedLocation(stay.location) : undefined
+    const locationSubtitle = formattedStayLocation ? `in ${formattedLocation(stay.location)}` : ''
+    const subtitle = stay.placeType === StayPlaceType.Home ? 'home sweet home...' : `${guestsSubtitle}${priceSubtitle}${locationSubtitle}`
     return <InfoRow icon={icon} title={stay.accomodation.name} subtitle={subtitle} right={<StayActions stay={stay}/>} {...props}/>
 }
 

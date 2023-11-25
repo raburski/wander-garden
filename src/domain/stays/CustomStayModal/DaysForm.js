@@ -50,7 +50,7 @@ export default forwardRef(function ({ since, until, onChange, name }, ref) {
                 right={
                     <>
                         {isEdittingDays ? null : range}
-                        {days.length === 1 ? null : <TextInlineButton icon={MdEdit} onClick={onEditClick} style={{marginRight: -12, marginTop: -4, marginBottom: -2}} tooltip="Select dates"/>}
+                        {days.length === 1 ? null : <TextInlineButton icon={MdEdit} onClick={onEditClick} style={{marginRight: -12, marginTop: -4, marginBottom: -2}} tooltipPosition="left" tooltipOffset={90} tooltip="Select dates"/>}
                     </>
                 }
             />
