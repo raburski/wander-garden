@@ -1,10 +1,14 @@
 import { useContext, useState, createContext } from "react"
 import ImportStaysModal from "./ImportStaysModal"
 import ImportToursModal from "./ImportToursModal"
+import StartSwarmUpdateModal from "./StartSwarmUpdateModal"
+
 
 export const ModalsContext = createContext({})
 
-export const MODAL = {}
+export const MODAL = {
+    CHECKIN_UPDATE: 'checkin_update'
+}
 
 export default function ModalsProvider({ children }) {
     const [openModal, setOpenModal] = useState()
@@ -19,11 +23,12 @@ export default function ModalsProvider({ children }) {
             {children}
             <ImportStaysModal />
             <ImportToursModal />
+            <StartSwarmUpdateModal isOpen={openModal === MODAL.CHECKIN_UPDATE} onCancel={() => setOpenModal(false)}/>
         </ModalsContext.Provider>
     )
 }
 
-export function useOpenModal() {
+export function useOpenModal(modal) {
     const context = useContext(ModalsContext)
-    return (modal) => context.setOpenModal(modal)
+    return () => context.setOpenModal(modal)
 }

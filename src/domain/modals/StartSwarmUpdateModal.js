@@ -1,12 +1,10 @@
 import Button from 'components/Button'
 import ModalPage from 'components/ModalPage'
-import { FiExternalLink, FiChevronRight, FiChevronDown } from 'react-icons/fi'
 import { styled } from 'goober'
-import { useFetchCheckins, useFetchSwarm } from './hooks'
-import { useState } from 'react'
+import { useFetchSwarm } from 'domain/swarm/hooks'
 import { TbRefresh } from 'react-icons/tb'
 import toast from 'react-hot-toast'
-import { useLastUpdated } from './Context'
+import { useLastUpdated } from 'domain/swarm'
 import moment from 'moment'
 
 const Logo = styled('img')`
@@ -31,7 +29,7 @@ const UpdateCopy = styled('div')`
     color: ${props => props.theme.text};
 `
 
-export default function StartUpdateModal({ onStartUpdate, onCancel, ...props }) {
+export default function StartSwarmUpdateModal({ onCancel, ...props }) {
     const [fetching, fetchCheckins] = useFetchSwarm()
     const [lastUpdated] = useLastUpdated()
 

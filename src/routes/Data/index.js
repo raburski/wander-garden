@@ -8,7 +8,7 @@ import { getDaysAndRangeText } from 'date'
 import Page from 'components/Page'
 import Panel from 'components/Panel'
 import { LocationAccuracy, formattedLocation } from 'domain/location'
-import { useCheckins, useIsAuthenticated, useShowUpdateModal } from 'domain/swarm'
+import { useCheckins, useIsAuthenticated } from 'domain/swarm'
 import Segment from 'components/Segment'
 import InfoRow from 'components/InfoRow'
 import PinButton from "components/PinButton"
@@ -26,6 +26,7 @@ import { useNavigate } from "react-router"
 import Footer from "components/Footer"
 import toast from "react-hot-toast"
 import Base64 from "Base64"
+import { MODAL, useOpenModal } from "domain/modals"
 
 const NoStaysContainer = styled('div')`
     display: flex;
@@ -56,7 +57,7 @@ function NoStaysFound({ stayType }) {
 function NoCheckinsFound({ stayType }) {
     const navigate = useNavigate()
     const isAuthenticated = useIsAuthenticated()
-    const startCheckinUpdate = useShowUpdateModal()
+    const startCheckinUpdate = useOpenModal(MODAL.CHECKIN_UPDATE)
     const goToSettings = () => navigate('/settings')
     return (
         <NoStaysContainer>

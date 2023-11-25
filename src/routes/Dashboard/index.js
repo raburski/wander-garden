@@ -1,4 +1,4 @@
-import { useCheckins, useIsAuthenticated, useShowUpdateModal } from '../../domain/swarm'
+import { useCheckins, useIsAuthenticated } from '../../domain/swarm'
 import { styled } from 'goober'
 import Page from '../../components/Page'
 import CountryRow from '../../components/CountryRow'
@@ -15,6 +15,7 @@ import Separator from 'components/Separator'
 import { TbRefresh } from 'react-icons/tb'
 import SwarmSetupPanel from './SwarmSetupPanel'
 import Stats from './Stats'
+import { MODAL, useOpenModal } from 'domain/modals'
 
 
 const BigFlag = styled('div')`
@@ -41,7 +42,7 @@ const Divider = styled('div')`
 const COPY_LOAD_CHECKINS = 'Fetch your first checkins...'
 function Current() {
     const [checkins] = useCheckins()
-    const showUpdateModal = useShowUpdateModal()
+    const showUpdateModal = useOpenModal(MODAL.CHECKIN_UPDATE)
     const latestCheckin = checkins[0]
     const currentCountry = latestCheckin ? countryFlagEmoji.get(latestCheckin.venue.location.cc) : null
     

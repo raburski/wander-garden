@@ -1,6 +1,5 @@
-import { createContext, useState, useContext, useMemo } from "react"
+import { createContext, useContext, useMemo } from "react"
 import { dateTransforms, stringTransforms, LocalStorageAdapter, useSyncedStorage, IndexedDBStorageAdapter } from 'storage'
-import StartUpdateModal from "./StartUpdateModal"
 
 export const SwarmContext = createContext({})
 
@@ -10,7 +9,6 @@ const localStorageToken = new LocalStorageAdapter('swarm_access_token', null, st
 export const checkinsStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'checkins')
 
 export function SwarmProvider({ children }) {
-    const [updateModalOpen, setUpdateModalOpen] = useState()
     const [checkins, setCheckins] = useSyncedStorage(checkinsStorage)
     const [lastUpdated, setLastUpdated] = useSyncedStorage(localStorageLastUpdated)
     const [token, setToken] = useSyncedStorage(localStorageToken)
@@ -22,12 +20,10 @@ export function SwarmProvider({ children }) {
         checkins: [sortedCheckins, setCheckins],
         lastUpdated: [lastUpdated, setLastUpdated],
         token: [token, setToken],
-        showUpdateModal: () => setUpdateModalOpen(true),
     }), [checkins.length, lastUpdated, token])
 
     return (
         <SwarmContext.Provider value={value}>
-            <StartUpdateModal isOpen={updateModalOpen} onCancel={() => setUpdateModalOpen(false)}/>
             {children}
         </SwarmContext.Provider>
     )
@@ -51,11 +47,6 @@ export function useLastUpdated() {
 export function useToken() {
     const context = useContext(SwarmContext)
     return context.token
-}
-
-export function useShowUpdateModal() {
-    const context = useContext(SwarmContext)
-    return context.showUpdateModal
 }
 
 export function useIsAuthenticated() {
