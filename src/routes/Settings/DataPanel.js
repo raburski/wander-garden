@@ -53,16 +53,15 @@ function useUploadAllData() {
         if (!window.confirm('Are you sure you want to REPLACE all wander garden data?')) return undefined
 
         if (isSwarmData(allData.checkins) && isStayData(allData.stays)) {
-            const toastId = toast.loading('Loading new data...')
+            const toastId = toast.loading('Loading data...')
             await clearAll()
             await replaceAllTours(allData.tours)
             await replaceAllTitles(allData.titles)
             await replaceAllNotes(allData.notes)
             await replaceAllCheckins(allData.checkins)
             await replaceAllStays(allData.stays)
-            await refresh()
             toast.dismiss(toastId)
-            toast.success('All uploaded!')
+            await refresh()
         } else {
             alert('Data does not seem to be in any recognised format!')
         }
@@ -75,10 +74,11 @@ function useClearAllData() {
     return async function clearAllData() {
         if (!window.confirm('Are you sure you want to CLEAR all wander garden data?')) return undefined
 
-        const toastId = toast.loading('Clearing all data...')
-        await clearAll()
-        toast.dismiss(toastId)
-        toast.success('Everything cleared!')
+        await toast.promise(clearAll(), {
+            loading: 'Clearing data...',
+            success: 'Everything cleared!',
+            error: 'Something went wrong...'
+        })
     }
 }
 

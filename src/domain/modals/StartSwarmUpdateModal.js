@@ -38,7 +38,6 @@ export default function StartSwarmUpdateModal({ onCancel, ...props }) {
     async function onStartUpdate() {
         try {
             await fetchCheckins()
-            toast.success('List updated sucessfully!')
         } catch (e) {
             console.log('fetch checkins error', e)
         }

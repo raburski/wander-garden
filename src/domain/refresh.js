@@ -10,11 +10,21 @@ import toast from "react-hot-toast"
 export default function useRefresh() {
     const refreshTrips = useRefreshTrips()
     const refreshStats = useRefreshStats()
-    return async function refresh() {
-        const toastId = toast.loading('Refreshing your data...')
+    async function refresh() {
         await refreshTrips()
         await refreshStats()
-        toast.dismiss(toastId)
+    }
+
+    return async function toastedRefresh(showToast = true) {
+        if (showToast) {
+            return toast.promise(refresh(), {
+                loading: 'Refreshing...',
+                success: 'All up to date!',
+                error: 'Something went wrong...',
+            })
+        } else {
+            return refresh()
+        }
     }
 }
 
@@ -31,6 +41,6 @@ export function useClearAll() {
         await replaceAllStays([])
         await replaceAllTours([])
         await replaceAllNotes([])
-        await refresh()
+        await refresh(false)
     }
 }

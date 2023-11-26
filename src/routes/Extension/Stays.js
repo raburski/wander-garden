@@ -20,7 +20,7 @@ function useUploadAndAddData() {
         const file = await uploadFile()
         const allData = JSON.parse(file)
 
-        const toastId = toast.loading('Loading new data...')
+        const toastId = toast.loading('Loading data...')
         if (isStayData(allData)) {
             await startFileImport(allData)
         } else if (isSwarmData(allData.checkins) && isStayData(allData.stays)) {
@@ -28,13 +28,13 @@ function useUploadAndAddData() {
             await replaceAllTitles(allData.titles)
             await replaceAllCheckins(allData.checkins)
             await replaceAllStays(allData.stays)
+            toast.dismiss(toastId)
             // TODO: tours etc maybe?
             await refresh()
-            toast.success('All uploaded!')
         } else {
+            toast.dismiss(toastId)
             alert('Data does not seem to be in any recognised format!')
         }
-        toast.dismiss(toastId)
     }
 }
 

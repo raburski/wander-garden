@@ -21,11 +21,11 @@ export default function OnboardingProvider({ children }) {
         const response = await fetch('/data/demo.json')
         const allData = await response.json()
         setRunningDemo(true)
+        toast.dismiss(toastId)
         await setCheckins(allData.checkins)
         await replaceAllStays(allData.stays)
         await refresh()
-        toast.dismiss(toastId)
-        toast.success('Demo active!')
+        
     }
     return (onboardingFinished || runningDemo) ? children : <OnboardingUI onFinished={onFinished} extensionStatus={extensionStatus} onDemo={onDemo}/>
 }
