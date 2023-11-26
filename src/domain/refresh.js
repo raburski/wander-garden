@@ -1,7 +1,7 @@
 import { useReplaceAllNotes } from "./notes"
 import { useRefreshStats } from "./stats"
-import { useReplaceAllStays } from "./stays"
-import { useClearData } from "./swarm"
+import { isStayData, useReplaceAllStays } from "./stays"
+import { isSwarmData, useClearData, useReplaceAllCheckins } from "./swarm"
 import { useReplaceAllTitles } from "./titles"
 import { useReplaceAllTours } from "./tours"
 import { useRefreshTrips } from "./trips"
@@ -34,6 +34,7 @@ export function useClearAll() {
     const replaceAllTitles = useReplaceAllTitles()
     const replaceAllTours = useReplaceAllTours()
     const replaceAllNotes = useReplaceAllNotes()
+    const replaceAllCheckins = useReplaceAllCheckins()
     const refresh = useRefresh()
     return async function clearAll() {
         await clearSwarmData()
@@ -41,6 +42,33 @@ export function useClearAll() {
         await replaceAllStays([])
         await replaceAllTours([])
         await replaceAllNotes([])
+        await replaceAllCheckins([])
         await refresh(false)
+    }
+}
+
+export function useReplaceAll() {
+    const clearAll = useClearAll()
+    const replaceAllStays = useReplaceAllStays()
+    const replaceAllTitles = useReplaceAllTitles()
+    const replaceAllTours = useReplaceAllTours()
+    const replaceAllNotes = useReplaceAllNotes()
+    const replaceAllCheckins = useReplaceAllCheckins()
+    const refresh = useRefresh()
+
+    return async function replaceAll(allData) {
+        if (isSwarmData(allData.checkins) && isStayData(allData.stays)) {
+            const toastId = toast.loading('Loading data...')
+            await clearAll()
+            await replaceAllTours(allData.tours)
+            await replaceAllTitles(allData.titles)
+            await replaceAllNotes(allData.notes)
+            await replaceAllCheckins(allData.checkins)
+            await replaceAllStays(allData.stays)
+            toast.dismiss(toastId)
+            await refresh()
+        } else {
+            alert('Data does not seem to be in any recognised format!')
+        }
     }
 }

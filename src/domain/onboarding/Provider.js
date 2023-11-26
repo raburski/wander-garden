@@ -1,19 +1,16 @@
 import { useOnboardingFinishedSetting, useRunningDemoSetting } from "domain/settings"
 import OnboardingUI from './UI'
-import { useReplaceAllStays } from "domain/stays"
 import toast from "react-hot-toast"
-import { useCheckins } from "domain/swarm"
 import { useExtensionStatus } from "domain/extension"
-import useRefresh from "domain/refresh"
+import { useReplaceAll } from "domain/refresh"
 
 
 export default function OnboardingProvider({ children }) {
     const [onboardingFinished, setOnboardingFinished] = useOnboardingFinishedSetting()
     const [runningDemo, setRunningDemo] = useRunningDemoSetting()
     const extensionStatus = useExtensionStatus()
-    const replaceAllStays = useReplaceAllStays()
-    const [_, setCheckins] = useCheckins()
-    const refresh = useRefresh()
+
+    const replaceAll = useReplaceAll()
 
     const onFinished = () => setOnboardingFinished(true)
     async function onDemo() {
@@ -22,10 +19,7 @@ export default function OnboardingProvider({ children }) {
         const allData = await response.json()
         setRunningDemo(true)
         toast.dismiss(toastId)
-        await setCheckins(allData.checkins)
-        await replaceAllStays(allData.stays)
-        await refresh()
-        
+        await replaceAll(allData)
     }
     return (onboardingFinished || runningDemo) ? children : <OnboardingUI onFinished={onFinished} extensionStatus={extensionStatus} onDemo={onDemo}/>
 }

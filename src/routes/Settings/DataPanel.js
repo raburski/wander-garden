@@ -8,7 +8,7 @@ import toast from "react-hot-toast"
 import { styled } from "goober"
 import Separator from "components/Separator"
 import { useAllTitles, useReplaceAllTitles } from "domain/titles"
-import useRefresh, { useClearAll } from "domain/refresh"
+import useRefresh, { useClearAll, useReplaceAll } from "domain/refresh"
 import { useNotes, useReplaceAllNotes } from "domain/notes"
 import { useReplaceAllTours, useTours } from "domain/tours"
 
@@ -38,33 +38,13 @@ function useDownloadAllData() {
 }
 
 function useUploadAllData() {
-    const clearAll = useClearAll()
-    const replaceAllStays = useReplaceAllStays()
-    const replaceAllTitles = useReplaceAllTitles()
-    const replaceAllTours = useReplaceAllTours()
-    const replaceAllNotes = useReplaceAllNotes()
-    const replaceAllCheckins = useReplaceAllCheckins()
-    const refresh = useRefresh()
+    const replaceAll = useReplaceAll()
 
     return async function uploadAllData() {
         const files = await uploadFile()
         const allData = JSON.parse(files)
-
         if (!window.confirm('Are you sure you want to REPLACE all wander garden data?')) return undefined
-
-        if (isSwarmData(allData.checkins) && isStayData(allData.stays)) {
-            const toastId = toast.loading('Loading data...')
-            await clearAll()
-            await replaceAllTours(allData.tours)
-            await replaceAllTitles(allData.titles)
-            await replaceAllNotes(allData.notes)
-            await replaceAllCheckins(allData.checkins)
-            await replaceAllStays(allData.stays)
-            toast.dismiss(toastId)
-            await refresh()
-        } else {
-            alert('Data does not seem to be in any recognised format!')
-        }
+        await replaceAll(allData)
     }
 }
 
