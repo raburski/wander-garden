@@ -57,7 +57,7 @@ const ExtensionRequiredContainer = styled('div')`
     justify-content: center;
     align-items: center;
     white-space: pre-wrap;
-    color: ${props => props.theme.text}
+    color: ${props => props.theme.text};
 `
 
 const CAPTURE_SETTING_NAME = 'capture_new_only'
@@ -65,6 +65,9 @@ const SETTING_TITLES = ['All data', 'Only new data']
 
 const EXTENSION_REQ_COPY = `
 Working browser extension required.
+
+Try refreshing the page if you have it
+already installed.
 
 `
 
