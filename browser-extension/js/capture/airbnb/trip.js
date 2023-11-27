@@ -13,7 +13,6 @@ class AirbnbTripPage extends Page {
         let accomodationURL
         let accomodationName
         let price
-        let dataState
     
         try {
             const accomodationElement = document.querySelector("a[data-testid='reservation-destination-link']")
@@ -79,6 +78,10 @@ class AirbnbTripPage extends Page {
 
     async run() {
         const stay = this.extractStay()
-        this.core.capture(stay)
+        if (stay) {
+            this.core.capture(stay)
+        } else {
+            this.core.skipCapture()
+        }
     }
 }

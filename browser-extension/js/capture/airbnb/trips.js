@@ -21,7 +21,7 @@ class AirbnbTripsPage extends Page {
         const currentURL = this.tripURLs[this.currentURLIndex]
         if (currentURL.toUpperCase().includes(AIRBNB_EXPERIENCE)) {
             this.currentURLIndex = this.currentURLIndex + 1
-            return processNextTrip()
+            return this.processNextTrip()
         }
 
         this.core.openWindow(currentURL)

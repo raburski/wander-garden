@@ -43,7 +43,6 @@ class AgodaBookingsPage extends Page {
     }
     
     async processNextBooking() {
-        console.log('check', this.currentBookingIndex, this.bookingIDs.length)
         if (this.currentBookingIndex >= this.bookingIDs.length) {
             return await this.openNextPage()
         }
@@ -52,7 +51,6 @@ class AgodaBookingsPage extends Page {
         const url = `https://www.agoda.com/account/editbooking.html?BookingId=${bookingId}`
         this.currentBookingIndex = this.currentBookingIndex + 1
         await sleep(100)
-        console.log('oprn', url)
         this.core.openWindow(url)
     }
 
