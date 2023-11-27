@@ -3,7 +3,7 @@ import { Status, Origin } from "./types"
 import CapturingModal from "./CapturingModal"
 import CapturingErrorModal from './CapturingErrorModal'
 
-export const CURRENT_VERSION = '0.1.2'
+export const CURRENT_VERSION = '0.1.3'
 
 export const ExtensionContext = createContext({})
 
