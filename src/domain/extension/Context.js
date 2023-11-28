@@ -41,6 +41,7 @@ export function ExtensionProvider({ children }) {
         }
         if (!initFailed) {
             window.addEventListener('message', eventListener)
+            sendExtensionMessage({ type: 'wake_up' })
         }
         return () => window.removeEventListener('message', eventListener)
     }, [initFailed, setInitFailed, setCapturing, setVersion])
