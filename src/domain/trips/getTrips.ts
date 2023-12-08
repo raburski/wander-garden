@@ -137,6 +137,7 @@ function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[]) {
                 // Stay extension
                 const lastPhase = phases.last()
                 lastPhase.until = currentStay.until
+                lastPhase.stay!.until = currentStay.until
                 lastPhase.events = getPhaseEvents(lastPhase.since, currentStay.until, checkins, tours)
             } else {
                 phases.push({ 
@@ -165,8 +166,8 @@ function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[]) {
     return phases
 }
 
-
-function groupStays(checkins: Checkin[], tours: Tour[]) {
+function groupStays(allCheckins: Checkin[], tours: Tour[]) {
+    let checkins = [...allCheckins.filter(onlyNonTransportation)]
     return {
         pattern: [
             some((stay: Stay, stays: Stay[]) => {
@@ -178,20 +179,50 @@ function groupStays(checkins: Checkin[], tours: Tour[]) {
                 const daysDiff = moment(stay.since).diff(olderStay.until, 'days')
                 if (daysDiff <= 6) return true
 
+                // If inbewteen those two stays there are checkins nearby either of those places
+                // then that is still part of the trip
+                const firstCheckinIndex = checkins.findIndex((checkin: Checkin) => moment.unix(checkin.createdAt).isSameOrAfter(olderStay.until))
+                const lastCheckinIndex = checkins.findIndex((checkin: Checkin) => !moment.unix(checkin.createdAt).isBefore(stay.since))
+                const inBetweenCheckins = firstCheckinIndex > 0 ? checkins.slice(firstCheckinIndex - 1, lastCheckinIndex) : checkins.slice(0, lastCheckinIndex)
+      
+                const allNearby = inBetweenCheckins.reduce((acc: boolean, checkin: Checkin) => {
+                    const location = checkin.venue.location
+                    const isNearby = isEqualApproximiteLocation(location, olderStay.location) || isEqualApproximiteLocation(location, stay.location)
+                    return acc && isNearby
+                }, true)
+
+                const allTheSameCountries = inBetweenCheckins.reduce((acc: boolean, checkin: Checkin) => {
+                    const location = checkin.venue.location
+                    const isSameCountry = location.cc.toLowerCase() === olderStay.location.cc.toLowerCase() || location.cc.toLowerCase() === stay.location.cc.toLowerCase()
+                    return acc && isSameCountry
+                }, true)
+
+                if (daysDiff <= 10 && allTheSameCountries) {
+                    return true
+                }
+
+                if (daysDiff <= 14 && allNearby) {
+                    return true
+                }
+
                 return false
             }),
         ],
         result: (stays: Stay[]): Trip | undefined => {
             if (stays.first().placeType === StayPlaceType.Home) return undefined
 
-            const filteredCheckins = checkins.filter(checkin => moment.unix(checkin.createdAt).isBetween(stays.first().since, stays.last().until))
-            const nonTransportCheckins = filteredCheckins.filter(onlyNonTransportation)
+            const firstCheckinIndex = checkins.findIndex((checkin: Checkin) => moment.unix(checkin.createdAt).isSameOrAfter(stays.first().since))
+            const lastCheckinIndex = checkins.findIndex((checkin: Checkin) => !moment.unix(checkin.createdAt).isBefore(stays.last().until))
+            const filteredCheckins = firstCheckinIndex > 0 ? checkins.slice(firstCheckinIndex - 1, lastCheckinIndex) : checkins.slice(0, lastCheckinIndex)
+            checkins = checkins.slice(lastCheckinIndex)
+
+            // const nonTransportCheckins = filteredCheckins.filter(onlyNonTransportation)
             const filteredTours = tours.filter(tour => {
                 return moment(tour.date).isBetween(stays.first().since, stays.last().until)
             })
 
             const phases = getPhases(stays, filteredCheckins, filteredTours)
-            const highlights = getHighlights(stays, nonTransportCheckins)
+            const highlights = getHighlights(stays, filteredCheckins)
             return {
                 id: `trip:${stays[0].id}`,
                 since: phases.first().since,
