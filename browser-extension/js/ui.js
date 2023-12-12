@@ -45,8 +45,9 @@ function getDownloadStayWidget(stay) {
 }
 
 
-async function scrollIntoViewUntil({ elementSelector, isFinishedCheck }) {
-    const items = [...document.querySelectorAll(elementSelector)]
+async function scrollIntoViewUntil({ root, elementSelector, isFinishedCheck }) {
+    const _root = root || document
+    const items = [..._root.querySelectorAll(elementSelector)]
     const lastItem = items[items.length-1]
     const isFinished = isFinishedCheck(lastItem)
     if (isFinished) return 

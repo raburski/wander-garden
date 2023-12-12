@@ -55,6 +55,7 @@ class AgodaBookingsPage extends Page {
     }
 
     async openCompletedBookingsPage() {
+        await waitForElement('#mmb-booking-phase-tabs-tab-2')
         const completedTabButton = document.getElementById('mmb-booking-phase-tabs-tab-2')
         if (completedTabButton.getAttribute('aria-selected') === 'false') {
             completedTabButton.click()

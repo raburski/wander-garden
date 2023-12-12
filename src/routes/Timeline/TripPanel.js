@@ -101,7 +101,7 @@ const containerVariants = {
 export default function TripPanel({ title, subtitle, countryCodes, days, range, children, ...props }) {
     return (
         <Container initial="rest" whileHover="hover" animate="rest" variants={containerVariants} {...props}>
-            {countryCodes.map(code => <CountryPanel code={code} />)}
+            {countryCodes.map(code => <CountryPanel key={code} code={code} />)}
             <Bottom>
                 <Title>{title}</Title>
                 {subtitle ? <Subtitle>{subtitle}</Subtitle> : null}

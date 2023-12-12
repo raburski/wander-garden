@@ -58,8 +58,8 @@ class AirbnbTripPage extends Page {
         return {
             id: `airbnb:${id}`,
             url: window.location.href,
-            since: `${metadata.check_in_date}T00:00:00+00:00`,
-            until: `${metadata.check_out_date}T00:00:00+00:00`,
+            since: getISOTimezoneDateString(metadata.lat, metadata.lng, `${metadata.check_in_date} 15:00`),
+            until: getISOTimezoneDateString(metadata.lat, metadata.lng, `${metadata.check_out_date} 11:00`),
             location: {
                 city,
                 country: countryCodeToName[cc.toUpperCase()],

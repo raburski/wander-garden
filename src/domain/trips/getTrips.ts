@@ -131,7 +131,7 @@ function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[]) {
         const currentStay = stays[currentIndex]
         const olderStay = stays[currentIndex - 1]
 
-        const areOverlapping = moment(currentStay.since).isSame(olderStay.until, 'day')
+        const areOverlapping = Math.abs(moment(currentStay.since).diff(moment(olderStay.until), 'hours')) < 10
         if (areOverlapping) {
             if (isEqualLocation(currentStay.location, olderStay.location)) {
                 // Stay extension
@@ -166,6 +166,7 @@ function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[]) {
     return phases
 }
 
+const MIN_BETWEEN_CHEKINS = 5
 function groupStays(allCheckins: Checkin[], tours: Tour[]) {
     let checkins = [...allCheckins.filter(onlyNonTransportation)]
     return {
@@ -197,11 +198,11 @@ function groupStays(allCheckins: Checkin[], tours: Tour[]) {
                     return acc && isSameCountry
                 }, true)
 
-                if (daysDiff <= 10 && allTheSameCountries) {
+                if (daysDiff <= 10 && inBetweenCheckins.length >= MIN_BETWEEN_CHEKINS && allTheSameCountries) {
                     return true
                 }
 
-                if (daysDiff <= 14 && allNearby) {
+                if (daysDiff <= 14 && inBetweenCheckins.length >= MIN_BETWEEN_CHEKINS && allNearby) {
                     return true
                 }
 

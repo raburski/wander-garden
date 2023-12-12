@@ -2,12 +2,12 @@ function isCompletedStay(data) {
     return data.status === 'BOOKING_SUCCESS'
 }
 
-function getISODateFromNumber(number) {
+function getISODateFromNumber(lat, lng, number, time = '') {
     const string = `${number}`
     const year = string.slice(0, 4)
     const month = string.slice(4, 6)
     const day = string.slice(6, 8)
-    return `${year}-${month}-${day}T00:00:00+00:00`
+    return getISOTimezoneDateString(lat, lng, `${year}-${month}-${day} ${time}`)
 }
 
 function sanitiseCountry(name) {
@@ -17,8 +17,8 @@ function sanitiseCountry(name) {
 function receiptDataToStay(data) {
     const id = `travala:${data.order_id}`
     const url = `https://www.travala.com/booking-summary/${data.order_id}`
-    const since = getISODateFromNumber(data.from_date)
-    const until = getISODateFromNumber(data.to_date)
+    const since = getISODateFromNumber(data.property_info.lat, data.property_info.lng, data.from_date, '15:00')
+    const until = getISODateFromNumber(data.property_info.lat, data.property_info.lng, data.to_date, '11:00')
     const hotelUrl = `https://www.travala.com/en/hotel/${data.property_info.slug}`
 
     const currency = data.user_currency

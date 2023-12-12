@@ -8,8 +8,8 @@ function injectExtractScript() {
 }
 
 function dataToStay(data) {
-    const since = data.BookingItem.Dates.CheckInDateNonCulture
-    const until = data.BookingItem.Dates.CheckOutDateNonCulture
+    const since = `${data.BookingItem.Dates.CheckInDateNonCulture} ${data.BookingItem.Dates.CheckInTime || '15:00'}`
+    const until = `${data.BookingItem.Dates.CheckOutDateNonCulture} ${data.BookingItem.Dates.CheckOutTime || '11:00'}`
     const cc = getCountryCode(data.BookingItem.Property.Address.Country)
     const Costs = data.BookingItem.PaymentDetails.NonCancelledPaymentDetails.Costs
     const currency = Costs[0].Amount.Currency
@@ -17,19 +17,23 @@ function dataToStay(data) {
     const amount = Costs.reduce((a, c) => a + c.Amount.AmountAsDouble, 0)
     const totalGuests = data.BookingItem.Guests.SecondaryGuests.length + 1
 
+    const cords = {
+        lat: data.BookingItem.Property.GeoInfo.Latitude,
+        lng: data.BookingItem.Property.GeoInfo.Longitude
+    }
+
     return {
         id: `agoda:${data.BookingItem.BookingId}`,
         url: window.location.href,
-        since: `${since}T00:00:00+00:00`,
-        until: `${until}T00:00:00+00:00`,
+        since: getISOTimezoneDateString(cords.lat, cords.lng, since),
+        until: getISOTimezoneDateString(cords.lat, cords.lng, until),
         totalGuests,
         location: {
             address: [data.BookingItem.Property.Address.Address1, data.BookingItem.Property.Address.Address2].filter(Boolean).join(', '),
             city: data.BookingItem.Property.Address.City,
             country: countryCodeToName[cc.toUpperCase()],
             cc: cc.toLowerCase(),
-            lat: data.BookingItem.Property.GeoInfo.Latitude,
-            lng: data.BookingItem.Property.GeoInfo.Longitude,
+            ...cords,
         },
         accomodation: {
             name: data.BookingItem.Property.PropertyName,
@@ -50,7 +54,6 @@ class AgodaEditBookingPage extends Page {
         window.addEventListener('message', function(event) {
             const message = event.data
             if (message && message.target === ORIGIN.AGODA) {
-                console.log('something data', message.data)
                 const stay = dataToStay(message.data)
                 capture(stay)
             }

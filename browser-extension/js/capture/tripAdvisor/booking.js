@@ -17,7 +17,7 @@ class TripAdvisorBookingPage extends Page {
 
         // TODO: consider timezones etc
         const dateString = dateLine.textContent.split(' • ')[0]
-        const date = new Date(dateString)
+        const date = new Date(`${dateString} Z`)
         const priceString = priceLine.textContent
         const price = priceFromString(priceString)
 

@@ -85,7 +85,7 @@ function Trips({ selectedCountryCode }) {
     return (
         <TripsContainer>
             {years.map(year => (
-                <YearGroup year={year} trips={groupedTrips[year]}/>
+                <YearGroup key={year} year={year} trips={groupedTrips[year]}/>
             ))}
         </TripsContainer>
     )

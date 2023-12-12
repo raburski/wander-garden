@@ -51,8 +51,10 @@ export function getSeasonEmojiForRange(_since, _until) {
 }
 
 export function getDaysAndRangeText(_since, _until) {
-    const until = moment(_until).startOf('day')
-    const since = moment(_since).startOf('day')
+    const sinceDate = _since.split('T')[0]
+    const untilDate = _until.split('T')[0]
+    const until = moment(untilDate)
+    const since = moment(sinceDate)
     const numberOfDays = until.diff(since, 'days')
     const daysSuffix = numberOfDays === 1 ? 'day' : 'days'
     const days = `${numberOfDays} ${daysSuffix}`

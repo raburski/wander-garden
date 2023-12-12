@@ -6,7 +6,7 @@ export const VersionContext = createContext({})
 
 const versionStore = new LocalStorageAdapter('version', '', stringTransforms)
 
-const CURRENT_VERSION = '5'
+const CURRENT_VERSION = '6'
 
 export function VersionProvider({ children }) {
     const [version, setVersion] = useSyncedStorage(versionStore)

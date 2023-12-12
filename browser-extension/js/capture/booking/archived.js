@@ -6,25 +6,34 @@ function getYearFromURL() {
 class BookingArchivedPage extends Page {
     static path = 'archivedsummary'
 
-    getSinceUntil() {
+    getSinceUntil(lat, lng) {
+        const timeRegex = /[0-9][0-9]:[0-9][0-9]/g
         const year = getYearFromURL()
         const datesElement = document.getElementsByClassName('dates')[0]
         const dayElements = datesElement.querySelectorAll('.summary__big-num')
         const monthElements = datesElement.querySelectorAll('.dates__month')
+        const timeElements = datesElement.querySelectorAll('.dates__time')
+
+        const checkinResults = timeElements[0].textContent.match(timeRegex)
+        const checkoutResults = timeElements[1].textContent.match(timeRegex)
+
+        const checkinTime = checkinResults[0]
+        const checkoutTime = checkoutResults[checkoutResults.length - 1]
     
-        const dateSince = new Date(`${monthElements[0].textContent} ${dayElements[0].textContent}, ${year}`)
-        const dateUntil = new Date(`${monthElements[1].textContent} ${dayElements[1].textContent}, ${year}`)
+        const dateSince = new Date(`${monthElements[0].textContent} ${dayElements[0].textContent} ${year} ${checkinTime} Z`)
+        const dateUntil = new Date(`${monthElements[1].textContent} ${dayElements[1].textContent} ${year} ${checkoutTime} Z`)
+        const dateUntilNextYear = new Date(`${monthElements[1].textContent} ${dayElements[1].textContent} ${year + 1} ${checkoutTime} Z`)
 
         if (dateSince.getTime() <= dateUntil.getTime()) {
             return {
-                since: dateSince,
-                until: dateUntil,
+                since: getISOTimezoneDateString(lat, lng, dateSince),
+                until: getISOTimezoneDateString(lat, lng, dateUntil),
             }
         } else {
             // date until is probably already in new year
             return {
-                since: new Date(`${monthElements[0].textContent} ${dayElements[0].textContent}, ${year}`),
-                until: new Date(`${monthElements[1].textContent} ${dayElements[1].textContent}, ${year + 1}`)
+                since: getISOTimezoneDateString(lat, lng, dateSince),
+                until: getISOTimezoneDateString(lat, lng, dateUntilNextYear),
             }
         }
     }
@@ -57,13 +66,12 @@ class BookingArchivedPage extends Page {
     
         if (!cords) return this.core.sendError('gps coordinates could not be found', 'extractStayFromDocument')
     
-        const sinceUntil = this.getSinceUntil()
+        const sinceUntil = this.getSinceUntil(cords.latitude, cords.longitude)
 
         return {
             id: `booking:${bookingID}`,
             url: window.location.href,
-            since: sinceUntil.since.toISOString(),
-            until: sinceUntil.until.toISOString(),
+            ...sinceUntil,
             location: {
                 ...addressComponents,
                 cc,

@@ -50,14 +50,14 @@ class BookingConfirmationPage extends Page {
         const datesElements = [...document.querySelectorAll('time > div:first-of-type')]
             .map(dateElement => dateElement.textContent)
             .map(string => string.split(' '))
-            .map(components => new Date(`${components[1]} ${components[2]} ${components[3]}`))
+            .map(components => `${components[1]} ${components[2]} ${components[3]}`)
         if (datesElements.length < 2) return this.core.sendError('stay date could not be found', 'extractStayFromDocument')
     
         return {
             id: `booking:${bookingID}`,
             url: window.location.href,
-            since: datesElements[0].toISOString(),
-            until: datesElements[1].toISOString(),
+            since: getISOTimezoneDateString(coords.lat, coords.lng, `${datesElements[0]} 15:00`),
+            until: getISOTimezoneDateString(coords.lat, coords.lng, `${datesElements[1]} 11:00`),
             location: {
                 ...addressComponents,
                 ...coords,
