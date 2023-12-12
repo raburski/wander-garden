@@ -131,7 +131,7 @@ function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[]) {
         const currentStay = stays[currentIndex]
         const olderStay = stays[currentIndex - 1]
 
-        const areOverlapping = Math.abs(moment(currentStay.since).diff(moment(olderStay.until), 'hours')) < 10
+        const areOverlapping = Math.abs(moment(currentStay.since).diff(moment(olderStay.until), 'hours')) < 16
         if (areOverlapping) {
             if (isEqualLocation(currentStay.location, olderStay.location)) {
                 // Stay extension
