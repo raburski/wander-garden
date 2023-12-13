@@ -15,7 +15,7 @@ export const StatsContext = createContext({})
 const localStorageStats = new LocalStorageAdapter('stats', '{}', jsonTransforms)
 
 function getTripDays(trip) {
-    return moment(trip.until).diff(moment(trip.since), 'days')
+    return moment(trip.until).startOf('day').diff(moment(trip.since).startOf('day'), 'days')
 }
 
 function countryCodeFromPhase(phase) {
