@@ -95,12 +95,12 @@ function priceFromString(string) {
 }
 
 const WAIT_STEP = 200
-function waitForElement(selector, timeout = 10000) {
+function waitForElement(selector, root = document, timeout = 10000) {
     let lapsed = 0
 
     return new Promise((resolve, reject) => {
         const timer = setInterval(() => {
-            const elements = document.querySelectorAll(selector)
+            const elements = root.querySelectorAll(selector)
             if (elements.length > 0) {
                 resolve()
             } else if (lapsed > timeout) {
@@ -254,6 +254,7 @@ function init(origin, onInitCapture, onInitDefault) {
 }
 
 class Page {
+    constructor() {}
     init(isCapturing = false, core = {}) {
         this.core = core
         this.isCapturing = isCapturing

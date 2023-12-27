@@ -10,6 +10,7 @@ import Stays from './Stays'
 import { isDEV } from "environment"
 import Tours from "./Tours"
 import Footer from "components/Footer"
+import Flights from "./Flights"
 
 const COPY = `In order to enhance your dataset you can install garden browser extension. It will help you import your booking.com, airbnb and agoda bookings.
 
@@ -78,6 +79,7 @@ export default function Capture() {
             <ExtensionContent />
             <Stays />
             <Tours />
+            {isDEV() ? <Flights /> : null}
             <Footer />
         </Page>
     )

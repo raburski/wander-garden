@@ -24,6 +24,7 @@ import { VersionProvider } from "domain/version"
 import { NotesProvider } from "domain/notes"
 import { StatsProvider } from "domain/stats"
 import ModalsProvider from "domain/modals"
+import { FlightsProvider } from "domain/flights"
 
 setupGoober(React.createElement, undefined, useThemeColors)
 if (/windows/i.test(navigator.userAgent)) {
@@ -62,7 +63,7 @@ function App() {
         <ToursProvider>
           <SwarmProvider>
             <InstagramProvider>
-              
+              <FlightsProvider>
                 <StaysProvider>
                   <StatsProvider>
                   <VersionProvider>
@@ -84,7 +85,7 @@ function App() {
                   </VersionProvider>
                   </StatsProvider>
                 </StaysProvider>
-              
+              </FlightsProvider>
             </InstagramProvider>
           </SwarmProvider>
           </ToursProvider>

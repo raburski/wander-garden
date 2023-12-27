@@ -94,6 +94,7 @@
           "js/core.js",
           "js/country.js",
           "js/timezone.js",
+          "js/capture/travala/flights.js",
           "js/capture/travala/bookings.js",
           "js/capture/travala/index.js"
         ]
@@ -129,6 +130,23 @@
           "js/capture/getYourGuide/booking.js",
           "js/capture/getYourGuide/account.js",
           "js/capture/getYourGuide/index.js"
+        ]
+      },
+      {
+        "matches":[
+            "*://*.miles-and-more.com/*"
+        ],
+        "run_at": "document_start",
+        "js":[
+          "js/airports.js",
+          "js/consts.js",
+          "js/ui.js",
+          "js/core.js",
+          "js/country.js",
+          "js/timezone.js",
+          "js/capture/milesAndMore/bookings.js",
+          "js/capture/milesAndMore/migrate.js",
+          "js/capture/milesAndMore/index.js"
         ]
       },
       {

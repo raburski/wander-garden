@@ -10,6 +10,10 @@ const ORIGIN = {
 
     TRIP_ADVISOR: 'trip_advisor_extension',
     GET_YOUR_GUIDE: 'get_your_guide_extension',
+
+    TRAVALA_FLIGHTS: 'travala_flights',
+    MILES_AND_MORE: 'miles_and_more',
+    RYANAIR: 'ryanair',
 }
 
 const STORE = {
@@ -38,6 +42,8 @@ const ORIGIN_URL = {
     [ORIGIN.TRAVALA]: 'https://www.travala.com/my-bookings',
     [ORIGIN.GET_YOUR_GUIDE]: 'https://www.getyourguide.com/customer-bookings/',
     [ORIGIN.TRIP_ADVISOR]: 'https://www.tripadvisor.com/Bookings',
+    [ORIGIN.TRAVALA_FLIGHTS]: 'https://www.travala.com/flights/my-bookings',
+    [ORIGIN.MILES_AND_MORE]: 'https://www.miles-and-more.com/row/en/account/my-bookings.html'
 }
 
 function handleGardenMessage(message, sender) {

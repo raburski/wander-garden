@@ -45,14 +45,13 @@ function getDownloadStayWidget(stay) {
 }
 
 
-async function scrollIntoViewUntil({ root, elementSelector, isFinishedCheck }) {
-    const _root = root || document
-    const items = [..._root.querySelectorAll(elementSelector)]
+async function scrollIntoViewUntil({ root = document, elementSelector, isFinishedCheck }) {
+    const items = [...root.querySelectorAll(elementSelector)]
     const lastItem = items[items.length-1]
     const isFinished = isFinishedCheck(lastItem)
     if (isFinished) return 
 
     lastItem.scrollIntoView()
     await sleep(300)
-    await scrollIntoViewUntil({ elementSelector, isFinishedCheck })
+    await scrollIntoViewUntil({ root, elementSelector, isFinishedCheck })
 }

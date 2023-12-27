@@ -17,4 +17,8 @@ export enum Origin {
 
     GetYourGuide = 'get_your_guide_extension',
     TripAdvisor = 'trip_advisor_extension',
+
+    TravalaFlights = 'travala_flights',
+    MilesAndMore = 'miles_and_more',
+    Ryanair = 'ryanair',
 }
