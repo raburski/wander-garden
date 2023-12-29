@@ -1,11 +1,15 @@
+import Button from 'components/Button'
 import InfoPanel from 'components/InfoPanel'
 import { ResponsiveSquareImage } from 'components/SquareImage'
+import useRefresh from 'domain/refresh'
+import { isDEV } from 'environment'
 
 const COPY = `You will find chronologically ordered list of your journeys here.
 Filter them by country and check hotels you were staying in during your trip.
 `
 
 export default function NoTimelineContent() {
+    const refresh = useRefresh()
     return (
         <InfoPanel
             header="What is this?"
@@ -14,6 +18,7 @@ export default function NoTimelineContent() {
             spacing
         >
             {COPY}
+            {isDEV() ? <Button onClick={refresh}>Refresh</Button> : null}
         </InfoPanel>
     )
 }

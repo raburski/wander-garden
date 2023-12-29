@@ -11,8 +11,8 @@ export const FlightsContext = createContext({})
 
 const flightsStorage = new IndexedDBStorageAdapter([], 'wander-garden', 'flights')
 
-function getLatestFlight(flights) {
-    const orderedFlights = [...flights]
+function getLatestFlight(flights, type) {
+    const orderedFlights = [...flights.filter(f => f.flightType === type)]
     orderedFlights.sort((a, b) => moment(b.date).diff(moment(a.date)))
     return orderedFlights[0]
 }
@@ -31,9 +31,9 @@ export function FlightsProvider({ children }) {
 
     async function startCapture(flightType, captureNewOnly) {
         const subject = FlightTypeToOrigin[flightType]
-        const props = {}
+        const props = { mode: 'flights' }
         if (captureNewOnly) {
-            props.lastCapturedObjectID = getLatestFlight(flights)?.id
+            props.lastCapturedObjectID = getLatestFlight(flights, flightType)?.id
         }
         extensionStartCapture(subject, props)
     }
@@ -43,8 +43,7 @@ export function FlightsProvider({ children }) {
         
         const subject = captured.subject
         const flightType = OriginToFlightType[subject]
-        console.log('captured?', subject, flightType)
-        if (flightType) {
+        if (flightType && captured.mode === 'flights') {
             setCapturedFlights({ 
                 flightType,
                 diff: getCaptureDiff(captured.objects, flights, flightsEqual),

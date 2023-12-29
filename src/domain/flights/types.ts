@@ -26,16 +26,18 @@ export interface Flight {
     operator: FlightOperator,
     departure: FlightStage,
     arrival: FlightStage,
+    // price?: Money,
+    url?: string,
 }
 
 export const OriginToFlightType = {
-    [Origin.TravalaFlights]: FlightType.Travala,
+    [Origin.Travala]: FlightType.Travala,
     [Origin.MilesAndMore]: FlightType.MilesAndMore,
     [Origin.Ryanair]: FlightType.Ryanair,
 }
 
 export const FlightTypeToOrigin = {
-    [FlightType.Travala]: Origin.TravalaFlights,
+    [FlightType.Travala]: Origin.Travala,
     [FlightType.MilesAndMore]: Origin.MilesAndMore,
     [FlightType.Ryanair]: Origin.Ryanair,
 }

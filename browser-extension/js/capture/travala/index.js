@@ -1,4 +1,5 @@
 initPages(
     ORIGIN.TRAVALA,
-    TravalaBookingsPage
+    TravalaFlightsPage,
+    TravalaBookingsPage,
 )

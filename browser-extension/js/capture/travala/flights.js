@@ -1,5 +1,5 @@
-function isCompletedStay(data) {
-    return data.status === 'BOOKING_SUCCESS'
+function isCompletedFlight(data) {
+    return data.status === 'complete'
 }
 
 function getISODateFromNumber(number) {
@@ -14,61 +14,62 @@ function sanitiseCountry(name) {
     return name.replace(' the', '')
 }
 
-function receiptDataToStay(data) {
-    const id = `travala:${data.order_id}`
-    const url = `https://www.travala.com/booking-summary/${data.order_id}`
-    const since = getISODateFromNumber(data.from_date)
-    const until = getISODateFromNumber(data.to_date)
-    const hotelUrl = `https://www.travala.com/en/hotel/${data.property_info.slug}`
+function getISOTimezoneOffsetedDateString(datetime, offset) {
+    const utcDate = new Date(datetime)
+    const localDate = new Date(utcDate.getTime() + (offset * 60 * 60 * 1000))
+    const formattedOffset = `${offset >= 0 ? '+' : '-'}${String(offset).padStart(2, '0')}:00`
+    const isoDateString = localDate.toISOString().replace('Z', formattedOffset)
+    return isoDateString
+}
 
-    const currency = data.user_currency
-    const amount = data.total_prices[currency]
-    
+function sectorToFlight(connectionId, cabin, data) {
+    const id = `travala:flight:${data.id}`
+    const url = `https://www.travala.com/flights/booking-summary/${connectionId}`
+    const flightNo = `${data.airline}${data.flightNr}`
+    const operator = data.airlineInfo.name
+
+    const departure = {
+        airport: data.origin,
+        scheduled: getISOTimezoneOffsetedDateString(data.departure, data.departureOffset),
+    }
+    const arrival = {
+        airport: data.destination,
+        scheduled: getISOTimezoneOffsetedDateString(data.arrival, data.arrivalOffset),
+    }
+
     return {
         id,
         url,
-        since,
-        until,
-        location: {
-            address: data.property_info.street_address,
-            city: data.property_info.city_name,
-            country: sanitiseCountry(data.property_info.country_name),
-            cc: data.property_info.country_code.toLowerCase(),
-            lat: data.property_info.lat,
-            lng: data.property_info.lng,
-        },
-        accomodation: {
-            name: data.property_info.name,
-            url: hotelUrl,
-        },
-        price: {
-            amount,
-            currency,
-        },
+        connectionId,
+        flightNo,
+        cabin,
+        operator,
+        departure,
+        arrival,
     }
+}
+
+function rowToFlights(data) {
+    const connectionId = data.id
+    const cabin = data.class
+    const sectors = data.flightSectors.reverse()
+    return sectors.map(sector => sectorToFlight(connectionId, cabin, sector))
 }
 
 class TravalaFlightsPage extends Page {
     static path = 'flights/my-bookings'
-    constructor() {
-        super()
-        this.stays = undefined
-    }
 
     onNetworkCaptured(url, data) {
-        console.log('capture netw', url, data)
-        // const ORDERS_URL = 'orders/receipt'
-        // if (!url.includes(ORDERS_URL)) return
+        const ORDERS_URL = 'v2/bookings'
+        if (!url.includes(ORDERS_URL)) return
         
-        // const json = JSON.parse(data)
-        // this.stays = json.data
-        //     .filter(isCompletedStay)
-        //     .map(receiptDataToStay)
-            
-        // this.stays.forEach(this.core.capture)
+        const json = JSON.parse(data)
+        const flights = json.rows
+            .filter(isCompletedFlight)
+            .flatMap(rowToFlights)
         
-        // // TODO: work on when multiple pages, more than 10 bookings
-        // this.core.captureFinished()
+        // TODO: work on when multiple pages, more than 10 bookings
+        this.core.captureFinished(flights)
     }
 
     async run() {}

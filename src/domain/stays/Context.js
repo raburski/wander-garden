@@ -48,7 +48,7 @@ export function StaysProvider({ children }) {
 
         const subject = captured.subject
         const stayType = OriginToStayType[subject]
-        if (stayType) {
+        if (stayType && captured.mode === 'stays') {
             getStaysType(stayType).then((stays) => {
                 setCapturedStays({ 
                     stayType,
@@ -66,7 +66,7 @@ export function StaysProvider({ children }) {
 
     async function startCapture(stayType, captureNewOnly) {
         const subject = StayTypeToOrigin[stayType]
-        const props = {}
+        const props = { mode: 'stays' }
         if (captureNewOnly) {
             const stays = await getStaysType(stayType)
             props.lastCapturedObjectID = getLatestStay(stays)?.id

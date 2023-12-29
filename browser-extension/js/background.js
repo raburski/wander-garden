@@ -11,9 +11,14 @@ const ORIGIN = {
     TRIP_ADVISOR: 'trip_advisor_extension',
     GET_YOUR_GUIDE: 'get_your_guide_extension',
 
-    TRAVALA_FLIGHTS: 'travala_flights',
     MILES_AND_MORE: 'miles_and_more',
     RYANAIR: 'ryanair',
+}
+
+const MODE = {
+    DEFAULT: 'default',
+    STAYS: 'stays',
+    FLIGHTS: 'flights',
 }
 
 const STORE = {
@@ -21,6 +26,7 @@ const STORE = {
     capturedObjects: {},
     lastCapturedObjectID: {},
     currentObjectPartial: {},
+    modes: {},
 }
 
 const manifest = chrome.runtime.getManifest()
@@ -39,10 +45,12 @@ const ORIGIN_URL = {
     [ORIGIN.BOOKING]: 'https://secure.booking.com/myreservations.en-gb.html',
     [ORIGIN.AIRBNB]: 'https://www.airbnb.com/trips/v1',
     [ORIGIN.AGODA]: 'https://www.agoda.com/en-gb/account/bookings.html?sort=CheckinDate&state=Past&page=1',
-    [ORIGIN.TRAVALA]: 'https://www.travala.com/my-bookings',
+    [ORIGIN.TRAVALA]: {
+        [MODE.STAYS]: 'https://www.travala.com/my-bookings',
+        [MODE.FLIGHTS]: 'https://www.travala.com/flights/my-bookings',
+    },
     [ORIGIN.GET_YOUR_GUIDE]: 'https://www.getyourguide.com/customer-bookings/',
     [ORIGIN.TRIP_ADVISOR]: 'https://www.tripadvisor.com/Bookings',
-    [ORIGIN.TRAVALA_FLIGHTS]: 'https://www.travala.com/flights/my-bookings',
     [ORIGIN.MILES_AND_MORE]: 'https://www.miles-and-more.com/row/en/account/my-bookings.html'
 }
 
@@ -59,10 +67,14 @@ function handleGardenMessage(message, sender) {
             break
         case 'start_capture':
             STORE.captureTabIDs[ORIGIN.GARDEN] = [sender.tab.id]
-            const url = ORIGIN_URL[message.subject]
+            const url = typeof ORIGIN_URL[message.subject] === 'string' ? ORIGIN_URL[message.subject] : ORIGIN_URL[message.subject][message.mode]
+            if (!url) return 
+            
             STORE.capturedObjects[message.subject] = []
             STORE.lastCapturedObjectID[message.subject] = message.lastCapturedObjectID
+            STORE.modes[message.subject] = message.mode
             chrome.tabs.create({ url }, function(newTab) {
+                console.log('START CAPTURE: ', message.subject, newTab.id)
                 STORE.captureTabIDs[message.subject] = [newTab.id]
             })
             break
@@ -76,6 +88,10 @@ function objectsWithNoDuplicates(objects) {
 }
 
 function captureFinished(source, messageObjects) {
+    if (!STORE.captureTabIDs[source]) {
+        console.log('Capture finished: NO TABS TO CLOSE FOUND', source, STORE.captureTabIDs)
+        return
+    }
     STORE.captureTabIDs[source].forEach(tabId => chrome.tabs.remove(tabId))
     chrome.tabs.update(STORE.captureTabIDs[ORIGIN.GARDEN][0], { active: true })
     STORE.captureTabIDs[source] = undefined
@@ -87,6 +103,7 @@ function captureFinished(source, messageObjects) {
         subject: source,
         type: 'capture_finished',
         objects: finalObjects,
+        mode: STORE.modes[source],
     })
 }
 
@@ -97,6 +114,7 @@ function handleExtensionMessage(message, sender) {
                 source: ORIGIN.SERVICE,
                 target: message.source, 
                 type: 'init',
+                mode: STORE.modes[message.source],
                 start_capture: STORE.captureTabIDs[message.source]?.includes(sender.tab.id),
                 lastCapturedObjectID: STORE.lastCapturedObjectID[message.source],
             }, sender.tab.id)

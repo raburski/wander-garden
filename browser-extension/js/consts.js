@@ -10,7 +10,6 @@ const ORIGIN = {
     TRIP_ADVISOR: 'trip_advisor_extension',
     GET_YOUR_GUIDE: 'get_your_guide_extension',
 
-    TRAVALA_FLIGHTS: 'travala_flights',
     MILES_AND_MORE: 'miles_and_more',
     RYANAIR: 'ryanair',
 }

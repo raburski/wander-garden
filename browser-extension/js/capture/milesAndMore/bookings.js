@@ -60,7 +60,6 @@ class MilesAndMoreBookingsPage extends Page {
             await sleep(200)
             const date = link.querySelector('.date').textContent
             const flight = await this.captureOpenFlight(date)
-            console.log('ff', flight)
             flights.push(flight)
         }
         return flights
