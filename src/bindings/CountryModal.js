@@ -63,14 +63,17 @@ export default function CountryModal({ countryCode, onClickAway }) {
             <Panel>
                 {stats.firstVisit ? <EmojiRow to={`/timeline/${stats.firstVisit.trip.id}`} emoji="❇️" value="First stay" right={getFormattedDate(stats.firstVisit.phase?.since)}/> : null}
                 {stats.lastVisit ? <EmojiRow to={`/timeline/${stats.lastVisit.trip.id}`} emoji="🕑" value="Last stay" right={getFormattedDate(stats.lastVisit.phase?.until)}/> : null}
-                {stats.totalTrips ? 
+                {stats.totalTrips > 0 ? 
                     <EmojiRow emoji="🔁" value="Number of trips" right={stats.totalTrips}/> : 
                     <EmojiRow emoji="🎒" value="I have travelled here" right={isCountryVisited ? '✅' : '⬜️'} onClick={() => setCountryTravelled(countryCode, !isCountryVisited)}/>
                 }
             </Panel>
-            <ModalPageButtons>
-                <Button icon={VscVersions} onClick={onGoToTimeline}>Show in timeline</Button>
-            </ModalPageButtons>
+            {stats.totalTrips > 0 ?
+                <ModalPageButtons>
+                    <Button icon={VscVersions} onClick={onGoToTimeline}>Show in timeline</Button>
+                </ModalPageButtons>
+                : null
+            }
         </ModalPage>
     )
 }
