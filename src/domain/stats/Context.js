@@ -2,7 +2,7 @@ import { onlyUnique } from "array"
 import countryFlagEmoji from "country-flag-emoji"
 import { SEASON, SEASON_TO_EMOJI, getDaysBetween, seasonForDate } from "date"
 import { getRegionForCountry } from "domain/badges"
-import { StayPlaceType, StayType, getAllStays } from "domain/stays"
+import { StayPlaceType, getAllStays } from "domain/stays"
 import { getAllCheckins } from "domain/swarm"
 import { onlyNonTransportation } from "domain/swarm/categories"
 import { getAllTrips } from "domain/trips"
@@ -31,10 +31,11 @@ function countryCodeFromPhase(phase) {
     return undefined
 }
 
-function getVisitedCountriesCodes(checkins, allStays) {
+function getVisitedCountriesCodes(checkins, allStays, travelledCountries) {
     const nonTransportCheckins = checkins.filter(onlyNonTransportation)
 
     return [
+        ...travelledCountries,
         ...nonTransportCheckins.map(checkin => checkin?.venue?.location?.cc.toLowerCase()),
         ...allStays.map(stay => stay.location.cc.toLowerCase()),
     ].filter(onlyUnique).filter(Boolean).reverse()
@@ -128,19 +129,25 @@ function getFavouriteRegions(trips) {
 export function StatsProvider({ children }) {
     const [stats, setStats] = useSyncedStorage(localStorageStats)
 
-    async function refresh() {
+    // Those are manually marked by the user on the map
+    const travelledCountries = stats.travelledCountries || []
+
+    async function refresh(updatedTravelledCountries) {
         const checkins = await getAllCheckins()
         const allStays = await getAllStays()
         const trips = await getAllTrips()
 
+        const _travelledCountries = updatedTravelledCountries || travelledCountries
+
         if (!trips || trips.length === 0) {
-            return await setStats({})
+            return await setStats({ travelledCountries: _travelledCountries, visitedCountries: _travelledCountries })
         }
 
         const longestTrip = getLongestTrip(trips)
 
         const newStats = {
-            visitedCountries: getVisitedCountriesCodes(checkins, allStays),
+            travelledCountries: _travelledCountries,
+            visitedCountries: getVisitedCountriesCodes(checkins, allStays, _travelledCountries),
             totalTrips: trips?.length || 0,
             totalDaysAway: getTotalDaysAway(trips),
             longestTrip,
@@ -153,9 +160,15 @@ export function StatsProvider({ children }) {
         await setStats(newStats)
     }
 
+    async function setCountryTravelled(countryCode, travelled) {
+        const updatedTravelledCountries = travelled ? [...travelledCountries, countryCode].filter(onlyUnique) : travelledCountries.filter(cc => cc !== countryCode)
+        await refresh(updatedTravelledCountries)
+    }
+
     const value = {
         stats,
         refresh,
+        setCountryTravelled,
     }
 
     return (
@@ -180,3 +193,11 @@ export function useVisitedCountryCodes() {
     return context.stats?.visitedCountries || []
 }
 
+export function useAllCountryCodes() {
+    return countryFlagEmoji.countryCodes
+}
+
+export function useSetCountryTravelled() {
+    const context = useContext(StatsContext)
+    return context.setCountryTravelled
+}

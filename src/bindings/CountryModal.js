@@ -9,6 +9,7 @@ import Button from 'components/Button'
 import EmojiRow from 'components/EmojiRow'
 import { getFormattedDate } from 'date'
 import { useTrips } from 'domain/trips'
+import { useSetCountryTravelled, useVisitedCountryCodes } from 'domain/stats'
 
 const Flag = styled('span')`
     margin-bottom: -5px;
@@ -47,9 +48,12 @@ function useCountryStatistics(countryCode) {
 
 export default function CountryModal({ countryCode, onClickAway }) {
     const navigate = useNavigate()
+    const countryCodes = useVisitedCountryCodes()
     const stats = useCountryStatistics(countryCode)
+    const setCountryTravelled = useSetCountryTravelled()
     if (!countryCode) return null
 
+    const isCountryVisited = countryCodes.includes(countryCode)
     const onGoToTimeline = () => navigate(`/timeline?cc=${countryCode}`)
     const country = countryFlagEmoji.get(countryCode)
     const header = <><Flag>{country.emoji}</Flag>{country.name}</>
@@ -59,7 +63,10 @@ export default function CountryModal({ countryCode, onClickAway }) {
             <Panel>
                 {stats.firstVisit ? <EmojiRow to={`/timeline/${stats.firstVisit.trip.id}`} emoji="❇️" value="First stay" right={getFormattedDate(stats.firstVisit.phase?.since)}/> : null}
                 {stats.lastVisit ? <EmojiRow to={`/timeline/${stats.lastVisit.trip.id}`} emoji="🕑" value="Last stay" right={getFormattedDate(stats.lastVisit.phase?.until)}/> : null}
-                <EmojiRow emoji="🔁" value="Number of trips" right={stats.totalTrips}/>
+                {stats.totalTrips ? 
+                    <EmojiRow emoji="🔁" value="Number of trips" right={stats.totalTrips}/> : 
+                    <EmojiRow emoji="🎒" value="I have travelled here" right={isCountryVisited ? '✅' : '⬜️'} onClick={() => setCountryTravelled(countryCode, !isCountryVisited)}/>
+                }
             </Panel>
             <ModalPageButtons>
                 <Button icon={VscVersions} onClick={onGoToTimeline}>Show in timeline</Button>

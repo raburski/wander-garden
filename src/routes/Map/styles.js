@@ -44,11 +44,12 @@ export default function getStyles(countryCodes, theme) {
       stroke: ${theme.map.border};
       stroke-width: 1;
       fill-rule: evenodd;
+      cursor: pointer;
     }
     
-    // .landxx:hover {
-    //  fill: ${theme.map.normal.highlight};
-    // }
+    .landxx:hover {
+     fill: ${theme.map.normal.highlight};
+    }
     /*
      * Styles for coastlines of islands and continents with no borders on them
      * (all of them should also belong to the class "landxx" - to allow for all land to be modified at once by refining "landxx" style's definition further down)
