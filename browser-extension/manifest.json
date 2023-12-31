@@ -77,7 +77,8 @@
       {
         "matches":[
             "*://*.travala.com/*",
-            "*://*.agoda.com/*"
+            "*://*.agoda.com/*",
+            "*://*.ryanair.com/*"
         ],
         "run_at": "document_start",
         "world": "MAIN",
@@ -97,6 +98,22 @@
           "js/capture/travala/flights.js",
           "js/capture/travala/bookings.js",
           "js/capture/travala/index.js"
+        ]
+      },
+      {
+        "matches":[
+            "*://*.ryanair.com/*"
+        ],
+        "run_at": "document_start",
+        "js":[
+          "js/airports.js",
+          "js/consts.js",
+          "js/ui.js",
+          "js/core.js",
+          "js/country.js",
+          "js/timezone.js",
+          "js/capture/ryanair/manage.js",
+          "js/capture/ryanair/index.js"
         ]
       },
       {
@@ -162,7 +179,7 @@
     },
     "web_accessible_resources": [{
       "resources": ["inject/XMLExtract.js"],
-      "matches": ["*://*.travala.com/*"]
+      "matches": ["*://*.travala.com/*", "*://*.ryanair.com/*"]
     },
     {
       "resources": ["inject/windowExtract.js", "inject/locationExtract.js"],

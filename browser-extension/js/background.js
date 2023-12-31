@@ -51,7 +51,8 @@ const ORIGIN_URL = {
     },
     [ORIGIN.GET_YOUR_GUIDE]: 'https://www.getyourguide.com/customer-bookings/',
     [ORIGIN.TRIP_ADVISOR]: 'https://www.tripadvisor.com/Bookings',
-    [ORIGIN.MILES_AND_MORE]: 'https://www.miles-and-more.com/row/en/account/my-bookings.html'
+    [ORIGIN.MILES_AND_MORE]: 'https://www.miles-and-more.com/row/en/account/my-bookings.html',
+    [ORIGIN.RYANAIR]: 'https://www.ryanair.com/gb/en/trip/manage',
 }
 
 function handleGardenMessage(message, sender) {

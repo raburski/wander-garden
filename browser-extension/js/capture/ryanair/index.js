@@ -1,0 +1,5 @@
+initPages(
+    ORIGIN.RYANAIR,
+    RyanairManagePage,
+    
+)
