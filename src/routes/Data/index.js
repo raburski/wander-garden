@@ -2,7 +2,7 @@ import { useState } from "react"
 import { styled } from 'goober'
 import { SiSwarm } from 'react-icons/si'
 import { TbDownload, TbCloudUpload, TbTrash, TbRefresh, TbShare } from 'react-icons/tb'
-import { FiExternalLink, FiMapPin } from 'react-icons/fi'
+import { FiExternalLink, FiMapPin, FiRotateCcw, FiX } from 'react-icons/fi'
 import moment from 'moment'
 import { getDaysAndRangeText } from 'date'
 import Page from 'components/Page'
@@ -19,7 +19,7 @@ import TextField from 'components/TextField'
 import { useDownload, useCapture, useTrash, useUpload } from "./hooks"
 import { TITLES } from './consts'
 import SquareImage from "components/SquareImage"
-import { StayLogoURL, StayPlaceType, StayType, getStayIcon, useShowCaptureStartModal, useStays } from "domain/stays"
+import { StayLogoURL, StayPlaceType, StayType, getStayIcon, useShowCaptureStartModal, useStays, useUpdateStay } from "domain/stays"
 import { downloadString } from "files"
 import CustomStayModal from "domain/stays/CustomStayModal"
 import { useNavigate } from "react-router"
@@ -97,6 +97,7 @@ function getMapsQuery(location) {
 
 function StayActions({ stay }) {
     const [_, range] = getDaysAndRangeText(stay.since, stay.until)
+    const updateStay = useUpdateStay()
     const year = moment(stay.since).format('YYYY')
     const onExternalClick = () => window.open(stay.url)
     const onMapClick = () => window.open(`https://maps.google.com/?q=${getMapsQuery(stay.location)}`)
@@ -110,6 +111,10 @@ function StayActions({ stay }) {
         navigator.clipboard.writeText(link)
         toast.success('Link copied to your clipboard')
     }
+    async function onToggleDisabled() {
+        const updatedStay = { ...stay, disabled: !stay.disabled }
+        await updateStay(updatedStay)
+    }
 
     return (
         <StayActionsContainer>
@@ -122,6 +127,9 @@ function StayActions({ stay }) {
             <PinButton icon={TbDownload} onClick={onDownloadClick} tooltip="Download stay" tooltipPosition="left" tooltipOffset={100}/>
             <Separator />
             <PinButton icon={TbShare} onClick={onShareClick} tooltip="Copy stay link" tooltipPosition="left" tooltipOffset={100}/>
+            <Separator />
+            <Separator />
+            <PinButton icon={stay.disabled ? FiRotateCcw : FiX} onClick={onToggleDisabled} tooltip={stay.disabled ? "Enable" : "Disable"} tooltipPosition="left" tooltipOffset={63}/>
         </StayActionsContainer>
     )
 }
@@ -131,12 +139,13 @@ function formattedMoney(money) {
 }
 
 function StayRow({ stay, icon, ...props }) {
+    const title = stay.accomodation.name
     const guestsSubtitle = (stay.totalGuests && stay.totalGuests > 1) ? `for ${stay.totalGuests} people ` : ''
     const priceSubtitle = stay.price ? `for ${formattedMoney(stay.price)} ` : ''
     const formattedStayLocation = stay.location ? formattedLocation(stay.location) : undefined
     const locationSubtitle = formattedStayLocation ? `in ${formattedLocation(stay.location)}` : ''
     const subtitle = stay.placeType === StayPlaceType.Home ? 'home sweet home...' : `${guestsSubtitle}${priceSubtitle}${locationSubtitle}`
-    return <InfoRow icon={icon} title={stay.accomodation.name} subtitle={subtitle} right={<StayActions stay={stay}/>} {...props}/>
+    return <InfoRow icon={icon} title={title} subtitle={subtitle} right={<StayActions stay={stay}/>} {...props}/>
 }
 
 function isCheckingMatchingPhrase(phrase) {

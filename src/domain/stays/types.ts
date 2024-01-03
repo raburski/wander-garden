@@ -40,6 +40,7 @@ export interface Stay {
     totalGuests?: number
     origin?: DataOrigin // DEFAULT: Captured
     placeType?: StayPlaceType // DEFAULT: Accomodation
+    disabled?: boolean
 }
 
 export interface ImportedStay extends Stay {}

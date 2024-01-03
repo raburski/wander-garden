@@ -5,7 +5,7 @@ import { IndexedDBStorageAdapter, StorageSet, useSyncedStorage } from "storage"
 import { Stay } from "./types"
 import { TbBrandBooking, TbBrandAirbnb, TbDownload, TbCloudUpload, TbTrash, TbRefresh } from 'react-icons/tb'
 import { FiExternalLink, FiMapPin } from 'react-icons/fi'
-import { MdHotel, MdOutlineUploadFile } from 'react-icons/md'
+import { MdHotel, MdOutlineUploadFile, MdRemoveCircleOutline } from 'react-icons/md'
 import { DataOrigin } from "type"
 import { LocationAccuracy } from "domain/location"
 
@@ -51,6 +51,9 @@ export function getStayTypeIcon(type: StayType) {
 }
 
 export function getStayIcon(stay: Stay, type: StayType) {
+    if (stay.disabled) {
+        return MdRemoveCircleOutline
+    }
     switch (stay.origin) {
         case DataOrigin.File:
             return MdOutlineUploadFile

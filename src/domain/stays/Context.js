@@ -150,6 +150,13 @@ export function StaysProvider({ children }) {
         await setStays(nonTypeStays)
     }
 
+    async function updateStay(updatedStay) {
+        if (!isStayType(updatedStay)) return null
+
+        const allStays = [...stays.filter(s => s.id !== updatedStay.id), updatedStay]
+        await setStays(allStays, [updatedStay.id])
+    }
+
     const value = {
         capturedStays,
         startCapture,
@@ -162,6 +169,7 @@ export function StaysProvider({ children }) {
         replaceAllStays,
         stays,
         clearStaysType,
+        updateStay,
     }
 
     return (
@@ -236,4 +244,9 @@ export function useClearStaysType(type) {
 export function useReplaceAllStays() {
     const context = useContext(StaysContext)
     return (stays = []) => context.replaceAllStays(stays)
+}
+
+export function useUpdateStay() {
+    const context = useContext(StaysContext)
+    return context.updateStay
 }
