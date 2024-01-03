@@ -27,6 +27,7 @@ import Footer from "components/Footer"
 import toast from "react-hot-toast"
 import Base64 from "Base64"
 import { MODAL, useOpenModal } from "domain/modals"
+import { getWebsiteRoot } from "environment"
 
 const NoStaysContainer = styled('div')`
     display: flex;
@@ -105,9 +106,7 @@ function StayActions({ stay }) {
     }
     const onShareClick = () => {
         const base64 = Base64.encode(JSON.stringify(stay))
-        const host = window.location.host
-        const protocol = window.location.protocol
-        const link = `${protocol}//${host}/stays/${stay.id}?data=${base64}`
+        const link = `${getWebsiteRoot()}/stays/${stay.id}?data=${base64}`
         navigator.clipboard.writeText(link)
         toast.success('Link copied to your clipboard')
     }

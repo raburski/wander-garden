@@ -2,7 +2,7 @@ import { styled, css } from 'goober'
 import { VscDashboard, VscPulse, VscVersions } from 'react-icons/vsc'
 import { FaDiscord, FaTwitter } from 'react-icons/fa'
 import { SlClose, SlSettings } from 'react-icons/sl'
-import { MdHotel, MdOutlineDownloading } from 'react-icons/md'
+import { MdOutlineDownloading } from 'react-icons/md'
 import { BsAward } from 'react-icons/bs'
 import Logo from './Logo'
 import StylelessLink from 'components/StylelessLink'
@@ -10,7 +10,7 @@ import PillLink from 'components/PillLink'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Button from 'components/Button'
-import { isDEV } from 'environment'
+import { isDEV, useIsPresent } from 'environment'
 import { useOnboardingFinishedSetting, useRunningDemoSetting } from 'domain/settings'
 import { useClearData } from 'domain/swarm'
 import { useReplaceAllStays } from 'domain/stays'
@@ -148,6 +148,7 @@ const CLOSED_SIDEBAR_STYLE = { marginLeft: -200}
 
 function SideMenu({ onLinkClick, ...props }) {
     const [runningDemo, setRunningDemo] = useRunningDemoSetting()
+    const isPresent = useIsPresent()
     const [_, setOnboardingFinished] = useOnboardingFinishedSetting()
     const clearSwarmData = useClearData()
     const replaceAllStays = useReplaceAllStays()
@@ -157,6 +158,9 @@ function SideMenu({ onLinkClick, ...props }) {
         await replaceAllStays([])
         await refresh()
         await setRunningDemo(false)
+    }
+    if (isPresent) {
+        return null
     }
     return (
         <Container {...props}>

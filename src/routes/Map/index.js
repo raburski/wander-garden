@@ -6,11 +6,15 @@ import MapSVG from './map.jsx'
 import { useThemeColors } from 'domain/theme'
 import getStyles from './styles'
 import CountryModal from 'bindings/CountryModal'
+import PinButton from 'components/PinButton'
+import { TbShare } from 'react-icons/tb'
+import toast from 'react-hot-toast'
+import { getWebsiteRoot, useIsPresent } from 'environment'
+import { useSearchParams } from 'react-router-dom'
 
-function Map({ onCountryClick }) {
+function Map({ onCountryClick, countryCodes }) {
     const listeners = useRef([])
     const themeColors = useThemeColors()
-    const countryCodes = useVisitedCountryCodes()
     const allCountryCodes = useAllCountryCodes()
     const mapStyles = getStyles(countryCodes, themeColors)
 
@@ -38,15 +42,35 @@ function Map({ onCountryClick }) {
     )
 }
 
+function useParamsCountries() {
+    const [params] = useSearchParams()
+    const countries = params.get('countries')
+    if (!countries) {
+        return null
+    }
+    return countries.toUpperCase().split(',')
+}
+
 export default function Context() {
     const [openedCountry, setOpenedCountry] = useState()
-    const onCountryClick = (cc) => setOpenedCountry(cc)
+    const isPresent = useIsPresent()
+    const paramsCountryCodes = useParamsCountries()
+    const countryCodes = useVisitedCountryCodes()
+    const onCountryClick = (cc) => {
+        if (!isPresent) { setOpenedCountry(cc) }
+    }
     const onClickAway = (cc) => setOpenedCountry(undefined)
+    const onShareClick = () => {
+        const codes = countryCodes.map(c => c.toLowerCase()).join(',')
+        const link = `${getWebsiteRoot()}/map?mode=present&countries=${codes}`
+        navigator.clipboard.writeText(link)
+        toast.success('Link copied to your clipboard')
+    }
 
     return (
-        <Page header="Map">
+        <Page header="Map" right={isPresent ? null : <PinButton icon={TbShare} onClick={onShareClick} tooltip="Share current map" tooltipPosition="left" tooltipOffset={122}/>}>
             <Panel contentStyle={{height: '80vh'}}>
-                <Map onCountryClick={onCountryClick}/>
+                <Map onCountryClick={onCountryClick} countryCodes={isPresent ? paramsCountryCodes : countryCodes} />
             </Panel>
             <CountryModal countryCode={openedCountry} onClickAway={onClickAway} />
         </Page>

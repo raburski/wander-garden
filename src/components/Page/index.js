@@ -51,6 +51,7 @@ const Container = styled(motion.div)`
 
 const Right = styled('div')`
     font-size: 28px;
+    align-self: center;
 `
 
 export default function Page({ children, header, showBackButton = false, right = null, onBack = null, ...props }) {

@@ -3,12 +3,14 @@ import OnboardingUI from './UI'
 import toast from "react-hot-toast"
 import { useExtensionStatus } from "domain/extension"
 import { useReplaceAll } from "domain/refresh"
+import { useIsPresent } from "environment"
 
 
 export default function OnboardingProvider({ children }) {
     const [onboardingFinished, setOnboardingFinished] = useOnboardingFinishedSetting()
     const [runningDemo, setRunningDemo] = useRunningDemoSetting()
     const extensionStatus = useExtensionStatus()
+    const isPresent = useIsPresent()
 
     const replaceAll = useReplaceAll()
 
@@ -21,5 +23,5 @@ export default function OnboardingProvider({ children }) {
         toast.dismiss(toastId)
         await replaceAll(allData)
     }
-    return (onboardingFinished || runningDemo) ? children : <OnboardingUI onFinished={onFinished} extensionStatus={extensionStatus} onDemo={onDemo}/>
+    return (onboardingFinished || runningDemo || isPresent) ? children : <OnboardingUI onFinished={onFinished} extensionStatus={extensionStatus} onDemo={onDemo}/>
 }
