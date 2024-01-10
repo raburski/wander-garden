@@ -13,11 +13,18 @@ import usePersistedScroll from "hooks/usePersistedScroll"
 import { useTrips } from "domain/trips"
 import { useTitle } from "domain/titles"
 import Footer from "components/Footer"
-import TripPanel from "./TripPanel"
+import TripPanelSmall from "./TripPanel.small"
+import TripPanelLarge from "./TripPanel.large"
 import { styled } from "goober"
 import moment from "moment"
+import { useSetting } from "domain/settings"
+import Segment from "components/Segment"
 
-function Trip({ trip }) {
+function TripPanel({ mode, ...props }) {
+    return mode === "small" ? <TripPanelSmall {...props}/> : <TripPanelLarge {...props}/>
+}
+
+function Trip({ trip, mode }) {
     const title = useTitle(trip && trip.id)
     const highlights = trip.highlights.reversed()
     const locationTitle = titleFromLocationHighlights(highlights)
@@ -25,7 +32,9 @@ function Trip({ trip }) {
     const [days, range] = getDaysAndRangeText(trip.since, trip.until)
 
     return (
-        <TripPanel to={`/timeline/${trip.id}`}
+        <TripPanel
+            mode={mode}
+            to={`/timeline/${trip.id}`}
             title={title ? title : locationTitle}
             subtitle={title ? locationTitle : null}
             countryCodes={countryCodes}
@@ -65,19 +74,23 @@ const YearTitle = styled('h2')`
     color: ${props => props.theme.text};
 `
 
-function YearGroup({ year, trips }) {
+const ModeSegment = styled(Segment)`
+    margin-top: -14px;
+`
+
+function YearGroup({ year, trips, mode }) {
     return (
         <YearContainer>
             <YearTitle>{year}</YearTitle>
             <YearTripsContainer>
-                {trips.map(trip => <Trip key={trip.id} trip={trip} />)}
+                {trips.map(trip => <Trip key={trip.id} trip={trip} mode={mode}/>)}
             </YearTripsContainer>
         </YearContainer>
     )
 }
 
 
-function Trips({ selectedCountryCode }) {
+function Trips({ selectedCountryCode, mode }) {
     const trips = useTrips()
     const filteredTrips = selectedCountryCode ? trips.filter(trip => trip.highlights.find(h => h.location.cc.toLowerCase() === selectedCountryCode)) : trips
     const groupedTrips = groupByYear(filteredTrips)
@@ -85,14 +98,14 @@ function Trips({ selectedCountryCode }) {
     return (
         <TripsContainer>
             {years.map(year => (
-                <YearGroup key={year} year={year} trips={groupedTrips[year]}/>
+                <YearGroup key={year} year={year} trips={groupedTrips[year]} mode={mode}/>
             ))}
         </TripsContainer>
     )
 }
 
 const PERSIST_SCROLL_KEY = 'timeline'
-function TimelineContent({ countryCodes }) {
+function TimelineContent({ countryCodes, timelineMode }) {
     usePersistedScroll(PERSIST_SCROLL_KEY)
     const [params] = useSearchParams()
     const selectedCountryCode = params.get('cc')?.toLowerCase()
@@ -103,17 +116,24 @@ function TimelineContent({ countryCodes }) {
                 countryCodes={countryCodes}
                 selectedCountryCode={selectedCountryCode}
             />
-            <Trips selectedCountryCode={selectedCountryCode}/>
+            
+            <Trips mode={timelineMode} selectedCountryCode={selectedCountryCode}/>
         </>
     )
 }
 
+const MODE_TITLES = ["🏳️", "🏞️"]
 export default function TimelinePage(props) {
     const countryCodes = useVisitedCountryCodes()
+    const [timelineMode, setTimelineMode] = useSetting('timeline_mode', 'small')
+    const selectedModeIndex = timelineMode === 'small' ? 0 : 1
+    const onModeChange = (index) => {
+        setTimelineMode(index === 0 ? 'small' : 'large')
+    }
 
     return (
-        <Page header="Timeline" {...props}>
-            {countryCodes.length === 0 ? <NoTimelineContent /> : <TimelineContent countryCodes={countryCodes}/>}
+        <Page header="Timeline" right={<ModeSegment onClick={onModeChange} titles={MODE_TITLES} selectedIndex={selectedModeIndex}/>} {...props}>
+            {countryCodes.length === 0 ? <NoTimelineContent /> : <TimelineContent countryCodes={countryCodes} timelineMode={timelineMode}/>}
             <Footer />
         </Page>
     )

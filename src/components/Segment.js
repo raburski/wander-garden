@@ -20,10 +20,10 @@ function getSegmentStyle(index, length) {
     }
 }
 
-export default function Segment({ selectedIndex, style, titles = [], icons = [], onClick }) {
+export default function Segment({ selectedIndex, style, titles = [], icons = [], onClick, ...props }) {
     const items = Array(Math.max(titles.length, icons.length)).fill(0)
     return (
-        <SegmentContainer style={style}>
+        <SegmentContainer style={style} {...props}>
             {items.map((_, index) => {
                 const title = titles[index]
                 const icon = icons[index]
