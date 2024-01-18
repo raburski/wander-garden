@@ -1,14 +1,12 @@
 import PinButton from "components/PinButton"
-import countryFlagEmoji from "country-flag-emoji"
 import { styled } from 'goober'
-import colors from "../../colors"
-import { Row } from "../../components/Panel"
+import { BaseRow } from "../../components/Panel"
 import { TbDotsVertical } from 'react-icons/tb'
-import { MdNoteAdd, MdOutlineEditNote } from "react-icons/md"
+import { MdOutlineEditNote } from "react-icons/md"
 import { motion } from "framer-motion"
 import Spacer from "components/Spacer"
 
-const Line = styled(Row)`
+const Line = styled(BaseRow)`
     border: 0px solid;
     padding-left: 22px;
     padding-right: 16px;
@@ -75,7 +73,7 @@ const LineRow = styled('div')`
     align-items: center;
 `
 
-export default function PhaseLine({ emoji, icon, to, title, note, onClick, days, range, onMoreClick, onNoteClick, children, ...props }) {
+export default function PhaseLine({ emoji, icon, to, title, subtitle, note, onClick, days, range, onMoreClick, onNoteClick, children, ...props }) {
     const Icon = icon
     return (
         <Line onClick={onClick} initial="rest" whileHover="hover" animate="rest" to={to} {...props}>
@@ -84,10 +82,15 @@ export default function PhaseLine({ emoji, icon, to, title, note, onClick, days,
                 <TitleContent>
                     <Title>{title}</Title>
                     {(days || range) ?
-                    <Subtitle>
-                        {days}, {range}
-                    </Subtitle> 
-                : null}
+                        <Subtitle>
+                            {days}, {range}
+                        </Subtitle> 
+                    : null}
+                    {(subtitle) ?
+                        <Subtitle>
+                            {subtitle}
+                        </Subtitle> 
+                    : null}
                 </TitleContent>
                 {children}
                 <Spacer />

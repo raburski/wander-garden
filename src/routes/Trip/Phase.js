@@ -8,6 +8,7 @@ import { TripPhaseEventType } from 'domain/trips/types'
 import { TourLogoURL } from 'domain/tours/types'
 import createEmojiIcon from 'components/createEmojiIcon'
 import { useEditSubjectNote, useSubjectNote } from 'domain/notes'
+import FlightsPhaseLine from './FlightsPhaseLine'
 
 const QuestionMark = styled(FaQuestion)`
     color: red;
@@ -42,7 +43,7 @@ const TourPhaseLine = styled(PhaseLine)`
     border-radius: 8px;
     margin-left: 12px;
     margin-right: 12px;
-    padding-left: 34px;
+    padding-left: 22px;
     padding-right: 6px;
 `
 
@@ -99,6 +100,7 @@ export default function Phase({ phase, onClick, onMouseEnter, ...props }) {
     if (!phase.stay) {
         return (
             <>
+                {phase.arriveBy && phase.arriveBy.length > 0 ? <FlightsPhaseLine flights={phase.arriveBy}/> : null}
                 <UnknownPhaseLine phase={phase} onClick={onClick}/>
                 {significantEvents.map(event => <EventLine event={event} onNoteClick={() => editNote(getEventSubjectId(event))}/>)}
             </>
@@ -108,6 +110,7 @@ export default function Phase({ phase, onClick, onMouseEnter, ...props }) {
     const [days, range] = getDaysAndRangeText(phase.stay.since, phase.stay.until)
     return (
         <>
+            {phase.arriveBy && phase.arriveBy.length > 0 ? <FlightsPhaseLine flights={phase.arriveBy}/> : null}
             <PhaseLine icon={getStayIcon(phase.stay, phase.stay.type)} onNoteClick={() => editNote(phase.stay.id)} title={getPhaseTitle(phase)} days={days} range={range} note={note?.highlight} onClick={onClick} onMouseEnter={onMouseEnter}/>
             {significantEvents.map(event => <EventLine event={event} onNoteClick={() => editNote(getEventSubjectId(event))}/>)}
         </>

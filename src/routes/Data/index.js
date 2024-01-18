@@ -139,7 +139,7 @@ function formattedMoney(money) {
 }
 
 function StayRow({ stay, icon, ...props }) {
-    const title = stay.accomodation.name
+    const title = `${stay.disabled ? '[disabled] ' : ''}${stay.accomodation.name}`
     const guestsSubtitle = (stay.totalGuests && stay.totalGuests > 1) ? `for ${stay.totalGuests} people ` : ''
     const priceSubtitle = stay.price ? `for ${formattedMoney(stay.price)} ` : ''
     const formattedStayLocation = stay.location ? formattedLocation(stay.location) : undefined

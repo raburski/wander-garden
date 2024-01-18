@@ -8,6 +8,8 @@ import { isDateBetween } from "date"
 import { getAllTours } from "domain/tours"
 import { Tour } from "domain/tours/types"
 import { isSignificant, onlyNonTransportation } from "domain/swarm/categories"
+import { getAllFlights } from "domain/flights"
+import { Flight } from "domain/flights/types"
 
 interface CheckinConvertContext { location: Location }
 function convertCheckinsIntoStays(checkins: Checkin[]): Stay[] {
@@ -116,15 +118,23 @@ function getPhaseEvents(since: string, until: string, checkins: Checkin[], tours
     return events
 }
 
-function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[]) {
+function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[], flights: Flight[]) {
     let phases: TripPhase[] = []
+
+    // TODO: add sleeping on the plane automatic phases
 
     const firstStay = stays[0]
     phases.push({ 
         stay: firstStay, 
         since: firstStay.since, 
         until: firstStay.until,
-        events: getPhaseEvents(firstStay.since, firstStay.until, checkins, tours)
+        events: getPhaseEvents(firstStay.since, firstStay.until, checkins, tours),
+        arriveBy: flights.filter(f => 
+            moment(f.arrival.scheduled)
+                .isBetween(
+                    moment(firstStay.since).subtract(72, 'hours'), 
+                    moment(firstStay.since).add(24, 'hours'))
+        ),
     })
 
     for (let currentIndex = 1; currentIndex < stays.length; currentIndex++) {
@@ -140,11 +150,21 @@ function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[]) {
                 lastPhase.stay!.until = currentStay.until
                 lastPhase.events = getPhaseEvents(lastPhase.since, currentStay.until, checkins, tours)
             } else {
+                console.log(currentStay.accomodation?.name)
+                console.log(moment(currentStay.since).subtract(24, 'hours').format(), 
+                moment(currentStay.since).add(24, 'hours').format())
+                console.log(flights)
                 phases.push({ 
                     stay: currentStay, 
                     since: currentStay.since, 
                     until: currentStay.until,
                     events: getPhaseEvents(currentStay.since, currentStay.until, checkins, tours),
+                    arriveBy: flights.filter(f => 
+                        // UNFUCK TIMEZONES ETC
+                        moment(f.arrival.scheduled).isBetween(
+                            moment(currentStay.since).subtract(24, 'hours'), 
+                            moment(currentStay.since).add(24, 'hours'))
+                    )
                 })
             }
         } else {
@@ -159,6 +179,11 @@ function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[]) {
                 since: currentStay.since, 
                 until: currentStay.until,
                 events: getPhaseEvents(currentStay.since, currentStay.until, checkins, tours),
+                arriveBy: flights.filter(f => 
+                    moment(f.arrival.scheduled).isBetween(
+                        moment(currentStay.since).subtract(24, 'hours'), 
+                        moment(currentStay.since).add(24, 'hours'))
+                )
              })
         }
     }
@@ -167,7 +192,7 @@ function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[]) {
 }
 
 const MIN_BETWEEN_CHEKINS = 5
-function groupStays(allCheckins: Checkin[], tours: Tour[]) {
+function groupStays(allCheckins: Checkin[], tours: Tour[], flights: Flight[]) {
     let checkins = [...allCheckins.filter(onlyNonTransportation)]
     return {
         pattern: [
@@ -219,11 +244,20 @@ function groupStays(allCheckins: Checkin[], tours: Tour[]) {
 
             // const nonTransportCheckins = filteredCheckins.filter(onlyNonTransportation)
             const filteredTours = tours.filter(tour => {
-                return moment(tour.date).isBetween(stays.first().since, stays.last().until)
+                return moment(tour.date)
+                    .isBetween(stays.first().since, stays.last().until)
             })
 
-            const phases = getPhases(stays, filteredCheckins, filteredTours)
+            const filteredFlights = flights.filter(flight => {
+                return moment(flight.departure.scheduled)
+                    .isBetween(
+                        moment(stays.first().since).subtract(2, "days"), 
+                        moment(stays.last().until).add(1, "days"))
+            })
+
+            const phases = getPhases(stays, filteredCheckins, filteredTours, filteredFlights)
             const highlights = getHighlights(stays, filteredCheckins)
+
             return {
                 id: `trip:${stays[0].id}`,
                 since: phases.first().since,
@@ -239,8 +273,13 @@ export default async function getTrips(): Promise<Trip[]> {
     const stays = await getAllStays()
     const checkins = await getAllCheckins()
     const tours = await getAllTours()
+    const flights = await getAllFlights()
     // Sorted: oldest to newest
-    const sortedStays = stays.filter((s: Stay) => !s.disabled).sort((a: Stay, b: Stay) => moment(a.since).diff(moment(b.since)))
-    const trips = arrayQueryReplace(groupStays(checkins, tours), sortedStays)
+    const sortedStays = stays
+        .filter((s: Stay) => !s.disabled)
+        .sort((a: Stay, b: Stay) => moment(a.since).diff(moment(b.since)))
+    const sortedFlights = flights
+        .sort((a: Flight, b: Flight) => moment(a.departure.scheduled).diff(moment(b.departure.scheduled)))
+    const trips = arrayQueryReplace(groupStays(checkins, tours, sortedFlights), sortedStays)
     return trips
 }

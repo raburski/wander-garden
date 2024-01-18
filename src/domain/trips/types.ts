@@ -1,3 +1,4 @@
+import { Flight } from "domain/flights/types"
 import { Location } from "domain/location"
 import { Stay } from "domain/stays"
 import { Checkin } from "domain/swarm"
@@ -30,6 +31,7 @@ export interface TripPhase {
     until: string,
     stay?: Stay,
     events: TripPhaseEvent[],
+    arriveBy?: Flight[],
 }
 
 export interface Trip { 

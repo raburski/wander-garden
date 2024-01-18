@@ -86,6 +86,8 @@ const MapComponent = forwardRef(function MyMapComponent({ markers, initPositions
   
     useEffect(() => {
         const google = window.google
+        if (!google) return
+
         const { center, zoom } = getZoomAndBounds(initPositions)
 
         const map = new google.maps.Map(ref.current, {
@@ -115,6 +117,7 @@ const MapComponent = forwardRef(function MyMapComponent({ markers, initPositions
     }, [])
 
     useEffect(() => {
+        if (!mapRef.current) return
         mapRef.current.setOptions({ styles })
     }, [styles])
 

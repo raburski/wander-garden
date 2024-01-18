@@ -14,9 +14,9 @@ export default function Flights({ ...props }) {
 
     return (
         <Panel header="Flights" {...props}>
-            {isDEV() ? <ContentRow image={<Logo src={FlightLogoURL[FlightType.Travala]}/>} title={FlightName[FlightType.Travala]} onClick={createSelectFlightType(FlightType.Travala)}/> : null}
+            <ContentRow image={<Logo src={FlightLogoURL[FlightType.Travala]}/>} title={FlightName[FlightType.Travala]} onClick={createSelectFlightType(FlightType.Travala)}/>
             <ContentRow image={<Logo src={FlightLogoURL[FlightType.MilesAndMore]}/>} title={FlightName[FlightType.MilesAndMore]} onClick={createSelectFlightType(FlightType.MilesAndMore)}/>
-            {isDEV() ? <ContentRow image={<Logo src={FlightLogoURL[FlightType.Ryanair]}/>} title={FlightName[FlightType.Ryanair]} onClick={createSelectFlightType(FlightType.Ryanair)}/> : null}
+            <ContentRow image={<Logo src={FlightLogoURL[FlightType.Ryanair]}/>} title={FlightName[FlightType.Ryanair]} onClick={createSelectFlightType(FlightType.Ryanair)}/>
         </Panel>
     )
 }

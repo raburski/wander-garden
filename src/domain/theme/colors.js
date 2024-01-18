@@ -18,7 +18,7 @@ const colors = {
         black: '#000000',
     },
     primary: {
-        lighter: '#ebf2ee',
+        lighter: '#e9f7ef',
         light: '#d5ebe0',
         default: '#4fa177',
         dark: '#215238',

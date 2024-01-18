@@ -65,8 +65,6 @@ export const StaticRow = styled(motion.div)`
     flex-direction: row;
     align-items: center;
 
-    border-bottom: 0px solid ${props => props.theme.border};
-    border-top: 1px solid ${props => props.theme.border};
     padding: 4px;
     padding-left: 10px;
     margin-top: -1px;
@@ -83,8 +81,6 @@ export const LinkRow = styled(Link)`
     flex-direction: row;
     align-items: center;
 
-    border-bottom: 0px solid ${props => props.theme.border};
-    border-top: 1px solid ${props => props.theme.border};
     padding: 4px;
     padding-left: 10px;
 
@@ -110,8 +106,6 @@ export const ClickRow = styled(motion.div)`
     flex-direction: row;
     align-items: center;
 
-    border-bottom: 0px solid ${props => props.theme.border};
-    border-top: 1px solid ${props => props.theme.border};
     padding: 4px;
     padding-left: 10px;
     margin-top: -1px;
@@ -131,7 +125,7 @@ export const ClickRow = styled(motion.div)`
     }
 `
 
-export function Row({ to, onClick, ...props }) {
+export function BaseRow({ to, onClick, ...props }) {
     if (to) {
         return <LinkRow to={to} {...props}/>
     } else if (onClick) {
@@ -140,3 +134,8 @@ export function Row({ to, onClick, ...props }) {
         return <StaticRow {...props}/>
     }
 }
+
+export const Row = styled(BaseRow)`
+    border-bottom: 0px solid ${props => props.theme.border};
+    border-top: 1px solid ${props => props.theme.border};
+`

@@ -116,7 +116,6 @@ function TimelineContent({ countryCodes, timelineMode }) {
                 countryCodes={countryCodes}
                 selectedCountryCode={selectedCountryCode}
             />
-            
             <Trips mode={timelineMode} selectedCountryCode={selectedCountryCode}/>
         </>
     )

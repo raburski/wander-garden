@@ -79,7 +79,7 @@ export default function Capture() {
             <ExtensionContent />
             <Stays />
             <Tours />
-            {isDEV() ? <Flights /> : null}
+            <Flights />
             <Footer />
         </Page>
     )
