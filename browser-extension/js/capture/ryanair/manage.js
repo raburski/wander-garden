@@ -50,6 +50,7 @@ class RyanairManagePage extends Page {
     onNetworkCaptured(url, data) {
         const ORDERS_URL = 'orders/v2/orders'
         if (!url.includes(ORDERS_URL)) return
+        if (!url.includes('active=false')) return
         
         const json = JSON.parse(data)
         const flights = json.items

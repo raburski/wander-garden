@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router'
 import SquareImage from 'components/SquareImage'
 import PinButton from 'components/PinButton'
 import { useExtensionStatus, Status } from 'domain/extension'
+import { TbRefresh } from 'react-icons/tb'
 
 const Logo = styled('img')`
     width: 112px;
@@ -77,12 +78,15 @@ function WorkingExtensionRequired({ onCancel }) {
         navigate('/capture')
         onCancel()
     }
+    const onRefresh = () => {
+        window.location.reload()
+    }
     return (
         <ExtensionRequiredContainer>
             <SquareImage src="/3d/puzzle.png"/>
             {EXTENSION_REQ_COPY}
             <ModalPageButtons>
-                <Button flat onClick={onCancel}>Cancel</Button>
+                <Button icon={TbRefresh} onClick={onRefresh}>Refresh website</Button>
                 <Button icon={SlPuzzle} onClick={onGoToExtension}>Go to extension</Button>
             </ModalPageButtons>
         </ExtensionRequiredContainer>

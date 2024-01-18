@@ -23,6 +23,10 @@ const colors = {
         default: '#4fa177',
         dark: '#215238',
         darker: '#153826',
+    },
+    blue: {
+        light: '#e6f3f5',
+        dark: '#0b3b42'
     }
 }
 
@@ -42,6 +46,9 @@ export const LIGHT = {
         default: colors.primary.default,
         highlight: colors.primary.lighter,
         active: colors.primary.light,
+    },
+    secondary: {
+        highlight: colors.blue.light,
     },
     text: colors.neutral.black,
     border: colors.border.normal,
@@ -68,6 +75,9 @@ export const DARK = {
     primary: {
         highlight: colors.primary.darker,
         active: colors.primary.dark,
+    },
+    secondary: {
+        highlight: colors.blue.dark,
     },
     text: colors.neutral.lightest,
     border: colors.border.dark,

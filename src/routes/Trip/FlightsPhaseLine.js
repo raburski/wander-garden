@@ -1,12 +1,11 @@
 import { styled } from "goober"
 import PhaseLine from "./PhaseLine"
 import createEmojiIcon from "components/createEmojiIcon"
-import moment from "moment"
 import getAirport from "domain/flights/airports"
-import { formatInLocalTimezone, getOffsetMinutes, tzlookup } from "domain/timezone"
+import { formatInLocalTimezone } from "domain/timezone"
 
 const StyledPhaseLine = styled(PhaseLine)`
-    background-color: #e6f3f5;
+    background-color: ${props => props.theme.secondary.highlight};
     border-width: 0px;
 
     padding-left: 12px;
