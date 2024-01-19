@@ -1,3 +1,4 @@
+import { useReplaceAllFlights } from "./flights"
 import { useReplaceAllNotes } from "./notes"
 import { useRefreshStats } from "./stats"
 import { isStayData, useReplaceAllStays } from "./stays"
@@ -35,6 +36,7 @@ export function useClearAll() {
     const replaceAllTours = useReplaceAllTours()
     const replaceAllNotes = useReplaceAllNotes()
     const replaceAllCheckins = useReplaceAllCheckins()
+    const replaceAllFlights = useReplaceAllFlights()
     const refresh = useRefresh()
     return async function clearAll() {
         await clearSwarmData()
@@ -43,6 +45,7 @@ export function useClearAll() {
         await replaceAllTours([])
         await replaceAllNotes([])
         await replaceAllCheckins([])
+        await replaceAllFlights([])
         await refresh(false)
     }
 }
@@ -54,6 +57,7 @@ export function useReplaceAll() {
     const replaceAllTours = useReplaceAllTours()
     const replaceAllNotes = useReplaceAllNotes()
     const replaceAllCheckins = useReplaceAllCheckins()
+    const replaceAllFlights = useReplaceAllFlights()
     const refresh = useRefresh()
 
     return async function replaceAll(allData) {
@@ -65,6 +69,7 @@ export function useReplaceAll() {
             await replaceAllNotes(allData.notes)
             await replaceAllCheckins(allData.checkins)
             await replaceAllStays(allData.stays)
+            await replaceAllFlights(allData.flights)
             toast.dismiss(toastId)
             await refresh()
         } else {
