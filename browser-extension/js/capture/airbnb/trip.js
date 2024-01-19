@@ -3,7 +3,7 @@ class AirbnbTripPage extends Page {
 
     constructor() {
         super()
-        this.dataState = JSON.parse(document.getElementById('data-state').innerHTML)
+        this.dataState = JSON.parse(document.getElementById('data-injector-instances').innerHTML)
     }
 
     extractStay() {
@@ -46,7 +46,7 @@ class AirbnbTripPage extends Page {
             return this.core.sendError('no id can be found', 'extractStay')
         }
 
-        const uiState = this.dataState.uiState[0][1]
+        const uiState = this.dataState["root > core-guest-spa"].find(pair => pair[0] === 'HyperloopContext8Token')[1].uiState[0][1]
         const metadata = uiState.metadata
         const city = cityRegex.exec(metadata.title)[0].substring(4)
         const cc = metadata.country

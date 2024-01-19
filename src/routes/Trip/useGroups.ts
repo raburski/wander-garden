@@ -1,4 +1,5 @@
 import { isEqualLocation, isEqualLocationCity, isEqualLocationCountry, Location } from "domain/location"
+import { DEFAULT_HOME_LOCATION } from "domain/stays"
 import arrayQueryReplace, { any } from "domain/timeline/arrayQueryReplace"
 import { Trip, TripPhase } from "domain/trips/types"
 
@@ -85,6 +86,15 @@ function groupPhasesByCountry() {
             }),
         ],
         result: (phases: TripPhase[], context: GroupPhasesByCountryContext) => {
+            if (context.location === DEFAULT_HOME_LOCATION) {
+                return {
+                    type: GroupType.Unknown,
+                    phases,
+                    location: context.location,
+                    since: phases.first().since,
+                    until: phases.last().until
+                }
+            }
             return {
                 type: GroupType.Country,
                 phases,

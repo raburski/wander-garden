@@ -1,6 +1,6 @@
 import { getDaysAndRangeText } from 'date'
 import PhaseLine from './PhaseLine'
-import { getStayIcon } from 'domain/stays'
+import { StayPlaceType, getStayIcon } from 'domain/stays'
 import { styled } from 'goober'
 import { FaQuestion } from 'react-icons/fa'
 import { isSignificant, venueEmoji } from 'domain/swarm/categories'
@@ -111,7 +111,7 @@ export default function Phase({ phase, onClick, onMouseEnter, ...props }) {
     return (
         <>
             {phase.arriveBy && phase.arriveBy.length > 0 ? <FlightsPhaseLine flights={phase.arriveBy}/> : null}
-            <PhaseLine icon={getStayIcon(phase.stay, phase.stay.type)} onNoteClick={() => editNote(phase.stay.id)} title={getPhaseTitle(phase)} days={days} range={range} note={note?.highlight} onClick={onClick} onMouseEnter={onMouseEnter}/>
+            {phase.stay.placeType !== StayPlaceType.Home ? <PhaseLine icon={getStayIcon(phase.stay, phase.stay.type)} onNoteClick={() => editNote(phase.stay.id)} title={getPhaseTitle(phase)} days={days} range={range} note={note?.highlight} onClick={onClick} onMouseEnter={onMouseEnter}/> : null}
             {significantEvents.map(event => <EventLine event={event} onNoteClick={() => editNote(getEventSubjectId(event))}/>)}
         </>
     )

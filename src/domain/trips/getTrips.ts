@@ -1,5 +1,5 @@
 import { Checkin, checkinsStorage, getAllCheckins, getCheckinDate } from "domain/swarm"
-import { Stay, StayPlaceType, getAllStays } from "domain/stays"
+import { DEFAULT_HOME_LOCATION, Stay, StayPlaceType, StayType, getAllStays } from "domain/stays"
 import arrayQueryReplace, { some } from "domain/timeline/arrayQueryReplace"
 import moment from "moment"
 import { LocationHighlight, LocationHighlightType, Trip, TripPhase, TripPhaseEvent, TripPhaseEventType } from "./types"
@@ -150,17 +150,12 @@ function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[], flights: F
                 lastPhase.stay!.until = currentStay.until
                 lastPhase.events = getPhaseEvents(lastPhase.since, currentStay.until, checkins, tours)
             } else {
-                console.log(currentStay.accomodation?.name)
-                console.log(moment(currentStay.since).subtract(24, 'hours').format(), 
-                moment(currentStay.since).add(24, 'hours').format())
-                console.log(flights)
                 phases.push({ 
                     stay: currentStay, 
                     since: currentStay.since, 
                     until: currentStay.until,
                     events: getPhaseEvents(currentStay.since, currentStay.until, checkins, tours),
                     arriveBy: flights.filter(f => 
-                        // UNFUCK TIMEZONES ETC
                         moment(f.arrival.scheduled).isBetween(
                             moment(currentStay.since).subtract(24, 'hours'), 
                             moment(currentStay.since).add(24, 'hours'))
@@ -186,6 +181,18 @@ function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[], flights: F
                 )
              })
         }
+    }
+
+    const lastStayMoment = moment(phases.last().until).startOf('day')
+    const flightsAfterLastStay = flights.filter(f => moment(f.departure.scheduled).isAfter(lastStayMoment))
+    if (flightsAfterLastStay.length > 0) {
+        phases.push({
+            stay: { id: 'home', location: DEFAULT_HOME_LOCATION, type: StayType.Custom, placeType: StayPlaceType.Home, since: phases.last().until, until: flightsAfterLastStay.last().arrival.scheduled },
+            since: phases.last().until,
+            until: flightsAfterLastStay.last().arrival.scheduled,
+            events: [],
+            arriveBy: flightsAfterLastStay,
+        })
     }
 
     return phases
@@ -252,7 +259,7 @@ function groupStays(allCheckins: Checkin[], tours: Tour[], flights: Flight[]) {
                 return moment(flight.departure.scheduled)
                     .isBetween(
                         moment(stays.first().since).subtract(2, "days"), 
-                        moment(stays.last().until).add(1, "days"))
+                        moment(stays.last().until).add(2, "days"))
             })
 
             const phases = getPhases(stays, filteredCheckins, filteredTours, filteredFlights)
