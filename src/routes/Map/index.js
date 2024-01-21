@@ -57,7 +57,7 @@ export default function Context() {
     const paramsCountryCodes = useParamsCountries()
     const countryCodes = useVisitedCountryCodes()
     const onCountryClick = (cc) => {
-        if (!isPresent) { setOpenedCountry(cc) }
+        if (!isPresent) { setOpenedCountry(cc.toLowerCase()) }
     }
     const onClickAway = (cc) => setOpenedCountry(undefined)
     const onShareClick = () => {
