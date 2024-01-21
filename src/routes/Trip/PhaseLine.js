@@ -10,7 +10,6 @@ const Line = styled(BaseRow)`
     border: 0px solid;
     padding-left: 22px;
     padding-right: 16px;
-    flex-direction: column;
     align-items: stretch;
 `
 
@@ -73,33 +72,42 @@ const LineRow = styled('div')`
     align-items: center;
 `
 
+const LineRowContent = styled('div')`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: stretch;
+`
+
 export default function PhaseLine({ emoji, icon, to, title, subtitle, note, onClick, days, range, onMoreClick, onNoteClick, children, ...props }) {
     const Icon = icon
     return (
         <Line onClick={onClick} initial="rest" whileHover="hover" animate="rest" to={to} {...props}>
-            <LineRow>
-                {icon ? <Icon /> : null}
-                <TitleContent>
-                    <Title>{title}</Title>
-                    {(days || range) ?
-                        <Subtitle>
-                            {days}, {range}
-                        </Subtitle> 
-                    : null}
-                    {(subtitle) ?
-                        <Subtitle>
-                            {subtitle}
-                        </Subtitle> 
-                    : null}
-                </TitleContent>
-                {children}
-                <Spacer />
-                <ActionsContent variants={ACTIONS_VARIANTS}>
-                    {onNoteClick ? <PinButton icon={MdOutlineEditNote} onClick={onNoteClick}/> : null}
-                    {onMoreClick ? <PinButton icon={TbDotsVertical} onClick={onMoreClick}/> : null}
-                </ActionsContent>
-            </LineRow>
-            {note ? <Note>✏️&nbsp;&nbsp;{note}</Note> : null}
+            <LineRowContent>
+                <LineRow>
+                    {icon ? <Icon /> : null}
+                    <TitleContent>
+                        <Title>{title}</Title>
+                        {(days || range) ?
+                            <Subtitle>
+                                {days}, {range}
+                            </Subtitle> 
+                        : null}
+                        {(subtitle) ?
+                            <Subtitle>
+                                {subtitle}
+                            </Subtitle> 
+                        : null}
+                    </TitleContent>
+                    {children}
+                    <Spacer />
+                    <ActionsContent variants={ACTIONS_VARIANTS}>
+                        {onNoteClick ? <PinButton icon={MdOutlineEditNote} onClick={onNoteClick}/> : null}
+                        {onMoreClick ? <PinButton icon={TbDotsVertical} onClick={onMoreClick}/> : null}
+                    </ActionsContent>
+                </LineRow>
+                {note ? <Note>✏️&nbsp;&nbsp;{note}</Note> : null}
+            </LineRowContent>
         </Line>
     )
 }
