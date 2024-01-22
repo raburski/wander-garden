@@ -88,7 +88,7 @@ export default function Stats() {
     const favouriteCountryEmoji = stats.favouriteCountries?.first()?.emoji
 
     const goToTrips = () => navigate('/timeline')
-    const goToLongestTrip = () => navigate(`/timeline/${stats.longestTrip.id}`)
+    const goToLongestTrip = () => navigate(`/timeline/${stats.longestTripID}`)
     const openCountries = () => setStatModalOpen(STAT.VISITED_COUNTRIES)
     const openFavRegion = () => setStatModalOpen(STAT.FAVOURITE_REGIONS)
     const openFavSeason = () => setStatModalOpen(STAT.FAVOURITE_SEASONS)

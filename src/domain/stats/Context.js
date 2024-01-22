@@ -150,7 +150,7 @@ export function StatsProvider({ children }) {
             visitedCountries: getVisitedCountriesCodes(checkins, allStays, _travelledCountries),
             totalTrips: trips?.length || 0,
             totalDaysAway: getTotalDaysAway(trips),
-            longestTrip,
+            longestTripID: longestTrip.id,
             longestTripDays: getTripDays(longestTrip),
             totalDifferentHotels: getTotalDifferentHotels(allStays),
             favouriteSeasons: getFavouriteSeasons(trips),
