@@ -136,8 +136,8 @@ function getAirportLocation(airport: any): Location {
         cc: airport.country.toLowerCase(),
         city: airport.city,
         state: airport.state,
-        lat: airport.lat,
-        lng: airport.lng,
+        lat: parseFloat(airport.lat),
+        lng: parseFloat(airport.lng),
         country: countryFlagEmoji.get(airport.country).name,
     }
 }
