@@ -37,4 +37,5 @@ export enum DataOrigin {
     File = 'FILE',
     Captured = 'CAPTURED',
     UserInput = 'USER_INPUT',
+    Generated = 'GENERATED',
 }

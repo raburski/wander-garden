@@ -3,13 +3,18 @@ import { DEFAULT_HOME_LOCATION, Stay, StayPlaceType, StayType, getAllStays } fro
 import arrayQueryReplace, { some } from "domain/timeline/arrayQueryReplace"
 import moment from "moment"
 import { LocationHighlight, LocationHighlightType, Trip, TripPhase, TripPhaseEvent, TripPhaseEventType } from "./types"
-import { Location, cleanLocation, isEqualApproximiteLocation, isEqualLocation, isEqualLocationCity, isEqualLocationCountry } from "domain/location"
+import { Location, LocationAccuracy, cleanLocation, isEqualApproximiteLocation, isEqualLocation, isEqualLocationCity, isEqualLocationCountry } from "domain/location"
 import { isDateBetween } from "date"
 import { getAllTours } from "domain/tours"
 import { Tour } from "domain/tours/types"
 import { isSignificant, onlyNonTransportation } from "domain/swarm/categories"
 import { getAllFlights } from "domain/flights"
 import { Flight } from "domain/flights/types"
+import getAirport from 'domain/flights/airports'
+import { getCountryCode } from "domain/country"
+import countryFlagEmoji from "country-flag-emoji"
+import { DataOrigin } from "type"
+import { momentInLocalTimezone } from "domain/timezone"
 
 interface CheckinConvertContext { location: Location }
 function convertCheckinsIntoStays(checkins: Checkin[]): Stay[] {
@@ -118,6 +123,25 @@ function getPhaseEvents(since: string, until: string, checkins: Checkin[], tours
     return events
 }
 
+function isOvernightFlightConnection(flights: Flight[]) {
+    if (!flights || flights.length === 0) {
+        return false
+    }
+    // TODO: complexify maybe?
+    return true
+}
+
+function getAirportLocation(airport: any): Location {
+    return {
+        cc: airport.country.toLowerCase(),
+        city: airport.city,
+        state: airport.state,
+        lat: airport.lat,
+        lng: airport.lng,
+        country: countryFlagEmoji.get(airport.country).name,
+    }
+}
+
 function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[], flights: Flight[]) {
     let phases: TripPhase[] = []
 
@@ -163,22 +187,41 @@ function getPhases(stays: Stay[], checkins: Checkin[], tours: Tour[], flights: F
                 })
             }
         } else {
-            phases.push({ 
-                stay: undefined, 
-                since: olderStay.until, 
-                until: currentStay.since,
-                events: getPhaseEvents(olderStay.until, currentStay.since, checkins, tours),
-            })
+            const arriveBy = flights.filter(f => 
+                moment(f.arrival.scheduled).isBetween(
+                    moment(olderStay.until).subtract(12, 'hours'), 
+                    moment(currentStay.since).add(24, 'hours'))
+            )
+            if (isOvernightFlightConnection(arriveBy)) {
+                const airport = getAirport(arriveBy.first().departure.airport)
+                const stay: Stay = {
+                    id: `overnight:${arriveBy.first().id}`,
+                    placeType: StayPlaceType.Airplane,
+                    since: olderStay.until, 
+                    until: currentStay.since,
+                    location: getAirportLocation(airport),
+                    origin: DataOrigin.Generated,
+                }
+                phases.push({ 
+                    stay, 
+                    since: olderStay.until, 
+                    until: currentStay.since,
+                    events: getPhaseEvents(olderStay.until, currentStay.since, checkins, tours),
+                })
+            } else {
+                phases.push({ 
+                    stay: undefined, 
+                    since: olderStay.until, 
+                    until: currentStay.since,
+                    events: getPhaseEvents(olderStay.until, currentStay.since, checkins, tours),
+                })
+            }
             phases.push({ 
                 stay: currentStay, 
                 since: currentStay.since, 
                 until: currentStay.until,
                 events: getPhaseEvents(currentStay.since, currentStay.until, checkins, tours),
-                arriveBy: flights.filter(f => 
-                    moment(f.arrival.scheduled).isBetween(
-                        moment(currentStay.since).subtract(24, 'hours'), 
-                        moment(currentStay.since).add(24, 'hours'))
-                )
+                arriveBy,
              })
         }
     }

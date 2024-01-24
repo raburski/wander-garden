@@ -1,6 +1,10 @@
-import moment from "moment";
+import moment from "moment"
+
+export function momentInLocalTimezone(dateString) {
+  const timezoneLessDate = dateString.substring(0, dateString.length-6)
+  return moment(timezoneLessDate)
+}
 
 export function formatInLocalTimezone(dateString, format) {
-  const timezoneLessDate = dateString.substring(0, dateString.length-6)
-  return moment(timezoneLessDate).format(format)
+  return momentInLocalTimezone(dateString).format(format)
 }

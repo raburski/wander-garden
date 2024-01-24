@@ -61,6 +61,8 @@ export function getStayIcon(stay: Stay, type: StayType) {
             return PlaceTypeToIcon[stay.placeType || StayPlaceType.Accomodation]
         case DataOrigin.Captured:
             return getStayTypeIcon(type)
+        case DataOrigin.Generated:
+            return PlaceTypeToIcon[stay.placeType || StayPlaceType.Accomodation]
         default:
             return getStayTypeIcon(type)
     }
