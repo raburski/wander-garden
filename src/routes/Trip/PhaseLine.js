@@ -106,7 +106,7 @@ export default function PhaseLine({ emoji, icon, to, title, subtitle, note, onCl
                         {onMoreClick ? <PinButton icon={TbDotsVertical} onClick={onMoreClick}/> : null}
                     </ActionsContent>
                 </LineRow>
-                {note ? <Note>✏️&nbsp;&nbsp;{note}</Note> : null}
+                {note ? <Note>{note}</Note> : null}
             </LineRowContent>
         </Line>
     )
