@@ -18,9 +18,11 @@ function getInfoWindowProperties({ stay, checkin }) {
     } else if (checkin) {
         const date = moment.unix(checkin.createdAt).format('DD/MM/YYYY HH:mm')
         const emoji = checkin?.venue ? venueEmoji(checkin?.venue) : ''
+        const url = `https://www.google.com/maps/search/${checkin?.venue?.name}, ${checkin?.venue?.location?.city || checkin?.venue?.location?.state || checkin?.venue?.location?.country}/@${checkin?.venue?.location?.lat},${checkin?.venue?.location?.lng}`
+        const mapsLink = `<a href="${url}" target="_blank">open in maps 🔗</a>`
         return {
             ariaLabel: checkin?.venue?.name,
-            content: `<span style="color:black;"><b>${emoji} ${checkin?.venue?.name}</b></br>${date}</span>`
+            content: `<span style="color:black;"><b>${emoji} ${checkin?.venue?.name}</b></br>${date}</br>${mapsLink}</span>`
         }
     } else {
         return {}

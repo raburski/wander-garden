@@ -690,7 +690,7 @@
         "name": "Other Great Outdoors",
         "shortName": "Other Outdoors",
         "pluralName": "Other Great Outdoors",
-        "emoji": null
+        "emoji": "🏞️"
     },
     {
         "id": "4bf58dd8d48988d166941735",
@@ -2057,5 +2057,23 @@
         "name": "Tram Station",
         "pluralName": "Tram Stations",
         "emoji": "🚉"
+    },
+    {
+        "id": "56aa371be4b08b9a8d5734c3",
+        "name": "Waterfront",
+        "pluralName": "Waterfronts",
+        "emoji": "🎡"
+    },
+    {
+        "id": "4bf58dd8d48988d10e951735",
+        "name": "Fish Market",
+        "pluralName": "Fish Markets",
+        "emoji": "🐟"
+    },
+    {
+        "id": "4bf58dd8d48988d1f0931735",
+        "name": "Airport Gate",
+        "pluralName": "Airport Gates",
+        "emoji": "🛫"
     }
 ]
