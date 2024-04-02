@@ -6,6 +6,7 @@ import equal from 'fast-deep-equal'
 export enum TourType {
     GetYourGuide = 'getYourGuide',
     TripAdvisor = 'tripAdvisor',
+    Viator = 'viator',
 }
 
 export interface Tour { 
@@ -20,21 +21,25 @@ export interface Tour {
 export const OriginToTourType = {
     [Origin.GetYourGuide]: TourType.GetYourGuide,
     [Origin.TripAdvisor]: TourType.TripAdvisor,
+    [Origin.Viator]: TourType.Viator,
 }
 
 export const TourTypeToOrigin = {
     [TourType.GetYourGuide]: Origin.GetYourGuide,
     [TourType.TripAdvisor]: Origin.TripAdvisor,
+    [TourType.Viator]: Origin.Viator,
 }
 
 export const TourLogoURL = {
     [TourType.GetYourGuide]: "/logo/getyourguide.svg",
     [TourType.TripAdvisor]: "/logo/tripadvisor.svg",
+    [TourType.Viator]: "/logo/viator.jpeg",
 }
 
 export const TourName = {
     [TourType.GetYourGuide]: "GetYourGuide",
     [TourType.TripAdvisor]: "TripAdvisor",
+    [TourType.Viator]: "Viator",
 }
 
 export function toursEqual(s1: Tour, s2: Tour) {

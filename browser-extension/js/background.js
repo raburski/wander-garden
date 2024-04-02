@@ -10,6 +10,7 @@ const ORIGIN = {
 
     TRIP_ADVISOR: 'trip_advisor_extension',
     GET_YOUR_GUIDE: 'get_your_guide_extension',
+    VIATOR: 'viator_extension',
 
     MILES_AND_MORE: 'miles_and_more',
     RYANAIR: 'ryanair',
@@ -53,6 +54,7 @@ const ORIGIN_URL = {
     [ORIGIN.TRIP_ADVISOR]: 'https://www.tripadvisor.com/Bookings',
     [ORIGIN.MILES_AND_MORE]: 'https://www.miles-and-more.com/row/en/account/my-bookings.html',
     [ORIGIN.RYANAIR]: 'https://www.ryanair.com/gb/en/trip/manage',
+    [ORIGIN.VIATOR]: 'https://www.viator.com/account/bookings',
 }
 
 function handleGardenMessage(message, sender) {

@@ -15,6 +15,7 @@ export default function Tours({ ...props }) {
         <Panel header="Tours" {...props}>
             <ContentRow image={<Logo src={TourLogoURL[TourType.GetYourGuide]}/>} title={TourName[TourType.GetYourGuide]} onClick={createSelectTourType(TourType.GetYourGuide)}/>
             <ContentRow image={<Logo src={TourLogoURL[TourType.TripAdvisor]}/>} title={TourName[TourType.TripAdvisor]} onClick={createSelectTourType(TourType.TripAdvisor)}/>
+            <ContentRow image={<Logo src={TourLogoURL[TourType.Viator]}/>} title={TourName[TourType.Viator]} onClick={createSelectTourType(TourType.Viator)}/>
         </Panel>
     )
 }

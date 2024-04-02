@@ -114,11 +114,11 @@ const countryCodeToName = {
     "KZ": "Kazakhstan",
     "KE": "Kenya",
     "KI": "Kiribati",
-    "KP": "Korea, Democratic People'S Republic of",
-    "KR": "Korea, Republic of",
+    "KR": "South Korea",
+    "KP": "North Korea",
     "KW": "Kuwait",
     "KG": "Kyrgyzstan",
-    "LA": "Lao People'S Democratic Republic",
+    "LA": "Laos",
     "LV": "Latvia",
     "LB": "Lebanon",
     "LS": "Lesotho",
@@ -128,7 +128,7 @@ const countryCodeToName = {
     "LT": "Lithuania",
     "LU": "Luxembourg",
     "MO": "Macao",
-    "MK": "Macedonia, The Former Yugoslav Republic of",
+    "MK": "Macedonia",
     "MG": "Madagascar",
     "MW": "Malawi",
     "MY": "Malaysia",
@@ -142,7 +142,7 @@ const countryCodeToName = {
     "YT": "Mayotte",
     "MX": "Mexico",
     "FM": "Micronesia, Federated States of",
-    "MD": "Moldova, Republic of",
+    "MD": "Moldova",
     "MC": "Monaco",
     "MN": "Mongolia",
     "MS": "Montserrat",
@@ -252,6 +252,9 @@ function getCountryCode(countryName) {
     const loweredCountryName = countryName.toLowerCase()
     const allNames = Object.values(countryCodeToName)
     const allMatchingNames = allNames.filter(name => name.toLowerCase().includes(loweredCountryName))
+    if (allMatchingNames.lengt === 0) {
+        return undefined
+    }
     if (allMatchingNames.length === 1) {
         const firstMatchingNameIndex = allNames.findIndex(name => name === allMatchingNames[0])
         return Object.keys(countryCodeToName)[firstMatchingNameIndex]
@@ -260,7 +263,7 @@ function getCountryCode(countryName) {
     if (nameIndex > -1) {
         return Object.keys(countryCodeToName)[nameIndex]
     }
-    return undefined
+    return allMatchingNames[0]
 }
 
 const currencyMap = {
