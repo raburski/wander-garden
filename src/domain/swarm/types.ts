@@ -4,6 +4,7 @@ import { isLocationType } from '../location'
 
 export interface Category {
     id: string
+    name: string
 }
 
 export interface Venue {

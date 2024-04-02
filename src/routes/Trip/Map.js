@@ -31,8 +31,8 @@ export default function TripMap({ trip, checkins = [], style = {}, mapRef, highl
     const infoWindow = useRef()
     const stays = trip ? trip.phases.filter(phase => phase.stay && (!phase.stay.location.accuracy || phase.stay.location.accuracy === LocationAccuracy.GPS)).map(p => p.stay) : null
     const markers = [
-        ...stays.map(stay => ({ stay, position: stay.location, icon: Icon.Default })),
-        ...checkins.map(checkin => ({ checkin, position: checkin?.venue?.location, icon: Icon.OrangeDot }))
+        ...stays.map(stay => ({ stay, position: stay.location, icon: Icon.Default, emoji: '🛏️' })),
+        ...checkins.map(checkin => ({ checkin, position: checkin?.venue?.location, icon: Icon.OrangeDot, emoji: venueEmoji(checkin?.venue) }))
     ]
     const initPositions = stays.length > 0 ? stays.map(s => s.location) : checkins.map(c => c?.venue?.location)
     const highlightedStayIndex = highlightedPhase ? stays.findIndex(stay => highlightedPhase.stay.id === stay.id) : undefined
@@ -61,7 +61,7 @@ export default function TripMap({ trip, checkins = [], style = {}, mapRef, highl
                     initPositions={initPositions}
                     markers={markers}
                     onMarkerClick={onMarkerClick}
-                    bouncingMarkerIndex={highlightedStayIndex}
+                    // bouncingMarkerIndex={highlightedStayIndex}
                     onResetView={onResetView}
                 />
             </Panel>

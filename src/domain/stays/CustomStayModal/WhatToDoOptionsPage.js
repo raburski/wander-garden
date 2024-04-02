@@ -4,7 +4,7 @@ import { FiChevronRight, FiExternalLink } from 'react-icons/fi'
 import Panel from "components/Panel"
 import MenuRow from "components/MenuRow"
 import Page from "components/Page"
-import { IoIosHome, IoMdHome } from 'react-icons/io'
+import { IoIosHome } from 'react-icons/io'
 
 export default function WhatToDoOptionsPage({ onAddCustomStay, onStayedAtHome, onAddTransit, onImportFromFriend, onContactUs, onExtendStay, previousPhase, ...props }) {
     return (

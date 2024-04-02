@@ -11,23 +11,6 @@ export const Icon = {
     OrangeDot: 'orangeDot',
 }
 
-const ORANGE_DOT_ICON = {
-    url: '/checkinpin@2x.png',
-    size: { width: 16, height: 16 },
-    anchor: { x: 6, y: 6 },
-    scaledSize: { width: 8, height: 8 },
-}
-
-function getMarkerIcon(icon) {
-    switch (icon) {
-        case Icon.OrangeDot:
-            return ORANGE_DOT_ICON
-        case Icon.Default:
-        default:
-            return null
-    }
-}
-
 const ResetViewButton = styled(Button)`
     position: absolute;
     bottom: 34px;
@@ -101,7 +84,10 @@ const MapComponent = forwardRef(function MyMapComponent({ markers, initPositions
         const _markers = markers.map(marker => {
             const mapMarker = new google.maps.Marker({
                 position: marker.position,
-                icon: getMarkerIcon(marker.icon),
+                label: {
+                    text: marker.emoji,
+                    className: marker.icon === Icon.OrangeDot ? 'marker-label-orange' : 'marker-label-blue',
+                }
             })
             if (onMarkerClick) {
                 mapMarker.addListener("click", () => {

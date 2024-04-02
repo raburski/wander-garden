@@ -96,6 +96,9 @@ export function categoryEmoji(catID: string) {
 }
 
 export function venueEmoji(venue: Venue) {
-    const emojis = venue.categories.map(cat => categoryEmoji(cat.id)).filter(e => e)
+    const emojis = venue.categories.map(cat => 
+        categoryEmoji(cat.id) || (cat.name.includes('Restaurant') ? '🍽️' : undefined)
+    ).filter(e => e)
+
     return emojis.length > 0 ? emojis[0] : '📍'
 }

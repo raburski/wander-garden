@@ -46,7 +46,7 @@
         "name": "Botanical Garden",
         "shortName": "Botanical Garden",
         "pluralName": "Botanical Gardens",
-        "emoji": null
+        "emoji": "🪴"
     },
     {
         "id": "4bf58dd8d48988d16d941735",
@@ -81,7 +81,7 @@
         "name": "Medical Lab",
         "shortName": "Medical Lab",
         "pluralName": "Medical Labs",
-        "emoji": null
+        "emoji": "🏥"
     },
     {
         "id": "55a59bace4b013909087cb24",
@@ -109,13 +109,14 @@
         "name": "Vietnamese Restaurant",
         "shortName": "Vietnamese",
         "pluralName": "Vietnamese Restaurants",
-        "emoji": null
+        "emoji": "🍲"
     },
     {
         "id": "55a59bace4b013909087cb18",
         "name": "Okonomiyaki Restaurant",
         "shortName": "Okonomiyaki",
-        "pluralName": "Okonomiyaki Restaurants"
+        "pluralName": "Okonomiyaki Restaurants",
+        "emoji": "🍳"
     },
     {
         "id": "4bf58dd8d48988d163941735",
@@ -451,7 +452,7 @@
         "name": "Bar",
         "shortName": "Bar",
         "pluralName": "Bars",
-        "emoji": null
+        "emoji": "🍻"
     },
     {
         "id": "52f2ae52bcbc57f1066b8b81",
@@ -521,14 +522,14 @@
         "name": "Chinese Restaurant",
         "shortName": "Chinese",
         "pluralName": "Chinese Restaurants",
-        "emoji": null
+        "emoji": "🍜"
     },
     {
         "id": "55a5a1ebe4b013909087cb7f",
         "name": "Trattoria/Osteria",
         "shortName": "Trattoria/Osteria",
         "pluralName": "Trattorias/Osterias",
-        "emoji": null
+        "emoji": "🥗"
     },
     {
         "id": "4bf58dd8d48988d1bc941735",
@@ -556,7 +557,7 @@
         "name": "Amphitheater",
         "shortName": "Amphitheater",
         "pluralName": "Amphitheaters",
-        "emoji": null
+        "emoji": "🎭"
     },
     {
         "id": "4bf58dd8d48988d1cc941735",
@@ -570,7 +571,7 @@
         "name": "Lounge",
         "shortName": "Lounge",
         "pluralName": "Lounges",
-        "emoji": null
+        "emoji": "🍸"
     },
     {
         "id": "4f2a210c4b9023bd5841ed28",
@@ -612,7 +613,7 @@
         "name": "Market",
         "shortName": "Market",
         "pluralName": "Markets",
-        "emoji": null
+        "emoji": "🏪"
     },
     {
         "id": "52e81612bcbc57f1066b7a35",
@@ -724,7 +725,7 @@
         "name": "Modern European Restaurant",
         "shortName": "Modern European",
         "pluralName": "Modern European Restaurants",
-        "emoji": null
+        "emoji": "🍽️"
     },
     {
         "id": "4bf58dd8d48988d11f941735",
@@ -738,7 +739,7 @@
         "name": "Outdoors & Recreation",
         "shortName": "Outdoors & Recreation",
         "pluralName": "Outdoors & Recreation",
-        "emoji": null
+        "emoji": "🌳"
     },
     {
         "id": "4bf58dd8d48988d159941735",
@@ -752,7 +753,7 @@
         "name": "Shopping Mall",
         "shortName": "Mall",
         "pluralName": "Shopping Malls",
-        "emoji": null
+        "emoji": "🛍️"
     },
     {
         "id": "4eb1bea83b7b6f98df247e06",
@@ -790,13 +791,6 @@
         "emoji": "🍖"
     },
     {
-        "id": "4bf58dd8d48988d1c0941735",
-        "name": "Mediterranean Restaurant",
-        "shortName": "Mediterranean",
-        "pluralName": "Mediterranean Restaurants",
-        "emoji": null
-    },
-    {
         "id": "4bf58dd8d48988d1d2941735",
         "name": "Sushi Restaurant",
         "shortName": "Sushi",
@@ -815,7 +809,7 @@
         "name": "Tapas Restaurant",
         "shortName": "Tapas",
         "pluralName": "Tapas Restaurants",
-        "emoji": null
+        "emoji": "🍽"
     },
     {
         "id": "4bf58dd8d48988d16f941735",
@@ -836,7 +830,7 @@
         "name": "Portuguese Restaurant",
         "shortName": "Portuguese",
         "pluralName": "Portuguese Restaurants",
-        "emoji": null
+        "emoji": "🍽"
     },
     {
         "id": "4bf58dd8d48988d180941735",
@@ -850,14 +844,14 @@
         "name": "Ukrainian Restaurant",
         "shortName": "Ukrainian",
         "pluralName": "Ukrainian Restaurants",
-        "emoji": null
+        "emoji": "🍽"
     },
     {
         "id": "4d4b7105d754a06374d81259",
         "name": "Food",
         "shortName": "Food",
         "pluralName": "Food",
-        "emoji": null
+        "emoji": "🍽"
     },
     {
         "id": "4bf58dd8d48988d117941735",
@@ -871,7 +865,7 @@
         "name": "Peruvian Restaurant",
         "shortName": "Peruvian",
         "pluralName": "Peruvian Restaurants",
-        "emoji": null
+        "emoji": "🍽"
     },
     {
         "id": "4bf58dd8d48988d118941735",
@@ -892,7 +886,7 @@
         "name": "Hardware Store",
         "shortName": "Hardware",
         "pluralName": "Hardware Stores",
-        "emoji": null
+        "emoji": "🔌"
     },
     {
         "id": "4bf58dd8d48988d168941735",
@@ -900,13 +894,6 @@
         "shortName": "Skating Rink",
         "pluralName": "Skating Rinks",
         "emoji": "🛹"
-    },
-    {
-        "id": "4bf58dd8d48988d115941735",
-        "name": "Middle Eastern Restaurant",
-        "shortName": "Middle Eastern",
-        "pluralName": "Middle Eastern Restaurants",
-        "emoji": null
     },
     {
         "id": "4bf58dd8d48988d1e3931735",
@@ -920,7 +907,7 @@
         "name": "Malay Restaurant",
         "shortName": "Malay",
         "pluralName": "Malay Restaurants",
-        "emoji": null
+        "emoji": "🍽"
     },
     {
         "id": "4bf58dd8d48988d12f941735",
@@ -955,14 +942,14 @@
         "name": "Indian Restaurant",
         "shortName": "Indian",
         "pluralName": "Indian Restaurants",
-        "emoji": null
+        "emoji": "🥘"
     },
     {
         "id": "56aa371be4b08b9a8d573538",
         "name": "Theme Restaurant",
         "shortName": "Theme Restaurant",
         "pluralName": "Theme Restaurants",
-        "emoji": null
+        "emoji": "🍽️"
     },
     {
         "id": "52e81612bcbc57f1066b7a23",
@@ -983,14 +970,14 @@
         "name": "Sri Lankan Restaurant",
         "shortName": "Sri Lankan",
         "pluralName": "Sri Lankan Restaurants",
-        "emoji": null
+        "emoji": "🍽️"
     },
     {
         "id": "52f2ab2ebcbc57f1066b8b2c",
         "name": "Herbs & Spices Store",
         "shortName": "Herbs & Spices Store",
         "pluralName": "Herbs & Spices Stores",
-        "emoji": null
+        "emoji": "🫚"
     },
     {
         "id": "52e81612bcbc57f1066b7a3f",
@@ -1025,7 +1012,7 @@
         "name": "Theme Park Ride / Attraction",
         "shortName": "Theme Park",
         "pluralName": "Theme Park Rides/Attractions",
-        "emoji": null
+        "emoji": "🎢"
     },
     {
         "id": "4bf58dd8d48988d1e4931735",
@@ -1060,7 +1047,7 @@
         "name": "Brewery",
         "shortName": "Brewery",
         "pluralName": "Breweries",
-        "emoji": null
+        "emoji": "🍺"
     },
     {
         "id": "4bf58dd8d48988d110951735",
@@ -1109,42 +1096,42 @@
         "name": "Sicilian Restaurant",
         "shortName": "Sicilian",
         "pluralName": "Sicilian Restaurants",
-        "emoji": null
+        "emoji": "🍕"
     },
     {
         "id": "4bf58dd8d48988d1f6931735",
         "name": "General Travel",
         "shortName": "Travel",
         "pluralName": "General Travel",
-        "emoji": null
+        "emoji": "🌎"
     },
     {
         "id": "4c38df4de52ce0d596b336e1",
         "name": "Parking",
         "shortName": "Parking",
         "pluralName": "Parking",
-        "emoji": null
+        "emoji": "🅿️"
     },
     {
         "id": "4bf58dd8d48988d1fa941735",
         "name": "Farmers Market",
         "shortName": "Farmer's Market",
         "pluralName": "Farmers Markets",
-        "emoji": null
+        "emoji": "🌽"
     },
     {
         "id": "4bf58dd8d48988d104941735",
         "name": "Medical Center",
         "shortName": "Medical",
         "pluralName": "Medical Centers",
-        "emoji": null
+        "emoji": "🏥"
     },
     {
         "id": "53e510b7498ebcb1801b55d4",
         "name": "Night Market",
         "shortName": "Night Market",
         "pluralName": "Night Markets",
-        "emoji": null
+        "emoji": "🪩"
     },
     {
         "id": "4bf58dd8d48988d1f1931735",
@@ -1158,77 +1145,77 @@
         "name": "Doctor's Office",
         "shortName": "Doctor's Office",
         "pluralName": "Doctor's Offices",
-        "emoji": null
+        "emoji": "🏥"
     },
     {
         "id": "4bf58dd8d48988d126941735",
         "name": "Government Building",
         "shortName": "Government",
         "pluralName": "Government Buildings",
-        "emoji": null
+        "emoji": "🏢"
     },
     {
         "id": "4bf58dd8d48988d1df941735",
         "name": "Bridge",
         "shortName": "Bridge",
         "pluralName": "Bridges",
-        "emoji": null
+        "emoji": "🌉"
     },
     {
         "id": "4bf58dd8d48988d11d941735",
         "name": "Sports Bar",
         "shortName": "Sports Bar",
         "pluralName": "Sports Bars",
-        "emoji": null
+        "emoji": "⚽️"
     },
     {
         "id": "4bf58dd8d48988d1cb941735",
         "name": "Food Truck",
         "shortName": "Food Truck",
         "pluralName": "Food Trucks",
-        "emoji": null
+        "emoji": "🚐"
     },
     {
         "id": "52e81612bcbc57f1066b7a28",
         "name": "Bathing Area",
         "shortName": "Bathing Area",
         "pluralName": "Bathing Areas",
-        "emoji": null
+        "emoji": "🫧"
     },
     {
         "id": "4bf58dd8d48988d137941735",
         "name": "Theater",
         "shortName": "Theater",
         "pluralName": "Theaters",
-        "emoji": null
+        "emoji": "🎭"
     },
     {
         "id": "52e81612bcbc57f1066b79fa",
         "name": "Hungarian Restaurant",
         "shortName": "Hungarian",
         "pluralName": "Hungarian Restaurants",
-        "emoji": null
+        "emoji": "🍽️"
     },
     {
         "id": "52f2ab2ebcbc57f1066b8b50",
         "name": "Cable Car",
         "shortName": "Cable Car",
         "pluralName": "Cable Cars",
-        "emoji": null
+        "emoji": "🚠"
     },
     {
         "id": "56aa371be4b08b9a8d573529",
         "name": "Israeli Restaurant",
         "shortName": "Israeli",
         "pluralName": "Israeli Restaurants",
-        "emoji": null
+        "emoji": "🧆"
     },
     {
         "id": "53e0feef498e5aac066fd8a9",
         "name": "Street Food Gathering",
         "shortName": "Street Food Gathering",
         "pluralName": "Street Food Gatherings",
-        "emoji": null
+        "emoji": "🌭"
     },
     {
         "id": "4bf58dd8d48988d130941735",
@@ -1249,14 +1236,14 @@
         "name": "Cuban Restaurant",
         "shortName": "Cuban",
         "pluralName": "Cuban Restaurants",
-        "emoji": null
+        "emoji": "🍽"
     },
     {
         "id": "4bf58dd8d48988d1a7941735",
         "name": "College Library",
         "shortName": "Library",
         "pluralName": "College Libraries",
-        "emoji": null
+        "emoji": "📚"
     },
     {
         "id": "4bf58dd8d48988d12a941735",
@@ -1270,84 +1257,84 @@
         "name": "Fried Chicken Joint",
         "shortName": "Fried Chicken",
         "pluralName": "Fried Chicken Joints",
-        "emoji": null
+        "emoji": "🍗"
     },
     {
         "id": "4bf58dd8d48988d1e9931735",
         "name": "Rock Club",
         "shortName": "Rock Club",
         "pluralName": "Rock Clubs",
-        "emoji": null
+        "emoji": "🎸"
     },
     {
         "id": "4bf58dd8d48988d172941735",
         "name": "Post Office",
         "shortName": "Post Office",
         "pluralName": "Post Offices",
-        "emoji": null
+        "emoji": "✉️"
     },
     {
         "id": "4bf58dd8d48988d1f6941735",
         "name": "Department Store",
         "shortName": "Department Store",
         "pluralName": "Department Stores",
-        "emoji": null
+        "emoji": "🏪"
     },
     {
         "id": "4bf58dd8d48988d1f2931735",
         "name": "Performing Arts Venue",
         "shortName": "Performing Arts",
         "pluralName": "Performing Arts Venues",
-        "emoji": null
+        "emoji": "🎨"
     },
     {
         "id": "56aa371be4b08b9a8d573564",
         "name": "Sausage Shop",
         "shortName": "Sausage Shop",
         "pluralName": "Sausage Shops",
-        "emoji": null
+        "emoji": "🥩"
     },
     {
         "id": "4bf58dd8d48988d1e9941735",
         "name": "Ski Area",
         "shortName": "Ski Area",
         "pluralName": "Ski Areas",
-        "emoji": null
+        "emoji": "🎿"
     },
     {
         "id": "4bf58dd8d48988d150941735",
         "name": "Spanish Restaurant",
         "shortName": "Spanish",
         "pluralName": "Spanish Restaurants",
-        "emoji": null
+        "emoji": "🍽️"
     },
     {
         "id": "4bf58dd8d48988d1c7941735",
         "name": "Snack Place",
         "shortName": "Snacks",
         "pluralName": "Snack Places",
-        "emoji": null
+        "emoji": "🌭"
     },
     {
         "id": "4bf58dd8d48988d157941735",
         "name": "New American Restaurant",
         "shortName": "New American",
         "pluralName": "New American Restaurants",
-        "emoji": null
+        "emoji": "🍔"
     },
     {
         "id": "5293a7563cf9994f4e043a44",
         "name": "Russian Restaurant",
         "shortName": "Russian",
         "pluralName": "Russian Restaurants",
-        "emoji": null
+        "emoji": "🍽️"
     },
     {
         "id": "52e81612bcbc57f1066b79f4",
         "name": "Buffet",
         "shortName": "Buffet",
         "pluralName": "Buffets",
-        "emoji": null
+        "emoji": "🍽️"
     },
     {
         "id": "4bf58dd8d48988d129941735",
@@ -1361,21 +1348,21 @@
         "name": "Fish & Chips Shop",
         "shortName": "Fish & Chips",
         "pluralName": "Fish & Chips Shops",
-        "emoji": null
+        "emoji": "🐟"
     },
     {
         "id": "4bf58dd8d48988d14e941735",
         "name": "American Restaurant",
         "shortName": "American",
         "pluralName": "American Restaurants",
-        "emoji": null
+        "emoji": "🍔"
     },
     {
         "id": "4bf58dd8d48988d1d5941735",
         "name": "Hotel Bar",
         "shortName": "Hotel Bar",
         "pluralName": "Hotel Bars",
-        "emoji": null
+        "emoji": "🥃"
     },
     {
         "id": "4bf58dd8d48988d171941735",
@@ -1396,28 +1383,28 @@
         "name": "Sporting Goods Shop",
         "shortName": "Sporting Goods",
         "pluralName": "Sporting Goods Shops",
-        "emoji": null
+        "emoji": "⚽️"
     },
     {
         "id": "4bf58dd8d48988d124941735",
         "name": "Office",
         "shortName": "Office",
         "pluralName": "Offices",
-        "emoji": null
+        "emoji": "🏢"
     },
     {
         "id": "52e81612bcbc57f1066b7a21",
         "name": "National Park",
         "shortName": "National Park",
         "pluralName": "National Parks",
-        "emoji": null
+        "emoji": "🏞️"
     },
     {
         "id": "4bf58dd8d48988d1ae941735",
         "name": "University",
         "shortName": "University",
         "pluralName": "Universities",
-        "emoji": null
+        "emoji": "🎓"
     },
     {
         "id": "56aa371be4b08b9a8d5734e1",
@@ -1431,7 +1418,7 @@
         "name": "Music Festival",
         "shortName": "Music Festival",
         "pluralName": "Music Festivals",
-        "emoji": null
+        "emoji": "🎤"
     },
     {
         "id": "4d954b16a243a5684b65b473",
@@ -1473,7 +1460,7 @@
         "name": "Hospital",
         "shortName": "Hospital",
         "pluralName": "Hospitals",
-        "emoji": null
+        "emoji": "🏥"
     },
     {
         "id": "4bf58dd8d48988d15e941735",
@@ -1515,7 +1502,7 @@
         "name": "Som Tum Restaurant",
         "shortName": "Som Tum",
         "pluralName": "Som Tum Restaurants",
-        "emoji": null
+        "emoji": "🥗"
     },
     {
         "id": "4bf58dd8d48988d11a941735",
@@ -1529,84 +1516,77 @@
         "name": "College Auditorium",
         "shortName": "Auditorium",
         "pluralName": "College Auditoriums",
-        "emoji": null
+        "emoji": "🎓"
     },
     {
         "id": "4bf58dd8d48988d178941735",
         "name": "Dentist's Office",
         "shortName": "Dentist's Office",
         "pluralName": "Dentist's Offices",
-        "emoji": null
+        "emoji": "🦷"
     },
     {
         "id": "52e81612bcbc57f1066b79eb",
         "name": "Mini Golf",
         "shortName": "Mini Golf",
         "pluralName": "Mini Golf Courses",
-        "emoji": null
+        "emoji": "⛳️"
     },
     {
         "id": "4bf58dd8d48988d17f941735",
         "name": "Movie Theater",
         "shortName": "Movie Theater",
         "pluralName": "Movie Theaters",
-        "emoji": null
+        "emoji": "🍿"
     },
     {
         "id": "4bf58dd8d48988d15b941735",
         "name": "Farm",
         "shortName": "Farm",
         "pluralName": "Farms",
-        "emoji": null
+        "emoji": "🚜"
     },
     {
         "id": "4bf58dd8d48988d16b941735",
         "name": "Brazilian Restaurant",
         "shortName": "Brazilian",
         "pluralName": "Brazilian Restaurants",
-        "emoji": null
+        "emoji": "🍽️"
     },
     {
         "id": "4bf58dd8d48988d192941735",
         "name": "Planetarium",
         "shortName": "Planetarium",
         "pluralName": "Planetariums",
-        "emoji": null
+        "emoji": "🪐"
     },
     {
         "id": "52e81612bcbc57f1066b7a0c",
         "name": "Bubble Tea Shop",
         "shortName": "Bubble Tea",
         "pluralName": "Bubble Tea Shops",
-        "emoji": null
-    },
-    {
-        "id": "4bf58dd8d48988d10e941735",
-        "name": "Greek Restaurant",
-        "shortName": "Greek",
-        "pluralName": "Greek Restaurants",
-        "emoji": null
+        "emoji": "🧋"
     },
     {
         "id": "4bf58dd8d48988d1e0941735",
         "name": "Harbor / Marina",
         "shortName": "Harbor / Marina",
         "pluralName": "Harbors / Marinas",
-        "emoji": null
+        "emoji": "⚓️"
     },
     {
         "id": "53d6c1b0e4b02351e88a83d8",
         "name": "Fish Taverna",
         "shortName": "Fish Tavernas",
         "pluralName": "Fish Tavernas",
-        "emoji": null
+        "emoji": "🐟"
     },
     {
         "id": "52e81612bcbc57f1066b79f3",
         "name": "Souvlaki Shop",
         "shortName": "Souvlaki",
         "pluralName": "Souvlaki Shops",
-        "emoji": null
+        "emoji": "🥓"
     },
     {
         "id": "50aa9e094b90af0d42d5de0d",
@@ -1627,20 +1607,13 @@
         "name": "Golf Driving Range",
         "shortName": "Golf Driving Range",
         "pluralName": "Golf Driving Ranges",
-        "emoji": null
+        "emoji": "⛳️"
     },
     {
         "id": "52e81612bcbc57f1066b7a25",
         "name": "Pedestrian Plaza",
         "shortName": "Pedestrian Street/Plaza",
         "pluralName": "Pedestrian Plazas",
-        "emoji": null
-    },
-    {
-        "id": "4deefc054765f83613cdba6f",
-        "name": "Indonesian Restaurant",
-        "shortName": "Indonesian",
-        "pluralName": "Indonesian Restaurants",
         "emoji": null
     },
     {
@@ -1683,21 +1656,21 @@
         "name": "Comic Shop",
         "shortName": "Comic Shop",
         "pluralName": "Comic Shops",
-        "emoji": null
+        "emoji": "💥"
     },
     {
         "id": "4bf58dd8d48988d198941735",
         "name": "College Academic Building",
         "shortName": "Academic Building",
         "pluralName": "College Academic Buildings",
-        "emoji": null
+        "emoji": "🎓"
     },
     {
         "id": "56aa371be4b08b9a8d573556",
         "name": "Rugby Stadium",
         "shortName": "Rugby",
         "pluralName": "Rugby Stadiums",
-        "emoji": null
+        "emoji": "🏉"
     },
     {
         "id": "4f2a25ac4b909258e854f55f",
@@ -1718,21 +1691,21 @@
         "name": "Speakeasy",
         "shortName": "Speakeasy",
         "pluralName": "Speakeasies",
-        "emoji": null
+        "emoji": "🥃"
     },
     {
         "id": "4bf58dd8d48988d14d941735",
         "name": "Paella Restaurant",
         "shortName": "Paella",
         "pluralName": "Paella Restaurants",
-        "emoji": null
+        "emoji": "🍤"
     },
     {
         "id": "507c8c4091d498d9fc8c67a9",
         "name": "Public Art",
         "shortName": "Public Art",
         "pluralName": "Public Art",
-        "emoji": null
+        "emoji": "🎨"
     },
     {
         "id": "52e81612bcbc57f1066b7a26",
@@ -1746,14 +1719,14 @@
         "name": "Arcade",
         "shortName": "Arcade",
         "pluralName": "Arcades",
-        "emoji": null
+        "emoji": "🕹️"
     },
     {
         "id": "4bf58dd8d48988d188941735",
         "name": "Soccer Stadium",
         "shortName": "Soccer",
         "pluralName": "Soccer Stadiums",
-        "emoji": null
+        "emoji": "⚽️"
     },
     {
         "id": "56aa371be4b08b9a8d57353b",
@@ -1767,28 +1740,28 @@
         "name": "Brasserie",
         "shortName": "Brasserie",
         "pluralName": "Brasseries",
-        "emoji": null
+        "emoji": "🍽️"
     },
     {
         "id": "52e81612bcbc57f1066b7a31",
         "name": "TV Station",
         "shortName": "TV Station",
         "pluralName": "TV Stations",
-        "emoji": null
+        "emoji": "📺"
     },
     {
         "id": "5283c7b4e4b094cb91ec88d8",
         "name": "Doner Restaurant",
         "shortName": "Doner",
         "pluralName": "Doner Restaurants",
-        "emoji": null
+        "emoji": "🌯"
     },
     {
         "id": "4eb1daf44b900d56c88a4600",
         "name": "Fair",
         "shortName": "Fair",
         "pluralName": "Fairs",
-        "emoji": null
+        "emoji": "🎡"
     },
     {
         "id": "4bf58dd8d48988d109951735",
@@ -1802,42 +1775,42 @@
         "name": "Falafel Restaurant",
         "shortName": "Falafel",
         "pluralName": "Falafel Restaurants",
-        "emoji": null
+        "emoji": "🧆"
     },
     {
         "id": "4bf58dd8d48988d103951735",
         "name": "Clothing Store",
         "shortName": "Apparel",
         "pluralName": "Clothing Stores",
-        "emoji": null
+        "emoji": "🛍️"
     },
     {
         "id": "5744ccdfe4b0c0459246b4dc",
         "name": "Shopping Plaza",
         "shortName": "Shopping Plaza",
         "pluralName": "Shopping Plazas",
-        "emoji": null
+        "emoji": "🛍️"
     },
     {
         "id": "4bf58dd8d48988d128951735",
         "name": "Gift Shop",
         "shortName": "Gift Shop",
         "pluralName": "Gift Shops",
-        "emoji": null
+        "emoji": "🛍️"
     },
     {
         "id": "4bf58dd8d48988d1fd931735",
         "name": "Metro Station",
         "shortName": "Metro",
         "pluralName": "Metro Stations",
-        "emoji": null
+        "emoji": "🚈"
     },
     {
         "id": "4bf58dd8d48988d10a951735",
         "name": "Bank",
         "shortName": "Bank",
         "pluralName": "Banks",
-        "emoji": null
+        "emoji": "🏦"
     },
     {
         "id": "5267e4d9e4b0ec79466e48c7",
@@ -1851,7 +1824,7 @@
         "name": "College Science Building",
         "shortName": "Science",
         "pluralName": "College Science Buildings",
-        "emoji": null
+        "emoji": "🎓"
     },
     {
         "id": "4bf58dd8d48988d1a8941735",
@@ -1880,5 +1853,179 @@
         "shortName": "Mosque",
         "pluralName": "Mosques",
         "emoji": "🕌"
+    },
+    {
+        "id": "4bf58dd8d48988d1c0941735",
+        "name": "Mediterranean Restaurant",
+        "pluralName": "Mediterranean Restaurants",
+        "emoji": "🥗"
+    },
+    {
+        "id": "5bae9231bedf3950379f89cd",
+        "name": "Hill",
+        "pluralName": "Hills",
+        "emoji": "🗻"
+    },
+    {
+        "id": "4bf58dd8d48988d10e941735",
+        "name": "Greek Restaurant",
+        "pluralName": "Greek Restaurants",
+        "emoji": "🍽"
+    },
+    {
+        "id": "52f2ab2ebcbc57f1066b8b1c",
+        "name": "Fruit and Vegetable Store",
+        "pluralName": "Fruit and Vegetable Stores",
+        "emoji": "🍏"
+    },
+    {
+        "id": "4bf58dd8d48988d115941735",
+        "name": "Middle Eastern Restaurant",
+        "pluralName": "Middle Eastern Restaurants",
+        "emoji": "🧆"
+    },
+    {
+        "id": "5bae9231bedf3950379f89e4",
+        "name": "Shawarma Restaurant",
+        "pluralName": "Shawarma Restaurants",
+        "emoji": "🍽"
+    },
+    {
+        "id": "4bf58dd8d48988d175941735",
+        "name": "Gym and Studio",
+        "pluralName": "Gym and Studios",
+        "emoji": "💪🏻"
+    },
+    {
+        "id": "53d6c1b0e4b02351e88a83da",
+        "name": "Meze Restaurant",
+        "pluralName": "Meze Restaurants",
+        "emoji": "🍽"
+    },
+    {
+        "id": "5283c7b4e4b094cb91ec88d7",
+        "name": "Kebab Restaurant",
+        "pluralName": "Kebab Restaurants",
+        "emoji": "🌯"
+    },
+    {
+        "id": "53d6c1b0e4b02351e88a83e4",
+        "name": "Magirio",
+        "pluralName": "Magirios",
+        "emoji": "🍽"
+    },
+    {
+        "id": "4bf58dd8d48988d15f941735",
+        "name": "Field",
+        "pluralName": "Fields",
+        "emoji": "🌅"
+    },
+    {
+        "id": "52e81612bcbc57f1066b79ff",
+        "name": "Halal Restaurant",
+        "pluralName": "Halal Restaurants",
+        "emoji": "🍽"
+    },
+    {
+        "id": "4bf58dd8d48988d1c8941735",
+        "name": "African Restaurant",
+        "pluralName": "African Restaurants",
+        "emoji": "🍗"
+    },
+    {
+        "id": "4deefc054765f83613cdba6f",
+        "name": "Indonesian Restaurant",
+        "pluralName": "Indonesian Restaurants",
+        "emoji": "🍽"
+    },
+    {
+        "id": "52e81612bcbc57f1066b79f8",
+        "name": "Pakistani Restaurant",
+        "pluralName": "Pakistani Restaurants",
+        "emoji": "🍽"
+    },
+    {
+        "id": "56aa371be4b08b9a8d57350b",
+        "name": "Food Stand",
+        "pluralName": "Food Stands",
+        "emoji": "🌭"
+    },
+    {
+        "id": "56aa371be4b08b9a8d573517",
+        "name": "Business Center",
+        "pluralName": "Business Centers",
+        "emoji": "👔"
+    },
+    {
+        "id": "52960eda3cf9994f4e043aca",
+        "name": "Betawinese Restaurant",
+        "pluralName": "Betawinese Restaurants",
+        "emoji": "🍽"
+    },
+    {
+        "id": "4bf58dd8d48988d1c6941735",
+        "name": "Scandinavian Restaurant",
+        "pluralName": "Scandinavian Restaurants",
+        "emoji": "🍽"
+    },
+    {
+        "id": "52960eda3cf9994f4e043acb",
+        "name": "Balinese Restaurant",
+        "pluralName": "Balinese Restaurants",
+        "emoji": "🍽"
+    },
+    {
+        "id": "4bf58dd8d48988d144941735",
+        "name": "Caribbean Restaurant",
+        "pluralName": "Caribbean Restaurants",
+        "emoji": "🍽"
+    },
+    {
+        "id": "52af3b813cf9994f4e043c04",
+        "name": "Taiwanese Restaurant",
+        "pluralName": "Taiwanese Restaurants",
+        "emoji": "🍽"
+    },
+    {
+        "id": "5642206c498e4bfca532186c",
+        "name": "Memorial Site",
+        "pluralName": "Memorial Sites",
+        "emoji": "🗿"
+    },
+    {
+        "id": "4bf58dd8d48988d176941735",
+        "name": "Gym",
+        "pluralName": "Gyms",
+        "emoji": "💪🏻"
+    },
+    {
+        "id": "55a59bace4b013909087cb0c",
+        "name": "Donburi Restaurant",
+        "pluralName": "Donburi Restaurants",
+        "emoji": "🍛"
+    },
+    {
+        "id": "4bf58dd8d48988d11c941735",
+        "name": "Sake Bar",
+        "pluralName": "Sake Bars",
+        "emoji": "🍶"
+    },
+    {
+        "id": "4bf58dd8d48988d1fb941735",
+        "name": "Hobby Store",
+        "pluralName": "Hobby Stores",
+        "emoji": "🧸"
+    },
+    {
+        "id": "55a59bace4b013909087cb36",
+        "name": "Yoshoku Restaurant",
+        "pluralName": "Yoshoku Restaurants",
+        "emoji": "🍛"
+    },
+    {
+        "id": "55a59bace4b013909087cb2d",
+        "name": "Takoyaki Place",
+        "pluralName": "Takoyaki Places",
+        "emoji": "🍽"
     }
 ]
