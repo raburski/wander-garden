@@ -1432,21 +1432,21 @@
         "name": "Rental Car Location",
         "shortName": "Rental Car",
         "pluralName": "Rental Car Locations",
-        "emoji": null
+        "emoji": "🚗"
     },
     {
         "id": "52e81612bcbc57f1066b7a06",
         "name": "Irish Pub",
         "shortName": "Irish",
         "pluralName": "Irish Pubs",
-        "emoji": null
+        "emoji": "☘️"
     },
     {
         "id": "4bf58dd8d48988d122951735",
         "name": "Electronics Store",
         "shortName": "Electronics",
         "pluralName": "Electronics Stores",
-        "emoji": null
+        "emoji": "📹"
     },
     {
         "id": "4bf58dd8d48988d125941735",
@@ -1467,35 +1467,35 @@
         "name": "Pool",
         "shortName": "Pool",
         "pluralName": "Pools",
-        "emoji": null
+        "emoji": "🤿"
     },
     {
         "id": "4bf58dd8d48988d161941735",
         "name": "Lake",
         "shortName": "Lake",
         "pluralName": "Lakes",
-        "emoji": null
+        "emoji": "🛶"
     },
     {
         "id": "52af0bd33cf9994f4e043bdd",
         "name": "Hotpot Restaurant",
         "shortName": "Hotpot",
         "pluralName": "Hotpot Restaurants",
-        "emoji": null
+        "emoji": "🍲"
     },
     {
         "id": "4bf58dd8d48988d112941735",
         "name": "Juice Bar",
         "shortName": "Juice Bar",
         "pluralName": "Juice Bars",
-        "emoji": null
+        "emoji": "🧃"
     },
     {
         "id": "4bf58dd8d48988d184941735",
         "name": "Stadium",
         "shortName": "Stadium",
         "pluralName": "Stadiums",
-        "emoji": null
+        "emoji": "🏟️"
     },
     {
         "id": "56aa371be4b08b9a8d573502",
@@ -1677,7 +1677,7 @@
         "name": "Neighborhood",
         "shortName": "Neighborhood",
         "pluralName": "Neighborhoods",
-        "emoji": null
+        "emoji": "🏘️"
     },
     {
         "id": "4bf58dd8d48988d1f7941735",
@@ -2027,5 +2027,35 @@
         "name": "Takoyaki Place",
         "pluralName": "Takoyaki Places",
         "emoji": "🍽"
+    },
+    {
+        "id": "52f2ab2ebcbc57f1066b8b4b",
+        "name": "Border Crossing",
+        "pluralName": "Border Crossings",
+        "emoji": "🛂"
+    },
+    {
+        "id": "50aaa4314b90af0d42d5de10",
+        "name": "Island",
+        "pluralName": "Islands",
+        "emoji": "🏝️"
+    },
+    {
+        "id": "4eb1d4dd4b900d56c88a45fd",
+        "name": "River",
+        "pluralName": "Rivers",
+        "emoji": "🌊"
+    },
+    {
+        "id": "4bf58dd8d48988d146941735",
+        "name": "Deli",
+        "pluralName": "Delis",
+        "emoji": "🥪"
+    },
+    {
+        "id": "52f2ab2ebcbc57f1066b8b51",
+        "name": "Tram Station",
+        "pluralName": "Tram Stations",
+        "emoji": "🚉"
     }
 ]
