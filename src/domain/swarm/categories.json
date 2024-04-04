@@ -361,14 +361,14 @@
         "name": "Gastropub",
         "shortName": "Gastropub",
         "pluralName": "Gastropubs",
-        "emoji": null
+        "emoji": "🥪"
     },
     {
         "id": "4bf58dd8d48988d127951735",
         "name": "Arts & Crafts Store",
         "shortName": "Arts & Crafts",
         "pluralName": "Arts & Crafts Stores",
-        "emoji": null
+        "emoji": "🎨"
     },
     {
         "id": "4bf58dd8d48988d149941735",
@@ -550,7 +550,7 @@
         "name": "Bed & Breakfast",
         "shortName": "B & B",
         "pluralName": "Bed & Breakfasts",
-        "emoji": null
+        "emoji": "🛏️"
     },
     {
         "id": "56aa371be4b08b9a8d5734db",
@@ -823,7 +823,7 @@
         "name": "Hostel",
         "shortName": "Hostel",
         "pluralName": "Hostels",
-        "emoji": null
+        "emoji": "🛏️"
     },
     {
         "id": "4def73e84765ae376e57713a",
@@ -1411,7 +1411,7 @@
         "name": "Vacation Rental",
         "shortName": "Vacation Rental",
         "pluralName": "Vacation Rentals",
-        "emoji": null
+        "emoji": "🛏️"
     },
     {
         "id": "5267e4d9e4b0ec79466e48d1",
@@ -2075,5 +2075,23 @@
         "name": "Airport Gate",
         "pluralName": "Airport Gates",
         "emoji": "🛫"
+    },
+    {
+        "id": "56aa371be4b08b9a8d573511",
+        "name": "Cave",
+        "pluralName": "Caves",
+        "emoji": "🗻"
+    },
+    {
+        "id": "52f2ab2ebcbc57f1066b8b4f",
+        "name": "Bus Stop",
+        "pluralName": "Bus Stops",
+        "emoji": "🚌"
+    },
+    {
+        "id": "4bf58dd8d48988d1f9941735",
+        "name": "Food and Beverage Retail",
+        "pluralName": "Food and Beverage Retail",
+        "emoji": "☕️"
     }
 ]
