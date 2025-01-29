@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Wander Garden",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "Companion extension for wander.garden website.",
     "icons": {
       "16": "icon/16.png",
