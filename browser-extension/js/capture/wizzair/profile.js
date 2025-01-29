@@ -19,7 +19,8 @@ function parseFlight(data) {
     }
     const arrival = {
         airport: data.arrivalStation,
-        scheduled: undefined,
+        // arrival date not provide so using departure one again
+        scheduled: getISOTimezoneDateString(departureAirport.lat, departureAirport.lon, new Date(data.departureDate)),
     }
 
     return {
