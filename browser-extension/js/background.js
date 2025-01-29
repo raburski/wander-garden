@@ -14,6 +14,7 @@ const ORIGIN = {
 
     MILES_AND_MORE: 'miles_and_more',
     RYANAIR: 'ryanair',
+    WIZZAIR: 'wizzair',
 }
 
 const MODE = {
@@ -54,6 +55,7 @@ const ORIGIN_URL = {
     [ORIGIN.TRIP_ADVISOR]: 'https://www.tripadvisor.com/Bookings',
     [ORIGIN.MILES_AND_MORE]: 'https://www.miles-and-more.com/row/en/account/my-bookings.html',
     [ORIGIN.RYANAIR]: 'https://www.ryanair.com/gb/en/trip/manage',
+    [ORIGIN.WIZZAIR]: 'https://www.wizzair.com/en-gb/profile',
     [ORIGIN.VIATOR]: 'https://www.viator.com/account/bookings',
 }
 

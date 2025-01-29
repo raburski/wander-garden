@@ -17,6 +17,7 @@ export default function Flights({ ...props }) {
             <ContentRow image={<Logo src={FlightLogoURL[FlightType.Travala]}/>} title={FlightName[FlightType.Travala]} onClick={createSelectFlightType(FlightType.Travala)}/>
             <ContentRow image={<Logo src={FlightLogoURL[FlightType.MilesAndMore]}/>} title={FlightName[FlightType.MilesAndMore]} onClick={createSelectFlightType(FlightType.MilesAndMore)}/>
             <ContentRow image={<Logo src={FlightLogoURL[FlightType.Ryanair]}/>} title={FlightName[FlightType.Ryanair]} onClick={createSelectFlightType(FlightType.Ryanair)}/>
+            <ContentRow image={<Logo src={FlightLogoURL[FlightType.Wizzair]}/>} title={FlightName[FlightType.Wizzair]} onClick={createSelectFlightType(FlightType.Wizzair)}/>
         </Panel>
     )
 }

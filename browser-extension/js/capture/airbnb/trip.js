@@ -7,12 +7,12 @@ class AirbnbTripPage extends Page {
     }
 
     extractStay() {
-        const idRegex = /\/trips\/v[0-9]\/([^\/]+)\//g
+        const idRegex = /\/trips\/v[0-9]\/(reservation-details\/..\/)?(RESERVATION.?_CHECKIN\/)?([^\/$]+)\/?.*/g
         const cityRegex = /( in )(.(?<! in ))+$/g
     
         let accomodationURL
         let accomodationName
-        let price
+        let price = undefined
     
         try {
             const accomodationElement = document.querySelector("a[data-testid='reservation-destination-link']")
@@ -34,19 +34,24 @@ class AirbnbTripPage extends Page {
                 throw new Error('price not found')
             }
         } catch (e) {
-            return this.core.sendError(e, 'extractPrice')
+            // alert('PRICE NOT FOUND')
+            // return this.core.sendError(e, 'extractPrice')
         }
     
         const guestsElemenet = document.querySelector("[data-testid=avatar-list-row] > div > div p")
         const guestsArray = guestsElemenet?.innerHTML?.split(' ').map(parseInt).filter(Boolean)
         const totalGuests = guestsArray?.length === 1 ? guestsArray[0] : undefined
     
-        const id = idRegex.exec(window.location.href)[1]
+        const id = idRegex.exec(window.location.href)[3]
         if (!id) {
             return this.core.sendError('no id can be found', 'extractStay')
         }
 
-        const uiState = this.dataState["root > core-guest-spa"].find(pair => pair[0] === 'HyperloopContext8Token')[1].uiState[0][1]
+        const hyperloop = this.dataState["root > core-guest-spa"].find(pair => pair[0].includes('Hyperloop'))
+        if (!hyperloop) {
+            return this.core.sendError('No hyperloop object found', 'extractMetadata')
+        }
+        const uiState = hyperloop[1].uiState[0][1]
         const metadata = uiState.metadata
         const city = cityRegex.exec(metadata.title)[0].substring(4)
         const cc = metadata.country

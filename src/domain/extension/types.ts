@@ -21,4 +21,5 @@ export enum Origin {
 
     MilesAndMore = 'miles_and_more',
     Ryanair = 'ryanair',
+    Wizzair = 'wizzair',
 }

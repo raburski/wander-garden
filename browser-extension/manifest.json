@@ -79,6 +79,7 @@
             "*://*.travala.com/*",
             "*://*.agoda.com/*",
             "*://*.ryanair.com/*",
+            "*://*.wizzair.com/*",
             "*://*.viator.com/*"
         ],
         "run_at": "document_start",
@@ -115,6 +116,22 @@
           "js/timezone.js",
           "js/capture/ryanair/manage.js",
           "js/capture/ryanair/index.js"
+        ]
+      },
+      {
+        "matches":[
+            "*://*.wizzair.com/*"
+        ],
+        "run_at": "document_start",
+        "js":[
+          "js/airports.js",
+          "js/consts.js",
+          "js/ui.js",
+          "js/core.js",
+          "js/country.js",
+          "js/timezone.js",
+          "js/capture/wizzair/profile.js",
+          "js/capture/wizzair/index.js"
         ]
       },
       {
@@ -195,7 +212,7 @@
     },
     "web_accessible_resources": [{
       "resources": ["inject/XMLExtract.js"],
-      "matches": ["*://*.travala.com/*", "*://*.ryanair.com/*", "*://*.viator.com/*"]
+      "matches": ["*://*.travala.com/*", "*://*.ryanair.com/*", "*://*.wizzair.com/*", "*://*.viator.com/*"]
     },
     {
       "resources": ["inject/windowExtract.js", "inject/locationExtract.js"],

@@ -7,6 +7,7 @@ export enum FlightType {
     Travala = 'travala',
     MilesAndMore = 'milesAndMore',
     Ryanair = 'ryanair',
+    Wizzair = 'wizzair',
 }
 
 export type AirportCode = string
@@ -26,32 +27,40 @@ export interface Flight {
     operator: FlightOperator,
     departure: FlightStage,
     arrival: FlightStage,
-    // price?: Money,
     url?: string,
+}
+
+export interface FlightConnection {
+    id: string,
+    price?: Money,
 }
 
 export const OriginToFlightType = {
     [Origin.Travala]: FlightType.Travala,
     [Origin.MilesAndMore]: FlightType.MilesAndMore,
     [Origin.Ryanair]: FlightType.Ryanair,
+    [Origin.Wizzair]: FlightType.Wizzair,
 }
 
 export const FlightTypeToOrigin = {
     [FlightType.Travala]: Origin.Travala,
     [FlightType.MilesAndMore]: Origin.MilesAndMore,
     [FlightType.Ryanair]: Origin.Ryanair,
+    [FlightType.Wizzair]: Origin.Wizzair,
 }
 
 export const FlightLogoURL = {
     [FlightType.Travala]: "/logo/travala.svg",
     [FlightType.MilesAndMore]: "/logo/milesandmore.svg",
     [FlightType.Ryanair]: "/logo/ryanair.svg",
+    [FlightType.Wizzair]: "/logo/wizzair.svg",
 }
 
 export const FlightName = {
     [FlightType.Travala]: "Travala",
     [FlightType.MilesAndMore]: "Miles and more",
     [FlightType.Ryanair]: "Ryanair",
+    [FlightType.Wizzair]: "Wizzair",
 }
 
 export function flightsEqual(s1: Flight, s2: Flight) {

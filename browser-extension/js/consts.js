@@ -13,4 +13,5 @@ const ORIGIN = {
 
     MILES_AND_MORE: 'miles_and_more',
     RYANAIR: 'ryanair',
+    WIZZAIR: 'wizzair',
 }
